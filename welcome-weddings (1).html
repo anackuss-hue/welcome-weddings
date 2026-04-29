@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome Weddings — Gestão Operacional</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #b8965a;
+    --gold-light: #d4af7a;
+    --gold-pale: #fdf8f0;
+    --gold-border: #f0e8d0;
+    --white: #ffffff;
+    --bg: #f7f4ef;
+    --text: #1a1a1a;
+    --text-muted: #888;
+    --border: #e8e0d4;
+    --red: #c0392b;
+    --green: #2e7d32;
+    --sidebar-w: 230px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    position: fixed; top: 0; left: 0; width: var(--sidebar-w);
+    height: 100vh; background: var(--white); border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; z-index: 100;
+  }
+  .sidebar-logo { padding: 28px 24px 24px; border-bottom: 1px solid var(--border); }
+  .sidebar-logo .welcome { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; }
+  .sidebar-logo .weddings { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--text); letter-spacing: 3px; text-transform: uppercase; }
+  .sidebar-logo .sub { font-size: 9px; letter-spacing: 2px; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; }
+  .nav-item { padding: 12px 24px; cursor: pointer; font-size: 13px; font-weight: 500; color: #666; border-left: 3px solid transparent; transition: all 0.15s; display: flex; align-items: center; gap: 10px; }
+  .nav-item:hover { background: var(--gold-pale); color: var(--gold); }
+  .nav-item.active { background: var(--gold-pale); color: var(--gold); border-left-color: var(--gold); font-weight: 600; }
+
+  /* MAIN */
+  .main { margin-left: var(--sidebar-w); padding: 36px 44px; min-height: 100vh; }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* HEADER */
+  .page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px; }
+  .page-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; color: var(--text); }
+  .page-sub { font-size: 12px; color: var(--text-muted); margin-top: 3px; letter-spacing: 0.3px; }
+
+  /* BUTTONS */
+  .btn { padding: 9px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+  .btn-gold { background: var(--gold); color: white; }
+  .btn-gold:hover { background: var(--gold-light); }
+  .btn-outline { background: transparent; color: var(--gold); border: 1.5px solid var(--gold); }
+  .btn-outline:hover { background: var(--gold-pale); }
+  .btn-danger { background: var(--red); color: white; padding: 8px 12px; }
+  .btn-sm { padding: 6px 14px; font-size: 12px; }
+
+  /* CARDS */
+  .card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); padding: 22px; }
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+
+  /* TAGS */
+  .tag { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .tag-gold { background: #fdf3e0; color: var(--gold); }
+  .tag-green { background: #e8f5e9; color: var(--green); }
+  .tag-red { background: #fdecea; color: var(--red); }
+  .tag-gray { background: #f0f0f0; color: #666; }
+
+  /* SEARCH/FILTER BAR */
+  .filter-bar { background: var(--white); border-radius: 12px; border: 1px solid var(--border); padding: 16px 20px; margin-bottom: 20px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .search-input { padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border); font-size: 13px; font-family: 'DM Sans', sans-serif; outline: none; width: 280px; }
+  .search-input:focus { border-color: var(--gold); }
+  .filter-btn { padding: 7px 14px; border-radius: 20px; font-size: 12px; font-weight: 500; cursor: pointer; border: 1.5px solid var(--border); background: white; color: #666; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+  .filter-btn.active, .filter-btn:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-pale); }
+
+  /* MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; align-items: flex-start; justify-content: center; padding: 32px 20px; overflow-y: auto; }
+  .modal-overlay.open { display: flex; }
+  .modal-box { background: white; border-radius: 16px; width: 100%; max-width: 720px; padding: 32px; position: relative; margin: auto; }
+  .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  .modal-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; }
+  .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: #999; padding: 4px 8px; line-height: 1; }
+
+  /* TABS */
+  .tabs { display: flex; gap: 6px; margin-bottom: 24px; flex-wrap: wrap; }
+  .tab { padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; background: #f0ebe2; color: #888; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+  .tab.active { background: var(--gold); color: white; font-weight: 600; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* FORM */
+  .form-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 11px; font-weight: 600; color: #666; margin-bottom: 5px; letter-spacing: 0.5px; text-transform: uppercase; }
+  .field input, .field select, .field textarea { width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid #ddd; font-size: 13px; font-family: 'DM Sans', sans-serif; outline: none; transition: border 0.15s; }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--gold); }
+  .field textarea { resize: vertical; min-height: 75px; }
+
+  /* TOGGLE */
+  .toggle-row { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 7px 0; }
+  .toggle-track { width: 36px; height: 20px; border-radius: 10px; background: #ddd; position: relative; transition: background 0.2s; flex-shrink: 0; }
+  .toggle-track.on { background: var(--gold); }
+  .toggle-thumb { width: 16px; height: 16px; border-radius: 8px; background: white; position: absolute; top: 2px; left: 2px; transition: left 0.2s; }
+  .toggle-track.on .toggle-thumb { left: 18px; }
+  .toggle-label { font-size: 13px; color: #555; }
+
+  /* SECTION */
+  .section { margin-bottom: 22px; }
+  .section-title { font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; padding-bottom: 7px; border-bottom: 1px solid var(--gold-border); }
+
+  /* MODAL FOOTER */
+  .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+
+  /* ASSESSORA CARD in casamento */
+  .assessora-item { background: var(--gold-pale); border: 1px solid var(--gold-border); border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+  .assessora-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+
+  /* PICKER */
+  .picker-list { border: 2px dashed var(--gold); border-radius: 10px; background: var(--gold-pale); padding: 16px; margin-top: 12px; }
+  .picker-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--gold-border); }
+  .picker-item:last-of-type { border-bottom: none; }
+
+  /* VIAGEM CHECKLIST */
+  .checklist-box { background: var(--gold-pale); border: 1px solid var(--gold-border); border-radius: 10px; padding: 18px; margin-bottom: 18px; }
+
+  /* LOADING */
+  .loading { text-align: center; padding: 40px; color: var(--text-muted); font-size: 14px; }
+
+  /* EMPTY */
+  .empty { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+  .empty-icon { font-size: 40px; margin-bottom: 12px; }
+  .empty-text { font-size: 14px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <div class="welcome">Welcome</div>
+    <div class="weddings">Weddings</div>
+    <div class="sub">Gestão Operacional</div>
+  </div>
+  <div class="nav-item active" onclick="showPage('casamentos')" id="nav-casamentos">
+    💍 Casamentos
+  </div>
+  <div class="nav-item" onclick="showPage('assessoras')" id="nav-assessoras">
+    👩 Assessoras
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- PAGE: CASAMENTOS -->
+  <div class="page active" id="page-casamentos">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Casamentos</div>
+        <div class="page-sub" id="casamentos-count">Carregando...</div>
+      </div>
+      <button class="btn btn-gold" onclick="openNovoCasamento()">+ Novo Casamento</button>
+    </div>
+    <div class="filter-bar">
+      <input class="search-input" placeholder="Buscar por nome do casal ou destino..." oninput="filterCasamentos(this.value)" />
+    </div>
+    <div class="cards-grid" id="casamentos-grid">
+      <div class="loading">Carregando casamentos...</div>
+    </div>
+  </div>
+
+  <!-- PAGE: ASSESSORAS -->
+  <div class="page" id="page-assessoras">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Banco de Assessoras</div>
+        <div class="page-sub" id="assessoras-count">Carregando...</div>
+      </div>
+      <button class="btn btn-gold" onclick="openNovaAssessora()">+ Nova Assessora</button>
+    </div>
+    <div class="filter-bar">
+      <input class="search-input" placeholder="Buscar por nome ou cidade..." oninput="filterAssessoras(this.value)" />
+      <button class="filter-btn active" onclick="setFilterA('')">Todas</button>
+      <button class="filter-btn" onclick="setFilterA('ingles')">🇬🇧 Inglês</button>
+      <button class="filter-btn" onclick="setFilterA('espanhol')">🇪🇸 Espanhol</button>
+      <button class="filter-btn" onclick="setFilterA('equipe')">👥 Equipe</button>
+      <button class="filter-btn" onclick="setFilterA('blacklist')">🚫 Blacklist</button>
+    </div>
+    <div class="cards-grid" id="assessoras-grid">
+      <div class="loading">Carregando assessoras...</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL: CASAMENTO -->
+<div class="modal-overlay" id="modal-casamento">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-casamento-title">Novo Casamento</div>
+      <button class="modal-close" onclick="closeModal('modal-casamento')">✕</button>
+    </div>
+    <div class="tabs" id="casamento-tabs" style="display:none">
+      <button class="tab active" onclick="showTab('plan')">📅 Planejamento</button>
+      <button class="tab" onclick="showTab('prod')">🎨 Produção</button>
+      <button class="tab" onclick="showTab('viag')">✈️ Viagem</button>
+      <button class="tab" onclick="showTab('assess')">👩 Assessoras</button>
+    </div>
+
+    <!-- TAB: PLANEJAMENTO -->
+    <div class="tab-content active" id="tab-plan">
+      <div class="form-grid2">
+        <div class="field"><label>Nome do Casal</label><input id="c-nome" placeholder="Ex: Ana & João" /></div>
+        <div class="field"><label>Destino</label><input id="c-destino" /></div>
+        <div class="field"><label>Data do Casamento</label><input id="c-data" type="date" /></div>
+        <div class="field"><label>Horário da Cerimônia</label><input id="c-horario" type="time" /></div>
+        <div class="field"><label>Hotel</label><input id="c-hotel" /></div>
+        <div class="field"><label>Pacote Contrato com o Hotel</label><input id="c-pacote" /></div>
+        <div class="field"><label>Status</label>
+          <select id="c-status">
+            <option>Em andamento</option>
+            <option>Confirmado</option>
+            <option>Concluído</option>
+            <option>Cancelado</option>
+          </select>
+        </div>
+        <div class="field"><label>Extra</label><input id="c-extra" /></div>
+      </div>
+      <div class="field"><label>Observações sobre o Casal</label><textarea id="c-obs"></textarea></div>
+    </div>
+
+    <!-- TAB: PRODUÇÃO -->
+    <div class="tab-content" id="tab-prod">
+      <div class="form-grid2">
+        <div class="field"><label>Nome da Produtora</label><input id="c-produtora" /></div>
+        <div class="field"><label>Número de Assessores</label><input id="c-num-assessores" /></div>
+        <div class="field"><label>Datas (ida e volta assessoria)</label><input id="c-datas" placeholder="Ex: 10/08 → 14/08" /></div>
+        <div class="field"><label>Última Reunião</label><input id="c-ultima-reuniao" type="date" /></div>
+      </div>
+      <div class="field"><label>Serviços Necessários</label><textarea id="c-servicos" placeholder="DJ, decoração, banda..."></textarea></div>
+      <div class="field"><label>Programação do Casamento</label><textarea id="c-programacao"></textarea></div>
+      <div class="field"><label>Fornecedores</label><textarea id="c-fornecedores"></textarea></div>
+      <div class="field"><label>Status (comentários)</label><textarea id="c-prod-status"></textarea></div>
+      <div id="prod-assessoras-preview"></div>
+    </div>
+
+    <!-- TAB: VIAGEM -->
+    <div class="tab-content" id="tab-viag">
+      <div class="checklist-box">
+        <div class="section-title">Checklist de Confirmação para Produção</div>
+        <div class="toggle-row" onclick="toggleField('c-check-voos')">
+          <div class="toggle-track" id="track-c-check-voos"><div class="toggle-thumb"></div></div>
+          <span class="toggle-label">✈️ Voos da Assessoria</span>
+        </div>
+        <div class="toggle-row" onclick="toggleField('c-check-transfers')">
+          <div class="toggle-track" id="track-c-check-transfers"><div class="toggle-thumb"></div></div>
+          <span class="toggle-label">🚌 Transfers</span>
+        </div>
+        <div class="toggle-row" onclick="toggleField('c-check-passeios')">
+          <div class="toggle-track" id="track-c-check-passeios"><div class="toggle-thumb"></div></div>
+          <span class="toggle-label">⛵ Passeios</span>
+        </div>
+        <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--gold-border)">
+          <div class="toggle-row" onclick="toggleField('c-viagem-ok')">
+            <div class="toggle-track" id="track-c-viagem-ok"><div class="toggle-thumb"></div></div>
+            <span class="toggle-label" style="font-weight:600">✅ TUDO OK — Avisar Produção</span>
+          </div>
+        </div>
+      </div>
+      <div class="field"><label>Transfer</label><textarea id="c-transfer"></textarea></div>
+      <div class="field"><label>Passeios</label><textarea id="c-passeios"></textarea></div>
+      <div class="field"><label>Hospedagem dos Convidados</label><textarea id="c-hospedagem"></textarea></div>
+      <div class="field"><label>Observações</label><textarea id="c-viag-obs"></textarea></div>
+    </div>
+
+    <!-- TAB: ASSESSORAS DO CASAMENTO -->
+    <div class="tab-content" id="tab-assess">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div id="assess-count" style="font-size:13px;font-weight:500"></div>
+        <button class="btn btn-gold btn-sm" onclick="togglePicker()">+ Escalar Assessora</button>
+      </div>
+      <div id="escaladas-list"></div>
+      <div id="picker-container" style="display:none"></div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-casamento')">Cancelar</button>
+      <button class="btn btn-gold" id="btn-salvar-casamento" onclick="salvarCasamento()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ASSESSORA -->
+<div class="modal-overlay" id="modal-assessora">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-assessora-title">Nova Assessora</div>
+      <button class="modal-close" onclick="closeModal('modal-assessora')">✕</button>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Dados Pessoais</div>
+      <div class="form-grid2">
+        <div class="field"><label>Nome Completo</label><input id="a-nome" /></div>
+        <div class="field"><label>Data de Nascimento</label><input id="a-nasc" type="date" /></div>
+        <div class="field"><label>CPF</label><input id="a-cpf" placeholder="000.000.000-00" /></div>
+        <div class="field"><label>E-mail</label><input id="a-email" type="email" /></div>
+        <div class="field"><label>Cidade de Origem</label><input id="a-cidade" /></div>
+      </div>
+      <div class="field"><label>Perfil</label><textarea id="a-perfil"></textarea></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Idiomas & Equipe</div>
+      <div class="toggle-row" onclick="toggleField('a-ingles')">
+        <div class="toggle-track" id="track-a-ingles"><div class="toggle-thumb"></div></div>
+        <span class="toggle-label">Fala Inglês</span>
+      </div>
+      <div class="toggle-row" onclick="toggleField('a-espanhol')">
+        <div class="toggle-track" id="track-a-espanhol"><div class="toggle-thumb"></div></div>
+        <span class="toggle-label">Fala Espanhol</span>
+      </div>
+      <div class="toggle-row" onclick="toggleField('a-equipe')">
+        <div class="toggle-track" id="track-a-equipe"><div class="toggle-thumb"></div></div>
+        <span class="toggle-label">É de Equipe</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Documentos</div>
+      <div class="form-grid3">
+        <div class="field"><label>Passaporte Nº</label><input id="a-pass-num" /></div>
+        <div class="field"><label>Validade</label><input id="a-pass-val" type="date" /></div>
+        <div class="field"><label>País Emissor</label><input id="a-pass-pais" /></div>
+        <div class="field"><label>Visto Nº</label><input id="a-visto-num" /></div>
+        <div class="field"><label>Validade Visto</label><input id="a-visto-val" type="date" /></div>
+        <div class="field"><label>País do Visto</label><input id="a-visto-pais" /></div>
+      </div>
+      <div class="toggle-row" onclick="toggleField('a-febre')">
+        <div class="toggle-track" id="track-a-febre"><div class="toggle-thumb"></div></div>
+        <span class="toggle-label">Vacina Febre Amarela</span>
+      </div>
+      <div class="toggle-row" onclick="toggleField('a-nota')">
+        <div class="toggle-track" id="track-a-nota"><div class="toggle-thumb"></div></div>
+        <span class="toggle-label">Emissão de Nota Fiscal</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Restrições & Observações</div>
+      <div class="toggle-row" onclick="toggleField('a-blacklist')">
+        <div class="toggle-track" id="track-a-blacklist"><div class="toggle-thumb"></div></div>
+        <span class="toggle-label">🚫 Blacklist</span>
+      </div>
+      <div class="field" style="margin-top:12px"><label>Observações</label><textarea id="a-obs"></textarea></div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-assessora')">Cancelar</button>
+      <button class="btn btn-gold" id="btn-salvar-assessora" onclick="salvarAssessora()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── SUPABASE ──────────────────────────────────────────────────────────────
+const { createClient } = supabase
+const sb = createClient(
+  'https://yrnlfarricrhtfomwynd.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlybmxmYXJyaWNyaHRmb213eW5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczOTIxODksImV4cCI6MjA5Mjk2ODE4OX0.Ad4awFjQ9vcDqNyBbWycgv0rvpc3DOz4pPTi41nSp8w'
+)
+
+// ── STATE ─────────────────────────────────────────────────────────────────
+let casamentos = []
+let assessoras = []
+let casamentoAtual = null
+let assessoraAtual = null
+let escaladas = []
+let toggleStates = {}
+let filterA = ''
+let searchC = ''
+let searchA = ''
+let pickerOpen = false
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  loadCasamentos()
+  loadAssessoras()
+})
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'))
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'))
+  document.getElementById('page-' + page).classList.add('active')
+  document.getElementById('nav-' + page).classList.add('active')
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────────────
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open')
+}
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open') })
+})
+
+// ── TOGGLE ────────────────────────────────────────────────────────────────
+function toggleField(id) {
+  toggleStates[id] = !toggleStates[id]
+  const track = document.getElementById('track-' + id)
+  if (track) track.classList.toggle('on', toggleStates[id])
+}
+function setToggle(id, val) {
+  toggleStates[id] = !!val
+  const track = document.getElementById('track-' + id)
+  if (track) track.classList.toggle('on', !!val)
+}
+function getToggle(id) { return !!toggleStates[id] }
+
+// ── TABS ──────────────────────────────────────────────────────────────────
+function showTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'))
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'))
+  document.getElementById('tab-' + tab).classList.add('active')
+  event.target.classList.add('active')
+  if (tab === 'assess') renderEscaladas()
+  if (tab === 'prod') renderProdAssessoras()
+}
+
+// ── CASAMENTOS ────────────────────────────────────────────────────────────
+async function loadCasamentos() {
+  const { data } = await sb.from('casamentos').select('*').order('created_at', { ascending: false })
+  casamentos = data || []
+  renderCasamentos()
+}
+
+function filterCasamentos(q) { searchC = q.toLowerCase(); renderCasamentos() }
+
+function renderCasamentos() {
+  const grid = document.getElementById('casamentos-grid')
+  const filtered = casamentos.filter(c =>
+    !searchC || c.nome?.toLowerCase().includes(searchC) || c.destino?.toLowerCase().includes(searchC)
+  )
+  document.getElementById('casamentos-count').textContent = casamentos.length + ' casamento(s) cadastrado(s)'
+
+  if (!filtered.length) {
+    grid.innerHTML = '<div class="empty"><div class="empty-icon">💍</div><div class="empty-text">Nenhum casamento encontrado</div></div>'
+    return
+  }
+
+  grid.innerHTML = filtered.map(c => {
+    const statusColor = c.status === 'Confirmado' ? 'tag-green' : c.status === 'Cancelado' ? 'tag-red' : c.status === 'Concluído' ? 'tag-gold' : 'tag-gray'
+    return `
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+        <div style="font-weight:600;font-size:16px;font-family:'Cormorant Garamond',serif">${c.nome || '—'}</div>
+        <span class="tag ${statusColor}">${c.status || 'Em andamento'}</span>
+      </div>
+      <div style="font-size:13px;color:#888;margin-bottom:3px">📍 ${c.destino || '—'}</div>
+      <div style="font-size:13px;color:#888;margin-bottom:3px">📅 ${c.plan_data ? formatDate(c.plan_data) : '—'}</div>
+      <div style="font-size:13px;color:#888;margin-bottom:12px">🏨 ${c.plan_hotel || '—'}</div>
+      ${c.viagem_ok ? '<span class="tag tag-green" style="margin-bottom:10px;display:inline-block">✅ Viagem OK</span>' : ''}
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn btn-outline" style="flex:1" onclick="openCasamento('${c.id}')">Abrir</button>
+        <button class="btn btn-danger" onclick="deleteCasamento('${c.id}')">✕</button>
+      </div>
+    </div>`
+  }).join('')
+}
+
+function openNovoCasamento() {
+  casamentoAtual = null
+  document.getElementById('modal-casamento-title').textContent = 'Novo Casamento'
+  document.getElementById('casamento-tabs').style.display = 'none'
+  showTabForced('plan')
+  clearCasamentoForm()
+  document.getElementById('modal-casamento').classList.add('open')
+}
+
+async function openCasamento(id) {
+  const c = casamentos.find(x => x.id === id)
+  if (!c) return
+  casamentoAtual = { ...c }
+  document.getElementById('modal-casamento-title').textContent = c.nome || 'Casamento'
+  document.getElementById('casamento-tabs').style.display = 'flex'
+  showTabForced('plan')
+  fillCasamentoForm(c)
+  await loadEscaladas(id)
+  document.getElementById('modal-casamento').classList.add('open')
+}
+
+function showTabForced(tab) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'))
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'))
+  document.getElementById('tab-' + tab).classList.add('active')
+  const tabs = document.querySelectorAll('.tab')
+  const map = { plan: 0, prod: 1, viag: 2, assess: 3 }
+  if (tabs[map[tab]]) tabs[map[tab]].classList.add('active')
+}
+
+function clearCasamentoForm() {
+  ['c-nome','c-destino','c-data','c-horario','c-hotel','c-pacote','c-extra','c-obs',
+   'c-produtora','c-num-assessores','c-datas','c-ultima-reuniao','c-servicos',
+   'c-programacao','c-fornecedores','c-prod-status','c-transfer','c-passeios',
+   'c-hospedagem','c-viag-obs'].forEach(id => {
+    const el = document.getElementById(id)
+    if (el) el.value = ''
+  })
+  document.getElementById('c-status').value = 'Em andamento'
+  ;['c-check-voos','c-check-transfers','c-check-passeios','c-viagem-ok'].forEach(id => setToggle(id, false))
+}
+
+function fillCasamentoForm(c) {
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || '' }
+  set('c-nome', c.nome); set('c-destino', c.destino); set('c-data', c.plan_data)
+  set('c-horario', c.plan_horario); set('c-hotel', c.plan_hotel); set('c-pacote', c.plan_pacote)
+  set('c-extra', c.plan_extra); set('c-obs', c.plan_obs); set('c-status', c.status)
+  set('c-produtora', c.prod_produtora); set('c-num-assessores', c.prod_num_assessores)
+  set('c-datas', c.prod_datas); set('c-ultima-reuniao', c.prod_ultima_reuniao)
+  set('c-servicos', c.prod_servicos); set('c-programacao', c.prod_programacao)
+  set('c-fornecedores', c.prod_fornecedores); set('c-prod-status', c.prod_status)
+  set('c-transfer', c.viag_transfer); set('c-passeios', c.viag_passeios)
+  set('c-hospedagem', c.viag_hospedagem); set('c-viag-obs', c.viag_obs)
+  setToggle('c-check-voos', c.checklist_voos); setToggle('c-check-transfers', c.checklist_transfers)
+  setToggle('c-check-passeios', c.checklist_passeios); setToggle('c-viagem-ok', c.viagem_ok)
+}
+
+function getCasamentoData() {
+  const v = id => document.getElementById(id)?.value || ''
+  return {
+    nome: v('c-nome'), destino: v('c-destino'), plan_data: v('c-data'),
+    plan_horario: v('c-horario'), plan_hotel: v('c-hotel'), plan_pacote: v('c-pacote'),
+    plan_extra: v('c-extra'), plan_obs: v('c-obs'), status: v('c-status'),
+    prod_produtora: v('c-produtora'), prod_num_assessores: v('c-num-assessores'),
+    prod_datas: v('c-datas'), prod_ultima_reuniao: v('c-ultima-reuniao'),
+    prod_servicos: v('c-servicos'), prod_programacao: v('c-programacao'),
+    prod_fornecedores: v('c-fornecedores'), prod_status: v('c-prod-status'),
+    viag_transfer: v('c-transfer'), viag_passeios: v('c-passeios'),
+    viag_hospedagem: v('c-hospedagem'), viag_obs: v('c-viag-obs'),
+    checklist_voos: getToggle('c-check-voos'), checklist_transfers: getToggle('c-check-transfers'),
+    checklist_passeios: getToggle('c-check-passeios'), viagem_ok: getToggle('c-viagem-ok'),
+  }
+}
+
+async function salvarCasamento() {
+  const btn = document.getElementById('btn-salvar-casamento')
+  btn.textContent = 'Salvando...'; btn.disabled = true
+  const data = getCasamentoData()
+  if (!data.nome) { alert('Preencha o nome do casal!'); btn.textContent = 'Salvar'; btn.disabled = false; return }
+  if (casamentoAtual) {
+    await sb.from('casamentos').update(data).eq('id', casamentoAtual.id)
+  } else {
+    await sb.from('casamentos').insert(data)
+  }
+  btn.textContent = 'Salvar'; btn.disabled = false
+  closeModal('modal-casamento')
+  loadCasamentos()
+}
+
+async function deleteCasamento(id) {
+  if (!confirm('Remover este casamento?')) return
+  await sb.from('casamentos').delete().eq('id', id)
+  loadCasamentos()
+}
+
+// ── ESCALADAS ─────────────────────────────────────────────────────────────
+async function loadEscaladas(casamentoId) {
+  const id = casamentoId || casamentoAtual?.id
+  if (!id) return
+  const { data } = await sb.from('casamento_assessoras').select('*, assessora:assessoras(*)').eq('casamento_id', id)
+  escaladas = data || []
+}
+
+async function renderEscaladas() {
+  if (casamentoAtual) await loadEscaladas(casamentoAtual.id)
+  const list = document.getElementById('escaladas-list')
+  document.getElementById('assess-count').textContent = escaladas.length + ' assessora(s) escalada(s)'
+
+  if (!escaladas.length) {
+    list.innerHTML = '<div class="empty" style="padding:30px"><div class="empty-text">Nenhuma assessora escalada ainda</div></div>'
+  } else {
+    list.innerHTML = escaladas.map(e => `
+      <div class="assessora-item">
+        <div class="assessora-item-header">
+          <div>
+            <div style="font-weight:600;font-size:14px">${e.assessora?.nome || '—'}</div>
+            <div style="font-size:12px;color:#888">${e.assessora?.cidade || ''}</div>
+          </div>
+          <button class="btn btn-danger btn-sm" onclick="removeEscalada('${e.id}')">Remover</button>
+        </div>
+        <div class="form-grid3">
+          <div class="field"><label>Cidade de Saída</label>
+            <input value="${e.cidade_saida || ''}" onchange="updateEscalada('${e.id}','cidade_saida',this.value)" />
+          </div>
+          <div class="field"><label>Data de Ida</label>
+            <input type="date" value="${e.data_ida || ''}" onchange="updateEscalada('${e.id}','data_ida',this.value)" />
+          </div>
+          <div class="field"><label>Data de Volta</label>
+            <input type="date" value="${e.data_volta || ''}" onchange="updateEscalada('${e.id}','data_volta',this.value)" />
+          </div>
+        </div>
+        <div class="toggle-row" onclick="toggleBilhete('${e.id}', ${e.bilhete_emitido})">
+          <div class="toggle-track ${e.bilhete_emitido ? 'on' : ''}"><div class="toggle-thumb"></div></div>
+          <span class="toggle-label">Bilhete Emitido</span>
+        </div>
+      </div>`).join('')
+  }
+  renderPickerIfOpen()
+}
+
+async function toggleBilhete(id, current) {
+  await sb.from('casamento_assessoras').update({ bilhete_emitido: !current }).eq('id', id)
+  renderEscaladas()
+}
+
+async function updateEscalada(id, field, value) {
+  await sb.from('casamento_assessoras').update({ [field]: value }).eq('id', id)
+}
+
+async function removeEscalada(id) {
+  await sb.from('casamento_assessoras').delete().eq('id', id)
+  renderEscaladas()
+}
+
+function togglePicker() {
+  pickerOpen = !pickerOpen
+  renderPickerIfOpen()
+}
+
+function renderPickerIfOpen() {
+  const container = document.getElementById('picker-container')
+  if (!pickerOpen) { container.style.display = 'none'; return }
+  container.style.display = 'block'
+  const escaladasIds = escaladas.map(e => e.assessora_id)
+  const disponiveis = assessoras.filter(a => !a.blacklist && !escaladasIds.includes(a.id))
+  if (!disponiveis.length) {
+    container.innerHTML = '<div class="picker-list"><div style="text-align:center;color:#888;font-size:13px">Nenhuma assessora disponível</div></div>'
+    return
+  }
+  container.innerHTML = `<div class="picker-list">
+    <div style="font-weight:700;color:var(--gold);margin-bottom:12px;font-size:13px">Selecionar Assessora</div>
+    ${disponiveis.map(a => `
+      <div class="picker-item">
+        <div>
+          <span style="font-weight:600;font-size:13px">${a.nome}</span>
+          <span style="font-size:12px;color:#888;margin-left:8px">${a.cidade || ''}</span>
+          ${a.ingles ? '<span class="tag tag-gold" style="margin-left:6px;font-size:10px">EN</span>' : ''}
+          ${a.espanhol ? '<span class="tag tag-gold" style="margin-left:4px;font-size:10px">ES</span>' : ''}
+        </div>
+        <button class="btn btn-gold btn-sm" onclick="escalarAssessora('${a.id}','${a.cidade || ''}')">Escalar</button>
+      </div>`).join('')}
+    <button class="btn btn-outline btn-sm" style="margin-top:12px" onclick="togglePicker()">Cancelar</button>
+  </div>`
+}
+
+async function escalarAssessora(assessoraId, cidade) {
+  if (!casamentoAtual?.id) return
+  await sb.from('casamento_assessoras').insert({
+    casamento_id: casamentoAtual.id, assessora_id: assessoraId,
+    cidade_saida: cidade, data_ida: '', data_volta: '', bilhete_emitido: false
+  })
+  pickerOpen = false
+  renderEscaladas()
+}
+
+async function renderProdAssessoras() {
+  if (casamentoAtual) await loadEscaladas(casamentoAtual.id)
+  const preview = document.getElementById('prod-assessoras-preview')
+  if (!escaladas.length) { preview.innerHTML = ''; return }
+  const todosBilhetesOk = escaladas.every(e => e.bilhete_emitido)
+  preview.innerHTML = `
+    <div style="background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:10px;padding:16px;margin-top:16px">
+      <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.5px;margin-bottom:12px">ASSESSORAS ESCALADAS — STATUS VIAGEM</div>
+      ${escaladas.map(e => `
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <span style="font-weight:600;font-size:13px;min-width:140px">${e.assessora?.nome || '—'}</span>
+          <span class="tag ${e.bilhete_emitido ? 'tag-green' : 'tag-gold'}">${e.bilhete_emitido ? '✓ Bilhete OK' : '⏳ Aguardando'}</span>
+        </div>`).join('')}
+      ${todosBilhetesOk ? '<div class="tag tag-green" style="margin-top:8px">✅ Viagem confirmou todos os bilhetes</div>' : ''}
+    </div>`
+}
+
+// ── ASSESSORAS ────────────────────────────────────────────────────────────
+async function loadAssessoras() {
+  const { data } = await sb.from('assessoras').select('*').order('nome')
+  assessoras = data || []
+  renderAssessoras()
+}
+
+function setFilterA(f) {
+  filterA = f
+  document.querySelectorAll('.filter-btn').forEach((btn, i) => {
+    const vals = ['', 'ingles', 'espanhol', 'equipe', 'blacklist']
+    btn.classList.toggle('active', vals[i] === f)
+  })
+  renderAssessoras()
+}
+
+function filterAssessoras(q) { searchA = q.toLowerCase(); renderAssessoras() }
+
+function renderAssessoras() {
+  const grid = document.getElementById('assessoras-grid')
+  const filtered = assessoras.filter(a => {
+    const matchSearch = !searchA || a.nome?.toLowerCase().includes(searchA) || a.cidade?.toLowerCase().includes(searchA)
+    const matchFilter = !filterA ||
+      (filterA === 'ingles' && a.ingles) || (filterA === 'espanhol' && a.espanhol) ||
+      (filterA === 'equipe' && a.equipe) || (filterA === 'blacklist' && a.blacklist)
+    return matchSearch && matchFilter
+  })
+  document.getElementById('assessoras-count').textContent = assessoras.length + ' assessoras cadastradas'
+
+  if (!filtered.length) {
+    grid.innerHTML = '<div class="empty"><div class="empty-icon">👩</div><div class="empty-text">Nenhuma assessora encontrada</div></div>'
+    return
+  }
+
+  grid.innerHTML = filtered.map(a => `
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div style="font-weight:600;font-size:15px;font-family:'Cormorant Garamond',serif">${a.nome}</div>
+          <div style="font-size:12px;color:#888;margin-top:2px">${a.cidade || '—'}</div>
+        </div>
+        ${a.blacklist ? '<span class="tag tag-red">Blacklist</span>' : ''}
+      </div>
+      <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
+        ${a.ingles ? '<span class="tag tag-gold">🇬🇧 EN</span>' : ''}
+        ${a.espanhol ? '<span class="tag tag-gold">🇪🇸 ES</span>' : ''}
+        ${a.equipe ? '<span class="tag tag-green">Equipe</span>' : ''}
+        ${a.febre_amarela ? '<span class="tag tag-green">💉 FY</span>' : ''}
+      </div>
+      <div style="display:flex;gap:8px;margin-top:14px">
+        <button class="btn btn-outline" style="flex:1" onclick="openAssessora('${a.id}')">Ver / Editar</button>
+        <button class="btn btn-danger" onclick="deleteAssessora('${a.id}')">✕</button>
+      </div>
+    </div>`).join('')
+}
+
+function openNovaAssessora() {
+  assessoraAtual = null
+  document.getElementById('modal-assessora-title').textContent = 'Nova Assessora'
+  clearAssessoraForm()
+  document.getElementById('modal-assessora').classList.add('open')
+}
+
+function openAssessora(id) {
+  const a = assessoras.find(x => x.id === id)
+  if (!a) return
+  assessoraAtual = { ...a }
+  document.getElementById('modal-assessora-title').textContent = a.nome
+  fillAssessoraForm(a)
+  document.getElementById('modal-assessora').classList.add('open')
+}
+
+function clearAssessoraForm() {
+  ['a-nome','a-nasc','a-cpf','a-email','a-cidade','a-perfil',
+   'a-pass-num','a-pass-val','a-pass-pais','a-visto-num','a-visto-val','a-visto-pais','a-obs'
+  ].forEach(id => { const el = document.getElementById(id); if (el) el.value = '' })
+  ;['a-ingles','a-espanhol','a-equipe','a-febre','a-nota','a-blacklist'].forEach(id => setToggle(id, false))
+}
+
+function fillAssessoraForm(a) {
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || '' }
+  set('a-nome', a.nome); set('a-nasc', a.nascimento); set('a-cpf', a.cpf)
+  set('a-email', a.email); set('a-cidade', a.cidade); set('a-perfil', a.perfil)
+  set('a-pass-num', a.passaporte_numero); set('a-pass-val', a.passaporte_validade)
+  set('a-pass-pais', a.passaporte_pais); set('a-visto-num', a.visto_numero)
+  set('a-visto-val', a.visto_validade); set('a-visto-pais', a.visto_pais); set('a-obs', a.observacoes)
+  setToggle('a-ingles', a.ingles); setToggle('a-espanhol', a.espanhol); setToggle('a-equipe', a.equipe)
+  setToggle('a-febre', a.febre_amarela); setToggle('a-nota', a.nota_fiscal); setToggle('a-blacklist', a.blacklist)
+}
+
+function getAssessoraData() {
+  const v = id => document.getElementById(id)?.value || ''
+  return {
+    nome: v('a-nome'), nascimento: v('a-nasc'), cpf: v('a-cpf'), email: v('a-email'),
+    cidade: v('a-cidade'), perfil: v('a-perfil'), passaporte_numero: v('a-pass-num'),
+    passaporte_validade: v('a-pass-val'), passaporte_pais: v('a-pass-pais'),
+    visto_numero: v('a-visto-num'), visto_validade: v('a-visto-val'), visto_pais: v('a-visto-pais'),
+    observacoes: v('a-obs'), ingles: getToggle('a-ingles'), espanhol: getToggle('a-espanhol'),
+    equipe: getToggle('a-equipe'), febre_amarela: getToggle('a-febre'),
+    nota_fiscal: getToggle('a-nota'), blacklist: getToggle('a-blacklist'),
+  }
+}
+
+async function salvarAssessora() {
+  const btn = document.getElementById('btn-salvar-assessora')
+  btn.textContent = 'Salvando...'; btn.disabled = true
+  const data = getAssessoraData()
+  if (!data.nome) { alert('Preencha o nome da assessora!'); btn.textContent = 'Salvar'; btn.disabled = false; return }
+  if (assessoraAtual) {
+    await sb.from('assessoras').update(data).eq('id', assessoraAtual.id)
+  } else {
+    await sb.from('assessoras').insert(data)
+  }
+  btn.textContent = 'Salvar'; btn.disabled = false
+  closeModal('modal-assessora')
+  loadAssessoras()
+}
+
+async function deleteAssessora(id) {
+  if (!confirm('Remover esta assessora?')) return
+  await sb.from('assessoras').delete().eq('id', id)
+  loadAssessoras()
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────────────
+function formatDate(d) {
+  if (!d) return '—'
+  const [y, m, day] = d.split('-')
+  return `${day}/${m}/${y}`
+}
+</script>
+</body>
+</html>
