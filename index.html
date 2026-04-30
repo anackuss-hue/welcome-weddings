@@ -5,699 +5,554 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Welcome Weddings — Gestão Operacional</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --gold: #b8965a; --gold-light: #d4af7a; --gold-pale: #fdf8f0; --gold-border: #f0e8d0;
-    --white: #ffffff; --bg: #f7f4ef; --text: #1a1a1a; --text-muted: #888;
-    --border: #e8e0d4; --red: #c0392b; --green: #2e7d32; --sidebar-w: 230px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-  .sidebar { position: fixed; top: 0; left: 0; width: var(--sidebar-w); height: 100vh; background: var(--white); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 100; }
-  .sidebar-logo { padding: 28px 24px 24px; border-bottom: 1px solid var(--border); }
-  .sidebar-logo .welcome { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; }
-  .sidebar-logo .weddings { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--text); letter-spacing: 3px; text-transform: uppercase; }
-  .sidebar-logo .sub { font-size: 9px; letter-spacing: 2px; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; }
-  .nav-item { padding: 12px 24px; cursor: pointer; font-size: 13px; font-weight: 500; color: #666; border-left: 3px solid transparent; transition: all 0.15s; display: flex; align-items: center; gap: 10px; }
-  .nav-item:hover { background: var(--gold-pale); color: var(--gold); }
-  .nav-item.active { background: var(--gold-pale); color: var(--gold); border-left-color: var(--gold); font-weight: 600; }
-  .main { margin-left: var(--sidebar-w); padding: 36px 44px; min-height: 100vh; }
-  .page { display: none; } .page.active { display: block; }
-  .page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px; }
-  .page-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; }
-  .page-sub { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
-  .btn { padding: 9px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
-  .btn-gold { background: var(--gold); color: white; } .btn-gold:hover { background: var(--gold-light); }
-  .btn-outline { background: transparent; color: var(--gold); border: 1.5px solid var(--gold); } .btn-outline:hover { background: var(--gold-pale); }
-  .btn-danger { background: var(--red); color: white; padding: 8px 12px; border: none; }
-  .btn-sm { padding: 6px 14px; font-size: 12px; }
-  .card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); padding: 22px; }
-  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
-  .tag { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-  .tag-gold { background: #fdf3e0; color: var(--gold); } .tag-green { background: #e8f5e9; color: var(--green); }
-  .tag-red { background: #fdecea; color: var(--red); } .tag-gray { background: #f0f0f0; color: #666; }
-  .tag-blue { background: #e3f2fd; color: #1565c0; }
-  .filter-bar { background: var(--white); border-radius: 12px; border: 1px solid var(--border); padding: 16px 20px; margin-bottom: 20px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-  .search-input { padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border); font-size: 13px; font-family: 'DM Sans', sans-serif; outline: none; width: 260px; }
-  .search-input:focus { border-color: var(--gold); }
-  .filter-btn { padding: 7px 14px; border-radius: 20px; font-size: 12px; font-weight: 500; cursor: pointer; border: 1.5px solid var(--border); background: white; color: #666; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
-  .filter-btn.active { border-color: var(--gold); color: var(--gold); background: var(--gold-pale); }
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; align-items: flex-start; justify-content: center; padding: 32px 20px; overflow-y: auto; }
-  .modal-overlay.open { display: flex; }
-  .modal-box { background: white; border-radius: 16px; width: 100%; max-width: 760px; padding: 32px; position: relative; margin: auto; }
-  .modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
-  .modal-title { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 600; }
-  .modal-subtitle { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
-  .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: #999; padding: 4px 8px; }
-  .atabs { display: flex; gap: 0; margin-bottom: 24px; border-bottom: 2px solid var(--border); overflow-x: auto; }
-  .atab { padding: 10px 18px; font-size: 11px; font-weight: 700; cursor: pointer; border: none; background: transparent; color: #aaa; font-family: 'DM Sans', sans-serif; transition: all 0.15s; border-bottom: 2px solid transparent; margin-bottom: -2px; letter-spacing: 0.5px; text-transform: uppercase; white-space: nowrap; }
-  .atab:hover { color: var(--gold); } .atab.active { color: var(--gold); border-bottom-color: var(--gold); }
-  .atab-content { display: none; } .atab-content.active { display: block; }
-  .tabs { display: flex; gap: 6px; margin-bottom: 24px; flex-wrap: wrap; }
-  .tab { padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; background: #f0ebe2; color: #888; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
-  .tab.active { background: var(--gold); color: white; font-weight: 600; }
-  .tab-content { display: none; } .tab-content.active { display: block; }
-  .form-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .form-grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
-  .field { margin-bottom: 14px; }
-  .field label { display: block; font-size: 11px; font-weight: 600; color: #666; margin-bottom: 5px; letter-spacing: 0.5px; text-transform: uppercase; }
-  .field input, .field select, .field textarea { width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid #ddd; font-size: 13px; font-family: 'DM Sans', sans-serif; outline: none; transition: border 0.15s; background: white; }
-  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--gold); }
-  .field textarea { resize: vertical; min-height: 75px; }
-  .toggle-row { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 7px 0; }
-  .toggle-track { width: 36px; height: 20px; border-radius: 10px; background: #ddd; position: relative; transition: background 0.2s; flex-shrink: 0; }
-  .toggle-track.on { background: var(--gold); }
-  .toggle-thumb { width: 16px; height: 16px; border-radius: 8px; background: white; position: absolute; top: 2px; left: 2px; transition: left 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
-  .toggle-track.on .toggle-thumb { left: 18px; }
-  .toggle-label { font-size: 13px; color: #555; }
-  .idioma-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .idioma-card { border: 1.5px solid var(--border); border-radius: 10px; padding: 14px 16px; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 12px; }
-  .idioma-card.on { border-color: var(--gold); background: var(--gold-pale); }
-  .idioma-flag { font-size: 24px; }
-  .idioma-name { font-size: 13px; font-weight: 600; color: #666; }
-  .idioma-card.on .idioma-name { color: var(--gold); }
-  .radio-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
-  .radio-option { padding: 10px 18px; border-radius: 8px; border: 1.5px solid var(--border); cursor: pointer; font-size: 13px; transition: all 0.15s; font-weight: 500; color: #666; }
-  .radio-option.selected { border-color: var(--gold); background: var(--gold-pale); color: var(--gold); font-weight: 600; }
-  .section { margin-bottom: 22px; }
-  .section-title { font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; padding-bottom: 7px; border-bottom: 1px solid var(--gold-border); }
-  .hist-item { display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 10px; background: var(--gold-pale); border: 1px solid var(--gold-border); margin-bottom: 10px; }
-  .hist-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
-  .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
-  .assessora-item { background: var(--gold-pale); border: 1px solid var(--gold-border); border-radius: 10px; padding: 16px; margin-bottom: 12px; }
-  .assessora-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-  .picker-list { border: 2px dashed var(--gold); border-radius: 10px; background: var(--gold-pale); padding: 16px; margin-top: 12px; }
-  .picker-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--gold-border); }
-  .picker-item:last-of-type { border-bottom: none; }
-  .checklist-box { background: var(--gold-pale); border: 1px solid var(--gold-border); border-radius: 10px; padding: 18px; margin-bottom: 18px; }
-  .loading { text-align: center; padding: 40px; color: var(--text-muted); font-size: 14px; }
-  .empty { text-align: center; padding: 60px 20px; color: var(--text-muted); }
-  .empty-icon { font-size: 40px; margin-bottom: 12px; }
-  .empty-text { font-size: 14px; }
-  .avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), var(--gold-light)); display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 18px; color: white; font-weight: 600; flex-shrink: 0; }
-  .fl { display:flex; align-items:center; gap:8px; font-size:12px; color:#555; cursor:pointer; padding:4px 0; }
-  .fl input[type=checkbox] { accent-color: var(--gold); width:14px; height:14px; cursor:pointer; flex-shrink:0; }
+:root{--gold:#b8965a;--gold-light:#d4af7a;--gold-pale:#fdf8f0;--gold-border:#f0e8d0;--white:#fff;--bg:#f7f4ef;--text:#1a1a1a;--muted:#888;--border:#e8e0d4;--red:#c0392b;--green:#2e7d32;--sw:230px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.sidebar{position:fixed;top:0;left:0;width:var(--sw);height:100vh;background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:100}
+.logo{padding:28px 24px 24px;border-bottom:1px solid var(--border)}
+.logo .w1{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold);letter-spacing:3px;text-transform:uppercase}
+.logo .w2{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--text);letter-spacing:3px;text-transform:uppercase}
+.logo .ws{font-size:9px;letter-spacing:2px;color:var(--muted);margin-top:4px;text-transform:uppercase}
+.nav{padding:12px 24px;cursor:pointer;font-size:13px;font-weight:500;color:#666;border-left:3px solid transparent;transition:all .15s;display:flex;align-items:center;gap:10px}
+.nav:hover,.nav.active{background:var(--gold-pale);color:var(--gold)}
+.nav.active{border-left-color:var(--gold);font-weight:600}
+.main{margin-left:var(--sw);padding:36px 44px;min-height:100vh}
+.page{display:none}.page.active{display:block}
+.ph{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px}
+.pt{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600}
+.ps{font-size:12px;color:var(--muted);margin-top:3px}
+.btn{padding:9px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all .15s}
+.bg{background:var(--gold);color:#fff}.bg:hover{background:var(--gold-light)}
+.bo{background:transparent;color:var(--gold);border:1.5px solid var(--gold)}.bo:hover{background:var(--gold-pale)}
+.bd{background:var(--red);color:#fff;padding:8px 12px;border:none}
+.bsm{padding:6px 14px;font-size:12px}
+.card{background:var(--white);border-radius:12px;border:1px solid var(--border);padding:22px}
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.tg{background:#fdf3e0;color:var(--gold)}.tgr{background:#e8f5e9;color:var(--green)}
+.tr{background:#fdecea;color:var(--red)}.tgy{background:#f0f0f0;color:#666}.tb{background:#e3f2fd;color:#1565c0}
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:flex-start;justify-content:center;padding:32px 20px;overflow-y:auto}
+.mo.open{display:flex}
+.mb{background:#fff;border-radius:16px;width:100%;max-width:760px;padding:32px;position:relative;margin:auto}
+.mh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
+.mt{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600}
+.ms{font-size:12px;color:var(--muted);margin-bottom:20px}
+.mcl{background:none;border:none;font-size:20px;cursor:pointer;color:#999;padding:4px 8px}
+.atabs{display:flex;gap:0;margin-bottom:24px;border-bottom:2px solid var(--border);overflow-x:auto}
+.atab{padding:10px 16px;font-size:11px;font-weight:700;cursor:pointer;border:none;background:transparent;color:#aaa;font-family:'DM Sans',sans-serif;transition:all .15s;border-bottom:2px solid transparent;margin-bottom:-2px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.atab:hover{color:var(--gold)}.atab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.atc{display:none}.atc.active{display:block}
+.tabs{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap}
+.tab{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:#f0ebe2;color:#888;font-family:'DM Sans',sans-serif;transition:all .15s}
+.tab.active{background:var(--gold);color:#fff;font-weight:600}
+.tc{display:none}.tc.active{display:block}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.f{margin-bottom:14px}
+.f label{display:block;font-size:11px;font-weight:600;color:#666;margin-bottom:5px;letter-spacing:.5px;text-transform:uppercase}
+.f input,.f select,.f textarea{width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;transition:border .15s;background:#fff}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--gold)}
+.f textarea{resize:vertical;min-height:75px}
+.tr-row{display:flex;align-items:center;gap:10px;cursor:pointer;padding:7px 0}
+.tr-track{width:36px;height:20px;border-radius:10px;background:#ddd;position:relative;transition:background .2s;flex-shrink:0}
+.tr-track.on{background:var(--gold)}
+.tr-thumb{width:16px;height:16px;border-radius:8px;background:#fff;position:absolute;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.tr-track.on .tr-thumb{left:18px}
+.tr-label{font-size:13px;color:#555}
+.ic{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ic-card{border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:12px}
+.ic-card.on{border-color:var(--gold);background:var(--gold-pale)}
+.ic-flag{font-size:24px}.ic-name{font-size:13px;font-weight:600;color:#666}
+.ic-card.on .ic-name{color:var(--gold)}
+.ro{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+.ro-opt{padding:10px 18px;border-radius:8px;border:1.5px solid var(--border);cursor:pointer;font-size:13px;transition:all .15s;font-weight:500;color:#666}
+.ro-opt.sel{border-color:var(--gold);background:var(--gold-pale);color:var(--gold);font-weight:600}
+.sec{margin-bottom:22px}
+.st{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;padding-bottom:7px;border-bottom:1px solid var(--gold-border)}
+.hist{display:flex;align-items:center;gap:12px;padding:14px;border-radius:10px;background:var(--gold-pale);border:1px solid var(--gold-border);margin-bottom:10px}
+.hdot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0}
+.mf{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+.ai{background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:10px;padding:16px;margin-bottom:12px}
+.aih{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.pl{border:2px dashed var(--gold);border-radius:10px;background:var(--gold-pale);padding:16px;margin-top:12px}
+.pi{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gold-border)}
+.pi:last-of-type{border-bottom:none}
+.cb{background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:10px;padding:18px;margin-bottom:18px}
+.ld{text-align:center;padding:40px;color:var(--muted);font-size:14px}
+.em{text-align:center;padding:60px 20px;color:var(--muted)}
+.em-i{font-size:40px;margin-bottom:12px}.em-t{font-size:14px}
+.av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:18px;color:#fff;font-weight:600;flex-shrink:0}
+.fl{display:flex;align-items:center;gap:8px;font-size:12px;color:#555;cursor:pointer;padding:4px 0}
+.fl input[type=checkbox]{accent-color:var(--gold);width:14px;height:14px;cursor:pointer;flex-shrink:0}
+.fpanel{width:200px;flex-shrink:0;background:var(--white);border-radius:12px;border:1px solid var(--border);padding:20px;position:sticky;top:24px}
+.fp-title{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px}
+.fp-sec{margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.fp-sec-t{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
 </style>
 </head>
 <body>
 
 <div class="sidebar">
-  <div class="sidebar-logo">
-    <div class="welcome">Welcome</div>
-    <div class="weddings">Weddings</div>
-    <div class="sub">Gestão Operacional</div>
+  <div class="logo">
+    <div class="w1">Welcome</div>
+    <div class="w2">Weddings</div>
+    <div class="ws">Gestão Operacional</div>
   </div>
-  <div class="nav-item active" onclick="showPage('casamentos')" id="nav-casamentos">💍 Casamentos</div>
-  <div class="nav-item" onclick="showPage('assessoras')" id="nav-assessoras">👩 Assessoras</div>
-  <div class="nav-item" onclick="showPage('hoteis')" id="nav-hoteis">🏨 Hotéis</div>
+  <div class="nav active" onclick="showPage('casamentos')" id="nav-casamentos">💍 Casamentos</div>
+  <div class="nav" onclick="showPage('assessoras')" id="nav-assessoras">👩 Assessoras</div>
+  <div class="nav" onclick="showPage('hoteis')" id="nav-hoteis">🏨 Hotéis</div>
 </div>
 
 <div class="main">
+
+  <!-- ══ CASAMENTOS ══ -->
   <div class="page active" id="page-casamentos">
-    <div class="page-header">
-      <div><div class="page-title">Casamentos</div><div class="page-sub" id="casamentos-count">Carregando...</div></div>
-      <button class="btn btn-gold" onclick="openNovoCasamento()">+ Novo Casamento</button>
+    <div class="ph">
+      <div><div class="pt">Casamentos</div><div class="ps" id="casamentos-count">Carregando...</div></div>
+      <button class="btn bg" onclick="openNovoCasamento()">+ Novo Casamento</button>
     </div>
-    <div class="filter-bar"><input class="search-input" placeholder="Buscar por nome do casal ou destino..." oninput="filterCasamentos(this.value)" /></div>
-    <div class="cards-grid" id="casamentos-grid"><div class="loading">Carregando...</div></div>
+    <div class="card" style="margin-bottom:20px">
+      <input style="padding:8px 14px;border-radius:8px;border:1px solid var(--border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;width:340px" placeholder="Buscar por nome do casal ou destino..." oninput="filterCasamentos(this.value)">
+    </div>
+    <div class="cg" id="casamentos-grid"><div class="ld">Carregando...</div></div>
   </div>
 
+  <!-- ══ ASSESSORAS ══ -->
   <div class="page" id="page-assessoras">
-    <div class="page-header">
-      <div><div class="page-title">Banco de Assessoras</div><div class="page-sub" id="assessoras-count">Carregando...</div></div>
-      <button class="btn btn-gold" onclick="openNovaAssessora()">+ Nova Assessora</button>
+    <div class="ph">
+      <div><div class="pt">Banco de Assessoras</div><div class="ps" id="assessoras-count">Carregando...</div></div>
+      <button class="btn bg" onclick="openNovaAssessora()">+ Nova Assessora</button>
     </div>
-    <div style="display:flex;gap:20px;align-items:flex-start;">
-
-      <!-- PAINEL DE FILTROS -->
-      <div style="width:200px;flex-shrink:0;background:var(--white);border-radius:12px;border:1px solid var(--border);padding:20px;position:sticky;top:24px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-          <span style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;">Filtros</span>
-          <span id="filtros-count" style="display:none;font-size:10px;font-weight:700;background:var(--gold);color:white;border-radius:10px;padding:2px 7px;cursor:pointer;" onclick="limparFiltros()">limpar</span>
+    <div style="display:flex;gap:20px;align-items:flex-start">
+      <div class="fpanel">
+        <div class="fp-title">Filtros</div>
+        <input id="search-a" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none" placeholder="Nome ou cidade..." oninput="renderAssessoras()">
+        <div class="fp-sec">
+          <div class="fp-sec-t">Idiomas</div>
+          <label class="fl"><input type="checkbox" id="f-ingles" onchange="renderAssessoras()"> 🇬🇧 Inglês</label>
+          <label class="fl"><input type="checkbox" id="f-espanhol" onchange="renderAssessoras()"> 🇪🇸 Espanhol</label>
+          <label class="fl"><input type="checkbox" id="f-frances" onchange="renderAssessoras()"> 🇫🇷 Francês</label>
+          <label class="fl"><input type="checkbox" id="f-italiano" onchange="renderAssessoras()"> 🇮🇹 Italiano</label>
         </div>
-
-        <div style="margin-bottom:4px;">
-          <input id="search-a" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none;" placeholder="Buscar nome ou cidade..." oninput="renderAssessoras()" />
-        </div>
-
-        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
-          <p style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Idiomas</p>
-          <label class="fl"><input type="checkbox" id="f-ingles" onchange="renderAssessoras()"> <span style="font-size:13px">🇬🇧</span> Inglês</label>
-          <label class="fl"><input type="checkbox" id="f-espanhol" onchange="renderAssessoras()"> <span style="font-size:13px">🇪🇸</span> Espanhol</label>
-          <label class="fl"><input type="checkbox" id="f-frances" onchange="renderAssessoras()"> <span style="font-size:13px">🇫🇷</span> Francês</label>
-          <label class="fl"><input type="checkbox" id="f-italiano" onchange="renderAssessoras()"> <span style="font-size:13px">🇮🇹</span> Italiano</label>
-        </div>
-
-        <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
-          <p style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Hierarquia</p>
+        <div class="fp-sec">
+          <div class="fp-sec-t">Hierarquia</div>
           <label class="fl"><input type="checkbox" id="f-h1" onchange="renderAssessoras()"> ⭐ 1ª Assessora</label>
           <label class="fl"><input type="checkbox" id="f-h2" onchange="renderAssessoras()"> ✦ 2ª Assessora</label>
         </div>
-
-        <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
-          <p style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Perfil</p>
+        <div class="fp-sec">
+          <div class="fp-sec-t">Perfil</div>
           <label class="fl"><input type="checkbox" id="f-equipe" onchange="renderAssessoras()"> 👥 Equipe</label>
           <label class="fl"><input type="checkbox" id="f-blacklist" onchange="renderAssessoras()"> 🚫 Blacklist</label>
           <label class="fl"><input type="checkbox" id="f-febre" onchange="renderAssessoras()"> 💉 Febre Amarela</label>
         </div>
-
-        <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
-          <p style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Destino</p>
-          <p style="font-size:11px;color:var(--text-muted);font-style:italic;">Disponível em breve</p>
-        </div>
-
-        <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
-          <p style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Hotel</p>
-          <p style="font-size:11px;color:var(--text-muted);font-style:italic;">Disponível em breve</p>
-        </div>
+        <div class="fp-sec"><div class="fp-sec-t">Destino</div><p style="font-size:11px;color:var(--muted);font-style:italic">Em breve</p></div>
+        <div class="fp-sec"><div class="fp-sec-t">Hotel</div><p style="font-size:11px;color:var(--muted);font-style:italic">Em breve</p></div>
       </div>
-
-      <!-- GRID DE CARDS -->
-      <div style="flex:1;">
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;" id="assessoras-grid">
-          <div class="loading">Carregando...</div>
-        </div>
-      </div>
-
+      <div style="flex:1"><div class="cg" id="assessoras-grid"><div class="ld">Carregando...</div></div></div>
     </div>
   </div>
-</div>
 
-<!-- MODAL CASAMENTO -->
-<div class="modal-overlay" id="modal-casamento">
-  <div class="modal-box">
-    <div class="modal-header">
-      <div class="modal-title" id="mc-title">Novo Casamento</div>
-      <button class="modal-close" onclick="closeModal('modal-casamento')">✕</button>
+  <!-- ══ HOTÉIS ══ -->
+  <div class="page" id="page-hoteis">
+    <div class="ph">
+      <div><div class="pt">Banco de Hotéis</div><div class="ps" id="hoteis-count">Carregando...</div></div>
+      <button class="btn bg" onclick="openNovoHotel()">+ Novo Hotel</button>
     </div>
+    <div style="display:flex;gap:20px;align-items:flex-start">
+      <div class="fpanel">
+        <div class="fp-title">Filtros</div>
+        <input id="search-h" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none" placeholder="Buscar hotel..." oninput="renderHoteis()">
+        <div class="fp-sec">
+          <div class="fp-sec-t">Região</div>
+          <select id="f-h-regiao" onchange="renderHoteis()" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none">
+            <option value="">Todas</option>
+            <option>Caribe</option><option>América do Sul</option><option>Europa</option><option>Ásia</option>
+          </select>
+        </div>
+        <div class="fp-sec">
+          <div class="fp-sec-t">País</div>
+          <input id="f-h-pais" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none" placeholder="Ex: México" oninput="renderHoteis()">
+        </div>
+        <div class="fp-sec">
+          <div class="fp-sec-t">Estrutura</div>
+          <label class="fl"><input type="checkbox" id="fh-kids" onchange="renderHoteis()"> 👶 Aceita Crianças</label>
+          <label class="fl"><input type="checkbox" id="fh-pets" onchange="renderHoteis()"> 🐾 Aceita Pets</label>
+          <label class="fl"><input type="checkbox" id="fh-spa" onchange="renderHoteis()"> 💆 Spa</label>
+          <label class="fl"><input type="checkbox" id="fh-cassino" onchange="renderHoteis()"> 🎰 Cassino</label>
+          <label class="fl"><input type="checkbox" id="fh-parque" onchange="renderHoteis()"> 🌊 Parque Aquático</label>
+          <label class="fl"><input type="checkbox" id="fh-sol" onchange="renderHoteis()"> 🌅 Pôr do Sol</label>
+        </div>
+      </div>
+      <div style="flex:1"><div class="cg" id="hoteis-grid"><div class="ld">Carregando...</div></div></div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- ══ MODAL CASAMENTO ══ -->
+<div class="mo" id="modal-casamento">
+  <div class="mb">
+    <div class="mh"><div class="mt" id="mc-title">Novo Casamento</div><button class="mcl" onclick="closeModal('modal-casamento')">✕</button></div>
     <div class="tabs" id="c-tabs" style="display:none">
       <button class="tab active" onclick="showCTab('plan',this)">📅 Planejamento</button>
       <button class="tab" onclick="showCTab('prod',this)">🎨 Produção</button>
       <button class="tab" onclick="showCTab('viag',this)">✈️ Viagem</button>
       <button class="tab" onclick="showCTab('assess',this)">👩 Assessoras</button>
     </div>
-    <div class="tab-content active" id="tab-plan">
-      <div class="form-grid2">
-        <div class="field"><label>Nome do Casal</label><input id="c-nome" placeholder="Ex: Ana & João" /></div>
-        <div class="field"><label>Destino</label><input id="c-destino" /></div>
-        <div class="field"><label>Data do Casamento</label><input id="c-data" type="date" /></div>
-        <div class="field"><label>Horário da Cerimônia</label><input id="c-horario" type="time" /></div>
-        <div class="field"><label>Hotel</label><input id="c-hotel" /></div>
-        <div class="field"><label>Pacote Contrato com o Hotel</label><input id="c-pacote" /></div>
-        <div class="field"><label>Status</label><select id="c-status"><option>Em andamento</option><option>Confirmado</option><option>Concluído</option><option>Cancelado</option></select></div>
-        <div class="field"><label>Extra</label><input id="c-extra" /></div>
+    <div class="tc active" id="tab-plan">
+      <div class="g2">
+        <div class="f"><label>Nome do Casal</label><input id="c-nome" placeholder="Ex: Ana & João"></div>
+        <div class="f"><label>Destino</label><input id="c-destino"></div>
+        <div class="f"><label>Data do Casamento</label><input id="c-data" type="date"></div>
+        <div class="f"><label>Horário da Cerimônia</label><input id="c-horario" type="time"></div>
+        <div class="f"><label>Hotel</label><input id="c-hotel"></div>
+        <div class="f"><label>Pacote com o Hotel</label><input id="c-pacote"></div>
+        <div class="f"><label>Status</label><select id="c-status"><option>Em andamento</option><option>Confirmado</option><option>Concluído</option><option>Cancelado</option></select></div>
+        <div class="f"><label>Extra</label><input id="c-extra"></div>
       </div>
-      <div class="field"><label>Observações sobre o Casal</label><textarea id="c-obs"></textarea></div>
+      <div class="f"><label>Observações sobre o Casal</label><textarea id="c-obs"></textarea></div>
     </div>
-    <div class="tab-content" id="tab-prod">
-      <div class="form-grid2">
-        <div class="field"><label>Nome da Produtora</label><input id="c-produtora" /></div>
-        <div class="field"><label>Número de Assessores</label><input id="c-num-assessores" /></div>
-        <div class="field"><label>Datas da Assessoria</label><input id="c-datas" placeholder="Ex: 10/08 → 14/08" /></div>
-        <div class="field"><label>Última Reunião</label><input id="c-ultima-reuniao" type="date" /></div>
+    <div class="tc" id="tab-prod">
+      <div class="g2">
+        <div class="f"><label>Nome da Produtora</label><input id="c-produtora"></div>
+        <div class="f"><label>Nº de Assessores</label><input id="c-num-assessores"></div>
+        <div class="f"><label>Datas da Assessoria</label><input id="c-datas" placeholder="Ex: 10/08 → 14/08"></div>
+        <div class="f"><label>Última Reunião</label><input id="c-ultima-reuniao" type="date"></div>
       </div>
-      <div class="field"><label>Serviços Necessários</label><textarea id="c-servicos" placeholder="DJ, decoração, banda..."></textarea></div>
-      <div class="field"><label>Programação do Casamento</label><textarea id="c-programacao"></textarea></div>
-      <div class="field"><label>Fornecedores</label><textarea id="c-fornecedores"></textarea></div>
-      <div class="field"><label>Status / Comentários</label><textarea id="c-prod-status"></textarea></div>
+      <div class="f"><label>Serviços Necessários</label><textarea id="c-servicos" placeholder="DJ, decoração, banda..."></textarea></div>
+      <div class="f"><label>Programação do Casamento</label><textarea id="c-programacao"></textarea></div>
+      <div class="f"><label>Fornecedores</label><textarea id="c-fornecedores"></textarea></div>
+      <div class="f"><label>Status / Comentários</label><textarea id="c-prod-status"></textarea></div>
       <div id="prod-assess-preview"></div>
     </div>
-    <div class="tab-content" id="tab-viag">
-      <div class="checklist-box">
-        <div class="section-title">Checklist para Produção</div>
-        <div class="toggle-row" onclick="toggleField('c-voos')"><div class="toggle-track" id="track-c-voos"><div class="toggle-thumb"></div></div><span class="toggle-label">✈️ Voos da Assessoria</span></div>
-        <div class="toggle-row" onclick="toggleField('c-transfers')"><div class="toggle-track" id="track-c-transfers"><div class="toggle-thumb"></div></div><span class="toggle-label">🚌 Transfers</span></div>
-        <div class="toggle-row" onclick="toggleField('c-passeios')"><div class="toggle-track" id="track-c-passeios"><div class="toggle-thumb"></div></div><span class="toggle-label">⛵ Passeios</span></div>
+    <div class="tc" id="tab-viag">
+      <div class="cb">
+        <div class="st">Checklist para Produção</div>
+        <div class="tr-row" onclick="tg('c-voos')"><div class="tr-track" id="track-c-voos"><div class="tr-thumb"></div></div><span class="tr-label">✈️ Voos da Assessoria</span></div>
+        <div class="tr-row" onclick="tg('c-transfers')"><div class="tr-track" id="track-c-transfers"><div class="tr-thumb"></div></div><span class="tr-label">🚌 Transfers</span></div>
+        <div class="tr-row" onclick="tg('c-passeios')"><div class="tr-track" id="track-c-passeios"><div class="tr-thumb"></div></div><span class="tr-label">⛵ Passeios</span></div>
         <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--gold-border)">
-          <div class="toggle-row" onclick="toggleField('c-vok')"><div class="toggle-track" id="track-c-vok"><div class="toggle-thumb"></div></div><span class="toggle-label" style="font-weight:600">✅ TUDO OK — Avisar Produção</span></div>
+          <div class="tr-row" onclick="tg('c-vok')"><div class="tr-track" id="track-c-vok"><div class="tr-thumb"></div></div><span class="tr-label" style="font-weight:600">✅ TUDO OK — Avisar Produção</span></div>
         </div>
       </div>
-      <div class="field"><label>Transfer</label><textarea id="c-transfer"></textarea></div>
-      <div class="field"><label>Passeios</label><textarea id="c-passeios-txt"></textarea></div>
-      <div class="field"><label>Hospedagem dos Convidados</label><textarea id="c-hospedagem"></textarea></div>
-      <div class="field"><label>Observações</label><textarea id="c-viag-obs"></textarea></div>
+      <div class="f"><label>Transfer</label><textarea id="c-transfer"></textarea></div>
+      <div class="f"><label>Passeios</label><textarea id="c-passeios-txt"></textarea></div>
+      <div class="f"><label>Hospedagem dos Convidados</label><textarea id="c-hospedagem"></textarea></div>
+      <div class="f"><label>Observações</label><textarea id="c-viag-obs"></textarea></div>
     </div>
-    <div class="tab-content" id="tab-assess">
+    <div class="tc" id="tab-assess">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
         <div id="assess-count" style="font-size:13px;color:#666"></div>
-        <button class="btn btn-gold btn-sm" onclick="togglePicker()">+ Escalar Assessora</button>
+        <button class="btn bg bsm" onclick="togglePicker()">+ Escalar Assessora</button>
       </div>
       <div id="escaladas-list"></div>
       <div id="picker-container" style="display:none"></div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-outline" onclick="closeModal('modal-casamento')">Cancelar</button>
-      <button class="btn btn-gold" id="btn-sc" onclick="salvarCasamento()">Salvar</button>
+    <div class="mf">
+      <button class="btn bo" onclick="closeModal('modal-casamento')">Cancelar</button>
+      <button class="btn bg" id="btn-sc" onclick="salvarCasamento()">Salvar</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL ASSESSORA -->
-<div class="modal-overlay" id="modal-assessora">
-  <div class="modal-box" style="max-width:800px">
-    <div class="modal-header">
-      <div>
-        <div class="modal-title" id="ma-title">Nova Assessora</div>
-        <div class="modal-subtitle" id="ma-sub">Preencha os dados</div>
-      </div>
-      <button class="modal-close" onclick="closeModal('modal-assessora')">✕</button>
-    </div>
+<!-- ══ MODAL ASSESSORA ══ -->
+<div class="mo" id="modal-assessora">
+  <div class="mb" style="max-width:800px">
+    <div class="mh"><div><div class="mt" id="ma-title">Nova Assessora</div><div class="ms" id="ma-sub">Preencha os dados</div></div><button class="mcl" onclick="closeModal('modal-assessora')">✕</button></div>
     <div class="atabs">
       <button class="atab active" onclick="showATab('dados',this)">01 · Dados Pessoais</button>
       <button class="atab" onclick="showATab('docs',this)">02 · Documentos</button>
       <button class="atab" onclick="showATab('idiomas',this)">03 · Idiomas & Perfil</button>
       <button class="atab" onclick="showATab('historico',this)">04 · Histórico</button>
     </div>
-
-    <div class="atab-content active" id="atab-dados">
-      <div class="form-grid2">
-        <div class="field"><label>Nome Completo</label><input id="a-nome" /></div>
-        <div class="field"><label>Data de Nascimento</label><input id="a-nasc" type="date" /></div>
-        <div class="field"><label>CPF</label><input id="a-cpf" placeholder="000.000.000-00" /></div>
-        <div class="field"><label>E-mail</label><input id="a-email" type="email" /></div>
-        <div class="field"><label>Cidade de Origem (Voo)</label><input id="a-cidade" /></div>
-        <div class="field"><label>WhatsApp</label><input id="a-whatsapp" placeholder="+55 (00) 00000-0000" /></div>
+    <div class="atc active" id="atab-dados">
+      <div class="g2">
+        <div class="f"><label>Nome Completo</label><input id="a-nome"></div>
+        <div class="f"><label>Data de Nascimento</label><input id="a-nasc" type="date"></div>
+        <div class="f"><label>CPF</label><input id="a-cpf" placeholder="000.000.000-00"></div>
+        <div class="f"><label>E-mail</label><input id="a-email" type="email"></div>
+        <div class="f"><label>Cidade de Origem (Voo)</label><input id="a-cidade"></div>
+        <div class="f"><label>WhatsApp</label><input id="a-whatsapp" placeholder="+55 (00) 00000-0000"></div>
       </div>
-      <div class="field"><label>Perfil / Observações Gerais</label><textarea id="a-perfil"></textarea></div>
+      <div class="f"><label>Perfil / Observações Gerais</label><textarea id="a-perfil"></textarea></div>
       <div style="display:flex;gap:32px;margin-top:4px">
         <div>
-          <div class="section-title" style="margin-bottom:8px">Status</div>
-          <div class="toggle-row" onclick="toggleField('a-blacklist')"><div class="toggle-track" id="track-a-blacklist"><div class="toggle-thumb"></div></div><span class="toggle-label">🚫 Blacklist</span></div>
-          <div class="toggle-row" onclick="toggleField('a-nota')"><div class="toggle-track" id="track-a-nota"><div class="toggle-thumb"></div></div><span class="toggle-label">Emite Nota Fiscal</span></div>
+          <div class="st" style="margin-bottom:8px">Status</div>
+          <div class="tr-row" onclick="tg('a-blacklist')"><div class="tr-track" id="track-a-blacklist"><div class="tr-thumb"></div></div><span class="tr-label">🚫 Blacklist</span></div>
+          <div class="tr-row" onclick="tg('a-nota')"><div class="tr-track" id="track-a-nota"><div class="tr-thumb"></div></div><span class="tr-label">Emite Nota Fiscal</span></div>
         </div>
       </div>
     </div>
-
-    <div class="atab-content" id="atab-docs">
-      <div class="section">
-        <div class="section-title">RG</div>
-        <div class="form-grid2">
-          <div class="field"><label>Número do RG</label><input id="a-rg" /></div>
-          <div class="field"><label>Validade</label><input id="a-rg-val" type="date" /></div>
-        </div>
+    <div class="atc" id="atab-docs">
+      <div class="sec"><div class="st">RG</div>
+        <div class="g2"><div class="f"><label>Número do RG</label><input id="a-rg"></div><div class="f"><label>Validade</label><input id="a-rg-val" type="date"></div></div>
       </div>
-      <div class="section">
-        <div class="section-title">Passaporte</div>
-        <div class="form-grid3">
-          <div class="field"><label>Número</label><input id="a-pass-num" /></div>
-          <div class="field"><label>Validade</label><input id="a-pass-val" type="date" /></div>
-          <div class="field"><label>País Emissor</label><input id="a-pass-pais" /></div>
-        </div>
+      <div class="sec"><div class="st">Passaporte</div>
+        <div class="g3"><div class="f"><label>Número</label><input id="a-pass-num"></div><div class="f"><label>Validade</label><input id="a-pass-val" type="date"></div><div class="f"><label>País Emissor</label><input id="a-pass-pais"></div></div>
       </div>
-      <div class="section">
-        <div class="section-title">Visto</div>
-        <div class="form-grid3">
-          <div class="field"><label>Número</label><input id="a-visto-num" /></div>
-          <div class="field"><label>Validade</label><input id="a-visto-val" type="date" /></div>
-          <div class="field"><label>País</label><input id="a-visto-pais" /></div>
-        </div>
+      <div class="sec"><div class="st">Visto</div>
+        <div class="g3"><div class="f"><label>Número</label><input id="a-visto-num"></div><div class="f"><label>Validade</label><input id="a-visto-val" type="date"></div><div class="f"><label>País</label><input id="a-visto-pais"></div></div>
       </div>
-      <div class="section">
-        <div class="section-title">Saúde</div>
-        <div class="toggle-row" onclick="toggleField('a-febre')"><div class="toggle-track" id="track-a-febre"><div class="toggle-thumb"></div></div><span class="toggle-label">💉 Vacina Febre Amarela</span></div>
+      <div class="sec"><div class="st">Saúde</div>
+        <div class="tr-row" onclick="tg('a-febre')"><div class="tr-track" id="track-a-febre"><div class="tr-thumb"></div></div><span class="tr-label">💉 Vacina Febre Amarela</span></div>
       </div>
     </div>
-
-    <div class="atab-content" id="atab-idiomas">
-      <div class="section">
-        <div class="section-title">Idiomas</div>
-        <div class="idioma-grid">
-          <div class="idioma-card" id="card-ingles" onclick="toggleIdioma('ingles')"><span class="idioma-flag">🇬🇧</span><span class="idioma-name">Inglês</span></div>
-          <div class="idioma-card" id="card-espanhol" onclick="toggleIdioma('espanhol')"><span class="idioma-flag">🇪🇸</span><span class="idioma-name">Espanhol</span></div>
-          <div class="idioma-card" id="card-frances" onclick="toggleIdioma('frances')"><span class="idioma-flag">🇫🇷</span><span class="idioma-name">Francês</span></div>
-          <div class="idioma-card" id="card-italiano" onclick="toggleIdioma('italiano')"><span class="idioma-flag">🇮🇹</span><span class="idioma-name">Italiano</span></div>
+    <div class="atc" id="atab-idiomas">
+      <div class="sec"><div class="st">Idiomas</div>
+        <div class="ic">
+          <div class="ic-card" id="card-ingles" onclick="togIdioma('ingles')"><span class="ic-flag">🇬🇧</span><span class="ic-name">Inglês</span></div>
+          <div class="ic-card" id="card-espanhol" onclick="togIdioma('espanhol')"><span class="ic-flag">🇪🇸</span><span class="ic-name">Espanhol</span></div>
+          <div class="ic-card" id="card-frances" onclick="togIdioma('frances')"><span class="ic-flag">🇫🇷</span><span class="ic-name">Francês</span></div>
+          <div class="ic-card" id="card-italiano" onclick="togIdioma('italiano')"><span class="ic-flag">🇮🇹</span><span class="ic-name">Italiano</span></div>
         </div>
       </div>
-      <div class="section" style="margin-top:24px">
-        <div class="section-title">Hierarquia</div>
-        <div class="radio-group">
-          <div class="radio-option" onclick="selectHierarquia('1ª Assessora')" id="hier-1">⭐ 1ª Assessora</div>
-          <div class="radio-option" onclick="selectHierarquia('2ª Assessora')" id="hier-2">✦ 2ª Assessora</div>
-        </div>
+      <div class="sec" style="margin-top:24px"><div class="st">Hierarquia</div>
+        <div class="ro"><div class="ro-opt" onclick="selHier('1ª Assessora')" id="hier-1">⭐ 1ª Assessora</div><div class="ro-opt" onclick="selHier('2ª Assessora')" id="hier-2">✦ 2ª Assessora</div></div>
       </div>
-      <div class="section" style="margin-top:24px">
-        <div class="section-title">Equipe</div>
-        <div class="toggle-row" onclick="toggleField('a-equipe')"><div class="toggle-track" id="track-a-equipe"><div class="toggle-thumb"></div></div><span class="toggle-label">Possui equipe própria?</span></div>
-        <div class="field" style="margin-top:12px"><label>Nome da Equipe</label><input id="a-nome-equipe" placeholder="Ex: Equipe Bella" /></div>
+      <div class="sec" style="margin-top:24px"><div class="st">Equipe</div>
+        <div class="tr-row" onclick="tg('a-equipe')"><div class="tr-track" id="track-a-equipe"><div class="tr-thumb"></div></div><span class="tr-label">Possui equipe própria?</span></div>
+        <div class="f" style="margin-top:12px"><label>Nome da Equipe</label><input id="a-nome-equipe" placeholder="Ex: Equipe Bella"></div>
       </div>
     </div>
-
-    <div class="atab-content" id="atab-historico">
-      <div id="historico-content"><div class="loading">Carregando...</div></div>
-    </div>
-
-    <div class="modal-footer">
-      <button class="btn btn-outline" onclick="closeModal('modal-assessora')">Cancelar</button>
-      <button class="btn btn-gold" id="btn-sa" onclick="salvarAssessora()">Salvar</button>
+    <div class="atc" id="atab-historico"><div id="historico-content"><div class="ld">Carregando...</div></div></div>
+    <div class="mf">
+      <button class="btn bo" onclick="closeModal('modal-assessora')">Cancelar</button>
+      <button class="btn bg" id="btn-sa" onclick="salvarAssessora()">Salvar</button>
     </div>
   </div>
 </div>
 
-<!-- PAGE: HOTÉIS -->
-<div class="page" id="page-hoteis">
-  <div class="page-header">
-    <div><div class="page-title">Banco de Hotéis</div><div class="page-sub" id="hoteis-count">Carregando...</div></div>
-    <button class="btn btn-gold" onclick="openNovoHotel()">+ Novo Hotel</button>
-  </div>
-  <div style="display:flex;gap:20px;align-items:flex-start;">
-    <div style="width:200px;flex-shrink:0;background:var(--white);border-radius:12px;border:1px solid var(--border);padding:20px;position:sticky;top:24px;">
-      <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;">Filtros</div>
-      <div class="field"><input id="search-h" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none;" placeholder="Buscar hotel..." oninput="renderHoteis()" /></div>
-      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
-        <p style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Região</p>
-        <select id="f-h-regiao" onchange="renderHoteis()" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none;">
-          <option value="">Todas</option>
-          <option>Caribe</option>
-          <option>América do Sul</option>
-          <option>Europa</option>
-          <option>Ásia</option>
-        </select>
+<!-- ══ MODAL HOTEL ══ -->
+<div class="mo" id="modal-hotel">
+  <div class="mb" style="max-width:820px">
+    <div class="mh"><div><div class="mt" id="mh-title">Novo Hotel</div><div class="ms" id="mh-sub">Preencha os dados do hotel</div></div><button class="mcl" onclick="closeModal('modal-hotel')">✕</button></div>
+    <div class="atabs" id="hotel-atabs">
+      <button class="atab active" onclick="showHTab('hgeral',this)">01 · Informações Gerais</button>
+      <button class="atab" onclick="showHTab('hespec',this)">02 · Específicas</button>
+      <button class="atab" onclick="showHTab('hvalores',this)">03 · Valores</button>
+      <button class="atab" onclick="showHTab('hcasamento',this)">04 · Casamentos</button>
+      <button class="atab" onclick="showHTab('hcomissao',this)">05 · Comissão</button>
+    </div>
+    <div class="atc active" id="atab-hgeral">
+      <div class="g2">
+        <div class="f"><label>Nome do Hotel</label><input id="h-nome" placeholder="Ex: Hard Rock Hotel Cancún"></div>
+        <div class="f"><label>Região</label><select id="h-regiao"><option value="">Selecione</option><option>Caribe</option><option>América do Sul</option><option>Europa</option><option>Ásia</option></select></div>
+        <div class="f"><label>País</label><input id="h-pais"></div>
+        <div class="f"><label>Cidade</label><input id="h-cidade"></div>
+        <div class="f"><label>Site Oficial</label><input id="h-site" placeholder="https://"></div>
+        <div class="f"><label>E-mail para Contato</label><input id="h-email" type="email"></div>
       </div>
-      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
-        <p style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">País</p>
-        <input id="f-h-pais" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none;" placeholder="Ex: México" oninput="renderHoteis()" />
+      <div class="f"><label>Instagram</label><input id="h-instagram" placeholder="https://www.instagram.com/..."></div>
+    </div>
+    <div class="atc" id="atab-hespec">
+      <div class="g2">
+        <div class="f"><label>Tipo de Hotel</label><select id="h-tipo"><option value="">Selecione</option><option>All Inclusive</option><option>Resort</option><option>Boutique</option><option>Pousada</option><option>Hotel Urbano</option><option>Fazenda/Vinhedo</option></select></div>
+        <div class="f"><label>Regime de Alimentação</label><input id="h-regime" placeholder="Ex: All Inclusive"></div>
+        <div class="f"><label>Nº de Acomodações</label><input id="h-acomodacoes"></div>
+        <div class="f"><label>Ano Construção/Remodelação</label><input id="h-ano" placeholder="Ex: 2015 / 2022"></div>
+        <div class="f"><label>Restaurantes (All Inclusive)</label><input id="h-rest-ai"></div>
+        <div class="f"><label>Restaurantes Premium</label><input id="h-rest-prem"></div>
+        <div class="f"><label>Cafeteria</label><input id="h-cafeteria"></div>
+        <div class="f"><label>Bares (All Inclusive)</label><input id="h-bares-ai"></div>
+        <div class="f"><label>Bares Premium</label><input id="h-bares-prem"></div>
       </div>
-      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
-        <p style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Estrutura</p>
-        <label class="fl"><input type="checkbox" id="fh-kids" onchange="renderHoteis()"> 👶 Aceita Crianças</label>
-        <label class="fl"><input type="checkbox" id="fh-pets" onchange="renderHoteis()"> 🐾 Aceita Pets</label>
-        <label class="fl"><input type="checkbox" id="fh-spa" onchange="renderHoteis()"> 💆 Spa</label>
-        <label class="fl"><input type="checkbox" id="fh-cassino" onchange="renderHoteis()"> 🎰 Cassino</label>
-        <label class="fl"><input type="checkbox" id="fh-parque" onchange="renderHoteis()"> 🌊 Parque Aquático</label>
-        <label class="fl"><input type="checkbox" id="fh-sol" onchange="renderHoteis()"> 🌅 Pôr do Sol</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:8px">
+        <div class="tr-row" onclick="tg('h-frigobar')"><div class="tr-track" id="track-h-frigobar"><div class="tr-thumb"></div></div><span class="tr-label">Frigobar com Bebidas</span></div>
+        <div class="tr-row" onclick="tg('h-room-service')"><div class="tr-track" id="track-h-room-service"><div class="tr-thumb"></div></div><span class="tr-label">Room Service</span></div>
+        <div class="tr-row" onclick="tg('h-bar-pago')"><div class="tr-track" id="track-h-bar-pago"><div class="tr-thumb"></div></div><span class="tr-label">Bar Pago</span></div>
+        <div class="tr-row" onclick="tg('h-rest-pago')"><div class="tr-track" id="track-h-rest-pago"><div class="tr-thumb"></div></div><span class="tr-label">Restaurante Pago</span></div>
+        <div class="tr-row" onclick="tg('h-kids')"><div class="tr-track" id="track-h-kids"><div class="tr-thumb"></div></div><span class="tr-label">Área Kids</span></div>
+        <div class="tr-row" onclick="tg('h-parque')"><div class="tr-track" id="track-h-parque"><div class="tr-thumb"></div></div><span class="tr-label">Parque Aquático</span></div>
+        <div class="tr-row" onclick="tg('h-pub')"><div class="tr-track" id="track-h-pub"><div class="tr-thumb"></div></div><span class="tr-label">Pub ou Disco</span></div>
+        <div class="tr-row" onclick="tg('h-cassino')"><div class="tr-track" id="track-h-cassino"><div class="tr-thumb"></div></div><span class="tr-label">Cassino</span></div>
+        <div class="tr-row" onclick="tg('h-spa')"><div class="tr-track" id="track-h-spa"><div class="tr-thumb"></div></div><span class="tr-label">Spa no Resort</span></div>
+        <div class="tr-row" onclick="tg('h-wifi')"><div class="tr-track" id="track-h-wifi"><div class="tr-thumb"></div></div><span class="tr-label">Wi-Fi</span></div>
+        <div class="tr-row" onclick="tg('h-sol')"><div class="tr-track" id="track-h-sol"><div class="tr-thumb"></div></div><span class="tr-label">🌅 Pôr do Sol</span></div>
+        <div class="tr-row" onclick="tg('h-criancas')"><div class="tr-track" id="track-h-criancas"><div class="tr-thumb"></div></div><span class="tr-label">Aceita Crianças</span></div>
+        <div class="tr-row" onclick="tg('h-pets')"><div class="tr-track" id="track-h-pets"><div class="tr-thumb"></div></div><span class="tr-label">Aceita Pets</span></div>
       </div>
     </div>
-    <div style="flex:1;display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px;" id="hoteis-grid">
-      <div class="loading">Carregando hotéis...</div>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL: HOTEL -->
-<div class="modal-overlay" id="modal-hotel">
-  <div class="modal-box" style="max-width:800px">
-    <div class="modal-header">
-      <div>
-        <div class="modal-title" id="mh-title">Novo Hotel</div>
-        <div class="modal-subtitle" id="mh-sub">Preencha os dados do hotel</div>
-      </div>
-      <button class="modal-close" onclick="closeModal('modal-hotel')">✕</button>
-    </div>
-    <div class="atabs">
-      <button class="atab active" onclick="showATab2('hgeral',this)">01 · Informações Gerais</button>
-      <button class="atab" onclick="showATab2('hespec',this)">02 · Específicas</button>
-      <button class="atab" onclick="showATab2('hvalores',this)">03 · Valores</button>
-      <button class="atab" onclick="showATab2('hcasamento',this)">04 · Casamentos</button>
-      <button class="atab" onclick="showATab2('hcomissao',this)">05 · Comissão</button>
-    </div>
-
-    <!-- ABA 1: GERAL -->
-    <div class="atab-content active" id="atab2-hgeral">
-      <div class="form-grid2">
-        <div class="field"><label>Nome do Hotel</label><input id="h-nome" placeholder="Ex: Hard Rock Hotel Cancún" /></div>
-        <div class="field"><label>Região</label>
-          <select id="h-regiao">
-            <option value="">Selecione</option>
-            <option>Caribe</option><option>América do Sul</option><option>Europa</option><option>Ásia</option>
-          </select>
-        </div>
-        <div class="field"><label>País</label><input id="h-pais" /></div>
-        <div class="field"><label>Cidade</label><input id="h-cidade" /></div>
-        <div class="field"><label>Site Oficial</label><input id="h-site" placeholder="https://" /></div>
-        <div class="field"><label>E-mail para Contato</label><input id="h-email" type="email" /></div>
-      </div>
-      <div class="field"><label>Instagram</label><input id="h-instagram" placeholder="https://www.instagram.com/..." /></div>
-    </div>
-
-    <!-- ABA 2: ESPECÍFICAS -->
-    <div class="atab-content" id="atab2-hespec">
-      <div class="form-grid2">
-        <div class="field"><label>Tipo de Hotel</label>
-          <select id="h-tipo">
-            <option value="">Selecione</option>
-            <option>All Inclusive</option><option>Resort</option><option>Boutique</option><option>Pousada</option><option>Hotel Urbano</option><option>Fazenda/Vinhedo</option>
-          </select>
-        </div>
-        <div class="field"><label>Regime de Alimentação</label><input id="h-regime" placeholder="Ex: All Inclusive, Café da manhã..." /></div>
-        <div class="field"><label>Número de Acomodações</label><input id="h-acomodacoes" /></div>
-        <div class="field"><label>Ano Construção/Remodelação</label><input id="h-ano" placeholder="Ex: 2015 / 2022" /></div>
-        <div class="field"><label>Restaurantes (All Inclusive)</label><input id="h-rest-ai" /></div>
-        <div class="field"><label>Restaurantes Premium</label><input id="h-rest-prem" /></div>
-        <div class="field"><label>Cafeteria</label><input id="h-cafeteria" /></div>
-        <div class="field"><label>Bares (All Inclusive)</label><input id="h-bares-ai" /></div>
-        <div class="field"><label>Bares Premium</label><input id="h-bares-prem" /></div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:4px;">
-        <div class="toggle-row" onclick="toggleField('h-frigobar')"><div class="toggle-track" id="track-h-frigobar"><div class="toggle-thumb"></div></div><span class="toggle-label">Frigobar com Bebidas</span></div>
-        <div class="toggle-row" onclick="toggleField('h-room-service')"><div class="toggle-track" id="track-h-room-service"><div class="toggle-thumb"></div></div><span class="toggle-label">Room Service</span></div>
-        <div class="toggle-row" onclick="toggleField('h-bar-pago')"><div class="toggle-track" id="track-h-bar-pago"><div class="toggle-thumb"></div></div><span class="toggle-label">Bar Pago</span></div>
-        <div class="toggle-row" onclick="toggleField('h-rest-pago')"><div class="toggle-track" id="track-h-rest-pago"><div class="toggle-thumb"></div></div><span class="toggle-label">Restaurante Pago</span></div>
-        <div class="toggle-row" onclick="toggleField('h-kids')"><div class="toggle-track" id="track-h-kids"><div class="toggle-thumb"></div></div><span class="toggle-label">Área Kids</span></div>
-        <div class="toggle-row" onclick="toggleField('h-parque')"><div class="toggle-track" id="track-h-parque"><div class="toggle-thumb"></div></div><span class="toggle-label">Parque Aquático</span></div>
-        <div class="toggle-row" onclick="toggleField('h-pub')"><div class="toggle-track" id="track-h-pub"><div class="toggle-thumb"></div></div><span class="toggle-label">Pub ou Disco</span></div>
-        <div class="toggle-row" onclick="toggleField('h-cassino')"><div class="toggle-track" id="track-h-cassino"><div class="toggle-thumb"></div></div><span class="toggle-label">Cassino</span></div>
-        <div class="toggle-row" onclick="toggleField('h-spa')"><div class="toggle-track" id="track-h-spa"><div class="toggle-thumb"></div></div><span class="toggle-label">Spa no Resort</span></div>
-        <div class="toggle-row" onclick="toggleField('h-wifi')"><div class="toggle-track" id="track-h-wifi"><div class="toggle-thumb"></div></div><span class="toggle-label">Wi-Fi</span></div>
-        <div class="toggle-row" onclick="toggleField('h-sol')"><div class="toggle-track" id="track-h-sol"><div class="toggle-thumb"></div></div><span class="toggle-label">🌅 Pôr do Sol</span></div>
-        <div class="toggle-row" onclick="toggleField('h-criancas')"><div class="toggle-track" id="track-h-criancas"><div class="toggle-thumb"></div></div><span class="toggle-label">Aceita Crianças</span></div>
-        <div class="toggle-row" onclick="toggleField('h-pets')"><div class="toggle-track" id="track-h-pets"><div class="toggle-thumb"></div></div><span class="toggle-label">Aceita Pets</span></div>
+    <div class="atc" id="atab-hvalores">
+      <div class="g2">
+        <div class="f"><label>Valor Diária Casal</label><input id="h-diaria" placeholder="Ex: USD 450,00"></div>
+        <div class="f"><label>Valor Sinal Casamento</label><input id="h-sinal" placeholder="Ex: USD 300"></div>
+        <div class="f"><label>Valor Bloqueio de Quartos</label><input id="h-bloqueio" placeholder="Ex: USD 350–500"></div>
+        <div class="f"><label>Valor Inicial Casamento (50p)</label><input id="h-val-casamento" placeholder="Ex: USD 6.000 – 9.000"></div>
+        <div class="f"><label>Valor do Luau (médio)</label><input id="h-luau" placeholder="Ex: USD 2.000 – 3.000"></div>
       </div>
     </div>
-
-    <!-- ABA 3: VALORES -->
-    <div class="atab-content" id="atab2-hvalores">
-      <div class="form-grid2">
-        <div class="field"><label>Valor Diária Casal</label><input id="h-diaria" placeholder="Ex: USD 450,00" /></div>
-        <div class="field"><label>Valor Sinal Casamento</label><input id="h-sinal" placeholder="Ex: USD 300" /></div>
-        <div class="field"><label>Valor Bloqueio de Quartos</label><input id="h-bloqueio" placeholder="Ex: USD 350–500" /></div>
-        <div class="field"><label>Valor Inicial Casamento (50p)</label><input id="h-val-casamento" placeholder="Ex: USD 6.000 – 9.000" /></div>
-        <div class="field"><label>Valor do Luau (médio)</label><input id="h-luau" placeholder="Ex: USD 2.000 – 3.000" /></div>
-      </div>
+    <div class="atc" id="atab-hcasamento">
+      <div class="f"><label>Factsheet (link)</label><input id="h-factsheet" placeholder="https://"></div>
+      <div class="f"><label>Tour Virtual (link)</label><input id="h-tour" placeholder="https://"></div>
+      <div class="f"><label>Espaços para Casamento</label><textarea id="h-espacos" style="min-height:100px" placeholder="Ex: Praia (200p – cerimônia, jantar), Gazebo (80p)..."></textarea></div>
+      <div class="f"><label>Mapa do Hotel (link)</label><input id="h-mapa" placeholder="https://"></div>
     </div>
-
-    <!-- ABA 4: CASAMENTOS -->
-    <div class="atab-content" id="atab2-hcasamento">
-      <div class="field"><label>Factsheet (link)</label><input id="h-factsheet" placeholder="https://" /></div>
-      <div class="field"><label>Tour Virtual (link)</label><input id="h-tour" placeholder="https://" /></div>
-      <div class="field"><label>Espaços para Casamento</label><textarea id="h-espacos" style="min-height:100px;" placeholder="Ex: Praia (200p – cerimônia, jantar), Gazebo (80p)..."></textarea></div>
-      <div class="field"><label>Mapa do Hotel (link)</label><input id="h-mapa" placeholder="https://" /></div>
-    </div>
-
-    <!-- ABA 5: COMISSÃO -->
-    <div class="atab-content" id="atab2-hcomissao">
-      <div class="form-grid2">
-        <div class="field"><label>Comissão</label><input id="h-comissao" placeholder="Ex: 10%" /></div>
-        <div class="field"><label>Percentual</label><input id="h-percentual" placeholder="Ex: 10" /></div>
-        <div class="field"><label>A ser Paga</label><input id="h-a-pagar" placeholder="Ex: USD 500" /></div>
-        <div class="field"><label>E-mail para Cobrança</label><input id="h-email-cobr" type="email" /></div>
+    <div class="atc" id="atab-hcomissao">
+      <div class="g2">
+        <div class="f"><label>Comissão</label><input id="h-comissao" placeholder="Ex: 10%"></div>
+        <div class="f"><label>Percentual</label><input id="h-percentual" placeholder="Ex: 10"></div>
+        <div class="f"><label>A ser Paga</label><input id="h-a-pagar" placeholder="Ex: USD 500"></div>
+        <div class="f"><label>E-mail para Cobrança</label><input id="h-email-cobr" type="email"></div>
       </div>
-      <div class="toggle-row" onclick="toggleField('h-paga-com')">
-        <div class="toggle-track" id="track-h-paga-com"><div class="toggle-thumb"></div></div>
-        <span class="toggle-label" style="font-weight:600">✅ Comissão Paga</span>
-      </div>
+      <div class="tr-row" onclick="tg('h-paga-com')"><div class="tr-track" id="track-h-paga-com"><div class="tr-thumb"></div></div><span class="tr-label" style="font-weight:600">✅ Comissão Paga</span></div>
     </div>
-
-    <div class="modal-footer">
-      <button class="btn btn-outline" onclick="closeModal('modal-hotel')">Cancelar</button>
-      <button class="btn btn-gold" id="btn-sh" onclick="salvarHotel()">Salvar</button>
+    <div class="mf">
+      <button class="btn bo" onclick="closeModal('modal-hotel')">Cancelar</button>
+      <button class="btn bg" id="btn-sh" onclick="salvarHotel()">Salvar</button>
     </div>
   </div>
 </div>
 
+<script>
+const{createClient}=supabase
+const sb=createClient('https://yrnlfarricrhtfomwynd.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlybmxmYXJyaWNyaHRmb213eW5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczOTIxODksImV4cCI6MjA5Mjk2ODE4OX0.Ad4awFjQ9vcDqNyBbWycgv0rvpc3DOz4pPTi41nSp8w')
 
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlybmxmYXJyaWNyaHRmb213eW5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczOTIxODksImV4cCI6MjA5Mjk2ODE4OX0.Ad4awFjQ9vcDqNyBbWycgv0rvpc3DOz4pPTi41nSp8w'
-)
+let casamentos=[],assessoras=[],hoteis=[],casamentoAtual=null,assessoraAtual=null,hotelAtual=null
+let escaladas=[],tgStates={},filterA='',pickerOpen=false,hierAtual=''
 
-let casamentos=[], assessoras=[], casamentoAtual=null, assessoraAtual=null
-let escaladas=[], toggleStates={}, filterA='', pickerOpen=false, hierarquiaAtual=''
+document.addEventListener('DOMContentLoaded',()=>{loadCasamentos();loadAssessoras();loadHoteis()})
+document.querySelectorAll('.mo').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}))
 
-document.addEventListener('DOMContentLoaded',()=>{ loadCasamentos(); loadAssessoras(); loadHoteis() })
-
-function showPage(p) {
+// ── NAVEGAÇÃO
+function showPage(p){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'))
-  document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'))
+  document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'))
   document.getElementById('page-'+p).classList.add('active')
   document.getElementById('nav-'+p).classList.add('active')
 }
-function closeModal(id){ document.getElementById(id).classList.remove('open') }
-document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}))
+function closeModal(id){document.getElementById(id).classList.remove('open')}
 
-function toggleField(id){
-  toggleStates[id]=!toggleStates[id]
-  const t=document.getElementById('track-'+id)
-  if(t)t.classList.toggle('on',toggleStates[id])
+// ── TOGGLE
+function tg(id){
+  tgStates[id]=!tgStates[id]
+  const t=document.getElementById('track-'+id);if(t)t.classList.toggle('on',tgStates[id])
 }
-function setToggle(id,val){
-  toggleStates[id]=!!val
-  const t=document.getElementById('track-'+id)
-  if(t)t.classList.toggle('on',!!val)
-}
-function getToggle(id){return!!toggleStates[id]}
+function setTg(id,val){tgStates[id]=!!val;const t=document.getElementById('track-'+id);if(t)t.classList.toggle('on',!!val)}
+function getTg(id){return!!tgStates[id]}
 
-function toggleIdioma(lang){
-  toggleStates['a-'+lang]=!toggleStates['a-'+lang]
-  document.getElementById('card-'+lang).classList.toggle('on',toggleStates['a-'+lang])
-}
-function setIdioma(lang,val){
-  toggleStates['a-'+lang]=!!val
-  const c=document.getElementById('card-'+lang)
-  if(c)c.classList.toggle('on',!!val)
+// ── IDIOMAS
+function togIdioma(l){tgStates['a-'+l]=!tgStates['a-'+l];document.getElementById('card-'+l).classList.toggle('on',tgStates['a-'+l])}
+function setIdioma(l,v){tgStates['a-'+l]=!!v;const c=document.getElementById('card-'+l);if(c)c.classList.toggle('on',!!v)}
+
+// ── HIERARQUIA
+function selHier(v){
+  hierAtual=hierAtual===v?'':v
+  document.querySelectorAll('.ro-opt').forEach(e=>e.classList.remove('sel'))
+  if(hierAtual==='1ª Assessora')document.getElementById('hier-1').classList.add('sel')
+  if(hierAtual==='2ª Assessora')document.getElementById('hier-2').classList.add('sel')
 }
 
-function selectHierarquia(val){
-  hierarquiaAtual=hierarquiaAtual===val?'':val
-  document.querySelectorAll('.radio-option').forEach(e=>e.classList.remove('selected'))
-  if(hierarquiaAtual==='1ª Assessora')document.getElementById('hier-1').classList.add('selected')
-  if(hierarquiaAtual==='2ª Assessora')document.getElementById('hier-2').classList.add('selected')
-}
-
+// ── ABAS
 function showCTab(tab,btn){
-  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'))
+  document.querySelectorAll('.tc').forEach(t=>t.classList.remove('active'))
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'))
-  document.getElementById('tab-'+tab).classList.add('active')
-  if(btn)btn.classList.add('active')
+  document.getElementById('tab-'+tab).classList.add('active');if(btn)btn.classList.add('active')
   if(tab==='assess')renderEscaladas()
   if(tab==='prod')renderProdAssessoras()
 }
 function showATab(tab,btn){
-  document.querySelectorAll('.atab-content').forEach(t=>t.classList.remove('active'))
-  document.querySelectorAll('.atab').forEach(t=>t.classList.remove('active'))
-  document.getElementById('atab-'+tab).classList.add('active')
-  if(btn)btn.classList.add('active')
+  document.querySelectorAll('#modal-assessora .atc').forEach(t=>t.classList.remove('active'))
+  document.querySelectorAll('#modal-assessora .atab').forEach(t=>t.classList.remove('active'))
+  document.getElementById('atab-'+tab).classList.add('active');if(btn)btn.classList.add('active')
   if(tab==='historico')renderHistorico()
 }
+function showHTab(tab,btn){
+  document.querySelectorAll('#modal-hotel .atc').forEach(t=>t.classList.remove('active'))
+  document.querySelectorAll('#modal-hotel .atab').forEach(t=>t.classList.remove('active'))
+  document.getElementById('atab-'+tab).classList.add('active');if(btn)btn.classList.add('active')
+}
 
-// CASAMENTOS
+// ══ CASAMENTOS ══
 async function loadCasamentos(){
   const{data}=await sb.from('casamentos').select('*').order('created_at',{ascending:false})
-  casamentos=data||[]; renderCasamentos()
+  casamentos=data||[];renderCasamentos()
 }
-function filterCasamentos(q){ renderCasamentos(q.toLowerCase()) }
+function filterCasamentos(q){renderCasamentos(q.toLowerCase())}
 function renderCasamentos(q){
-  const search=q!==undefined?q:''
+  const s=q!==undefined?q:''
   const grid=document.getElementById('casamentos-grid')
-  const filtered=casamentos.filter(c=>!search||c.nome?.toLowerCase().includes(search)||c.destino?.toLowerCase().includes(search))
+  const filtered=casamentos.filter(c=>!s||c.nome?.toLowerCase().includes(s)||c.destino?.toLowerCase().includes(s))
   document.getElementById('casamentos-count').textContent=casamentos.length+' casamento(s)'
-  if(!filtered.length){grid.innerHTML='<div class="empty"><div class="empty-icon">💍</div><div class="empty-text">Nenhum casamento encontrado</div></div>';return}
-  const sc=s=>s==='Confirmado'?'tag-green':s==='Cancelado'?'tag-red':s==='Concluído'?'tag-gold':'tag-gray'
-  grid.innerHTML=filtered.map(c=>`
-    <div class="card" style="transition:box-shadow 0.15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,0.12)'" onmouseout="this.style.boxShadow=''">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
-        <div style="font-weight:600;font-size:16px;font-family:'Cormorant Garamond',serif">${c.nome||'—'}</div>
-        <span class="tag ${sc(c.status)}">${c.status||'Em andamento'}</span>
-      </div>
-      <div style="font-size:13px;color:#888;margin-bottom:3px">📍 ${c.destino||'—'}</div>
-      <div style="font-size:13px;color:#888;margin-bottom:3px">📅 ${c.plan_data?formatDate(c.plan_data):'—'}</div>
-      <div style="font-size:13px;color:#888;margin-bottom:12px">🏨 ${c.plan_hotel||'—'}</div>
-      ${c.viagem_ok?'<div class="tag tag-green" style="margin-bottom:10px">✅ Viagem OK</div>':''}
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <button class="btn btn-outline" style="flex:1" onclick="openCasamento('${c.id}')">Abrir</button>
-        <button class="btn btn-danger" onclick="deleteCasamento('${c.id}')">✕</button>
-      </div>
-    </div>`).join('')
+  if(!filtered.length){grid.innerHTML='<div class="em"><div class="em-i">💍</div><div class="em-t">Nenhum casamento encontrado</div></div>';return}
+  const sc=s=>s==='Confirmado'?'tgr':s==='Cancelado'?'tr':s==='Concluído'?'tg':'tgy'
+  grid.innerHTML=filtered.map(c=>`<div class="card" style="transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,.12)'" onmouseout="this.style.boxShadow=''">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+      <div style="font-weight:600;font-size:16px;font-family:'Cormorant Garamond',serif">${c.nome||'—'}</div>
+      <span class="tag ${sc(c.status)}">${c.status||'Em andamento'}</span>
+    </div>
+    <div style="font-size:13px;color:#888;margin-bottom:3px">📍 ${c.destino||'—'}</div>
+    <div style="font-size:13px;color:#888;margin-bottom:3px">📅 ${c.plan_data?fmtDate(c.plan_data):'—'}</div>
+    <div style="font-size:13px;color:#888;margin-bottom:12px">🏨 ${c.plan_hotel||'—'}</div>
+    ${c.viagem_ok?'<div class="tag tgr" style="margin-bottom:10px">✅ Viagem OK</div>':''}
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn bo" style="flex:1" onclick="openCasamento('${c.id}')">Abrir</button>
+      <button class="btn bd" onclick="deleteCasamento('${c.id}')">✕</button>
+    </div>
+  </div>`).join('')
 }
-
 function openNovoCasamento(){
   casamentoAtual=null
   document.getElementById('mc-title').textContent='Novo Casamento'
   document.getElementById('c-tabs').style.display='none'
-  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'))
+  document.querySelectorAll('.tc').forEach(t=>t.classList.remove('active'))
   document.getElementById('tab-plan').classList.add('active')
-  clearCasamentoForm()
-  document.getElementById('modal-casamento').classList.add('open')
+  clearCasForm();document.getElementById('modal-casamento').classList.add('open')
 }
 async function openCasamento(id){
-  const c=casamentos.find(x=>x.id===id); if(!c)return
+  const c=casamentos.find(x=>x.id===id);if(!c)return
   casamentoAtual={...c}
   document.getElementById('mc-title').textContent=c.nome||'Casamento'
   document.getElementById('c-tabs').style.display='flex'
-  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'))
+  document.querySelectorAll('.tc').forEach(t=>t.classList.remove('active'))
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'))
   document.getElementById('tab-plan').classList.add('active')
   document.querySelector('.tab').classList.add('active')
-  fillCasamentoForm(c); await loadEscaladas(id)
+  fillCasForm(c);await loadEscaladas(id)
   document.getElementById('modal-casamento').classList.add('open')
 }
-function clearCasamentoForm(){
-  ['c-nome','c-destino','c-data','c-horario','c-hotel','c-pacote','c-extra','c-obs',
-   'c-produtora','c-num-assessores','c-datas','c-ultima-reuniao','c-servicos',
-   'c-programacao','c-fornecedores','c-prod-status','c-transfer','c-passeios-txt','c-hospedagem','c-viag-obs'
-  ].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
+function clearCasForm(){
+  ['c-nome','c-destino','c-data','c-horario','c-hotel','c-pacote','c-extra','c-obs','c-produtora','c-num-assessores','c-datas','c-ultima-reuniao','c-servicos','c-programacao','c-fornecedores','c-prod-status','c-transfer','c-passeios-txt','c-hospedagem','c-viag-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
   document.getElementById('c-status').value='Em andamento'
-  ;['c-voos','c-transfers','c-passeios','c-vok'].forEach(id=>setToggle(id,false))
+  ;['c-voos','c-transfers','c-passeios','c-vok'].forEach(id=>setTg(id,false))
 }
-function fillCasamentoForm(c){
-  const set=(id,val)=>{const el=document.getElementById(id);if(el)el.value=val||''}
-  set('c-nome',c.nome);set('c-destino',c.destino);set('c-data',c.plan_data);set('c-horario',c.plan_horario)
-  set('c-hotel',c.plan_hotel);set('c-pacote',c.plan_pacote);set('c-extra',c.plan_extra);set('c-obs',c.plan_obs)
-  set('c-status',c.status);set('c-produtora',c.prod_produtora);set('c-num-assessores',c.prod_num_assessores)
-  set('c-datas',c.prod_datas);set('c-ultima-reuniao',c.prod_ultima_reuniao);set('c-servicos',c.prod_servicos)
-  set('c-programacao',c.prod_programacao);set('c-fornecedores',c.prod_fornecedores);set('c-prod-status',c.prod_status)
-  set('c-transfer',c.viag_transfer);set('c-passeios-txt',c.viag_passeios);set('c-hospedagem',c.viag_hospedagem);set('c-viag-obs',c.viag_obs)
-  setToggle('c-voos',c.checklist_voos);setToggle('c-transfers',c.checklist_transfers)
-  setToggle('c-passeios',c.checklist_passeios);setToggle('c-vok',c.viagem_ok)
+function fillCasForm(c){
+  const s=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||''}
+  s('c-nome',c.nome);s('c-destino',c.destino);s('c-data',c.plan_data);s('c-horario',c.plan_horario)
+  s('c-hotel',c.plan_hotel);s('c-pacote',c.plan_pacote);s('c-extra',c.plan_extra);s('c-obs',c.plan_obs)
+  s('c-status',c.status);s('c-produtora',c.prod_produtora);s('c-num-assessores',c.prod_num_assessores)
+  s('c-datas',c.prod_datas);s('c-ultima-reuniao',c.prod_ultima_reuniao);s('c-servicos',c.prod_servicos)
+  s('c-programacao',c.prod_programacao);s('c-fornecedores',c.prod_fornecedores);s('c-prod-status',c.prod_status)
+  s('c-transfer',c.viag_transfer);s('c-passeios-txt',c.viag_passeios);s('c-hospedagem',c.viag_hospedagem);s('c-viag-obs',c.viag_obs)
+  setTg('c-voos',c.checklist_voos);setTg('c-transfers',c.checklist_transfers);setTg('c-passeios',c.checklist_passeios);setTg('c-vok',c.viagem_ok)
 }
-function getCasamentoData(){
+function getCasData(){
   const v=id=>document.getElementById(id)?.value||''
-  return{
-    nome:v('c-nome'),destino:v('c-destino'),plan_data:v('c-data'),plan_horario:v('c-horario'),
-    plan_hotel:v('c-hotel'),plan_pacote:v('c-pacote'),plan_extra:v('c-extra'),plan_obs:v('c-obs'),
-    status:v('c-status'),prod_produtora:v('c-produtora'),prod_num_assessores:v('c-num-assessores'),
-    prod_datas:v('c-datas'),prod_ultima_reuniao:v('c-ultima-reuniao'),prod_servicos:v('c-servicos'),
-    prod_programacao:v('c-programacao'),prod_fornecedores:v('c-fornecedores'),prod_status:v('c-prod-status'),
-    viag_transfer:v('c-transfer'),viag_passeios:v('c-passeios-txt'),viag_hospedagem:v('c-hospedagem'),viag_obs:v('c-viag-obs'),
-    checklist_voos:getToggle('c-voos'),checklist_transfers:getToggle('c-transfers'),
-    checklist_passeios:getToggle('c-passeios'),viagem_ok:getToggle('c-vok'),
-  }
+  return{nome:v('c-nome'),destino:v('c-destino'),plan_data:v('c-data'),plan_horario:v('c-horario'),plan_hotel:v('c-hotel'),plan_pacote:v('c-pacote'),plan_extra:v('c-extra'),plan_obs:v('c-obs'),status:v('c-status'),prod_produtora:v('c-produtora'),prod_num_assessores:v('c-num-assessores'),prod_datas:v('c-datas'),prod_ultima_reuniao:v('c-ultima-reuniao'),prod_servicos:v('c-servicos'),prod_programacao:v('c-programacao'),prod_fornecedores:v('c-fornecedores'),prod_status:v('c-prod-status'),viag_transfer:v('c-transfer'),viag_passeios:v('c-passeios-txt'),viag_hospedagem:v('c-hospedagem'),viag_obs:v('c-viag-obs'),checklist_voos:getTg('c-voos'),checklist_transfers:getTg('c-transfers'),checklist_passeios:getTg('c-passeios'),viagem_ok:getTg('c-vok')}
 }
 async function salvarCasamento(){
-  const btn=document.getElementById('btn-sc'); btn.textContent='Salvando...';btn.disabled=true
-  const data=getCasamentoData()
+  const btn=document.getElementById('btn-sc');btn.textContent='Salvando...';btn.disabled=true
+  const data=getCasData()
   if(!data.nome){alert('Preencha o nome do casal!');btn.textContent='Salvar';btn.disabled=false;return}
   if(casamentoAtual){await sb.from('casamentos').update(data).eq('id',casamentoAtual.id)}
   else{await sb.from('casamentos').insert(data)}
   btn.textContent='Salvar';btn.disabled=false;closeModal('modal-casamento');loadCasamentos()
 }
-async function deleteCasamento(id){
-  if(!confirm('Remover este casamento?'))return
-  await sb.from('casamentos').delete().eq('id',id);loadCasamentos()
-}
+async function deleteCasamento(id){if(!confirm('Remover?'))return;await sb.from('casamentos').delete().eq('id',id);loadCasamentos()}
 
-// ESCALADAS
-async function loadEscaladas(cid){
-  const id=cid||casamentoAtual?.id; if(!id)return
-  const{data}=await sb.from('casamento_assessoras').select('*,assessora:assessoras(*)').eq('casamento_id',id)
-  escaladas=data||[]
-}
+// ── ESCALADAS
+async function loadEscaladas(cid){const id=cid||casamentoAtual?.id;if(!id)return;const{data}=await sb.from('casamento_assessoras').select('*,assessora:assessoras(*)').eq('casamento_id',id);escaladas=data||[]}
 async function renderEscaladas(){
   if(casamentoAtual)await loadEscaladas(casamentoAtual.id)
   const list=document.getElementById('escaladas-list')
   document.getElementById('assess-count').textContent=escaladas.length+' assessora(s) escalada(s)'
-  if(!escaladas.length){list.innerHTML='<div class="empty" style="padding:30px"><div class="empty-text">Nenhuma assessora escalada</div></div>'}
-  else{list.innerHTML=escaladas.map(e=>`
-    <div class="assessora-item">
-      <div class="assessora-item-header">
-        <div style="display:flex;align-items:center;gap:10px">
-          <div class="avatar">${(e.assessora?.nome||'?')[0]}</div>
-          <div><div style="font-weight:600;font-size:14px">${e.assessora?.nome||'—'}</div><div style="font-size:12px;color:#888">${e.assessora?.cidade||''}</div></div>
-        </div>
-        <button class="btn btn-danger btn-sm" onclick="removeEscalada('${e.id}')">Remover</button>
-      </div>
-      <div class="form-grid3">
-        <div class="field"><label>Cidade de Saída</label><input value="${e.cidade_saida||''}" onchange="updateEscalada('${e.id}','cidade_saida',this.value)"/></div>
-        <div class="field"><label>Data de Ida</label><input type="date" value="${e.data_ida||''}" onchange="updateEscalada('${e.id}','data_ida',this.value)"/></div>
-        <div class="field"><label>Data de Volta</label><input type="date" value="${e.data_volta||''}" onchange="updateEscalada('${e.id}','data_volta',this.value)"/></div>
-      </div>
-      <div class="toggle-row" onclick="toggleBilhete('${e.id}',${e.bilhete_emitido})">
-        <div class="toggle-track ${e.bilhete_emitido?'on':''}"><div class="toggle-thumb"></div></div>
-        <span class="toggle-label">Bilhete Emitido</span>
-      </div>
-    </div>`).join('')}
+  if(!escaladas.length){list.innerHTML='<div class="em" style="padding:30px"><div class="em-t">Nenhuma assessora escalada</div></div>'}
+  else{list.innerHTML=escaladas.map(e=>`<div class="ai"><div class="aih"><div style="display:flex;align-items:center;gap:10px"><div class="av">${(e.assessora?.nome||'?')[0]}</div><div><div style="font-weight:600;font-size:14px">${e.assessora?.nome||'—'}</div><div style="font-size:12px;color:#888">${e.assessora?.cidade||''}</div></div></div><button class="btn bd bsm" onclick="removeEscalada('${e.id}')">Remover</button></div><div class="g3"><div class="f"><label>Cidade de Saída</label><input value="${e.cidade_saida||''}" onchange="updEscalada('${e.id}','cidade_saida',this.value)"></div><div class="f"><label>Data de Ida</label><input type="date" value="${e.data_ida||''}" onchange="updEscalada('${e.id}','data_ida',this.value)"></div><div class="f"><label>Data de Volta</label><input type="date" value="${e.data_volta||''}" onchange="updEscalada('${e.id}','data_volta',this.value)"></div></div><div class="tr-row" onclick="togBilhete('${e.id}',${e.bilhete_emitido})"><div class="tr-track ${e.bilhete_emitido?'on':''}"><div class="tr-thumb"></div></div><span class="tr-label">Bilhete Emitido</span></div></div>`).join('')}
   renderPickerIfOpen()
 }
-async function toggleBilhete(id,cur){await sb.from('casamento_assessoras').update({bilhete_emitido:!cur}).eq('id',id);renderEscaladas()}
-async function updateEscalada(id,f,v){await sb.from('casamento_assessoras').update({[f]:v}).eq('id',id)}
+async function togBilhete(id,cur){await sb.from('casamento_assessoras').update({bilhete_emitido:!cur}).eq('id',id);renderEscaladas()}
+async function updEscalada(id,f,v){await sb.from('casamento_assessoras').update({[f]:v}).eq('id',id)}
 async function removeEscalada(id){await sb.from('casamento_assessoras').delete().eq('id',id);renderEscaladas()}
 function togglePicker(){pickerOpen=!pickerOpen;renderPickerIfOpen()}
 function renderPickerIfOpen(){
@@ -706,21 +561,10 @@ function renderPickerIfOpen(){
   con.style.display='block'
   const ids=escaladas.map(e=>e.assessora_id)
   const disp=assessoras.filter(a=>!a.blacklist&&!ids.includes(a.id))
-  if(!disp.length){con.innerHTML='<div class="picker-list"><div style="text-align:center;color:#888;font-size:13px">Nenhuma disponível</div></div>';return}
-  con.innerHTML=`<div class="picker-list"><div style="font-weight:700;color:var(--gold);margin-bottom:12px;font-size:13px">Selecionar Assessora</div>
-    ${disp.map(a=>`<div class="picker-item">
-      <div style="display:flex;align-items:center;gap:8px">
-        <div class="avatar" style="width:32px;height:32px;font-size:14px">${a.nome[0]}</div>
-        <div><span style="font-weight:600;font-size:13px">${a.nome}</span><span style="font-size:12px;color:#888;margin-left:6px">${a.cidade||''}</span></div>
-        ${a.ingles?'<span class="tag tag-blue" style="font-size:10px">EN</span>':''}
-        ${a.espanhol?'<span class="tag tag-blue" style="font-size:10px">ES</span>':''}
-      </div>
-      <button class="btn btn-gold btn-sm" onclick="escalarAssessora('${a.id}','${(a.cidade||'').replace(/'/g,"\\'")}')">Escalar</button>
-    </div>`).join('')}
-    <button class="btn btn-outline btn-sm" style="margin-top:12px" onclick="togglePicker()">Cancelar</button>
-  </div>`
+  if(!disp.length){con.innerHTML='<div class="pl"><div style="text-align:center;color:#888;font-size:13px">Nenhuma disponível</div></div>';return}
+  con.innerHTML=`<div class="pl"><div style="font-weight:700;color:var(--gold);margin-bottom:12px;font-size:13px">Selecionar Assessora</div>${disp.map(a=>`<div class="pi"><div style="display:flex;align-items:center;gap:8px"><div class="av" style="width:32px;height:32px;font-size:14px">${a.nome[0]}</div><span style="font-weight:600;font-size:13px">${a.nome}</span><span style="font-size:12px;color:#888">${a.cidade||''}</span>${a.ingles?'<span class="tag tb" style="font-size:10px">EN</span>':''}${a.espanhol?'<span class="tag tb" style="font-size:10px">ES</span>':''}</div><button class="btn bg bsm" onclick="escalarA('${a.id}','${(a.cidade||'').replace(/'/g,"\\'")}')">Escalar</button></div>`).join('')}<button class="btn bo bsm" style="margin-top:12px" onclick="togglePicker()">Cancelar</button></div>`
 }
-async function escalarAssessora(aid,cidade){
+async function escalarA(aid,cidade){
   if(!casamentoAtual?.id)return
   await sb.from('casamento_assessoras').insert({casamento_id:casamentoAtual.id,assessora_id:aid,cidade_saida:cidade,data_ida:'',data_volta:'',bilhete_emitido:false})
   pickerOpen=false;renderEscaladas()
@@ -730,326 +574,144 @@ async function renderProdAssessoras(){
   const p=document.getElementById('prod-assess-preview')
   if(!escaladas.length){p.innerHTML='';return}
   const ok=escaladas.every(e=>e.bilhete_emitido)
-  p.innerHTML=`<div style="background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:10px;padding:16px;margin-top:16px">
-    <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.5px;margin-bottom:12px">ASSESSORAS — STATUS VIAGEM</div>
-    ${escaladas.map(e=>`<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-      <span style="font-weight:600;font-size:13px;min-width:140px">${e.assessora?.nome||'—'}</span>
-      <span class="tag ${e.bilhete_emitido?'tag-green':'tag-gold'}">${e.bilhete_emitido?'✓ Bilhete OK':'⏳ Aguardando'}</span>
-    </div>`).join('')}
-    ${ok?'<div class="tag tag-green" style="margin-top:8px">✅ Viagem confirmou tudo</div>':''}
-  </div>`
+  p.innerHTML=`<div style="background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:10px;padding:16px;margin-top:16px"><div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.5px;margin-bottom:12px">ASSESSORAS — STATUS VIAGEM</div>${escaladas.map(e=>`<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><span style="font-weight:600;font-size:13px;min-width:140px">${e.assessora?.nome||'—'}</span><span class="tag ${e.bilhete_emitido?'tgr':'tg'}">${e.bilhete_emitido?'✓ Bilhete OK':'⏳ Aguardando'}</span></div>`).join('')}${ok?'<div class="tag tgr" style="margin-top:8px">✅ Viagem confirmou tudo</div>':''}</div>`
 }
 
-// ASSESSORAS
-async function loadAssessoras(){
-  const{data}=await sb.from('assessoras').select('*').order('nome')
-  assessoras=data||[];renderAssessoras()
-}
-function limparFiltros(){
-  ['f-ingles','f-espanhol','f-frances','f-italiano','f-h1','f-h2','f-equipe','f-blacklist','f-febre'].forEach(id=>{
-    const el=document.getElementById(id);if(el)el.checked=false
-  })
-  const s=document.getElementById('search-a');if(s)s.value=''
-  renderAssessoras()
-}
+// ══ ASSESSORAS ══
+async function loadAssessoras(){const{data}=await sb.from('assessoras').select('*').order('nome');assessoras=data||[];renderAssessoras()}
 function renderAssessoras(){
-  const search=(document.getElementById('search-a')?.value||'').toLowerCase()
-  const f=id=>document.getElementById(id)?.checked
-  const anyActive=[f('f-ingles'),f('f-espanhol'),f('f-frances'),f('f-italiano'),f('f-h1'),f('f-h2'),f('f-equipe'),f('f-blacklist'),f('f-febre'),search].some(Boolean)
-  const fc=document.getElementById('filtros-count');if(fc)fc.style.display=anyActive?'inline':'none'
+  const s=(document.getElementById('search-a')?.value||'').toLowerCase()
+  const fI=id=>document.getElementById(id)?.checked
   const grid=document.getElementById('assessoras-grid')
   const filtered=assessoras.filter(a=>{
-    const ms=!search||a.nome?.toLowerCase().includes(search)||a.cidade?.toLowerCase().includes(search)
-    const mIngles=!f('f-ingles')||a.ingles
-    const mEspanhol=!f('f-espanhol')||a.espanhol
-    const mFrances=!f('f-frances')||a.frances
-    const mItaliano=!f('f-italiano')||a.italiano
-    const mH1=!f('f-h1')||a.hierarquia==='1ª Assessora'
-    const mH2=!f('f-h2')||a.hierarquia==='2ª Assessora'
-    const mEquipe=!f('f-equipe')||a.possui_equipe
-    const mBlacklist=!f('f-blacklist')||a.blacklist
-    const mFebre=!f('f-febre')||a.febre_amarela
-    return ms&&mIngles&&mEspanhol&&mFrances&&mItaliano&&mH1&&mH2&&mEquipe&&mBlacklist&&mFebre
+    const ms=!s||a.nome?.toLowerCase().includes(s)||a.cidade?.toLowerCase().includes(s)
+    return ms&&(!fI('f-ingles')||a.ingles)&&(!fI('f-espanhol')||a.espanhol)&&(!fI('f-frances')||a.frances)&&(!fI('f-italiano')||a.italiano)&&(!fI('f-h1')||a.hierarquia==='1ª Assessora')&&(!fI('f-h2')||a.hierarquia==='2ª Assessora')&&(!fI('f-equipe')||a.possui_equipe)&&(!fI('f-blacklist')||a.blacklist)&&(!fI('f-febre')||a.febre_amarela)
   })
   document.getElementById('assessoras-count').textContent=assessoras.length+' assessoras cadastradas'
-  if(!filtered.length){grid.innerHTML='<div class="empty"><div class="empty-icon">👩</div><div class="empty-text">Nenhuma assessora encontrada</div></div>';return}
-  grid.innerHTML=filtered.map(a=>`
-    <div class="card" style="transition:box-shadow 0.15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,0.12)'" onmouseout="this.style.boxShadow=''">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
-        <div style="display:flex;align-items:center;gap:12px">
-          <div class="avatar">${a.nome[0]}</div>
-          <div>
-            <div style="font-weight:600;font-size:15px;font-family:'Cormorant Garamond',serif">${a.nome}</div>
-            <div style="font-size:12px;color:#888;margin-top:2px">📍 ${a.cidade||'—'}</div>
-          </div>
-        </div>
-        ${a.blacklist?'<span class="tag tag-red">Blacklist</span>':''}
-      </div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">
-        ${a.hierarquia?`<span class="tag tag-gold">${a.hierarquia}</span>`:''}
-        ${a.ingles?'<span class="tag tag-blue">🇬🇧 EN</span>':''}
-        ${a.espanhol?'<span class="tag tag-blue">🇪🇸 ES</span>':''}
-        ${a.frances?'<span class="tag tag-blue">🇫🇷 FR</span>':''}
-        ${a.italiano?'<span class="tag tag-blue">🇮🇹 IT</span>':''}
-        ${a.possui_equipe?'<span class="tag tag-green">👥 Equipe</span>':''}
-        ${a.febre_amarela?'<span class="tag tag-green">💉 FY</span>':''}
-      </div>
-      <div style="display:flex;gap:8px">
-        <button class="btn btn-outline" style="flex:1" onclick="openAssessora('${a.id}')">Ver / Editar</button>
-        <button class="btn btn-danger" onclick="deleteAssessora('${a.id}')">✕</button>
-      </div>
-    </div>`).join('')
+  if(!filtered.length){grid.innerHTML='<div class="em"><div class="em-i">👩</div><div class="em-t">Nenhuma assessora encontrada</div></div>';return}
+  grid.innerHTML=filtered.map(a=>`<div class="card" style="transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,.12)'" onmouseout="this.style.boxShadow=''"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px"><div style="display:flex;align-items:center;gap:12px"><div class="av">${a.nome[0]}</div><div><div style="font-weight:600;font-size:15px;font-family:'Cormorant Garamond',serif">${a.nome}</div><div style="font-size:12px;color:#888;margin-top:2px">📍 ${a.cidade||'—'}</div></div></div>${a.blacklist?'<span class="tag tr">Blacklist</span>':''}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">${a.hierarquia?`<span class="tag tg">${a.hierarquia}</span>`:''}${a.ingles?'<span class="tag tb">🇬🇧 EN</span>':''}${a.espanhol?'<span class="tag tb">🇪🇸 ES</span>':''}${a.frances?'<span class="tag tb">🇫🇷 FR</span>':''}${a.italiano?'<span class="tag tb">🇮🇹 IT</span>':''}${a.possui_equipe?'<span class="tag tgr">👥 Equipe</span>':''}${a.febre_amarela?'<span class="tag tgr">💉 FY</span>':''}</div><div style="display:flex;gap:8px"><button class="btn bo" style="flex:1" onclick="openAssessora('${a.id}')">Ver / Editar</button><button class="btn bd" onclick="deleteAssessora('${a.id}')">✕</button></div></div>`).join('')
 }
-
 function openNovaAssessora(){
-  assessoraAtual=null;hierarquiaAtual=''
+  assessoraAtual=null;hierAtual=''
   document.getElementById('ma-title').textContent='Nova Assessora'
   document.getElementById('ma-sub').textContent='Preencha os dados da assessora'
-  document.querySelectorAll('.atab-content').forEach(t=>t.classList.remove('active'))
-  document.querySelectorAll('.atab').forEach(t=>t.classList.remove('active'))
+  document.querySelectorAll('#modal-assessora .atc').forEach(t=>t.classList.remove('active'))
+  document.querySelectorAll('#modal-assessora .atab').forEach(t=>t.classList.remove('active'))
   document.getElementById('atab-dados').classList.add('active')
-  document.querySelector('.atab').classList.add('active')
-  clearAssessoraForm()
-  document.getElementById('modal-assessora').classList.add('open')
+  document.querySelector('#modal-assessora .atab').classList.add('active')
+  clearAForm();document.getElementById('modal-assessora').classList.add('open')
 }
 function openAssessora(id){
   const a=assessoras.find(x=>x.id===id);if(!a)return
-  assessoraAtual={...a};hierarquiaAtual=a.hierarquia||''
+  assessoraAtual={...a};hierAtual=a.hierarquia||''
   document.getElementById('ma-title').textContent=a.nome
   document.getElementById('ma-sub').textContent=(a.hierarquia||'Assessora')+(a.cidade?' · '+a.cidade:'')
-  document.querySelectorAll('.atab-content').forEach(t=>t.classList.remove('active'))
-  document.querySelectorAll('.atab').forEach(t=>t.classList.remove('active'))
+  document.querySelectorAll('#modal-assessora .atc').forEach(t=>t.classList.remove('active'))
+  document.querySelectorAll('#modal-assessora .atab').forEach(t=>t.classList.remove('active'))
   document.getElementById('atab-dados').classList.add('active')
-  document.querySelector('.atab').classList.add('active')
-  fillAssessoraForm(a)
-  document.getElementById('modal-assessora').classList.add('open')
+  document.querySelector('#modal-assessora .atab').classList.add('active')
+  fillAForm(a);document.getElementById('modal-assessora').classList.add('open')
 }
-function clearAssessoraForm(){
-  ['a-nome','a-nasc','a-cpf','a-email','a-cidade','a-whatsapp','a-perfil',
-   'a-rg','a-rg-val','a-pass-num','a-pass-val','a-pass-pais',
-   'a-visto-num','a-visto-val','a-visto-pais','a-nome-equipe'
-  ].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
-  ;['a-blacklist','a-nota','a-febre','a-equipe'].forEach(id=>setToggle(id,false))
+function clearAForm(){
+  ['a-nome','a-nasc','a-cpf','a-email','a-cidade','a-whatsapp','a-perfil','a-rg','a-rg-val','a-pass-num','a-pass-val','a-pass-pais','a-visto-num','a-visto-val','a-visto-pais','a-nome-equipe'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
+  ;['a-blacklist','a-nota','a-febre','a-equipe'].forEach(id=>setTg(id,false))
   ;['ingles','espanhol','frances','italiano'].forEach(l=>setIdioma(l,false))
-  hierarquiaAtual=''
-  document.querySelectorAll('.radio-option').forEach(e=>e.classList.remove('selected'))
+  hierAtual='';document.querySelectorAll('.ro-opt').forEach(e=>e.classList.remove('sel'))
 }
-function fillAssessoraForm(a){
-  const set=(id,val)=>{const el=document.getElementById(id);if(el)el.value=val||''}
-  set('a-nome',a.nome);set('a-nasc',a.nascimento);set('a-cpf',a.cpf);set('a-email',a.email)
-  set('a-cidade',a.cidade);set('a-whatsapp',a.whatsapp);set('a-perfil',a.perfil)
-  set('a-rg',a.rg);set('a-rg-val',a.rg_validade)
-  set('a-pass-num',a.passaporte_numero);set('a-pass-val',a.passaporte_validade);set('a-pass-pais',a.passaporte_pais)
-  set('a-visto-num',a.visto_numero);set('a-visto-val',a.visto_validade);set('a-visto-pais',a.visto_pais)
-  set('a-nome-equipe',a.nome_equipe)
-  setToggle('a-blacklist',a.blacklist);setToggle('a-nota',a.nota_fiscal)
-  setToggle('a-febre',a.febre_amarela);setToggle('a-equipe',a.possui_equipe)
+function fillAForm(a){
+  const s=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||''}
+  s('a-nome',a.nome);s('a-nasc',a.nascimento);s('a-cpf',a.cpf);s('a-email',a.email);s('a-cidade',a.cidade);s('a-whatsapp',a.whatsapp);s('a-perfil',a.perfil);s('a-rg',a.rg);s('a-rg-val',a.rg_validade);s('a-pass-num',a.passaporte_numero);s('a-pass-val',a.passaporte_validade);s('a-pass-pais',a.passaporte_pais);s('a-visto-num',a.visto_numero);s('a-visto-val',a.visto_validade);s('a-visto-pais',a.visto_pais);s('a-nome-equipe',a.nome_equipe)
+  setTg('a-blacklist',a.blacklist);setTg('a-nota',a.nota_fiscal);setTg('a-febre',a.febre_amarela);setTg('a-equipe',a.possui_equipe)
   setIdioma('ingles',a.ingles);setIdioma('espanhol',a.espanhol);setIdioma('frances',a.frances);setIdioma('italiano',a.italiano)
-  hierarquiaAtual=a.hierarquia||''
-  document.querySelectorAll('.radio-option').forEach(e=>e.classList.remove('selected'))
-  if(hierarquiaAtual==='1ª Assessora')document.getElementById('hier-1')?.classList.add('selected')
-  if(hierarquiaAtual==='2ª Assessora')document.getElementById('hier-2')?.classList.add('selected')
+  hierAtual=a.hierarquia||'';document.querySelectorAll('.ro-opt').forEach(e=>e.classList.remove('sel'))
+  if(hierAtual==='1ª Assessora')document.getElementById('hier-1')?.classList.add('sel')
+  if(hierAtual==='2ª Assessora')document.getElementById('hier-2')?.classList.add('sel')
 }
-function getAssessoraData(){
+function getAData(){
   const v=id=>document.getElementById(id)?.value||''
-  return{
-    nome:v('a-nome'),nascimento:v('a-nasc'),cpf:v('a-cpf'),email:v('a-email'),
-    cidade:v('a-cidade'),whatsapp:v('a-whatsapp'),perfil:v('a-perfil'),
-    rg:v('a-rg'),rg_validade:v('a-rg-val'),
-    passaporte_numero:v('a-pass-num'),passaporte_validade:v('a-pass-val'),passaporte_pais:v('a-pass-pais'),
-    visto_numero:v('a-visto-num'),visto_validade:v('a-visto-val'),visto_pais:v('a-visto-pais'),
-    nome_equipe:v('a-nome-equipe'),
-    blacklist:getToggle('a-blacklist'),nota_fiscal:getToggle('a-nota'),
-    febre_amarela:getToggle('a-febre'),possui_equipe:getToggle('a-equipe'),
-    ingles:!!toggleStates['a-ingles'],espanhol:!!toggleStates['a-espanhol'],
-    frances:!!toggleStates['a-frances'],italiano:!!toggleStates['a-italiano'],
-    hierarquia:hierarquiaAtual,
-  }
+  return{nome:v('a-nome'),nascimento:v('a-nasc'),cpf:v('a-cpf'),email:v('a-email'),cidade:v('a-cidade'),whatsapp:v('a-whatsapp'),perfil:v('a-perfil'),rg:v('a-rg'),rg_validade:v('a-rg-val'),passaporte_numero:v('a-pass-num'),passaporte_validade:v('a-pass-val'),passaporte_pais:v('a-pass-pais'),visto_numero:v('a-visto-num'),visto_validade:v('a-visto-val'),visto_pais:v('a-visto-pais'),nome_equipe:v('a-nome-equipe'),blacklist:getTg('a-blacklist'),nota_fiscal:getTg('a-nota'),febre_amarela:getTg('a-febre'),possui_equipe:getTg('a-equipe'),ingles:!!tgStates['a-ingles'],espanhol:!!tgStates['a-espanhol'],frances:!!tgStates['a-frances'],italiano:!!tgStates['a-italiano'],hierarquia:hierAtual}
 }
 async function salvarAssessora(){
   const btn=document.getElementById('btn-sa');btn.textContent='Salvando...';btn.disabled=true
-  const data=getAssessoraData()
+  const data=getAData()
   if(!data.nome){alert('Preencha o nome!');btn.textContent='Salvar';btn.disabled=false;return}
   if(assessoraAtual){await sb.from('assessoras').update(data).eq('id',assessoraAtual.id)}
   else{await sb.from('assessoras').insert(data)}
   btn.textContent='Salvar';btn.disabled=false;closeModal('modal-assessora');loadAssessoras()
 }
-async function deleteAssessora(id){
-  if(!confirm('Remover esta assessora?'))return
-  await sb.from('assessoras').delete().eq('id',id);loadAssessoras()
-}
-
+async function deleteAssessora(id){if(!confirm('Remover?'))return;await sb.from('assessoras').delete().eq('id',id);loadAssessoras()}
 async function renderHistorico(){
   const con=document.getElementById('historico-content')
-  if(!assessoraAtual){con.innerHTML='<div class="empty"><div class="empty-text">Salve a assessora primeiro</div></div>';return}
+  if(!assessoraAtual){con.innerHTML='<div class="em"><div class="em-t">Salve a assessora primeiro</div></div>';return}
   const{data}=await sb.from('casamento_assessoras').select('*,casamento:casamentos(nome,destino,plan_hotel,plan_data,status)').eq('assessora_id',assessoraAtual.id)
-  if(!data||!data.length){con.innerHTML='<div class="empty" style="padding:40px"><div class="empty-icon">💍</div><div class="empty-text">Nenhum casamento no histórico ainda</div></div>';return}
-  con.innerHTML=`<div style="margin-bottom:16px;font-size:13px;color:#888">${data.length} casamento(s) no histórico</div>
-    ${data.map(e=>`<div class="hist-item">
-      <div class="hist-dot"></div>
-      <div style="flex:1">
-        <div style="font-weight:600;font-size:14px;font-family:'Cormorant Garamond',serif">${e.casamento?.nome||'—'}</div>
-        <div style="font-size:12px;color:#888;margin-top:2px">📍 ${e.casamento?.destino||'—'} · 🏨 ${e.casamento?.plan_hotel||'—'}${e.casamento?.plan_data?' · 📅 '+formatDate(e.casamento.plan_data):''}</div>
-      </div>
-      <span class="tag ${e.bilhete_emitido?'tag-green':'tag-gold'}">${e.bilhete_emitido?'✓ Bilhete emitido':'Pendente'}</span>
-    </div>`).join('')}`
+  if(!data||!data.length){con.innerHTML='<div class="em" style="padding:40px"><div class="em-i">💍</div><div class="em-t">Nenhum casamento no histórico ainda</div></div>';return}
+  con.innerHTML=`<div style="margin-bottom:16px;font-size:13px;color:#888">${data.length} casamento(s) no histórico</div>${data.map(e=>`<div class="hist"><div class="hdot"></div><div style="flex:1"><div style="font-weight:600;font-size:14px;font-family:'Cormorant Garamond',serif">${e.casamento?.nome||'—'}</div><div style="font-size:12px;color:#888;margin-top:2px">📍 ${e.casamento?.destino||'—'} · 🏨 ${e.casamento?.plan_hotel||'—'}${e.casamento?.plan_data?' · 📅 '+fmtDate(e.casamento.plan_data):''}</div></div><span class="tag ${e.bilhete_emitido?'tgr':'tg'}">${e.bilhete_emitido?'✓ Bilhete emitido':'Pendente'}</span></div>`).join('')}`
 }
 
-function formatDate(d){
-  if(!d)return'—'
-  const[y,m,day]=d.split('-');return`${day}/${m}/${y}`
-}
-
-// ── HOTÉIS
-let hoteis=[], hotelAtual=null
-
-function showATab2(tab,btn){
-  document.querySelectorAll('#modal-hotel .atab-content').forEach(t=>t.classList.remove('active'))
-  document.querySelectorAll('#modal-hotel .atab').forEach(t=>t.classList.remove('active'))
-  document.getElementById('atab2-'+tab).classList.add('active')
-  if(btn)btn.classList.add('active')
-}
-
-async function loadHoteis(){
-  const{data}=await sb.from('hoteis').select('*').order('nome')
-  hoteis=data||[];renderHoteis()
-}
-
+// ══ HOTÉIS ══
+async function loadHoteis(){const{data}=await sb.from('hoteis').select('*').order('nome');hoteis=data||[];renderHoteis()}
 function renderHoteis(){
-  const search=(document.getElementById('search-h')?.value||'').toLowerCase()
-  const regiao=document.getElementById('f-h-regiao')?.value||''
+  const s=(document.getElementById('search-h')?.value||'').toLowerCase()
+  const reg=document.getElementById('f-h-regiao')?.value||''
   const pais=(document.getElementById('f-h-pais')?.value||'').toLowerCase()
-  const fKids=document.getElementById('fh-kids')?.checked
-  const fPets=document.getElementById('fh-pets')?.checked
-  const fSpa=document.getElementById('fh-spa')?.checked
-  const fCassino=document.getElementById('fh-cassino')?.checked
-  const fParque=document.getElementById('fh-parque')?.checked
-  const fSol=document.getElementById('fh-sol')?.checked
+  const fI=id=>document.getElementById(id)?.checked
   const grid=document.getElementById('hoteis-grid')
   const filtered=hoteis.filter(h=>{
-    const ms=!search||h.nome?.toLowerCase().includes(search)||h.cidade?.toLowerCase().includes(search)
-    const mr=!regiao||h.regiao===regiao
-    const mp=!pais||h.pais?.toLowerCase().includes(pais)
-    return ms&&mr&&mp&&(!fKids||h.aceita_criancas)&&(!fPets||h.aceita_pets)&&(!fSpa||h.spa)&&(!fCassino||h.cassino)&&(!fParque||h.parque_aquatico)&&(!fSol||h.por_do_sol)
+    const ms=!s||h.nome?.toLowerCase().includes(s)||h.cidade?.toLowerCase().includes(s)
+    return ms&&(!reg||h.regiao===reg)&&(!pais||h.pais?.toLowerCase().includes(pais))&&(!fI('fh-kids')||h.aceita_criancas)&&(!fI('fh-pets')||h.aceita_pets)&&(!fI('fh-spa')||h.spa)&&(!fI('fh-cassino')||h.cassino)&&(!fI('fh-parque')||h.parque_aquatico)&&(!fI('fh-sol')||h.por_do_sol)
   })
   document.getElementById('hoteis-count').textContent=hoteis.length+' hotel(is) cadastrado(s)'
-  if(!filtered.length){grid.innerHTML='<div class="empty"><div class="empty-icon">🏨</div><div class="empty-text">Nenhum hotel encontrado</div></div>';return}
-  grid.innerHTML=filtered.map(h=>`
-    <div class="card" style="transition:box-shadow 0.15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,0.12)'" onmouseout="this.style.boxShadow=''">
-      <div style="margin-bottom:8px">
-        <div style="font-weight:600;font-size:15px;font-family:'Cormorant Garamond',serif;margin-bottom:2px">${h.nome}</div>
-        <div style="font-size:12px;color:#888">📍 ${[h.cidade,h.pais,h.regiao].filter(Boolean).join(' · ')}</div>
-      </div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
-        ${h.tipo?`<span class="tag tag-gold">${h.tipo}</span>`:''}
-        ${h.por_do_sol?'<span class="tag tag-gold">🌅 Pôr do Sol</span>':''}
-        ${h.spa?'<span class="tag tag-green">💆 Spa</span>':''}
-        ${h.aceita_criancas?'<span class="tag tag-green">👶 Kids</span>':''}
-        ${h.parque_aquatico?'<span class="tag tag-blue">🌊 Aquapark</span>':''}
-        ${h.cassino?'<span class="tag tag-gray">🎰 Cassino</span>':''}
-      </div>
-      ${h.valor_casamento?`<div style="font-size:12px;color:#888;margin-bottom:10px">💍 ${h.valor_casamento}</div>`:''}
-      <div style="display:flex;gap:8px">
-        <button class="btn btn-outline" style="flex:1" onclick="openHotel('${h.id}')">Ver / Editar</button>
-        <button class="btn btn-danger" onclick="deleteHotel('${h.id}')">✕</button>
-      </div>
-    </div>`).join('')
+  if(!filtered.length){grid.innerHTML='<div class="em"><div class="em-i">🏨</div><div class="em-t">Nenhum hotel encontrado</div></div>';return}
+  grid.innerHTML=filtered.map(h=>`<div class="card" style="transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,.12)'" onmouseout="this.style.boxShadow=''"><div style="margin-bottom:8px"><div style="font-weight:600;font-size:15px;font-family:'Cormorant Garamond',serif;margin-bottom:2px">${h.nome}</div><div style="font-size:12px;color:#888">📍 ${[h.cidade,h.pais,h.regiao].filter(Boolean).join(' · ')}</div></div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">${h.tipo?`<span class="tag tg">${h.tipo}</span>`:''}${h.por_do_sol?'<span class="tag tg">🌅 Pôr do Sol</span>':''}${h.spa?'<span class="tag tgr">💆 Spa</span>':''}${h.aceita_criancas?'<span class="tag tgr">👶 Kids</span>':''}${h.parque_aquatico?'<span class="tag tb">🌊 Aquapark</span>':''}${h.cassino?'<span class="tag tgy">🎰 Cassino</span>':''}</div>${h.valor_casamento?`<div style="font-size:12px;color:#888;margin-bottom:10px">💍 ${h.valor_casamento}</div>`:''}<div style="display:flex;gap:8px"><button class="btn bo" style="flex:1" onclick="openHotel('${h.id}')">Ver / Editar</button><button class="btn bd" onclick="deleteHotel('${h.id}')">✕</button></div></div>`).join('')
 }
-
 function openNovoHotel(){
   hotelAtual=null
   document.getElementById('mh-title').textContent='Novo Hotel'
   document.getElementById('mh-sub').textContent='Preencha os dados do hotel'
-  document.querySelectorAll('#modal-hotel .atab-content').forEach(t=>t.classList.remove('active'))
+  document.querySelectorAll('#modal-hotel .atc').forEach(t=>t.classList.remove('active'))
   document.querySelectorAll('#modal-hotel .atab').forEach(t=>t.classList.remove('active'))
-  document.getElementById('atab2-hgeral').classList.add('active')
+  document.getElementById('atab-hgeral').classList.add('active')
   document.querySelector('#modal-hotel .atab').classList.add('active')
-  clearHotelForm()
-  document.getElementById('modal-hotel').classList.add('open')
+  clearHForm();document.getElementById('modal-hotel').classList.add('open')
 }
-
 function openHotel(id){
   const h=hoteis.find(x=>x.id===id);if(!h)return
   hotelAtual={...h}
   document.getElementById('mh-title').textContent=h.nome
   document.getElementById('mh-sub').textContent=[h.cidade,h.pais].filter(Boolean).join(' · ')
-  document.querySelectorAll('#modal-hotel .atab-content').forEach(t=>t.classList.remove('active'))
+  document.querySelectorAll('#modal-hotel .atc').forEach(t=>t.classList.remove('active'))
   document.querySelectorAll('#modal-hotel .atab').forEach(t=>t.classList.remove('active'))
-  document.getElementById('atab2-hgeral').classList.add('active')
+  document.getElementById('atab-hgeral').classList.add('active')
   document.querySelector('#modal-hotel .atab').classList.add('active')
-  fillHotelForm(h)
-  document.getElementById('modal-hotel').classList.add('open')
+  fillHForm(h);document.getElementById('modal-hotel').classList.add('open')
 }
-
-function clearHotelForm(){
-  ['h-nome','h-pais','h-cidade','h-site','h-email','h-instagram','h-regime','h-acomodacoes','h-ano',
-   'h-rest-ai','h-rest-prem','h-cafeteria','h-bares-ai','h-bares-prem',
-   'h-diaria','h-sinal','h-bloqueio','h-val-casamento','h-luau',
-   'h-factsheet','h-tour','h-espacos','h-mapa',
-   'h-comissao','h-percentual','h-a-pagar','h-email-cobr'
-  ].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
-  document.getElementById('h-regiao').value=''
-  document.getElementById('h-tipo').value=''
-  ;['h-frigobar','h-room-service','h-bar-pago','h-rest-pago','h-kids','h-parque','h-pub','h-cassino','h-spa','h-wifi','h-sol','h-criancas','h-pets','h-paga-com'].forEach(id=>setToggle(id,false))
+function clearHForm(){
+  ['h-nome','h-pais','h-cidade','h-site','h-email','h-instagram','h-regime','h-acomodacoes','h-ano','h-rest-ai','h-rest-prem','h-cafeteria','h-bares-ai','h-bares-prem','h-diaria','h-sinal','h-bloqueio','h-val-casamento','h-luau','h-factsheet','h-tour','h-espacos','h-mapa','h-comissao','h-percentual','h-a-pagar','h-email-cobr'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
+  document.getElementById('h-regiao').value='';document.getElementById('h-tipo').value=''
+  ;['h-frigobar','h-room-service','h-bar-pago','h-rest-pago','h-kids','h-parque','h-pub','h-cassino','h-spa','h-wifi','h-sol','h-criancas','h-pets','h-paga-com'].forEach(id=>setTg(id,false))
 }
-
-function fillHotelForm(h){
-  const set=(id,val)=>{const el=document.getElementById(id);if(el)el.value=val||''}
-  set('h-nome',h.nome);set('h-pais',h.pais);set('h-cidade',h.cidade);set('h-site',h.site)
-  set('h-email',h.email);set('h-instagram',h.instagram);set('h-regime',h.regime)
-  set('h-acomodacoes',h.num_acomodacoes);set('h-ano',h.ano_construcao)
-  set('h-rest-ai',h.restaurantes_ai);set('h-rest-prem',h.restaurantes_premium)
-  set('h-cafeteria',h.cafeteria);set('h-bares-ai',h.bares_ai);set('h-bares-prem',h.bares_prem)
-  set('h-diaria',h.valor_diaria);set('h-sinal',h.valor_sinal);set('h-bloqueio',h.valor_bloqueio)
-  set('h-val-casamento',h.valor_casamento);set('h-luau',h.valor_luau)
-  set('h-factsheet',h.factsheet);set('h-tour',h.tour_virtual);set('h-espacos',h.espacos);set('h-mapa',h.mapa)
-  set('h-comissao',h.comissao);set('h-percentual',h.percentual);set('h-a-pagar',h.comissao_a_pagar);set('h-email-cobr',h.email_cobranca)
+function fillHForm(h){
+  const s=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||''}
+  s('h-nome',h.nome);s('h-pais',h.pais);s('h-cidade',h.cidade);s('h-site',h.site);s('h-email',h.email);s('h-instagram',h.instagram);s('h-regime',h.regime);s('h-acomodacoes',h.num_acomodacoes);s('h-ano',h.ano_construcao);s('h-rest-ai',h.restaurantes_ai);s('h-rest-prem',h.restaurantes_premium);s('h-cafeteria',h.cafeteria);s('h-bares-ai',h.bares_ai);s('h-bares-prem',h.bares_prem);s('h-diaria',h.valor_diaria);s('h-sinal',h.valor_sinal);s('h-bloqueio',h.valor_bloqueio);s('h-val-casamento',h.valor_casamento);s('h-luau',h.valor_luau);s('h-factsheet',h.factsheet);s('h-tour',h.tour_virtual);s('h-espacos',h.espacos);s('h-mapa',h.mapa);s('h-comissao',h.comissao);s('h-percentual',h.percentual);s('h-a-pagar',h.comissao_a_pagar);s('h-email-cobr',h.email_cobranca)
   if(h.regiao)document.getElementById('h-regiao').value=h.regiao
   if(h.tipo)document.getElementById('h-tipo').value=h.tipo
-  setToggle('h-frigobar',h.frigobar);setToggle('h-room-service',h.room_service)
-  setToggle('h-bar-pago',h.bar_pago);setToggle('h-rest-pago',h.restaurante_pago)
-  setToggle('h-kids',h.area_kids);setToggle('h-parque',h.parque_aquatico)
-  setToggle('h-pub',h.pub_disco);setToggle('h-cassino',h.cassino)
-  setToggle('h-spa',h.spa);setToggle('h-wifi',h.wifi);setToggle('h-sol',h.por_do_sol)
-  setToggle('h-criancas',h.aceita_criancas);setToggle('h-pets',h.aceita_pets)
-  setToggle('h-paga-com',h.paga_comissao)
+  setTg('h-frigobar',h.frigobar);setTg('h-room-service',h.room_service);setTg('h-bar-pago',h.bar_pago);setTg('h-rest-pago',h.restaurante_pago);setTg('h-kids',h.area_kids);setTg('h-parque',h.parque_aquatico);setTg('h-pub',h.pub_disco);setTg('h-cassino',h.cassino);setTg('h-spa',h.spa);setTg('h-wifi',h.wifi);setTg('h-sol',h.por_do_sol);setTg('h-criancas',h.aceita_criancas);setTg('h-pets',h.aceita_pets);setTg('h-paga-com',h.paga_comissao)
 }
-
-function getHotelData(){
+function getHData(){
   const v=id=>document.getElementById(id)?.value||''
-  return{
-    nome:v('h-nome'),regiao:v('h-regiao'),pais:v('h-pais'),cidade:v('h-cidade'),
-    site:v('h-site'),email:v('h-email'),instagram:v('h-instagram'),
-    tipo:v('h-tipo'),regime:v('h-regime'),num_acomodacoes:v('h-acomodacoes'),
-    ano_construcao:v('h-ano'),restaurantes_ai:v('h-rest-ai'),restaurantes_premium:v('h-rest-prem'),
-    cafeteria:v('h-cafeteria'),bares_ai:v('h-bares-ai'),bares_prem:v('h-bares-prem'),
-    valor_diaria:v('h-diaria'),valor_sinal:v('h-sinal'),valor_bloqueio:v('h-bloqueio'),
-    valor_casamento:v('h-val-casamento'),valor_luau:v('h-luau'),
-    factsheet:v('h-factsheet'),tour_virtual:v('h-tour'),espacos:v('h-espacos'),mapa:v('h-mapa'),
-    comissao:v('h-comissao'),percentual:v('h-percentual'),comissao_a_pagar:v('h-a-pagar'),email_cobranca:v('h-email-cobr'),
-    frigobar:getToggle('h-frigobar'),room_service:getToggle('h-room-service'),
-    bar_pago:getToggle('h-bar-pago'),restaurante_pago:getToggle('h-rest-pago'),
-    area_kids:getToggle('h-kids'),parque_aquatico:getToggle('h-parque'),
-    pub_disco:getToggle('h-pub'),cassino:getToggle('h-cassino'),
-    spa:getToggle('h-spa'),wifi:getToggle('h-wifi'),por_do_sol:getToggle('h-sol'),
-    aceita_criancas:getToggle('h-criancas'),aceita_pets:getToggle('h-pets'),
-    paga_comissao:getToggle('h-paga-com'),
-  }
+  return{nome:v('h-nome'),regiao:v('h-regiao'),pais:v('h-pais'),cidade:v('h-cidade'),site:v('h-site'),email:v('h-email'),instagram:v('h-instagram'),tipo:v('h-tipo'),regime:v('h-regime'),num_acomodacoes:v('h-acomodacoes'),ano_construcao:v('h-ano'),restaurantes_ai:v('h-rest-ai'),restaurantes_premium:v('h-rest-prem'),cafeteria:v('h-cafeteria'),bares_ai:v('h-bares-ai'),bares_prem:v('h-bares-prem'),valor_diaria:v('h-diaria'),valor_sinal:v('h-sinal'),valor_bloqueio:v('h-bloqueio'),valor_casamento:v('h-val-casamento'),valor_luau:v('h-luau'),factsheet:v('h-factsheet'),tour_virtual:v('h-tour'),espacos:v('h-espacos'),mapa:v('h-mapa'),comissao:v('h-comissao'),percentual:v('h-percentual'),comissao_a_pagar:v('h-a-pagar'),email_cobranca:v('h-email-cobr'),frigobar:getTg('h-frigobar'),room_service:getTg('h-room-service'),bar_pago:getTg('h-bar-pago'),restaurante_pago:getTg('h-rest-pago'),area_kids:getTg('h-kids'),parque_aquatico:getTg('h-parque'),pub_disco:getTg('h-pub'),cassino:getTg('h-cassino'),spa:getTg('h-spa'),wifi:getTg('h-wifi'),por_do_sol:getTg('h-sol'),aceita_criancas:getTg('h-criancas'),aceita_pets:getTg('h-pets'),paga_comissao:getTg('h-paga-com')}
 }
-
 async function salvarHotel(){
   const btn=document.getElementById('btn-sh');btn.textContent='Salvando...';btn.disabled=true
-  const data=getHotelData()
+  const data=getHData()
   if(!data.nome){alert('Preencha o nome do hotel!');btn.textContent='Salvar';btn.disabled=false;return}
   if(hotelAtual){await sb.from('hoteis').update(data).eq('id',hotelAtual.id)}
   else{await sb.from('hoteis').insert(data)}
   btn.textContent='Salvar';btn.disabled=false;closeModal('modal-hotel');loadHoteis()
 }
+async function deleteHotel(id){if(!confirm('Remover?'))return;await sb.from('hoteis').delete().eq('id',id);loadHoteis()}
 
-async function deleteHotel(id){
-  if(!confirm('Remover este hotel?'))return
-  await sb.from('hoteis').delete().eq('id',id);loadHoteis()
-}
+function fmtDate(d){if(!d)return'—';const[y,m,day]=d.split('-');return`${day}/${m}/${y}`}
 </script>
 </body>
 </html>
