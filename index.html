@@ -110,6 +110,7 @@
   </div>
   <div class="nav-item active" onclick="showPage('casamentos')" id="nav-casamentos">💍 Casamentos</div>
   <div class="nav-item" onclick="showPage('assessoras')" id="nav-assessoras">👩 Assessoras</div>
+  <div class="nav-item" onclick="showPage('hoteis')" id="nav-hoteis">🏨 Hotéis</div>
 </div>
 
 <div class="main">
@@ -353,17 +354,165 @@
   </div>
 </div>
 
-<script>
-const { createClient } = supabase
-const sb = createClient(
-  'https://yrnlfarricrhtfomwynd.supabase.co',
+<!-- PAGE: HOTÉIS -->
+<div class="page" id="page-hoteis">
+  <div class="page-header">
+    <div><div class="page-title">Banco de Hotéis</div><div class="page-sub" id="hoteis-count">Carregando...</div></div>
+    <button class="btn btn-gold" onclick="openNovoHotel()">+ Novo Hotel</button>
+  </div>
+  <div style="display:flex;gap:20px;align-items:flex-start;">
+    <div style="width:200px;flex-shrink:0;background:var(--white);border-radius:12px;border:1px solid var(--border);padding:20px;position:sticky;top:24px;">
+      <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;">Filtros</div>
+      <div class="field"><input id="search-h" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none;" placeholder="Buscar hotel..." oninput="renderHoteis()" /></div>
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+        <p style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Região</p>
+        <select id="f-h-regiao" onchange="renderHoteis()" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none;">
+          <option value="">Todas</option>
+          <option>Caribe</option>
+          <option>América do Sul</option>
+          <option>Europa</option>
+          <option>Ásia</option>
+        </select>
+      </div>
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+        <p style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">País</p>
+        <input id="f-h-pais" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none;" placeholder="Ex: México" oninput="renderHoteis()" />
+      </div>
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+        <p style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Estrutura</p>
+        <label class="fl"><input type="checkbox" id="fh-kids" onchange="renderHoteis()"> 👶 Aceita Crianças</label>
+        <label class="fl"><input type="checkbox" id="fh-pets" onchange="renderHoteis()"> 🐾 Aceita Pets</label>
+        <label class="fl"><input type="checkbox" id="fh-spa" onchange="renderHoteis()"> 💆 Spa</label>
+        <label class="fl"><input type="checkbox" id="fh-cassino" onchange="renderHoteis()"> 🎰 Cassino</label>
+        <label class="fl"><input type="checkbox" id="fh-parque" onchange="renderHoteis()"> 🌊 Parque Aquático</label>
+        <label class="fl"><input type="checkbox" id="fh-sol" onchange="renderHoteis()"> 🌅 Pôr do Sol</label>
+      </div>
+    </div>
+    <div style="flex:1;display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px;" id="hoteis-grid">
+      <div class="loading">Carregando hotéis...</div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: HOTEL -->
+<div class="modal-overlay" id="modal-hotel">
+  <div class="modal-box" style="max-width:800px">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="mh-title">Novo Hotel</div>
+        <div class="modal-subtitle" id="mh-sub">Preencha os dados do hotel</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('modal-hotel')">✕</button>
+    </div>
+    <div class="atabs">
+      <button class="atab active" onclick="showATab2('hgeral',this)">01 · Informações Gerais</button>
+      <button class="atab" onclick="showATab2('hespec',this)">02 · Específicas</button>
+      <button class="atab" onclick="showATab2('hvalores',this)">03 · Valores</button>
+      <button class="atab" onclick="showATab2('hcasamento',this)">04 · Casamentos</button>
+      <button class="atab" onclick="showATab2('hcomissao',this)">05 · Comissão</button>
+    </div>
+
+    <!-- ABA 1: GERAL -->
+    <div class="atab-content active" id="atab2-hgeral">
+      <div class="form-grid2">
+        <div class="field"><label>Nome do Hotel</label><input id="h-nome" placeholder="Ex: Hard Rock Hotel Cancún" /></div>
+        <div class="field"><label>Região</label>
+          <select id="h-regiao">
+            <option value="">Selecione</option>
+            <option>Caribe</option><option>América do Sul</option><option>Europa</option><option>Ásia</option>
+          </select>
+        </div>
+        <div class="field"><label>País</label><input id="h-pais" /></div>
+        <div class="field"><label>Cidade</label><input id="h-cidade" /></div>
+        <div class="field"><label>Site Oficial</label><input id="h-site" placeholder="https://" /></div>
+        <div class="field"><label>E-mail para Contato</label><input id="h-email" type="email" /></div>
+      </div>
+      <div class="field"><label>Instagram</label><input id="h-instagram" placeholder="https://www.instagram.com/..." /></div>
+    </div>
+
+    <!-- ABA 2: ESPECÍFICAS -->
+    <div class="atab-content" id="atab2-hespec">
+      <div class="form-grid2">
+        <div class="field"><label>Tipo de Hotel</label>
+          <select id="h-tipo">
+            <option value="">Selecione</option>
+            <option>All Inclusive</option><option>Resort</option><option>Boutique</option><option>Pousada</option><option>Hotel Urbano</option><option>Fazenda/Vinhedo</option>
+          </select>
+        </div>
+        <div class="field"><label>Regime de Alimentação</label><input id="h-regime" placeholder="Ex: All Inclusive, Café da manhã..." /></div>
+        <div class="field"><label>Número de Acomodações</label><input id="h-acomodacoes" /></div>
+        <div class="field"><label>Ano Construção/Remodelação</label><input id="h-ano" placeholder="Ex: 2015 / 2022" /></div>
+        <div class="field"><label>Restaurantes (All Inclusive)</label><input id="h-rest-ai" /></div>
+        <div class="field"><label>Restaurantes Premium</label><input id="h-rest-prem" /></div>
+        <div class="field"><label>Cafeteria</label><input id="h-cafeteria" /></div>
+        <div class="field"><label>Bares (All Inclusive)</label><input id="h-bares-ai" /></div>
+        <div class="field"><label>Bares Premium</label><input id="h-bares-prem" /></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:4px;">
+        <div class="toggle-row" onclick="toggleField('h-frigobar')"><div class="toggle-track" id="track-h-frigobar"><div class="toggle-thumb"></div></div><span class="toggle-label">Frigobar com Bebidas</span></div>
+        <div class="toggle-row" onclick="toggleField('h-room-service')"><div class="toggle-track" id="track-h-room-service"><div class="toggle-thumb"></div></div><span class="toggle-label">Room Service</span></div>
+        <div class="toggle-row" onclick="toggleField('h-bar-pago')"><div class="toggle-track" id="track-h-bar-pago"><div class="toggle-thumb"></div></div><span class="toggle-label">Bar Pago</span></div>
+        <div class="toggle-row" onclick="toggleField('h-rest-pago')"><div class="toggle-track" id="track-h-rest-pago"><div class="toggle-thumb"></div></div><span class="toggle-label">Restaurante Pago</span></div>
+        <div class="toggle-row" onclick="toggleField('h-kids')"><div class="toggle-track" id="track-h-kids"><div class="toggle-thumb"></div></div><span class="toggle-label">Área Kids</span></div>
+        <div class="toggle-row" onclick="toggleField('h-parque')"><div class="toggle-track" id="track-h-parque"><div class="toggle-thumb"></div></div><span class="toggle-label">Parque Aquático</span></div>
+        <div class="toggle-row" onclick="toggleField('h-pub')"><div class="toggle-track" id="track-h-pub"><div class="toggle-thumb"></div></div><span class="toggle-label">Pub ou Disco</span></div>
+        <div class="toggle-row" onclick="toggleField('h-cassino')"><div class="toggle-track" id="track-h-cassino"><div class="toggle-thumb"></div></div><span class="toggle-label">Cassino</span></div>
+        <div class="toggle-row" onclick="toggleField('h-spa')"><div class="toggle-track" id="track-h-spa"><div class="toggle-thumb"></div></div><span class="toggle-label">Spa no Resort</span></div>
+        <div class="toggle-row" onclick="toggleField('h-wifi')"><div class="toggle-track" id="track-h-wifi"><div class="toggle-thumb"></div></div><span class="toggle-label">Wi-Fi</span></div>
+        <div class="toggle-row" onclick="toggleField('h-sol')"><div class="toggle-track" id="track-h-sol"><div class="toggle-thumb"></div></div><span class="toggle-label">🌅 Pôr do Sol</span></div>
+        <div class="toggle-row" onclick="toggleField('h-criancas')"><div class="toggle-track" id="track-h-criancas"><div class="toggle-thumb"></div></div><span class="toggle-label">Aceita Crianças</span></div>
+        <div class="toggle-row" onclick="toggleField('h-pets')"><div class="toggle-track" id="track-h-pets"><div class="toggle-thumb"></div></div><span class="toggle-label">Aceita Pets</span></div>
+      </div>
+    </div>
+
+    <!-- ABA 3: VALORES -->
+    <div class="atab-content" id="atab2-hvalores">
+      <div class="form-grid2">
+        <div class="field"><label>Valor Diária Casal</label><input id="h-diaria" placeholder="Ex: USD 450,00" /></div>
+        <div class="field"><label>Valor Sinal Casamento</label><input id="h-sinal" placeholder="Ex: USD 300" /></div>
+        <div class="field"><label>Valor Bloqueio de Quartos</label><input id="h-bloqueio" placeholder="Ex: USD 350–500" /></div>
+        <div class="field"><label>Valor Inicial Casamento (50p)</label><input id="h-val-casamento" placeholder="Ex: USD 6.000 – 9.000" /></div>
+        <div class="field"><label>Valor do Luau (médio)</label><input id="h-luau" placeholder="Ex: USD 2.000 – 3.000" /></div>
+      </div>
+    </div>
+
+    <!-- ABA 4: CASAMENTOS -->
+    <div class="atab-content" id="atab2-hcasamento">
+      <div class="field"><label>Factsheet (link)</label><input id="h-factsheet" placeholder="https://" /></div>
+      <div class="field"><label>Tour Virtual (link)</label><input id="h-tour" placeholder="https://" /></div>
+      <div class="field"><label>Espaços para Casamento</label><textarea id="h-espacos" style="min-height:100px;" placeholder="Ex: Praia (200p – cerimônia, jantar), Gazebo (80p)..."></textarea></div>
+      <div class="field"><label>Mapa do Hotel (link)</label><input id="h-mapa" placeholder="https://" /></div>
+    </div>
+
+    <!-- ABA 5: COMISSÃO -->
+    <div class="atab-content" id="atab2-hcomissao">
+      <div class="form-grid2">
+        <div class="field"><label>Comissão</label><input id="h-comissao" placeholder="Ex: 10%" /></div>
+        <div class="field"><label>Percentual</label><input id="h-percentual" placeholder="Ex: 10" /></div>
+        <div class="field"><label>A ser Paga</label><input id="h-a-pagar" placeholder="Ex: USD 500" /></div>
+        <div class="field"><label>E-mail para Cobrança</label><input id="h-email-cobr" type="email" /></div>
+      </div>
+      <div class="toggle-row" onclick="toggleField('h-paga-com')">
+        <div class="toggle-track" id="track-h-paga-com"><div class="toggle-thumb"></div></div>
+        <span class="toggle-label" style="font-weight:600">✅ Comissão Paga</span>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-hotel')">Cancelar</button>
+      <button class="btn btn-gold" id="btn-sh" onclick="salvarHotel()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlybmxmYXJyaWNyaHRmb213eW5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczOTIxODksImV4cCI6MjA5Mjk2ODE4OX0.Ad4awFjQ9vcDqNyBbWycgv0rvpc3DOz4pPTi41nSp8w'
 )
 
 let casamentos=[], assessoras=[], casamentoAtual=null, assessoraAtual=null
 let escaladas=[], toggleStates={}, filterA='', pickerOpen=false, hierarquiaAtual=''
 
-document.addEventListener('DOMContentLoaded',()=>{ loadCasamentos(); loadAssessoras() })
+document.addEventListener('DOMContentLoaded',()=>{ loadCasamentos(); loadAssessoras(); loadHoteis() })
 
 function showPage(p) {
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'))
@@ -749,6 +898,157 @@ async function renderHistorico(){
 function formatDate(d){
   if(!d)return'—'
   const[y,m,day]=d.split('-');return`${day}/${m}/${y}`
+}
+
+// ── HOTÉIS
+let hoteis=[], hotelAtual=null
+
+function showATab2(tab,btn){
+  document.querySelectorAll('#modal-hotel .atab-content').forEach(t=>t.classList.remove('active'))
+  document.querySelectorAll('#modal-hotel .atab').forEach(t=>t.classList.remove('active'))
+  document.getElementById('atab2-'+tab).classList.add('active')
+  if(btn)btn.classList.add('active')
+}
+
+async function loadHoteis(){
+  const{data}=await sb.from('hoteis').select('*').order('nome')
+  hoteis=data||[];renderHoteis()
+}
+
+function renderHoteis(){
+  const search=(document.getElementById('search-h')?.value||'').toLowerCase()
+  const regiao=document.getElementById('f-h-regiao')?.value||''
+  const pais=(document.getElementById('f-h-pais')?.value||'').toLowerCase()
+  const fKids=document.getElementById('fh-kids')?.checked
+  const fPets=document.getElementById('fh-pets')?.checked
+  const fSpa=document.getElementById('fh-spa')?.checked
+  const fCassino=document.getElementById('fh-cassino')?.checked
+  const fParque=document.getElementById('fh-parque')?.checked
+  const fSol=document.getElementById('fh-sol')?.checked
+  const grid=document.getElementById('hoteis-grid')
+  const filtered=hoteis.filter(h=>{
+    const ms=!search||h.nome?.toLowerCase().includes(search)||h.cidade?.toLowerCase().includes(search)
+    const mr=!regiao||h.regiao===regiao
+    const mp=!pais||h.pais?.toLowerCase().includes(pais)
+    return ms&&mr&&mp&&(!fKids||h.aceita_criancas)&&(!fPets||h.aceita_pets)&&(!fSpa||h.spa)&&(!fCassino||h.cassino)&&(!fParque||h.parque_aquatico)&&(!fSol||h.por_do_sol)
+  })
+  document.getElementById('hoteis-count').textContent=hoteis.length+' hotel(is) cadastrado(s)'
+  if(!filtered.length){grid.innerHTML='<div class="empty"><div class="empty-icon">🏨</div><div class="empty-text">Nenhum hotel encontrado</div></div>';return}
+  grid.innerHTML=filtered.map(h=>`
+    <div class="card" style="transition:box-shadow 0.15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,0.12)'" onmouseout="this.style.boxShadow=''">
+      <div style="margin-bottom:8px">
+        <div style="font-weight:600;font-size:15px;font-family:'Cormorant Garamond',serif;margin-bottom:2px">${h.nome}</div>
+        <div style="font-size:12px;color:#888">📍 ${[h.cidade,h.pais,h.regiao].filter(Boolean).join(' · ')}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+        ${h.tipo?`<span class="tag tag-gold">${h.tipo}</span>`:''}
+        ${h.por_do_sol?'<span class="tag tag-gold">🌅 Pôr do Sol</span>':''}
+        ${h.spa?'<span class="tag tag-green">💆 Spa</span>':''}
+        ${h.aceita_criancas?'<span class="tag tag-green">👶 Kids</span>':''}
+        ${h.parque_aquatico?'<span class="tag tag-blue">🌊 Aquapark</span>':''}
+        ${h.cassino?'<span class="tag tag-gray">🎰 Cassino</span>':''}
+      </div>
+      ${h.valor_casamento?`<div style="font-size:12px;color:#888;margin-bottom:10px">💍 ${h.valor_casamento}</div>`:''}
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-outline" style="flex:1" onclick="openHotel('${h.id}')">Ver / Editar</button>
+        <button class="btn btn-danger" onclick="deleteHotel('${h.id}')">✕</button>
+      </div>
+    </div>`).join('')
+}
+
+function openNovoHotel(){
+  hotelAtual=null
+  document.getElementById('mh-title').textContent='Novo Hotel'
+  document.getElementById('mh-sub').textContent='Preencha os dados do hotel'
+  document.querySelectorAll('#modal-hotel .atab-content').forEach(t=>t.classList.remove('active'))
+  document.querySelectorAll('#modal-hotel .atab').forEach(t=>t.classList.remove('active'))
+  document.getElementById('atab2-hgeral').classList.add('active')
+  document.querySelector('#modal-hotel .atab').classList.add('active')
+  clearHotelForm()
+  document.getElementById('modal-hotel').classList.add('open')
+}
+
+function openHotel(id){
+  const h=hoteis.find(x=>x.id===id);if(!h)return
+  hotelAtual={...h}
+  document.getElementById('mh-title').textContent=h.nome
+  document.getElementById('mh-sub').textContent=[h.cidade,h.pais].filter(Boolean).join(' · ')
+  document.querySelectorAll('#modal-hotel .atab-content').forEach(t=>t.classList.remove('active'))
+  document.querySelectorAll('#modal-hotel .atab').forEach(t=>t.classList.remove('active'))
+  document.getElementById('atab2-hgeral').classList.add('active')
+  document.querySelector('#modal-hotel .atab').classList.add('active')
+  fillHotelForm(h)
+  document.getElementById('modal-hotel').classList.add('open')
+}
+
+function clearHotelForm(){
+  ['h-nome','h-pais','h-cidade','h-site','h-email','h-instagram','h-regime','h-acomodacoes','h-ano',
+   'h-rest-ai','h-rest-prem','h-cafeteria','h-bares-ai','h-bares-prem',
+   'h-diaria','h-sinal','h-bloqueio','h-val-casamento','h-luau',
+   'h-factsheet','h-tour','h-espacos','h-mapa',
+   'h-comissao','h-percentual','h-a-pagar','h-email-cobr'
+  ].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
+  document.getElementById('h-regiao').value=''
+  document.getElementById('h-tipo').value=''
+  ;['h-frigobar','h-room-service','h-bar-pago','h-rest-pago','h-kids','h-parque','h-pub','h-cassino','h-spa','h-wifi','h-sol','h-criancas','h-pets','h-paga-com'].forEach(id=>setToggle(id,false))
+}
+
+function fillHotelForm(h){
+  const set=(id,val)=>{const el=document.getElementById(id);if(el)el.value=val||''}
+  set('h-nome',h.nome);set('h-pais',h.pais);set('h-cidade',h.cidade);set('h-site',h.site)
+  set('h-email',h.email);set('h-instagram',h.instagram);set('h-regime',h.regime)
+  set('h-acomodacoes',h.num_acomodacoes);set('h-ano',h.ano_construcao)
+  set('h-rest-ai',h.restaurantes_ai);set('h-rest-prem',h.restaurantes_premium)
+  set('h-cafeteria',h.cafeteria);set('h-bares-ai',h.bares_ai);set('h-bares-prem',h.bares_prem)
+  set('h-diaria',h.valor_diaria);set('h-sinal',h.valor_sinal);set('h-bloqueio',h.valor_bloqueio)
+  set('h-val-casamento',h.valor_casamento);set('h-luau',h.valor_luau)
+  set('h-factsheet',h.factsheet);set('h-tour',h.tour_virtual);set('h-espacos',h.espacos);set('h-mapa',h.mapa)
+  set('h-comissao',h.comissao);set('h-percentual',h.percentual);set('h-a-pagar',h.comissao_a_pagar);set('h-email-cobr',h.email_cobranca)
+  if(h.regiao)document.getElementById('h-regiao').value=h.regiao
+  if(h.tipo)document.getElementById('h-tipo').value=h.tipo
+  setToggle('h-frigobar',h.frigobar);setToggle('h-room-service',h.room_service)
+  setToggle('h-bar-pago',h.bar_pago);setToggle('h-rest-pago',h.restaurante_pago)
+  setToggle('h-kids',h.area_kids);setToggle('h-parque',h.parque_aquatico)
+  setToggle('h-pub',h.pub_disco);setToggle('h-cassino',h.cassino)
+  setToggle('h-spa',h.spa);setToggle('h-wifi',h.wifi);setToggle('h-sol',h.por_do_sol)
+  setToggle('h-criancas',h.aceita_criancas);setToggle('h-pets',h.aceita_pets)
+  setToggle('h-paga-com',h.paga_comissao)
+}
+
+function getHotelData(){
+  const v=id=>document.getElementById(id)?.value||''
+  return{
+    nome:v('h-nome'),regiao:v('h-regiao'),pais:v('h-pais'),cidade:v('h-cidade'),
+    site:v('h-site'),email:v('h-email'),instagram:v('h-instagram'),
+    tipo:v('h-tipo'),regime:v('h-regime'),num_acomodacoes:v('h-acomodacoes'),
+    ano_construcao:v('h-ano'),restaurantes_ai:v('h-rest-ai'),restaurantes_premium:v('h-rest-prem'),
+    cafeteria:v('h-cafeteria'),bares_ai:v('h-bares-ai'),bares_prem:v('h-bares-prem'),
+    valor_diaria:v('h-diaria'),valor_sinal:v('h-sinal'),valor_bloqueio:v('h-bloqueio'),
+    valor_casamento:v('h-val-casamento'),valor_luau:v('h-luau'),
+    factsheet:v('h-factsheet'),tour_virtual:v('h-tour'),espacos:v('h-espacos'),mapa:v('h-mapa'),
+    comissao:v('h-comissao'),percentual:v('h-percentual'),comissao_a_pagar:v('h-a-pagar'),email_cobranca:v('h-email-cobr'),
+    frigobar:getToggle('h-frigobar'),room_service:getToggle('h-room-service'),
+    bar_pago:getToggle('h-bar-pago'),restaurante_pago:getToggle('h-rest-pago'),
+    area_kids:getToggle('h-kids'),parque_aquatico:getToggle('h-parque'),
+    pub_disco:getToggle('h-pub'),cassino:getToggle('h-cassino'),
+    spa:getToggle('h-spa'),wifi:getToggle('h-wifi'),por_do_sol:getToggle('h-sol'),
+    aceita_criancas:getToggle('h-criancas'),aceita_pets:getToggle('h-pets'),
+    paga_comissao:getToggle('h-paga-com'),
+  }
+}
+
+async function salvarHotel(){
+  const btn=document.getElementById('btn-sh');btn.textContent='Salvando...';btn.disabled=true
+  const data=getHotelData()
+  if(!data.nome){alert('Preencha o nome do hotel!');btn.textContent='Salvar';btn.disabled=false;return}
+  if(hotelAtual){await sb.from('hoteis').update(data).eq('id',hotelAtual.id)}
+  else{await sb.from('hoteis').insert(data)}
+  btn.textContent='Salvar';btn.disabled=false;closeModal('modal-hotel');loadHoteis()
+}
+
+async function deleteHotel(id){
+  if(!confirm('Remover este hotel?'))return
+  await sb.from('hoteis').delete().eq('id',id);loadHoteis()
 }
 </script>
 </body>
