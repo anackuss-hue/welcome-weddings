@@ -96,6 +96,8 @@
   .empty-icon { font-size: 40px; margin-bottom: 12px; }
   .empty-text { font-size: 14px; }
   .avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), var(--gold-light)); display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 18px; color: white; font-weight: 600; flex-shrink: 0; }
+  .fl { display:flex; align-items:center; gap:8px; font-size:12px; color:#555; cursor:pointer; padding:4px 0; }
+  .fl input[type=checkbox] { accent-color: var(--gold); width:14px; height:14px; cursor:pointer; flex-shrink:0; }
 </style>
 </head>
 <body>
@@ -125,17 +127,59 @@
       <div><div class="page-title">Banco de Assessoras</div><div class="page-sub" id="assessoras-count">Carregando...</div></div>
       <button class="btn btn-gold" onclick="openNovaAssessora()">+ Nova Assessora</button>
     </div>
-    <div class="filter-bar">
-      <input class="search-input" id="search-a" placeholder="Buscar por nome ou cidade..." oninput="renderAssessoras()" />
-      <button class="filter-btn active" onclick="setFilterA('')" id="fb-all">Todas</button>
-      <button class="filter-btn" onclick="setFilterA('ingles')" id="fb-ingles">🇬🇧 Inglês</button>
-      <button class="filter-btn" onclick="setFilterA('espanhol')" id="fb-espanhol">🇪🇸 Espanhol</button>
-      <button class="filter-btn" onclick="setFilterA('frances')" id="fb-frances">🇫🇷 Francês</button>
-      <button class="filter-btn" onclick="setFilterA('italiano')" id="fb-italiano">🇮🇹 Italiano</button>
-      <button class="filter-btn" onclick="setFilterA('equipe')" id="fb-equipe">👥 Equipe</button>
-      <button class="filter-btn" onclick="setFilterA('blacklist')" id="fb-blacklist">🚫 Blacklist</button>
+    <div style="display:flex;gap:20px;align-items:flex-start;">
+
+      <!-- PAINEL DE FILTROS -->
+      <div style="width:200px;flex-shrink:0;background:var(--white);border-radius:12px;border:1px solid var(--border);padding:20px;position:sticky;top:24px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <span style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;">Filtros</span>
+          <span id="filtros-count" style="display:none;font-size:10px;font-weight:700;background:var(--gold);color:white;border-radius:10px;padding:2px 7px;cursor:pointer;" onclick="limparFiltros()">limpar</span>
+        </div>
+
+        <div style="margin-bottom:4px;">
+          <input id="search-a" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none;" placeholder="Buscar nome ou cidade..." oninput="renderAssessoras()" />
+        </div>
+
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
+          <p style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Idiomas</p>
+          <label class="fl"><input type="checkbox" id="f-ingles" onchange="renderAssessoras()"> <span style="font-size:13px">🇬🇧</span> Inglês</label>
+          <label class="fl"><input type="checkbox" id="f-espanhol" onchange="renderAssessoras()"> <span style="font-size:13px">🇪🇸</span> Espanhol</label>
+          <label class="fl"><input type="checkbox" id="f-frances" onchange="renderAssessoras()"> <span style="font-size:13px">🇫🇷</span> Francês</label>
+          <label class="fl"><input type="checkbox" id="f-italiano" onchange="renderAssessoras()"> <span style="font-size:13px">🇮🇹</span> Italiano</label>
+        </div>
+
+        <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+          <p style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Hierarquia</p>
+          <label class="fl"><input type="checkbox" id="f-h1" onchange="renderAssessoras()"> ⭐ 1ª Assessora</label>
+          <label class="fl"><input type="checkbox" id="f-h2" onchange="renderAssessoras()"> ✦ 2ª Assessora</label>
+        </div>
+
+        <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+          <p style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Perfil</p>
+          <label class="fl"><input type="checkbox" id="f-equipe" onchange="renderAssessoras()"> 👥 Equipe</label>
+          <label class="fl"><input type="checkbox" id="f-blacklist" onchange="renderAssessoras()"> 🚫 Blacklist</label>
+          <label class="fl"><input type="checkbox" id="f-febre" onchange="renderAssessoras()"> 💉 Febre Amarela</label>
+        </div>
+
+        <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+          <p style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Destino</p>
+          <p style="font-size:11px;color:var(--text-muted);font-style:italic;">Disponível em breve</p>
+        </div>
+
+        <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+          <p style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Hotel</p>
+          <p style="font-size:11px;color:var(--text-muted);font-style:italic;">Disponível em breve</p>
+        </div>
+      </div>
+
+      <!-- GRID DE CARDS -->
+      <div style="flex:1;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;" id="assessoras-grid">
+          <div class="loading">Carregando...</div>
+        </div>
+      </div>
+
     </div>
-    <div class="cards-grid" id="assessoras-grid"><div class="loading">Carregando...</div></div>
   </div>
 </div>
 
@@ -552,23 +596,31 @@ async function loadAssessoras(){
   const{data}=await sb.from('assessoras').select('*').order('nome')
   assessoras=data||[];renderAssessoras()
 }
-function setFilterA(f){
-  filterA=f
-  ;['all','ingles','espanhol','frances','italiano','equipe','blacklist'].forEach(k=>{
-    const el=document.getElementById('fb-'+k);if(el)el.classList.remove('active')
+function limparFiltros(){
+  ['f-ingles','f-espanhol','f-frances','f-italiano','f-h1','f-h2','f-equipe','f-blacklist','f-febre'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.checked=false
   })
-  const map={'':'all','ingles':'ingles','espanhol':'espanhol','frances':'frances','italiano':'italiano','possui_equipe':'equipe','blacklist':'blacklist'}
-  const key=f===''?'all':f
-  const el=document.getElementById('fb-'+key);if(el)el.classList.add('active')
+  const s=document.getElementById('search-a');if(s)s.value=''
   renderAssessoras()
 }
 function renderAssessoras(){
   const search=(document.getElementById('search-a')?.value||'').toLowerCase()
+  const f=id=>document.getElementById(id)?.checked
+  const anyActive=[f('f-ingles'),f('f-espanhol'),f('f-frances'),f('f-italiano'),f('f-h1'),f('f-h2'),f('f-equipe'),f('f-blacklist'),f('f-febre'),search].some(Boolean)
+  const fc=document.getElementById('filtros-count');if(fc)fc.style.display=anyActive?'inline':'none'
   const grid=document.getElementById('assessoras-grid')
   const filtered=assessoras.filter(a=>{
     const ms=!search||a.nome?.toLowerCase().includes(search)||a.cidade?.toLowerCase().includes(search)
-    const mf=!filterA||(filterA==='ingles'&&a.ingles)||(filterA==='espanhol'&&a.espanhol)||(filterA==='frances'&&a.frances)||(filterA==='italiano'&&a.italiano)||(filterA==='equipe'&&a.possui_equipe)||(filterA==='blacklist'&&a.blacklist)
-    return ms&&mf
+    const mIngles=!f('f-ingles')||a.ingles
+    const mEspanhol=!f('f-espanhol')||a.espanhol
+    const mFrances=!f('f-frances')||a.frances
+    const mItaliano=!f('f-italiano')||a.italiano
+    const mH1=!f('f-h1')||a.hierarquia==='1ª Assessora'
+    const mH2=!f('f-h2')||a.hierarquia==='2ª Assessora'
+    const mEquipe=!f('f-equipe')||a.possui_equipe
+    const mBlacklist=!f('f-blacklist')||a.blacklist
+    const mFebre=!f('f-febre')||a.febre_amarela
+    return ms&&mIngles&&mEspanhol&&mFrances&&mItaliano&&mH1&&mH2&&mEquipe&&mBlacklist&&mFebre
   })
   document.getElementById('assessoras-count').textContent=assessoras.length+' assessoras cadastradas'
   if(!filtered.length){grid.innerHTML='<div class="empty"><div class="empty-icon">👩</div><div class="empty-text">Nenhuma assessora encontrada</div></div>';return}
