@@ -179,6 +179,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
           <label class="fl"><input type="checkbox" id="f-equipe" onchange="renderAssessoras()"> 👥 Equipe</label>
           <label class="fl"><input type="checkbox" id="f-blacklist" onchange="renderAssessoras()"> 🚫 Blacklist</label>
           <label class="fl"><input type="checkbox" id="f-febre" onchange="renderAssessoras()"> 💉 Febre Amarela</label>
+          <label class="fl"><input type="checkbox" id="f-indicamos" onchange="renderAssessoras()"> ⭐ Indicamos</label>
+          <label class="fl"><input type="checkbox" id="f-camera" onchange="renderAssessoras()"> 📷 Fala com câmera</label>
         </div>
         <div class="fp-sec"><div class="fp-sec-t">Destino</div>
           <select id="f-destino" onchange="renderAssessoras()" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none">
@@ -350,7 +352,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <button class="atab active" onclick="showATab('dados',this)">01 · Dados Pessoais</button>
       <button class="atab" onclick="showATab('docs',this)">02 · Documentos</button>
       <button class="atab" onclick="showATab('idiomas',this)">03 · Idiomas & Perfil</button>
-      <button class="atab" onclick="showATab('historico',this)">04 · Histórico</button>
+      <button class="atab" onclick="showATab('caract',this)">04 · Características</button>
+      <button class="atab" onclick="showATab('historico',this)">05 · Histórico</button>
     </div>
     <div class="atc active" id="atab-dados">
       <div class="g2">
@@ -358,6 +361,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div class="f"><label>Data de Nascimento</label><input id="a-nasc" type="date"></div>
         <div class="f"><label>CPF</label><input id="a-cpf" placeholder="000.000.000-00"></div>
         <div class="f"><label>E-mail</label><input id="a-email" type="email"></div>
+        <div class="f"><label>Cidade de Residência</label><input id="a-cidade-res"></div>
         <div class="f"><label>Cidade de Origem (Voo)</label><input id="a-cidade"></div>
         <div class="f"><label>WhatsApp</label><input id="a-whatsapp" placeholder="+55 (00) 00000-0000"></div>
       </div>
@@ -423,6 +427,26 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
             </select>
           </div>
         </div>
+      </div>
+    </div>
+    <div class="atc" id="atab-caract">
+      <div class="sec">
+        <div class="st">Medidas & Vestuário</div>
+        <div class="g3">
+          <div class="f"><label>Blusa</label><input id="a-tam-blusa" placeholder="Ex: M, G, 38..."></div>
+          <div class="f"><label>Calça</label><input id="a-tam-calca" placeholder="Ex: 40, P..."></div>
+          <div class="f"><label>Macacão</label><input id="a-tam-macacao" placeholder="Ex: M, 38..."></div>
+          <div class="f"><label>Vestido</label><input id="a-tam-vestido" placeholder="Ex: 38, M..."></div>
+          <div class="f"><label>Sapato</label><input id="a-tam-sapato" placeholder="Ex: 37, 38..."></div>
+        </div>
+      </div>
+      <div class="sec" style="margin-top:4px">
+        <div class="st">Perfil Profissional</div>
+        <div class="tr-row" onclick="tg('a-camera')"><div class="tr-track" id="track-a-camera"><div class="tr-thumb"></div></div><span class="tr-label">📷 Fala bem com a câmera</span></div>
+        <div style="margin-top:8px">
+          <div class="tr-row" onclick="tg('a-indicamos')"><div class="tr-track" id="track-a-indicamos"><div class="tr-thumb"></div></div><span class="tr-label">⭐ Indicamos</span></div>
+        </div>
+        <div class="f" style="margin-top:14px"><label>Como Conhecemos</label><textarea id="a-como-conhecemos" placeholder="Ex: Indicação da Ana, evento em SP..."></textarea></div>
       </div>
     </div>
     <div class="atc" id="atab-historico"><div id="historico-content"><div class="ld">Carregando...</div></div></div>
@@ -603,8 +627,7 @@ function showATab(tab,btn){
   document.getElementById('atab-'+tab).classList.add('active');if(btn)btn.classList.add('active')
   if(tab==='historico')renderHistorico()
   if(tab==='idiomas'){populateLiderSelect();renderMembros()}
-}
-function showHTab(tab,btn){
+}function showHTab(tab,btn){
   document.querySelectorAll('#modal-hotel .atc').forEach(t=>t.classList.remove('active'))
   document.querySelectorAll('#modal-hotel .atab').forEach(t=>t.classList.remove('active'))
   document.getElementById('atab-'+tab).classList.add('active');if(btn)btn.classList.add('active')
@@ -796,7 +819,7 @@ function renderAssessoras(){
     const ms=!s||a.nome?.toLowerCase().includes(s)||a.cidade?.toLowerCase().includes(s)
     const mD=!aidsDestino||aidsDestino.has(a.id)
     const mH=!aidsHotel||aidsHotel.has(a.id)
-    return ms&&mD&&mH&&(!fI('f-ingles')||a.ingles)&&(!fI('f-espanhol')||a.espanhol)&&(!fI('f-frances')||a.frances)&&(!fI('f-italiano')||a.italiano)&&(!fI('f-h1')||a.hierarquia==='1ª Assessora')&&(!fI('f-h2')||a.hierarquia==='2ª Assessora')&&(!fI('f-h3')||a.hierarquia==='3ª Assessora')&&(!fI('f-h4')||a.hierarquia==='4ª Assessora')&&(!fI('f-h5')||a.hierarquia==='5ª Assessora')&&(!fI('f-equipe')||a.possui_equipe)&&(!fI('f-blacklist')||a.blacklist)&&(!fI('f-febre')||a.febre_amarela)
+    return ms&&mD&&mH&&(!fI('f-ingles')||a.ingles)&&(!fI('f-espanhol')||a.espanhol)&&(!fI('f-frances')||a.frances)&&(!fI('f-italiano')||a.italiano)&&(!fI('f-h1')||a.hierarquia==='1ª Assessora')&&(!fI('f-h2')||a.hierarquia==='2ª Assessora')&&(!fI('f-h3')||a.hierarquia==='3ª Assessora')&&(!fI('f-h4')||a.hierarquia==='4ª Assessora')&&(!fI('f-h5')||a.hierarquia==='5ª Assessora')&&(!fI('f-equipe')||a.possui_equipe)&&(!fI('f-blacklist')||a.blacklist)&&(!fI('f-febre')||a.febre_amarela)&&(!fI('f-indicamos')||a.indicamos)&&(!fI('f-camera')||a.fala_camera)
   })
   document.getElementById('assessoras-count').textContent=assessoras.length+' assessoras cadastradas'
   if(!filtered.length){grid.innerHTML='<div class="em"><div class="em-i">👩</div><div class="em-t">Nenhuma assessora encontrada</div></div>';return}
@@ -811,7 +834,7 @@ function renderAssessoras(){
       ${scoreLabel?`<span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:${scoreBg};color:${scoreColor};display:inline-block">${scoreIcon} ${scoreLabel}</span>`:''}
       ${a._notas?.length?`<div style="font-size:10px;color:#aaa;margin-top:2px">${a._notas.length} avaliação(ões)</div>`:''}
     </div>
-    </div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">${a.hierarquia?`<span class="tag tg">${a.hierarquia}</span>`:''}${a.ingles?'<span class="tag tb">🇬🇧 Inglês</span>':''}${a.espanhol?'<span class="tag tb">🇪🇸 Espanhol</span>':''}${a.frances?'<span class="tag tb">🇫🇷 Francês</span>':''}${a.italiano?'<span class="tag tb">🇮🇹 Italiano</span>':''}${a.possui_equipe?`<span class="tag tgr">👑 ${a.nome_equipe||'Tem Equipe'}</span>`:''}${a.lider_equipe_id&&!a.possui_equipe?`<span class="tag tb">👥 Membro de Equipe</span>`:''}${a.febre_amarela?'<span class="tag tgr">💉 FY</span>':''}</div><div style="display:flex;gap:8px"><button class="btn bo" style="flex:1" onclick="openAssessora('${a.id}')">Ver / Editar</button><button class="btn bd" onclick="deleteAssessora('${a.id}')">✕</button></div></div>`
+    </div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">${a.hierarquia?`<span class="tag tg">${a.hierarquia}</span>`:''}${a.ingles?'<span class="tag tb">🇬🇧 Inglês</span>':''}${a.espanhol?'<span class="tag tb">🇪🇸 Espanhol</span>':''}${a.frances?'<span class="tag tb">🇫🇷 Francês</span>':''}${a.italiano?'<span class="tag tb">🇮🇹 Italiano</span>':''}${a.possui_equipe?`<span class="tag tgr">👑 ${a.nome_equipe||'Tem Equipe'}</span>`:''}${a.lider_equipe_id&&!a.possui_equipe?`<span class="tag tb">👥 Membro de Equipe</span>`:''}${a.indicamos?'<span class="tag tgr">⭐ Indicamos</span>':''}${a.fala_camera?'<span class="tag tgy">📷 Câmera</span>':''}${a.febre_amarela?'<span class="tag tgr">💉 FY</span>':''}</div><div style="display:flex;gap:8px"><button class="btn bo" style="flex:1" onclick="openAssessora('${a.id}')">Ver / Editar</button><button class="btn bd" onclick="deleteAssessora('${a.id}')">✕</button></div></div>`
   }).join('')
 }
 function openNovaAssessora(){
@@ -836,8 +859,8 @@ function openAssessora(id){
   fillAForm(a);document.getElementById('modal-assessora').classList.add('open')
 }
 function clearAForm(){
-  ['a-nome','a-nasc','a-cpf','a-email','a-cidade','a-whatsapp','a-perfil','a-rg','a-rg-val','a-pass-num','a-pass-val','a-pass-pais','a-visto-num','a-visto-val','a-visto-pais','a-nome-equipe'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
-  ;['a-blacklist','a-nota','a-febre','a-equipe'].forEach(id=>setTg(id,false))
+  ['a-nome','a-nasc','a-cpf','a-email','a-cidade-res','a-cidade','a-whatsapp','a-perfil','a-rg','a-rg-val','a-pass-num','a-pass-val','a-pass-pais','a-visto-num','a-visto-val','a-visto-pais','a-nome-equipe','a-tam-blusa','a-tam-calca','a-tam-macacao','a-tam-vestido','a-tam-sapato','a-como-conhecemos'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
+  ;['a-blacklist','a-nota','a-febre','a-equipe','a-camera','a-indicamos'].forEach(id=>setTg(id,false))
   ;['ingles','espanhol','frances','italiano'].forEach(l=>setIdioma(l,false))
   hierAtual='';tipoEquipeAtual='';membrosEquipe=[]
   document.querySelectorAll('.ro-opt[id^=hier]').forEach(e=>e.classList.remove('sel'))
@@ -845,8 +868,12 @@ function clearAForm(){
 }
 function fillAForm(a){
   const s=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||''}
-  s('a-nome',a.nome);s('a-nasc',a.nascimento);s('a-cpf',a.cpf);s('a-email',a.email);s('a-cidade',a.cidade);s('a-whatsapp',a.whatsapp);s('a-perfil',a.perfil);s('a-rg',a.rg);s('a-rg-val',a.rg_validade);s('a-pass-num',a.passaporte_numero);s('a-pass-val',a.passaporte_validade);s('a-pass-pais',a.passaporte_pais);s('a-visto-num',a.visto_numero);s('a-visto-val',a.visto_validade);s('a-visto-pais',a.visto_pais);s('a-nome-equipe',a.nome_equipe)
+  s('a-nome',a.nome);s('a-nasc',a.nascimento);s('a-cpf',a.cpf);s('a-email',a.email)
+  s('a-cidade-res',a.cidade_residencia);s('a-cidade',a.cidade);s('a-whatsapp',a.whatsapp);s('a-perfil',a.perfil)
+  s('a-rg',a.rg);s('a-rg-val',a.rg_validade);s('a-pass-num',a.passaporte_numero);s('a-pass-val',a.passaporte_validade);s('a-pass-pais',a.passaporte_pais);s('a-visto-num',a.visto_numero);s('a-visto-val',a.visto_validade);s('a-visto-pais',a.visto_pais);s('a-nome-equipe',a.nome_equipe)
+  s('a-tam-blusa',a.tam_blusa);s('a-tam-calca',a.tam_calca);s('a-tam-macacao',a.tam_macacao);s('a-tam-vestido',a.tam_vestido);s('a-tam-sapato',a.tam_sapato);s('a-como-conhecemos',a.como_conhecemos)
   setTg('a-blacklist',a.blacklist);setTg('a-nota',a.nota_fiscal);setTg('a-febre',a.febre_amarela)
+  setTg('a-camera',a.fala_camera);setTg('a-indicamos',a.indicamos)
   setIdioma('ingles',a.ingles);setIdioma('espanhol',a.espanhol);setIdioma('frances',a.frances);setIdioma('italiano',a.italiano)
   hierAtual=a.hierarquia||''
   document.querySelectorAll('.ro-opt[id^=hier]').forEach(e=>e.classList.remove('sel'))
@@ -874,7 +901,7 @@ function fillAForm(a){
 function getAData(){
   const v=id=>document.getElementById(id)?.value||''
   const liderEquipeId=tipoEquipeAtual==='membro'?document.getElementById('a-lider-equipe')?.value||null:null
-  return{nome:v('a-nome'),nascimento:v('a-nasc'),cpf:v('a-cpf'),email:v('a-email'),cidade:v('a-cidade'),whatsapp:v('a-whatsapp'),perfil:v('a-perfil'),rg:v('a-rg'),rg_validade:v('a-rg-val'),passaporte_numero:v('a-pass-num'),passaporte_validade:v('a-pass-val'),passaporte_pais:v('a-pass-pais'),visto_numero:v('a-visto-num'),visto_validade:v('a-visto-val'),visto_pais:v('a-visto-pais'),nome_equipe:tipoEquipeAtual==='lidera'?v('a-nome-equipe'):null,blacklist:getTg('a-blacklist'),nota_fiscal:getTg('a-nota'),febre_amarela:getTg('a-febre'),possui_equipe:tipoEquipeAtual==='lidera',ingles:!!tgStates['a-ingles'],espanhol:!!tgStates['a-espanhol'],frances:!!tgStates['a-frances'],italiano:!!tgStates['a-italiano'],hierarquia:hierAtual,lider_equipe_id:liderEquipeId}
+  return{nome:v('a-nome'),nascimento:v('a-nasc'),cpf:v('a-cpf'),email:v('a-email'),cidade_residencia:v('a-cidade-res'),cidade:v('a-cidade'),whatsapp:v('a-whatsapp'),perfil:v('a-perfil'),rg:v('a-rg'),rg_validade:v('a-rg-val'),passaporte_numero:v('a-pass-num'),passaporte_validade:v('a-pass-val'),passaporte_pais:v('a-pass-pais'),visto_numero:v('a-visto-num'),visto_validade:v('a-visto-val'),visto_pais:v('a-visto-pais'),nome_equipe:tipoEquipeAtual==='lidera'?v('a-nome-equipe'):null,tam_blusa:v('a-tam-blusa'),tam_calca:v('a-tam-calca'),tam_macacao:v('a-tam-macacao'),tam_vestido:v('a-tam-vestido'),tam_sapato:v('a-tam-sapato'),como_conhecemos:v('a-como-conhecemos'),blacklist:getTg('a-blacklist'),nota_fiscal:getTg('a-nota'),febre_amarela:getTg('a-febre'),fala_camera:getTg('a-camera'),indicamos:getTg('a-indicamos'),possui_equipe:tipoEquipeAtual==='lidera',ingles:!!tgStates['a-ingles'],espanhol:!!tgStates['a-espanhol'],frances:!!tgStates['a-frances'],italiano:!!tgStates['a-italiano'],hierarquia:hierAtual,lider_equipe_id:liderEquipeId}
 }
 async function salvarAssessora(){
   const btn=document.getElementById('btn-sa');btn.textContent='Salvando...';btn.disabled=true
