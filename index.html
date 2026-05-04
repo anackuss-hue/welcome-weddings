@@ -161,10 +161,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <input id="search-a" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none" placeholder="Nome ou cidade..." oninput="renderAssessoras()">
         <div class="fp-sec">
           <div class="fp-sec-t">Idiomas</div>
-          <label class="fl"><input type="checkbox" id="f-ingles" onchange="renderAssessoras()"> 🇬🇧 Inglês</label>
-          <label class="fl"><input type="checkbox" id="f-espanhol" onchange="renderAssessoras()"> 🇪🇸 Espanhol</label>
-          <label class="fl"><input type="checkbox" id="f-frances" onchange="renderAssessoras()"> 🇫🇷 Francês</label>
-          <label class="fl"><input type="checkbox" id="f-italiano" onchange="renderAssessoras()"> 🇮🇹 Italiano</label>
+          <label class="fl"><input type="checkbox" id="f-ingles" onchange="renderAssessoras()"> <img src="https://flagcdn.com/w20/gb.png" style="width:18px;height:13px;object-fit:cover;border-radius:2px"> Inglês</label>
+          <label class="fl"><input type="checkbox" id="f-espanhol" onchange="renderAssessoras()"> <img src="https://flagcdn.com/w20/es.png" style="width:18px;height:13px;object-fit:cover;border-radius:2px"> Espanhol</label>
+          <label class="fl"><input type="checkbox" id="f-frances" onchange="renderAssessoras()"> <img src="https://flagcdn.com/w20/fr.png" style="width:18px;height:13px;object-fit:cover;border-radius:2px"> Francês</label>
+          <label class="fl"><input type="checkbox" id="f-italiano" onchange="renderAssessoras()"> <img src="https://flagcdn.com/w20/it.png" style="width:18px;height:13px;object-fit:cover;border-radius:2px"> Italiano</label>
         </div>
         <div class="fp-sec">
           <div class="fp-sec-t">Hierarquia</div>
@@ -391,10 +391,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="atc" id="atab-idiomas">
       <div class="sec"><div class="st">Idiomas</div>
         <div class="ic">
-          <div class="ic-card" id="card-ingles" onclick="togIdioma('ingles')"><span class="ic-flag">🇬🇧</span><span class="ic-name">Inglês</span></div>
-          <div class="ic-card" id="card-espanhol" onclick="togIdioma('espanhol')"><span class="ic-flag">🇪🇸</span><span class="ic-name">Espanhol</span></div>
-          <div class="ic-card" id="card-frances" onclick="togIdioma('frances')"><span class="ic-flag">🇫🇷</span><span class="ic-name">Francês</span></div>
-          <div class="ic-card" id="card-italiano" onclick="togIdioma('italiano')"><span class="ic-flag">🇮🇹</span><span class="ic-name">Italiano</span></div>
+          <div class="ic-card" id="card-ingles" onclick="togIdioma('ingles')"><img src="https://flagcdn.com/w40/gb.png" style="width:28px;height:20px;object-fit:cover;border-radius:3px;flex-shrink:0"><span class="ic-name">Inglês</span></div>
+          <div class="ic-card" id="card-espanhol" onclick="togIdioma('espanhol')"><img src="https://flagcdn.com/w40/es.png" style="width:28px;height:20px;object-fit:cover;border-radius:3px;flex-shrink:0"><span class="ic-name">Espanhol</span></div>
+          <div class="ic-card" id="card-frances" onclick="togIdioma('frances')"><img src="https://flagcdn.com/w40/fr.png" style="width:28px;height:20px;object-fit:cover;border-radius:3px;flex-shrink:0"><span class="ic-name">Francês</span></div>
+          <div class="ic-card" id="card-italiano" onclick="togIdioma('italiano')"><img src="https://flagcdn.com/w40/it.png" style="width:28px;height:20px;object-fit:cover;border-radius:3px;flex-shrink:0"><span class="ic-name">Italiano</span></div>
         </div>      </div>
       <div class="sec" style="margin-top:24px"><div class="st">Hierarquia</div>
         <div class="ro">
@@ -834,7 +834,7 @@ function renderAssessoras(){
       ${scoreLabel?`<span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:${scoreBg};color:${scoreColor};display:inline-block">${scoreIcon} ${scoreLabel}</span>`:''}
       ${a._notas?.length?`<div style="font-size:10px;color:#aaa;margin-top:2px">${a._notas.length} avaliação(ões)</div>`:''}
     </div>
-    </div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">${a.hierarquia?`<span class="tag tg">${a.hierarquia}</span>`:''}${a.ingles?'<span class="tag tb">🇬🇧 Inglês</span>':''}${a.espanhol?'<span class="tag tb">🇪🇸 Espanhol</span>':''}${a.frances?'<span class="tag tb">🇫🇷 Francês</span>':''}${a.italiano?'<span class="tag tb">🇮🇹 Italiano</span>':''}${a.possui_equipe?`<span class="tag tgr">👑 ${a.nome_equipe||'Tem Equipe'}</span>`:''}${a.lider_equipe_id&&!a.possui_equipe?`<span class="tag tb">👥 Membro de Equipe</span>`:''}${a.indicamos?'<span class="tag tgr">⭐ Indicamos</span>':''}${a.fala_camera?'<span class="tag tgy">📷 Câmera</span>':''}${a.febre_amarela?'<span class="tag tgr">💉 FY</span>':''}</div><div style="display:flex;gap:8px"><button class="btn bo" style="flex:1" onclick="openAssessora('${a.id}')">Ver / Editar</button><button class="btn bd" onclick="deleteAssessora('${a.id}')">✕</button></div></div>`
+    </div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">${a.hierarquia?`<span class="tag tg">${a.hierarquia}</span>`:''}${a.ingles?'<span class="tag tb"><img src="https://flagcdn.com/w20/gb.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Inglês</span>':''}${a.espanhol?'<span class="tag tb"><img src="https://flagcdn.com/w20/es.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Espanhol</span>':''}${a.frances?'<span class="tag tb"><img src="https://flagcdn.com/w20/fr.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Francês</span>':''}${a.italiano?'<span class="tag tb"><img src="https://flagcdn.com/w20/it.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Italiano</span>':''}${a.possui_equipe?`<span class="tag tgr">👑 ${a.nome_equipe||'Tem Equipe'}</span>`:''}${a.lider_equipe_id&&!a.possui_equipe?`<span class="tag tb">👥 Membro de Equipe</span>`:''}${a.indicamos?'<span class="tag tgr">⭐ Indicamos</span>':''}${a.fala_camera?'<span class="tag tgy">📷 Câmera</span>':''}${a.febre_amarela?'<span class="tag tgr">💉 FY</span>':''}</div><div style="display:flex;gap:8px"><button class="btn bo" style="flex:1" onclick="openAssessora('${a.id}')">Ver / Editar</button><button class="btn bd" onclick="deleteAssessora('${a.id}')">✕</button></div></div>`
   }).join('')
 }
 function openNovaAssessora(){
