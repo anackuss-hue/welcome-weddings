@@ -587,11 +587,31 @@ async function renderEscaladas(){
   const list=document.getElementById('escaladas-list')
   document.getElementById('assess-count').textContent=escaladas.length+' assessora(s) escalada(s)'
   if(!escaladas.length){list.innerHTML='<div class="em" style="padding:30px"><div class="em-t">Nenhuma assessora escalada</div></div>'}
-  else{list.innerHTML=escaladas.map(e=>`<div class="ai"><div class="aih"><div style="display:flex;align-items:center;gap:10px"><div class="av">${(e.assessora?.nome||'?')[0]}</div><div><div style="font-weight:600;font-size:14px">${e.assessora?.nome||'—'}</div><div style="font-size:12px;color:#888">${e.assessora?.cidade||''}</div></div></div><button class="btn bd bsm" onclick="removeEscalada('${e.id}')">Remover</button></div><div class="g3"><div class="f"><label>Cidade de Saída</label><input value="${e.cidade_saida||''}" onchange="updEscalada('${e.id}','cidade_saida',this.value)"></div><div class="f"><label>Data de Ida</label><input type="date" value="${e.data_ida||''}" onchange="updEscalada('${e.id}','data_ida',this.value)"></div><div class="f"><label>Data de Volta</label><input type="date" value="${e.data_volta||''}" onchange="updEscalada('${e.id}','data_volta',this.value)"></div></div><div class="tr-row" onclick="togBilhete('${e.id}',${e.bilhete_emitido})"><div class="tr-track ${e.bilhete_emitido?'on':''}"><div class="tr-thumb"></div></div><span class="tr-label">Bilhete Emitido</span></div></div>`).join('')}
+  else{list.innerHTML=escaladas.map(e=>{
+    const notaColor=e.nota==='Excelente'?'#2e7d32':e.nota==='Bom'?'#1565c0':e.nota==='Médio'?'#e65100':e.nota==='Ruim'?'#c0392b':'#888'
+    const notaBg=e.nota==='Excelente'?'#e8f5e9':e.nota==='Bom'?'#e3f2fd':e.nota==='Médio'?'#fff3e0':e.nota==='Ruim'?'#fdecea':'#f0f0f0'
+    return`<div class="ai"><div class="aih"><div style="display:flex;align-items:center;gap:10px"><div class="av">${(e.assessora?.nome||'?')[0]}</div><div><div style="font-weight:600;font-size:14px">${e.assessora?.nome||'—'}</div><div style="font-size:12px;color:#888">${e.assessora?.cidade||''}</div></div></div><button class="btn bd bsm" onclick="removeEscalada('${e.id}')">Remover</button></div>
+    <div class="g3"><div class="f"><label>Cidade de Saída</label><input value="${e.cidade_saida||''}" onchange="updEscalada('${e.id}','cidade_saida',this.value)"></div><div class="f"><label>Data de Ida</label><input type="date" value="${e.data_ida||''}" onchange="updEscalada('${e.id}','data_ida',this.value)"></div><div class="f"><label>Data de Volta</label><input type="date" value="${e.data_volta||''}" onchange="updEscalada('${e.id}','data_volta',this.value)"></div></div>
+    <div class="tr-row" onclick="togBilhete('${e.id}',${e.bilhete_emitido})"><div class="tr-track ${e.bilhete_emitido?'on':''}"><div class="tr-thumb"></div></div><span class="tr-label">Bilhete Emitido</span></div>
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--gold-border)">
+      <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">Avaliação do Casamento</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+        ${['Excelente','Bom','Médio','Ruim'].map(n=>{
+          const sel=e.nota===n
+          const colors={Excelente:'#2e7d32',Bom:'#1565c0',Médio:'#e65100',Ruim:'#c0392b'}
+          const bgs={Excelente:'#e8f5e9',Bom:'#e3f2fd',Médio:'#fff3e0',Ruim:'#fdecea'}
+          const icons={Excelente:'⭐',Bom:'👍',Médio:'😐',Ruim:'👎'}
+          return`<button onclick="setNota('${e.id}','${n}')" style="padding:7px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid ${sel?colors[n]:' #ddd'};background:${sel?bgs[n]:'#fff'};color:${sel?colors[n]:'#888'};font-family:'DM Sans',sans-serif;transition:all .15s">${icons[n]} ${n}</button>`
+        }).join('')}
+      </div>
+      <div class="f"><label>Observações do Casamento</label><textarea style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;resize:vertical;min-height:70px" onchange="updEscalada('${e.id}','obs_casamento',this.value)" placeholder="Como foi o desempenho neste casamento...">${e.obs_casamento||''}</textarea></div>
+    </div>
+    </div>`}).join('')}
   renderPickerIfOpen()
 }
 async function togBilhete(id,cur){await sb.from('casamento_assessoras').update({bilhete_emitido:!cur}).eq('id',id);renderEscaladas()}
 async function updEscalada(id,f,v){await sb.from('casamento_assessoras').update({[f]:v}).eq('id',id)}
+async function setNota(id,nota){await sb.from('casamento_assessoras').update({nota}).eq('id',id);renderEscaladas()}
 async function removeEscalada(id){await sb.from('casamento_assessoras').delete().eq('id',id);renderEscaladas()}
 function togglePicker(){pickerOpen=!pickerOpen;renderPickerIfOpen()}
 function renderPickerIfOpen(){
@@ -617,7 +637,21 @@ async function renderProdAssessoras(){
 }
 
 // ══ ASSESSORAS ══
-async function loadAssessoras(){const{data}=await sb.from('assessoras').select('*').order('nome');assessoras=data||[];renderAssessoras()}
+async function loadAssessoras(){
+  const{data}=await sb.from('assessoras').select('*').order('nome')
+  // Para cada assessora, busca a média de notas
+  if(data){
+    const ids=data.map(a=>a.id)
+    const{data:notas}=await sb.from('casamento_assessoras').select('assessora_id,nota').in('assessora_id',ids).not('nota','is',null)
+    const pontos={Excelente:4,Bom:3,Médio:2,Ruim:1}
+    data.forEach(a=>{
+      const ns=(notas||[]).filter(n=>n.assessora_id===a.id).map(n=>n.nota)
+      a._notas=ns
+      a._media=ns.length?ns.reduce((s,n)=>s+(pontos[n]||0),0)/ns.length:null
+    })
+  }
+  assessoras=data||[];renderAssessoras()
+}
 function renderAssessoras(){
   const s=(document.getElementById('search-a')?.value||'').toLowerCase()
   const fI=id=>document.getElementById(id)?.checked
@@ -628,7 +662,19 @@ function renderAssessoras(){
   })
   document.getElementById('assessoras-count').textContent=assessoras.length+' assessoras cadastradas'
   if(!filtered.length){grid.innerHTML='<div class="em"><div class="em-i">👩</div><div class="em-t">Nenhuma assessora encontrada</div></div>';return}
-  grid.innerHTML=filtered.map(a=>`<div class="card" style="transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,.12)'" onmouseout="this.style.boxShadow=''"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px"><div style="display:flex;align-items:center;gap:12px"><div class="av">${a.nome[0]}</div><div><div style="font-weight:600;font-size:15px;font-family:'Cormorant Garamond',serif">${a.nome}</div><div style="font-size:12px;color:#888;margin-top:2px">📍 ${a.cidade||'—'}</div></div></div>${a.blacklist?'<span class="tag tr">Blacklist</span>':''}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">${a.hierarquia?`<span class="tag tg">${a.hierarquia}</span>`:''}${a.ingles?'<span class="tag tb">🇬🇧 EN</span>':''}${a.espanhol?'<span class="tag tb">🇪🇸 ES</span>':''}${a.frances?'<span class="tag tb">🇫🇷 FR</span>':''}${a.italiano?'<span class="tag tb">🇮🇹 IT</span>':''}${a.possui_equipe?'<span class="tag tgr">👥 Equipe</span>':''}${a.febre_amarela?'<span class="tag tgr">💉 FY</span>':''}</div><div style="display:flex;gap:8px"><button class="btn bo" style="flex:1" onclick="openAssessora('${a.id}')">Ver / Editar</button><button class="btn bd" onclick="deleteAssessora('${a.id}')">✕</button></div></div>`).join('')
+  grid.innerHTML=filtered.map(a=>{
+    const scoreColor=a._media>=3.5?'#2e7d32':a._media>=2.5?'#1565c0':a._media>=1.5?'#e65100':a._media?'#c0392b':null
+    const scoreLabel=a._media>=3.5?'Excelente':a._media>=2.5?'Bom':a._media>=1.5?'Médio':a._media?'Ruim':null
+    const scoreIcon=a._media>=3.5?'⭐':a._media>=2.5?'👍':a._media>=1.5?'😐':a._media?'👎':null
+    const scoreBg=a._media>=3.5?'#e8f5e9':a._media>=2.5?'#e3f2fd':a._media>=1.5?'#fff3e0':a._media?'#fdecea':null
+    return`<div class="card" style="transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,.12)'" onmouseout="this.style.boxShadow=''"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px"><div style="display:flex;align-items:center;gap:12px"><div class="av">${a.nome[0]}</div><div><div style="font-weight:600;font-size:15px;font-family:'Cormorant Garamond',serif">${a.nome}</div><div style="font-size:12px;color:#888;margin-top:2px">📍 ${a.cidade||'—'}</div></div></div>
+    <div style="text-align:right">
+      ${a.blacklist?'<span class="tag tr" style="display:block;margin-bottom:4px">Blacklist</span>':''}
+      ${scoreLabel?`<span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:${scoreBg};color:${scoreColor};display:inline-block">${scoreIcon} ${scoreLabel}</span>`:''}
+      ${a._notas?.length?`<div style="font-size:10px;color:#aaa;margin-top:2px">${a._notas.length} avaliação(ões)</div>`:''}
+    </div>
+    </div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">${a.hierarquia?`<span class="tag tg">${a.hierarquia}</span>`:''}${a.ingles?'<span class="tag tb">🇬🇧 EN</span>':''}${a.espanhol?'<span class="tag tb">🇪🇸 ES</span>':''}${a.frances?'<span class="tag tb">🇫🇷 FR</span>':''}${a.italiano?'<span class="tag tb">🇮🇹 IT</span>':''}${a.possui_equipe?'<span class="tag tgr">👥 Equipe</span>':''}${a.febre_amarela?'<span class="tag tgr">💉 FY</span>':''}</div><div style="display:flex;gap:8px"><button class="btn bo" style="flex:1" onclick="openAssessora('${a.id}')">Ver / Editar</button><button class="btn bd" onclick="deleteAssessora('${a.id}')">✕</button></div></div>`
+  }).join('')
 }
 function openNovaAssessora(){
   assessoraAtual=null;hierAtual=''
@@ -684,7 +730,62 @@ async function renderHistorico(){
   if(!assessoraAtual){con.innerHTML='<div class="em"><div class="em-t">Salve a assessora primeiro</div></div>';return}
   const{data}=await sb.from('casamento_assessoras').select('*,casamento:casamentos(nome,destino,plan_hotel,plan_data,status)').eq('assessora_id',assessoraAtual.id)
   if(!data||!data.length){con.innerHTML='<div class="em" style="padding:40px"><div class="em-i">💍</div><div class="em-t">Nenhum casamento no histórico ainda</div></div>';return}
-  con.innerHTML=`<div style="margin-bottom:16px;font-size:13px;color:#888">${data.length} casamento(s) no histórico</div>${data.map(e=>`<div class="hist"><div class="hdot"></div><div style="flex:1"><div style="font-weight:600;font-size:14px;font-family:'Cormorant Garamond',serif">${e.casamento?.nome||'—'}</div><div style="font-size:12px;color:#888;margin-top:2px">📍 ${e.casamento?.destino||'—'} · 🏨 ${e.casamento?.plan_hotel||'—'}${e.casamento?.plan_data?' · 📅 '+fmtDate(e.casamento.plan_data):''}</div></div><span class="tag ${e.bilhete_emitido?'tgr':'tg'}">${e.bilhete_emitido?'✓ Bilhete emitido':'Pendente'}</span></div>`).join('')}`
+
+  // Calcular métrica
+  const notas=data.filter(e=>e.nota).map(e=>e.nota)
+  const pontos={Excelente:4,Bom:3,Médio:2,Ruim:1}
+  const media=notas.length?notas.reduce((s,n)=>s+(pontos[n]||0),0)/notas.length:null
+  const contagem={Excelente:notas.filter(n=>n==='Excelente').length,Bom:notas.filter(n=>n==='Bom').length,Médio:notas.filter(n=>n==='Médio').length,Ruim:notas.filter(n=>n==='Ruim').length}
+
+  let metricaHTML=''
+  if(notas.length){
+    const scoreColor=media>=3.5?'#2e7d32':media>=2.5?'#1565c0':media>=1.5?'#e65100':'#c0392b'
+    const scoreLabel=media>=3.5?'Excelente':media>=2.5?'Bom':media>=1.5?'Médio':'Ruim'
+    const scoreIcon=media>=3.5?'⭐':media>=2.5?'👍':media>=1.5?'😐':'👎'
+    metricaHTML=`<div style="background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:12px;padding:20px;margin-bottom:20px">
+      <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px">📊 Performance Geral</div>
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px">
+        <div style="text-align:center">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:600;color:${scoreColor};line-height:1">${scoreIcon}</div>
+          <div style="font-size:13px;font-weight:700;color:${scoreColor};margin-top:4px">${scoreLabel}</div>
+          <div style="font-size:11px;color:#888">${notas.length} avaliação(ões)</div>
+        </div>
+        <div style="flex:1">
+          ${['Excelente','Bom','Médio','Ruim'].map(n=>{
+            const pct=notas.length?Math.round(contagem[n]/notas.length*100):0
+            const bc=n==='Excelente'?'#2e7d32':n==='Bom'?'#1565c0':n==='Médio'?'#e65100':'#c0392b'
+            return`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+              <span style="font-size:11px;font-weight:500;color:#666;width:60px">${n}</span>
+              <div style="flex:1;height:8px;background:#f0f0f0;border-radius:4px;overflow:hidden">
+                <div style="height:100%;width:${pct}%;background:${bc};border-radius:4px;transition:width .3s"></div>
+              </div>
+              <span style="font-size:11px;color:#888;width:24px;text-align:right">${contagem[n]}</span>
+            </div>`
+          }).join('')}
+        </div>
+      </div>
+    </div>`
+  }
+
+  const notaColors={Excelente:'#2e7d32',Bom:'#1565c0',Médio:'#e65100',Ruim:'#c0392b'}
+  const notaBgs={Excelente:'#e8f5e9',Bom:'#e3f2fd',Médio:'#fff3e0',Ruim:'#fdecea'}
+  const notaIcons={Excelente:'⭐',Bom:'👍',Médio:'😐',Ruim:'👎'}
+
+  con.innerHTML=`${metricaHTML}
+    <div style="margin-bottom:12px;font-size:13px;color:#888">${data.length} casamento(s) no histórico</div>
+    ${data.map(e=>`<div class="hist" style="flex-direction:column;align-items:flex-start;gap:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;width:100%">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="hdot"></div>
+          <div>
+            <div style="font-weight:600;font-size:14px;font-family:'Cormorant Garamond',serif">${e.casamento?.nome||'—'}</div>
+            <div style="font-size:12px;color:#888;margin-top:2px">📍 ${e.casamento?.destino||'—'} · 🏨 ${e.casamento?.plan_hotel||'—'}${e.casamento?.plan_data?' · 📅 '+fmtDate(e.casamento.plan_data):''}</div>
+          </div>
+        </div>
+        ${e.nota?`<span style="padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;background:${notaBgs[e.nota]};color:${notaColors[e.nota]}">${notaIcons[e.nota]} ${e.nota}</span>`:'<span style="font-size:12px;color:#aaa">Sem avaliação</span>'}
+      </div>
+      ${e.obs_casamento?`<div style="font-size:12px;color:#666;padding:8px 12px;background:#f8f6f2;border-radius:8px;width:100%;border-left:3px solid var(--gold-border)">"${e.obs_casamento}"</div>`:''}
+    </div>`).join('')}`
 }
 
 // ══ HOTÉIS ══
