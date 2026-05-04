@@ -202,20 +202,68 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <button class="btn bg" onclick="openNovoHotel()">+ Novo Hotel</button>
     </div>
     <div style="display:flex;gap:20px;align-items:flex-start">
-      <div class="fpanel">
-        <div class="fp-title">Filtros</div>
+      <div class="fpanel" style="width:220px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div class="fp-title" style="margin-bottom:0">Filtros</div>
+          <span id="h-filtros-count" style="display:none;font-size:10px;font-weight:700;background:var(--gold);color:white;border-radius:10px;padding:2px 7px;cursor:pointer" onclick="limparFiltrosHotel()">limpar</span>
+        </div>
         <input id="search-h" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none" placeholder="Buscar hotel..." oninput="renderHoteis()">
+
         <div class="fp-sec">
           <div class="fp-sec-t">Região</div>
-          <select id="f-h-regiao" onchange="renderHoteis()" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none">
-            <option value="">Todas</option>
-            <option>Caribe</option><option>América do Sul</option><option>Europa</option><option>Ásia</option>
-          </select>
+          <label class="fl"><input type="checkbox" id="fh-reg-caribe" onchange="renderHoteis()"> 🏝️ Caribe</label>
+          <label class="fl"><input type="checkbox" id="fh-reg-sul" onchange="renderHoteis()"> 🌎 América do Sul</label>
+          <label class="fl"><input type="checkbox" id="fh-reg-europa" onchange="renderHoteis()"> 🏰 Europa</label>
+          <label class="fl"><input type="checkbox" id="fh-reg-asia" onchange="renderHoteis()"> 🏯 Ásia</label>
         </div>
+
         <div class="fp-sec">
           <div class="fp-sec-t">País</div>
           <input id="f-h-pais" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none" placeholder="Ex: México" oninput="renderHoteis()">
         </div>
+
+        <div class="fp-sec">
+          <div class="fp-sec-t">Cidade</div>
+          <input id="f-h-cidade" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none" placeholder="Ex: Cancún" oninput="renderHoteis()">
+        </div>
+
+        <div class="fp-sec">
+          <div class="fp-sec-t">Tipo de Hotel</div>
+          <label class="fl"><input type="checkbox" id="fh-tipo-ai" onchange="renderHoteis()"> All Inclusive</label>
+          <label class="fl"><input type="checkbox" id="fh-tipo-resort" onchange="renderHoteis()"> Resort</label>
+          <label class="fl"><input type="checkbox" id="fh-tipo-boutique" onchange="renderHoteis()"> Boutique</label>
+          <label class="fl"><input type="checkbox" id="fh-tipo-pousada" onchange="renderHoteis()"> Pousada</label>
+          <label class="fl"><input type="checkbox" id="fh-tipo-urbano" onchange="renderHoteis()"> Hotel Urbano</label>
+          <label class="fl"><input type="checkbox" id="fh-tipo-fazenda" onchange="renderHoteis()"> Fazenda/Vinhedo</label>
+        </div>
+
+        <div class="fp-sec">
+          <div class="fp-sec-t">Nº de Acomodações</div>
+          <div style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:6px">Até <span id="label-acom">500</span> quartos</div>
+          <input type="range" id="slider-acom" min="50" max="500" step="50" value="500" oninput="document.getElementById('label-acom').textContent=this.value;renderHoteis()" style="width:100%;accent-color:var(--gold)">
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:#aaa;margin-top:2px"><span>50</span><span>500</span></div>
+        </div>
+
+        <div class="fp-sec">
+          <div class="fp-sec-t">Valor Diária Casal</div>
+          <div style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:6px"><span id="label-diaria-min">100</span> – <span id="label-diaria-max">2000</span></div>
+          <div style="font-size:10px;color:#aaa;margin-bottom:4px">Mínimo</div>
+          <input type="range" id="slider-diaria-min" min="100" max="2000" step="100" value="100" oninput="document.getElementById('label-diaria-min').textContent=this.value;renderHoteis()" style="width:100%;accent-color:var(--gold)">
+          <div style="font-size:10px;color:#aaa;margin-bottom:4px;margin-top:6px">Máximo</div>
+          <input type="range" id="slider-diaria-max" min="100" max="2000" step="100" value="2000" oninput="document.getElementById('label-diaria-max').textContent=this.value;renderHoteis()" style="width:100%;accent-color:var(--gold)">
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:#aaa;margin-top:2px"><span>100</span><span>2000</span></div>
+        </div>
+
+        <div class="fp-sec">
+          <div class="fp-sec-t">Valor Inicial Casamento</div>
+          <div style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:6px"><span id="label-cas-min">100</span> – <span id="label-cas-max">2000</span></div>
+          <div style="font-size:10px;color:#aaa;margin-bottom:4px">Mínimo</div>
+          <input type="range" id="slider-cas-min" min="100" max="2000" step="100" value="100" oninput="document.getElementById('label-cas-min').textContent=this.value;renderHoteis()" style="width:100%;accent-color:var(--gold)">
+          <div style="font-size:10px;color:#aaa;margin-bottom:4px;margin-top:6px">Máximo</div>
+          <input type="range" id="slider-cas-max" min="100" max="2000" step="100" value="2000" oninput="document.getElementById('label-cas-max').textContent=this.value;renderHoteis()" style="width:100%;accent-color:var(--gold)">
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:#aaa;margin-top:2px"><span>100</span><span>2000</span></div>
+        </div>
+
         <div class="fp-sec">
           <div class="fp-sec-t">Estrutura</div>
           <label class="fl"><input type="checkbox" id="fh-kids" onchange="renderHoteis()"> 👶 Aceita Crianças</label>
@@ -918,15 +966,62 @@ async function renderHistorico(){
 
 // ══ HOTÉIS ══
 async function loadHoteis(){const{data}=await sb.from('hoteis').select('*').order('nome');hoteis=data||[];renderHoteis()}
+function limparFiltrosHotel(){
+  ['fh-reg-caribe','fh-reg-sul','fh-reg-europa','fh-reg-asia','fh-tipo-ai','fh-tipo-resort','fh-tipo-boutique','fh-tipo-pousada','fh-tipo-urbano','fh-tipo-fazenda','fh-kids','fh-pets','fh-spa','fh-cassino','fh-parque','fh-sol'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=false})
+  ;['search-h','f-h-pais','f-h-cidade'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
+  ;['slider-acom','slider-diaria-min','slider-cas-min'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=el.min})
+  ;['slider-diaria-max','slider-cas-max'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=el.max})
+  document.getElementById('label-acom').textContent='500'
+  document.getElementById('label-diaria-min').textContent='100';document.getElementById('label-diaria-max').textContent='2000'
+  document.getElementById('label-cas-min').textContent='100';document.getElementById('label-cas-max').textContent='2000'
+  renderHoteis()
+}
 function renderHoteis(){
   const s=(document.getElementById('search-h')?.value||'').toLowerCase()
-  const reg=document.getElementById('f-h-regiao')?.value||''
   const pais=(document.getElementById('f-h-pais')?.value||'').toLowerCase()
+  const cidade=(document.getElementById('f-h-cidade')?.value||'').toLowerCase()
   const fI=id=>document.getElementById(id)?.checked
+  // Região (múltipla)
+  const regioes=[]
+  if(fI('fh-reg-caribe'))regioes.push('Caribe')
+  if(fI('fh-reg-sul'))regioes.push('América do Sul')
+  if(fI('fh-reg-europa'))regioes.push('Europa')
+  if(fI('fh-reg-asia'))regioes.push('Ásia')
+  // Tipo (múltiplo)
+  const tipos=[]
+  if(fI('fh-tipo-ai'))tipos.push('All Inclusive')
+  if(fI('fh-tipo-resort'))tipos.push('Resort')
+  if(fI('fh-tipo-boutique'))tipos.push('Boutique')
+  if(fI('fh-tipo-pousada'))tipos.push('Pousada')
+  if(fI('fh-tipo-urbano'))tipos.push('Hotel Urbano')
+  if(fI('fh-tipo-fazenda'))tipos.push('Fazenda/Vinhedo')
+  // Sliders
+  const maxAcom=parseInt(document.getElementById('slider-acom')?.value||500)
+  const minDiaria=parseInt(document.getElementById('slider-diaria-min')?.value||100)
+  const maxDiaria=parseInt(document.getElementById('slider-diaria-max')?.value||2000)
+  const minCas=parseInt(document.getElementById('slider-cas-min')?.value||100)
+  const maxCas=parseInt(document.getElementById('slider-cas-max')?.value||2000)
+
+  const anyActive=[s,pais,cidade,regioes.length,tipos.length,fI('fh-kids'),fI('fh-pets'),fI('fh-spa'),fI('fh-cassino'),fI('fh-parque'),fI('fh-sol'),maxAcom<500,minDiaria>100,maxDiaria<2000,minCas>100,maxCas<2000].some(Boolean)
+  const fc=document.getElementById('h-filtros-count');if(fc)fc.style.display=anyActive?'inline':'none'
+
   const grid=document.getElementById('hoteis-grid')
   const filtered=hoteis.filter(h=>{
     const ms=!s||h.nome?.toLowerCase().includes(s)||h.cidade?.toLowerCase().includes(s)
-    return ms&&(!reg||h.regiao===reg)&&(!pais||h.pais?.toLowerCase().includes(pais))&&(!fI('fh-kids')||h.aceita_criancas)&&(!fI('fh-pets')||h.aceita_pets)&&(!fI('fh-spa')||h.spa)&&(!fI('fh-cassino')||h.cassino)&&(!fI('fh-parque')||h.parque_aquatico)&&(!fI('fh-sol')||h.por_do_sol)
+    const mp=!pais||h.pais?.toLowerCase().includes(pais)
+    const mc=!cidade||h.cidade?.toLowerCase().includes(cidade)
+    const mr=!regioes.length||regioes.includes(h.regiao)
+    const mt=!tipos.length||tipos.includes(h.tipo)
+    // Acomodações
+    const numAcom=parseInt(h.num_acomodacoes)||9999
+    const macom=numAcom<=maxAcom
+    // Diária — extrai primeiro número do campo
+    const numDiaria=parseFloat((h.valor_diaria||'').replace(/[^0-9.]/g,''))||0
+    const mdiaria=!numDiaria||(numDiaria>=minDiaria&&numDiaria<=maxDiaria)
+    // Casamento
+    const numCas=parseFloat((h.valor_casamento||'').replace(/[^0-9.]/g,''))||0
+    const mcas=!numCas||(numCas>=minCas&&numCas<=maxCas)
+    return ms&&mp&&mc&&mr&&mt&&macom&&mdiaria&&mcas&&(!fI('fh-kids')||h.aceita_criancas)&&(!fI('fh-pets')||h.aceita_pets)&&(!fI('fh-spa')||h.spa)&&(!fI('fh-cassino')||h.cassino)&&(!fI('fh-parque')||h.parque_aquatico)&&(!fI('fh-sol')||h.por_do_sol)
   })
   document.getElementById('hoteis-count').textContent=hoteis.length+' hotel(is) cadastrado(s)'
   if(!filtered.length){grid.innerHTML='<div class="em"><div class="em-i">🏨</div><div class="em-t">Nenhum hotel encontrado</div></div>';return}
