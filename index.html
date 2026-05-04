@@ -170,6 +170,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
           <div class="fp-sec-t">Hierarquia</div>
           <label class="fl"><input type="checkbox" id="f-h1" onchange="renderAssessoras()"> ⭐ 1ª Assessora</label>
           <label class="fl"><input type="checkbox" id="f-h2" onchange="renderAssessoras()"> ✦ 2ª Assessora</label>
+          <label class="fl"><input type="checkbox" id="f-h3" onchange="renderAssessoras()"> ✧ 3ª Assessora</label>
+          <label class="fl"><input type="checkbox" id="f-h4" onchange="renderAssessoras()"> · 4ª Assessora</label>
+          <label class="fl"><input type="checkbox" id="f-h5" onchange="renderAssessoras()"> · 5ª Assessora</label>
         </div>
         <div class="fp-sec">
           <div class="fp-sec-t">Perfil</div>
@@ -177,8 +180,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
           <label class="fl"><input type="checkbox" id="f-blacklist" onchange="renderAssessoras()"> 🚫 Blacklist</label>
           <label class="fl"><input type="checkbox" id="f-febre" onchange="renderAssessoras()"> 💉 Febre Amarela</label>
         </div>
-        <div class="fp-sec"><div class="fp-sec-t">Destino</div><p style="font-size:11px;color:var(--muted);font-style:italic">Em breve</p></div>
-        <div class="fp-sec"><div class="fp-sec-t">Hotel</div><p style="font-size:11px;color:var(--muted);font-style:italic">Em breve</p></div>
+        <div class="fp-sec"><div class="fp-sec-t">Destino</div>
+          <select id="f-destino" onchange="renderAssessoras()" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none">
+            <option value="">Todos</option>
+          </select>
+        </div>
+        <div class="fp-sec"><div class="fp-sec-t">Hotel</div>
+          <select id="f-hotel" onchange="renderAssessoras()" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none">
+            <option value="">Todos</option>
+          </select>
+        </div>
       </div>
       <div style="flex:1"><div class="cg" id="assessoras-grid"><div class="ld">Carregando...</div></div></div>
     </div>
@@ -336,8 +347,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
           <div class="ic-card" id="card-espanhol" onclick="togIdioma('espanhol')"><span class="ic-flag">🇪🇸</span><span class="ic-name">Espanhol</span></div>
           <div class="ic-card" id="card-frances" onclick="togIdioma('frances')"><span class="ic-flag">🇫🇷</span><span class="ic-name">Francês</span></div>
           <div class="ic-card" id="card-italiano" onclick="togIdioma('italiano')"><span class="ic-flag">🇮🇹</span><span class="ic-name">Italiano</span></div>
-        </div>
-      </div>
+        </div>      </div>
       <div class="sec" style="margin-top:24px"><div class="st">Hierarquia</div>
         <div class="ro">
           <div class="ro-opt" onclick="selHier('1ª Assessora')" id="hier-1">⭐ 1ª Assessora</div>
@@ -559,7 +569,12 @@ function showHTab(tab,btn){
 // ══ CASAMENTOS ══
 async function loadCasamentos(){
   const{data}=await sb.from('casamentos').select('*').order('created_at',{ascending:false})
-  casamentos=data||[];renderCasamentos()
+  casamentos=data||[]
+  // Cache de escaladas para filtros de assessoras
+  const{data:esc}=await sb.from('casamento_assessoras').select('casamento_id,assessora_id')
+  window._escaladasCache=esc||[]
+  populateAssessoraFilters()
+  renderCasamentos()
 }
 function filterCasamentos(q){renderCasamentos(q.toLowerCase())}
 function renderCasamentos(q){
@@ -705,13 +720,39 @@ async function loadAssessoras(){
   }
   assessoras=data||[];renderAssessoras()
 }
+function populateAssessoraFilters(){
+  // Popula destinos únicos dos casamentos
+  const destinos=[...new Set(casamentos.map(c=>c.destino).filter(Boolean))].sort()
+  const hoteisList=[...new Set(casamentos.map(c=>c.plan_hotel).filter(Boolean))].sort()
+  const fDest=document.getElementById('f-destino')
+  const fHot=document.getElementById('f-hotel')
+  if(fDest){const cur=fDest.value;fDest.innerHTML='<option value="">Todos</option>'+destinos.map(d=>`<option value="${d}">${d}</option>`).join('');fDest.value=cur}
+  if(fHot){const cur=fHot.value;fHot.innerHTML='<option value="">Todos</option>'+hoteisList.map(h=>`<option value="${h}">${h}</option>`).join('');fHot.value=cur}
+}
 function renderAssessoras(){
   const s=(document.getElementById('search-a')?.value||'').toLowerCase()
   const fI=id=>document.getElementById(id)?.checked
+  const fDest=document.getElementById('f-destino')?.value||''
+  const fHot=document.getElementById('f-hotel')?.value||''
   const grid=document.getElementById('assessoras-grid')
+
+  // Filtro por destino/hotel: pega assessoras que foram a esses casamentos
+  let aidsDestino=null, aidsHotel=null
+  if(fDest){
+    const cas=casamentos.filter(c=>c.destino===fDest).map(c=>c.id)
+    // busca escaladas para esses casamentos — usamos cache se disponível
+    aidsDestino=new Set((window._escaladasCache||[]).filter(e=>cas.includes(e.casamento_id)).map(e=>e.assessora_id))
+  }
+  if(fHot){
+    const cas=casamentos.filter(c=>c.plan_hotel===fHot).map(c=>c.id)
+    aidsHotel=new Set((window._escaladasCache||[]).filter(e=>cas.includes(e.casamento_id)).map(e=>e.assessora_id))
+  }
+
   const filtered=assessoras.filter(a=>{
     const ms=!s||a.nome?.toLowerCase().includes(s)||a.cidade?.toLowerCase().includes(s)
-    return ms&&(!fI('f-ingles')||a.ingles)&&(!fI('f-espanhol')||a.espanhol)&&(!fI('f-frances')||a.frances)&&(!fI('f-italiano')||a.italiano)&&(!fI('f-h1')||a.hierarquia==='1ª Assessora')&&(!fI('f-h2')||a.hierarquia==='2ª Assessora')&&(!fI('f-equipe')||a.possui_equipe)&&(!fI('f-blacklist')||a.blacklist)&&(!fI('f-febre')||a.febre_amarela)
+    const mD=!aidsDestino||aidsDestino.has(a.id)
+    const mH=!aidsHotel||aidsHotel.has(a.id)
+    return ms&&mD&&mH&&(!fI('f-ingles')||a.ingles)&&(!fI('f-espanhol')||a.espanhol)&&(!fI('f-frances')||a.frances)&&(!fI('f-italiano')||a.italiano)&&(!fI('f-h1')||a.hierarquia==='1ª Assessora')&&(!fI('f-h2')||a.hierarquia==='2ª Assessora')&&(!fI('f-h3')||a.hierarquia==='3ª Assessora')&&(!fI('f-h4')||a.hierarquia==='4ª Assessora')&&(!fI('f-h5')||a.hierarquia==='5ª Assessora')&&(!fI('f-equipe')||a.possui_equipe)&&(!fI('f-blacklist')||a.blacklist)&&(!fI('f-febre')||a.febre_amarela)
   })
   document.getElementById('assessoras-count').textContent=assessoras.length+' assessoras cadastradas'
   if(!filtered.length){grid.innerHTML='<div class="em"><div class="em-i">👩</div><div class="em-t">Nenhuma assessora encontrada</div></div>';return}
