@@ -202,7 +202,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <button class="btn bg" onclick="openNovoHotel()">+ Novo Hotel</button>
     </div>
     <div style="display:flex;gap:20px;align-items:flex-start">
-      <div class="fpanel" style="width:220px">
+      <div class="fpanel" style="width:220px;max-height:calc(100vh - 80px);overflow-y:auto;position:sticky;top:24px">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
           <div class="fp-title" style="margin-bottom:0">Filtros</div>
           <span id="h-filtros-count" style="display:none;font-size:10px;font-weight:700;background:var(--gold);color:white;border-radius:10px;padding:2px 7px;cursor:pointer" onclick="limparFiltrosHotel()">limpar</span>
