@@ -246,22 +246,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
         <div class="fp-sec">
           <div class="fp-sec-t">Valor Diária Casal</div>
-          <div style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:6px"><span id="label-diaria-min">100</span> – <span id="label-diaria-max">2000</span></div>
+          <select id="slider-moeda" onchange="atualizarSliderMoeda();renderHoteis()" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:10px">
+            <option value="">Qualquer moeda</option>
+            <option value="USD">🇺🇸 USD</option>
+            <option value="EUR">🇪🇺 EUR</option>
+            <option value="BRL">🇧🇷 BRL</option>
+          </select>
+          <div style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:6px"><span id="label-moeda-prefix"></span><span id="label-diaria-min">100</span> – <span id="label-moeda-prefix2"></span><span id="label-diaria-max">2000</span></div>
           <div style="font-size:10px;color:#aaa;margin-bottom:4px">Mínimo</div>
           <input type="range" id="slider-diaria-min" min="100" max="2000" step="100" value="100" oninput="document.getElementById('label-diaria-min').textContent=this.value;renderHoteis()" style="width:100%;accent-color:var(--gold)">
           <div style="font-size:10px;color:#aaa;margin-bottom:4px;margin-top:6px">Máximo</div>
           <input type="range" id="slider-diaria-max" min="100" max="2000" step="100" value="2000" oninput="document.getElementById('label-diaria-max').textContent=this.value;renderHoteis()" style="width:100%;accent-color:var(--gold)">
-          <div style="display:flex;justify-content:space-between;font-size:10px;color:#aaa;margin-top:2px"><span>100</span><span>2000</span></div>
-        </div>
-
-        <div class="fp-sec">
-          <div class="fp-sec-t">Valor Inicial Casamento</div>
-          <div style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:6px"><span id="label-cas-min">100</span> – <span id="label-cas-max">2000</span></div>
-          <div style="font-size:10px;color:#aaa;margin-bottom:4px">Mínimo</div>
-          <input type="range" id="slider-cas-min" min="100" max="2000" step="100" value="100" oninput="document.getElementById('label-cas-min').textContent=this.value;renderHoteis()" style="width:100%;accent-color:var(--gold)">
-          <div style="font-size:10px;color:#aaa;margin-bottom:4px;margin-top:6px">Máximo</div>
-          <input type="range" id="slider-cas-max" min="100" max="2000" step="100" value="2000" oninput="document.getElementById('label-cas-max').textContent=this.value;renderHoteis()" style="width:100%;accent-color:var(--gold)">
-          <div style="display:flex;justify-content:space-between;font-size:10px;color:#aaa;margin-top:2px"><span>100</span><span>2000</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:#aaa;margin-top:2px"><span id="slider-min-label">100</span><span id="slider-max-label">2000</span></div>
         </div>
 
         <div class="fp-sec">
@@ -966,28 +962,41 @@ async function renderHistorico(){
 
 // ══ HOTÉIS ══
 async function loadHoteis(){const{data}=await sb.from('hoteis').select('*').order('nome');hoteis=data||[];renderHoteis()}
+function atualizarSliderMoeda(){
+  const moeda=document.getElementById('slider-moeda')?.value||''
+  const configs={USD:{min:100,max:2000,step:100},EUR:{min:100,max:2000,step:100},BRL:{min:150,max:10000,step:150},'':{min:100,max:2000,step:100}}
+  const cfg=configs[moeda]||configs['']
+  const prefix=moeda?moeda+' ':''
+  ;['slider-diaria-min','slider-diaria-max'].forEach((id,i)=>{
+    const el=document.getElementById(id);if(!el)return
+    el.min=cfg.min;el.max=cfg.max;el.step=cfg.step
+    el.value=i===0?cfg.min:cfg.max
+  })
+  document.getElementById('label-diaria-min').textContent=cfg.min
+  document.getElementById('label-diaria-max').textContent=cfg.max
+  document.getElementById('label-moeda-prefix').textContent=prefix
+  document.getElementById('label-moeda-prefix2').textContent=prefix
+  document.getElementById('slider-min-label').textContent=cfg.min
+  document.getElementById('slider-max-label').textContent=cfg.max
+}
 function limparFiltrosHotel(){
   ['fh-reg-caribe','fh-reg-sul','fh-reg-europa','fh-reg-asia','fh-tipo-ai','fh-tipo-resort','fh-tipo-boutique','fh-tipo-pousada','fh-tipo-urbano','fh-tipo-fazenda','fh-kids','fh-pets','fh-spa','fh-cassino','fh-parque','fh-sol'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=false})
   ;['search-h','f-h-pais','f-h-cidade'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
-  ;['slider-acom','slider-diaria-min','slider-cas-min'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=el.min})
-  ;['slider-diaria-max','slider-cas-max'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=el.max})
-  document.getElementById('label-acom').textContent='500'
-  document.getElementById('label-diaria-min').textContent='100';document.getElementById('label-diaria-max').textContent='2000'
-  document.getElementById('label-cas-min').textContent='100';document.getElementById('label-cas-max').textContent='2000'
-  renderHoteis()
+  document.getElementById('slider-moeda').value=''
+  document.getElementById('slider-acom').value=500;document.getElementById('label-acom').textContent='500'
+  atualizarSliderMoeda();renderHoteis()
 }
 function renderHoteis(){
   const s=(document.getElementById('search-h')?.value||'').toLowerCase()
   const pais=(document.getElementById('f-h-pais')?.value||'').toLowerCase()
   const cidade=(document.getElementById('f-h-cidade')?.value||'').toLowerCase()
+  const moeda=document.getElementById('slider-moeda')?.value||''
   const fI=id=>document.getElementById(id)?.checked
-  // Região (múltipla)
   const regioes=[]
   if(fI('fh-reg-caribe'))regioes.push('Caribe')
   if(fI('fh-reg-sul'))regioes.push('América do Sul')
   if(fI('fh-reg-europa'))regioes.push('Europa')
   if(fI('fh-reg-asia'))regioes.push('Ásia')
-  // Tipo (múltiplo)
   const tipos=[]
   if(fI('fh-tipo-ai'))tipos.push('All Inclusive')
   if(fI('fh-tipo-resort'))tipos.push('Resort')
@@ -995,16 +1004,11 @@ function renderHoteis(){
   if(fI('fh-tipo-pousada'))tipos.push('Pousada')
   if(fI('fh-tipo-urbano'))tipos.push('Hotel Urbano')
   if(fI('fh-tipo-fazenda'))tipos.push('Fazenda/Vinhedo')
-  // Sliders
   const maxAcom=parseInt(document.getElementById('slider-acom')?.value||500)
   const minDiaria=parseInt(document.getElementById('slider-diaria-min')?.value||100)
   const maxDiaria=parseInt(document.getElementById('slider-diaria-max')?.value||2000)
-  const minCas=parseInt(document.getElementById('slider-cas-min')?.value||100)
-  const maxCas=parseInt(document.getElementById('slider-cas-max')?.value||2000)
-
-  const anyActive=[s,pais,cidade,regioes.length,tipos.length,fI('fh-kids'),fI('fh-pets'),fI('fh-spa'),fI('fh-cassino'),fI('fh-parque'),fI('fh-sol'),maxAcom<500,minDiaria>100,maxDiaria<2000,minCas>100,maxCas<2000].some(Boolean)
+  const anyActive=[s,pais,cidade,moeda,regioes.length,tipos.length,fI('fh-kids'),fI('fh-pets'),fI('fh-spa'),fI('fh-cassino'),fI('fh-parque'),fI('fh-sol'),maxAcom<500,moeda&&(minDiaria>100||maxDiaria<2000)].some(Boolean)
   const fc=document.getElementById('h-filtros-count');if(fc)fc.style.display=anyActive?'inline':'none'
-
   const grid=document.getElementById('hoteis-grid')
   const filtered=hoteis.filter(h=>{
     const ms=!s||h.nome?.toLowerCase().includes(s)||h.cidade?.toLowerCase().includes(s)
@@ -1012,16 +1016,18 @@ function renderHoteis(){
     const mc=!cidade||h.cidade?.toLowerCase().includes(cidade)
     const mr=!regioes.length||regioes.includes(h.regiao)
     const mt=!tipos.length||tipos.includes(h.tipo)
-    // Acomodações
     const numAcom=parseInt(h.num_acomodacoes)||9999
     const macom=numAcom<=maxAcom
-    // Diária — extrai primeiro número do campo
-    const numDiaria=parseFloat((h.valor_diaria||'').replace(/[^0-9.]/g,''))||0
-    const mdiaria=!numDiaria||(numDiaria>=minDiaria&&numDiaria<=maxDiaria)
-    // Casamento
-    const numCas=parseFloat((h.valor_casamento||'').replace(/[^0-9.]/g,''))||0
-    const mcas=!numCas||(numCas>=minCas&&numCas<=maxCas)
-    return ms&&mp&&mc&&mr&&mt&&macom&&mdiaria&&mcas&&(!fI('fh-kids')||h.aceita_criancas)&&(!fI('fh-pets')||h.aceita_pets)&&(!fI('fh-spa')||h.spa)&&(!fI('fh-cassino')||h.cassino)&&(!fI('fh-parque')||h.parque_aquatico)&&(!fI('fh-sol')||h.por_do_sol)
+    // Filtro de moeda + valor
+    let mdiaria=true
+    if(moeda){
+      if(h.moeda_diaria!==moeda){mdiaria=false}
+      else{
+        const numDiaria=parseFloat((h.valor_diaria||'').replace(/\./g,'').replace(',','.').replace(/[^0-9.]/g,''))||0
+        mdiaria=numDiaria>=minDiaria&&numDiaria<=maxDiaria
+      }
+    }
+    return ms&&mp&&mc&&mr&&mt&&macom&&mdiaria&&(!fI('fh-kids')||h.aceita_criancas)&&(!fI('fh-pets')||h.aceita_pets)&&(!fI('fh-spa')||h.spa)&&(!fI('fh-cassino')||h.cassino)&&(!fI('fh-parque')||h.parque_aquatico)&&(!fI('fh-sol')||h.por_do_sol)
   })
   document.getElementById('hoteis-count').textContent=hoteis.length+' hotel(is) cadastrado(s)'
   if(!filtered.length){grid.innerHTML='<div class="em"><div class="em-i">🏨</div><div class="em-t">Nenhum hotel encontrado</div></div>';return}
