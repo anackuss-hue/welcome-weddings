@@ -339,11 +339,36 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         </div>
       </div>
       <div class="sec" style="margin-top:24px"><div class="st">Hierarquia</div>
-        <div class="ro"><div class="ro-opt" onclick="selHier('1ª Assessora')" id="hier-1">⭐ 1ª Assessora</div><div class="ro-opt" onclick="selHier('2ª Assessora')" id="hier-2">✦ 2ª Assessora</div></div>
+        <div class="ro">
+          <div class="ro-opt" onclick="selHier('1ª Assessora')" id="hier-1">⭐ 1ª Assessora</div>
+          <div class="ro-opt" onclick="selHier('2ª Assessora')" id="hier-2">✦ 2ª Assessora</div>
+          <div class="ro-opt" onclick="selHier('3ª Assessora')" id="hier-3">✧ 3ª Assessora</div>
+          <div class="ro-opt" onclick="selHier('4ª Assessora')" id="hier-4">· 4ª Assessora</div>
+          <div class="ro-opt" onclick="selHier('5ª Assessora')" id="hier-5">· 5ª Assessora</div>
+        </div>
       </div>
       <div class="sec" style="margin-top:24px"><div class="st">Equipe</div>
-        <div class="tr-row" onclick="tg('a-equipe')"><div class="tr-track" id="track-a-equipe"><div class="tr-thumb"></div></div><span class="tr-label">Possui equipe própria?</span></div>
-        <div class="f" style="margin-top:12px"><label>Nome da Equipe</label><input id="a-nome-equipe" placeholder="Ex: Equipe Bella"></div>
+        <div style="display:flex;gap:10px;margin-bottom:16px">
+          <div class="ro-opt" onclick="selTipoEquipe('lidera')" id="eq-lidera">👑 Tem equipe própria</div>
+          <div class="ro-opt" onclick="selTipoEquipe('membro')" id="eq-membro">👥 É membro de uma equipe</div>
+          <div class="ro-opt" onclick="selTipoEquipe('')" id="eq-nenhum">✕ Sem equipe</div>
+        </div>
+        <div id="equipe-lidera-section" style="display:none">
+          <div class="f"><label>Nome da Equipe</label><input id="a-nome-equipe" placeholder="Ex: Equipe Bella"></div>
+          <div class="f"><label>Membros da Equipe</label>
+            <div id="membros-list" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px"></div>
+            <select id="a-add-membro" onchange="addMembro(this.value)" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+              <option value="">+ Adicionar membro da equipe...</option>
+            </select>
+          </div>
+        </div>
+        <div id="equipe-membro-section" style="display:none">
+          <div class="f"><label>Líder da Equipe</label>
+            <select id="a-lider-equipe" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+              <option value="">Selecionar líder...</option>
+            </select>
+          </div>
+        </div>
       </div>
     </div>
     <div class="atc" id="atab-historico"><div id="historico-content"><div class="ld">Carregando...</div></div></div>
@@ -478,9 +503,36 @@ function setIdioma(l,v){tgStates['a-'+l]=!!v;const c=document.getElementById('ca
 // ── HIERARQUIA
 function selHier(v){
   hierAtual=hierAtual===v?'':v
-  document.querySelectorAll('.ro-opt').forEach(e=>e.classList.remove('sel'))
-  if(hierAtual==='1ª Assessora')document.getElementById('hier-1').classList.add('sel')
-  if(hierAtual==='2ª Assessora')document.getElementById('hier-2').classList.add('sel')
+  document.querySelectorAll('.ro-opt[id^=hier]').forEach(e=>e.classList.remove('sel'))
+  if(hierAtual){const map={'1ª Assessora':'hier-1','2ª Assessora':'hier-2','3ª Assessora':'hier-3','4ª Assessora':'hier-4','5ª Assessora':'hier-5'};document.getElementById(map[hierAtual])?.classList.add('sel')}
+}
+
+// ── EQUIPE
+let tipoEquipeAtual='',membrosEquipe=[]
+function selTipoEquipe(tipo){
+  tipoEquipeAtual=tipo
+  ;['lidera','membro','nenhum'].forEach(t=>{const el=document.getElementById('eq-'+t);if(el)el.classList.toggle('sel',tipo===t||(tipo===''&&t==='nenhum'))})
+  document.getElementById('equipe-lidera-section').style.display=tipo==='lidera'?'block':'none'
+  document.getElementById('equipe-membro-section').style.display=tipo==='membro'?'block':'none'
+}
+function addMembro(id){
+  if(!id)return
+  const a=assessoras.find(x=>x.id===id)
+  if(!a||membrosEquipe.includes(id))return
+  membrosEquipe.push(id);renderMembros();document.getElementById('a-add-membro').value=''
+}
+function removeMembro(id){membrosEquipe=membrosEquipe.filter(x=>x!==id);renderMembros()}
+function renderMembros(){
+  const list=document.getElementById('membros-list');if(!list)return
+  list.innerHTML=membrosEquipe.map(id=>{const a=assessoras.find(x=>x.id===id);return`<span style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;background:var(--gold-pale);border:1px solid var(--gold-border);font-size:12px;font-weight:500">${a?.nome||'?'}<span onclick="removeMembro('${id}')" style="cursor:pointer;color:#999;font-size:14px;line-height:1">✕</span></span>`}).join('')
+  const sel=document.getElementById('a-add-membro');if(!sel)return
+  const opts=assessoras.filter(a=>a.id!==assessoraAtual?.id&&!membrosEquipe.includes(a.id))
+  sel.innerHTML='<option value="">+ Adicionar membro...</option>'+opts.map(a=>`<option value="${a.id}">${a.nome}</option>`).join('')
+}
+function populateLiderSelect(){
+  const sel=document.getElementById('a-lider-equipe');if(!sel)return
+  const opts=assessoras.filter(a=>a.id!==assessoraAtual?.id&&a.possui_equipe)
+  sel.innerHTML='<option value="">Selecionar líder...</option>'+opts.map(a=>`<option value="${a.id}">${a.nome}${a.nome_equipe?' ('+a.nome_equipe+')':''}</option>`).join('')
 }
 
 // ── ABAS
@@ -496,6 +548,7 @@ function showATab(tab,btn){
   document.querySelectorAll('#modal-assessora .atab').forEach(t=>t.classList.remove('active'))
   document.getElementById('atab-'+tab).classList.add('active');if(btn)btn.classList.add('active')
   if(tab==='historico')renderHistorico()
+  if(tab==='idiomas'){populateLiderSelect();renderMembros()}
 }
 function showHTab(tab,btn){
   document.querySelectorAll('#modal-hotel .atc').forEach(t=>t.classList.remove('active'))
@@ -673,11 +726,11 @@ function renderAssessoras(){
       ${scoreLabel?`<span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:${scoreBg};color:${scoreColor};display:inline-block">${scoreIcon} ${scoreLabel}</span>`:''}
       ${a._notas?.length?`<div style="font-size:10px;color:#aaa;margin-top:2px">${a._notas.length} avaliação(ões)</div>`:''}
     </div>
-    </div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">${a.hierarquia?`<span class="tag tg">${a.hierarquia}</span>`:''}${a.ingles?'<span class="tag tb">🇬🇧 EN</span>':''}${a.espanhol?'<span class="tag tb">🇪🇸 ES</span>':''}${a.frances?'<span class="tag tb">🇫🇷 FR</span>':''}${a.italiano?'<span class="tag tb">🇮🇹 IT</span>':''}${a.possui_equipe?'<span class="tag tgr">👥 Equipe</span>':''}${a.febre_amarela?'<span class="tag tgr">💉 FY</span>':''}</div><div style="display:flex;gap:8px"><button class="btn bo" style="flex:1" onclick="openAssessora('${a.id}')">Ver / Editar</button><button class="btn bd" onclick="deleteAssessora('${a.id}')">✕</button></div></div>`
+    </div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">${a.hierarquia?`<span class="tag tg">${a.hierarquia}</span>`:''}${a.ingles?'<span class="tag tb">🇬🇧 Inglês</span>':''}${a.espanhol?'<span class="tag tb">🇪🇸 Espanhol</span>':''}${a.frances?'<span class="tag tb">🇫🇷 Francês</span>':''}${a.italiano?'<span class="tag tb">🇮🇹 Italiano</span>':''}${a.possui_equipe?`<span class="tag tgr">👑 ${a.nome_equipe||'Tem Equipe'}</span>`:''}${a.lider_equipe_id&&!a.possui_equipe?`<span class="tag tb">👥 Membro de Equipe</span>`:''}${a.febre_amarela?'<span class="tag tgr">💉 FY</span>':''}</div><div style="display:flex;gap:8px"><button class="btn bo" style="flex:1" onclick="openAssessora('${a.id}')">Ver / Editar</button><button class="btn bd" onclick="deleteAssessora('${a.id}')">✕</button></div></div>`
   }).join('')
 }
 function openNovaAssessora(){
-  assessoraAtual=null;hierAtual=''
+  assessoraAtual=null;hierAtual='';tipoEquipeAtual='';membrosEquipe=[]
   document.getElementById('ma-title').textContent='Nova Assessora'
   document.getElementById('ma-sub').textContent='Preencha os dados da assessora'
   document.querySelectorAll('#modal-assessora .atc').forEach(t=>t.classList.remove('active'))
@@ -688,7 +741,7 @@ function openNovaAssessora(){
 }
 function openAssessora(id){
   const a=assessoras.find(x=>x.id===id);if(!a)return
-  assessoraAtual={...a};hierAtual=a.hierarquia||''
+  assessoraAtual={...a};hierAtual=a.hierarquia||'';tipoEquipeAtual='';membrosEquipe=[]
   document.getElementById('ma-title').textContent=a.nome
   document.getElementById('ma-sub').textContent=(a.hierarquia||'Assessora')+(a.cidade?' · '+a.cidade:'')
   document.querySelectorAll('#modal-assessora .atc').forEach(t=>t.classList.remove('active'))
@@ -701,27 +754,61 @@ function clearAForm(){
   ['a-nome','a-nasc','a-cpf','a-email','a-cidade','a-whatsapp','a-perfil','a-rg','a-rg-val','a-pass-num','a-pass-val','a-pass-pais','a-visto-num','a-visto-val','a-visto-pais','a-nome-equipe'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
   ;['a-blacklist','a-nota','a-febre','a-equipe'].forEach(id=>setTg(id,false))
   ;['ingles','espanhol','frances','italiano'].forEach(l=>setIdioma(l,false))
-  hierAtual='';document.querySelectorAll('.ro-opt').forEach(e=>e.classList.remove('sel'))
+  hierAtual='';tipoEquipeAtual='';membrosEquipe=[]
+  document.querySelectorAll('.ro-opt[id^=hier]').forEach(e=>e.classList.remove('sel'))
+  selTipoEquipe('')
 }
 function fillAForm(a){
   const s=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||''}
   s('a-nome',a.nome);s('a-nasc',a.nascimento);s('a-cpf',a.cpf);s('a-email',a.email);s('a-cidade',a.cidade);s('a-whatsapp',a.whatsapp);s('a-perfil',a.perfil);s('a-rg',a.rg);s('a-rg-val',a.rg_validade);s('a-pass-num',a.passaporte_numero);s('a-pass-val',a.passaporte_validade);s('a-pass-pais',a.passaporte_pais);s('a-visto-num',a.visto_numero);s('a-visto-val',a.visto_validade);s('a-visto-pais',a.visto_pais);s('a-nome-equipe',a.nome_equipe)
-  setTg('a-blacklist',a.blacklist);setTg('a-nota',a.nota_fiscal);setTg('a-febre',a.febre_amarela);setTg('a-equipe',a.possui_equipe)
+  setTg('a-blacklist',a.blacklist);setTg('a-nota',a.nota_fiscal);setTg('a-febre',a.febre_amarela)
   setIdioma('ingles',a.ingles);setIdioma('espanhol',a.espanhol);setIdioma('frances',a.frances);setIdioma('italiano',a.italiano)
-  hierAtual=a.hierarquia||'';document.querySelectorAll('.ro-opt').forEach(e=>e.classList.remove('sel'))
-  if(hierAtual==='1ª Assessora')document.getElementById('hier-1')?.classList.add('sel')
-  if(hierAtual==='2ª Assessora')document.getElementById('hier-2')?.classList.add('sel')
+  hierAtual=a.hierarquia||''
+  document.querySelectorAll('.ro-opt[id^=hier]').forEach(e=>e.classList.remove('sel'))
+  if(hierAtual){const map={'1ª Assessora':'hier-1','2ª Assessora':'hier-2','3ª Assessora':'hier-3','4ª Assessora':'hier-4','5ª Assessora':'hier-5'};document.getElementById(map[hierAtual])?.classList.add('sel')}
+  // Equipe
+  tipoEquipeAtual='';membrosEquipe=[]
+  if(a.possui_equipe){
+    // Tem equipe própria — busca membros
+    tipoEquipeAtual='lidera'
+    const membros=assessoras.filter(x=>x.lider_equipe_id===a.id)
+    membrosEquipe=membros.map(x=>x.id)
+  } else if(a.lider_equipe_id){
+    tipoEquipeAtual='membro'
+  } else {
+    tipoEquipeAtual=''
+  }
+  selTipoEquipe(tipoEquipeAtual)
+  if(tipoEquipeAtual==='lidera'){renderMembros()}
+  if(tipoEquipeAtual==='membro'){
+    populateLiderSelect()
+    const sel=document.getElementById('a-lider-equipe')
+    if(sel&&a.lider_equipe_id)sel.value=a.lider_equipe_id
+  }
 }
 function getAData(){
   const v=id=>document.getElementById(id)?.value||''
-  return{nome:v('a-nome'),nascimento:v('a-nasc'),cpf:v('a-cpf'),email:v('a-email'),cidade:v('a-cidade'),whatsapp:v('a-whatsapp'),perfil:v('a-perfil'),rg:v('a-rg'),rg_validade:v('a-rg-val'),passaporte_numero:v('a-pass-num'),passaporte_validade:v('a-pass-val'),passaporte_pais:v('a-pass-pais'),visto_numero:v('a-visto-num'),visto_validade:v('a-visto-val'),visto_pais:v('a-visto-pais'),nome_equipe:v('a-nome-equipe'),blacklist:getTg('a-blacklist'),nota_fiscal:getTg('a-nota'),febre_amarela:getTg('a-febre'),possui_equipe:getTg('a-equipe'),ingles:!!tgStates['a-ingles'],espanhol:!!tgStates['a-espanhol'],frances:!!tgStates['a-frances'],italiano:!!tgStates['a-italiano'],hierarquia:hierAtual}
+  const liderEquipeId=tipoEquipeAtual==='membro'?document.getElementById('a-lider-equipe')?.value||null:null
+  return{nome:v('a-nome'),nascimento:v('a-nasc'),cpf:v('a-cpf'),email:v('a-email'),cidade:v('a-cidade'),whatsapp:v('a-whatsapp'),perfil:v('a-perfil'),rg:v('a-rg'),rg_validade:v('a-rg-val'),passaporte_numero:v('a-pass-num'),passaporte_validade:v('a-pass-val'),passaporte_pais:v('a-pass-pais'),visto_numero:v('a-visto-num'),visto_validade:v('a-visto-val'),visto_pais:v('a-visto-pais'),nome_equipe:tipoEquipeAtual==='lidera'?v('a-nome-equipe'):null,blacklist:getTg('a-blacklist'),nota_fiscal:getTg('a-nota'),febre_amarela:getTg('a-febre'),possui_equipe:tipoEquipeAtual==='lidera',ingles:!!tgStates['a-ingles'],espanhol:!!tgStates['a-espanhol'],frances:!!tgStates['a-frances'],italiano:!!tgStates['a-italiano'],hierarquia:hierAtual,lider_equipe_id:liderEquipeId}
 }
 async function salvarAssessora(){
   const btn=document.getElementById('btn-sa');btn.textContent='Salvando...';btn.disabled=true
   const data=getAData()
   if(!data.nome){alert('Preencha o nome!');btn.textContent='Salvar';btn.disabled=false;return}
+  let savedId=assessoraAtual?.id
   if(assessoraAtual){await sb.from('assessoras').update(data).eq('id',assessoraAtual.id)}
-  else{await sb.from('assessoras').insert(data)}
+  else{const{data:r}=await sb.from('assessoras').insert(data).select();savedId=r?.[0]?.id}
+  // Salvar membros da equipe
+  if(tipoEquipeAtual==='lidera'&&savedId){
+    // Remove lider_equipe_id de quem não está mais na equipe
+    await sb.from('assessoras').update({lider_equipe_id:null}).eq('lider_equipe_id',savedId)
+    // Adiciona os membros selecionados
+    if(membrosEquipe.length){
+      for(const mid of membrosEquipe){
+        await sb.from('assessoras').update({lider_equipe_id:savedId,possui_equipe:false}).eq('id',mid)
+      }
+    }
+  }
   btn.textContent='Salvar';btn.disabled=false;closeModal('modal-assessora');loadAssessoras()
 }
 async function deleteAssessora(id){if(!confirm('Remover?'))return;await sb.from('assessoras').delete().eq('id',id);loadAssessoras()}
