@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome Weddings — Seu Destination Wedding</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#b8965a;--gold-light:#d4af7a;--gold-pale:#fdf8f0;--gold-border:#f0e8d0;--white:#fff;--bg:#f7f4ef;--text:#1a1a1a;--muted:#888;--border:#e8e0d4;--red:#c0392b;--green:#2e7d32}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* HEADER */
+.header{background:var(--white);border-bottom:1px solid var(--border);padding:20px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.logo .w1{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--gold);letter-spacing:3px;text-transform:uppercase}
+.logo .w2{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--text);letter-spacing:3px;text-transform:uppercase}
+.logo .ws{font-size:9px;letter-spacing:2px;color:var(--muted);margin-top:2px;text-transform:uppercase}
+.header-right{font-size:12px;color:var(--muted);text-align:right}
+.header-right strong{display:block;font-size:13px;color:var(--text)}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#1a1a1a 0%,#2d2417 50%,#1a1a1a 100%);padding:60px 40px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23b8965a' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.hero-tag{display:inline-block;padding:4px 16px;border-radius:20px;background:rgba(184,150,90,.2);color:var(--gold);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;border:1px solid rgba(184,150,90,.3)}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:#fff;margin-bottom:12px;letter-spacing:1px}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero p{font-size:14px;color:rgba(255,255,255,.6);max-width:500px;margin:0 auto;line-height:1.7}
+
+/* MAIN */
+.main{padding:40px}
+.layout{display:flex;gap:24px;align-items:flex-start}
+
+/* FILTER PANEL */
+.fpanel{width:220px;flex-shrink:0;background:var(--white);border-radius:12px;border:1px solid var(--border);padding:20px;position:sticky;top:88px;max-height:calc(100vh - 110px);overflow-y:auto}
+.fp-title{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px}
+.fp-sec{margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.fp-sec-t{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+.fl{display:flex;align-items:center;gap:8px;font-size:12px;color:#555;cursor:pointer;padding:4px 0}
+.fl input[type=checkbox]{accent-color:var(--gold);width:14px;height:14px;cursor:pointer;flex-shrink:0}
+
+/* CARDS */
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;flex:1}
+.card{background:var(--white);border-radius:16px;border:1px solid var(--border);overflow:hidden;transition:box-shadow .2s,transform .2s;cursor:pointer}
+.card:hover{box-shadow:0 8px 32px rgba(184,150,90,.15);transform:translateY(-2px)}
+.card-header{background:linear-gradient(135deg,#1a1a1a,#2d2417);padding:20px;position:relative}
+.card-flag{position:absolute;top:12px;right:12px;font-size:20px}
+.card-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:#fff;margin-bottom:4px}
+.card-loc{font-size:12px;color:rgba(255,255,255,.6)}
+.card-body{padding:16px}
+.card-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.tg{background:#fdf3e0;color:var(--gold)}.tgr{background:#e8f5e9;color:var(--green)}
+.tb{background:#e3f2fd;color:#1565c0}.tgy{background:#f0f0f0;color:#666}
+.card-info{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.card-info-row{display:flex;justify-content:space-between;align-items:center;font-size:12px}
+.card-info-label{color:var(--muted)}
+.card-info-value{font-weight:600;color:var(--text)}
+.btn-ver{width:100%;padding:10px;border-radius:8px;background:var(--gold);color:#fff;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s}
+.btn-ver:hover{background:var(--gold-light)}
+
+/* MODAL */
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:flex-start;justify-content:center;padding:32px 20px;overflow-y:auto}
+.mo.open{display:flex}
+.mb{background:#fff;border-radius:16px;width:100%;max-width:760px;padding:0;position:relative;margin:auto;overflow:hidden}
+.mb-hero{background:linear-gradient(135deg,#1a1a1a,#2d2417);padding:28px 32px}
+.mb-hero-name{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:#fff;margin-bottom:4px}
+.mb-hero-loc{font-size:13px;color:rgba(255,255,255,.6)}
+.mb-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.1);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.mb-body{padding:28px 32px}
+.atabs{display:flex;gap:0;border-bottom:2px solid var(--border);overflow-x:auto;margin-bottom:24px}
+.atab{padding:10px 16px;font-size:11px;font-weight:700;cursor:pointer;border:none;background:transparent;color:#aaa;font-family:'DM Sans',sans-serif;transition:all .15s;border-bottom:2px solid transparent;margin-bottom:-2px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.atab:hover{color:var(--gold)}.atab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.atc{display:none}.atc.active{display:block}
+.sec{margin-bottom:20px}
+.st{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--gold-border)}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.info-item{background:var(--gold-pale);border-radius:8px;padding:12px}
+.info-item label{display:block;font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px}
+.info-item span{font-size:13px;font-weight:500;color:var(--text)}
+.toggle-display{display:flex;align-items:center;gap:8px;padding:8px 0}
+.td-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.td-dot.on{background:var(--green)}.td-dot.off{background:#ddd}
+.td-label{font-size:13px;color:#555}
+.link-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;background:var(--gold-pale);color:var(--gold);border:1px solid var(--gold-border);font-size:12px;font-weight:600;text-decoration:none;transition:all .15s;cursor:pointer}
+.link-btn:hover{background:var(--gold);color:#fff}
+
+/* EMPTY */
+.em{text-align:center;padding:80px 20px;color:var(--muted)}
+.em-i{font-size:48px;margin-bottom:16px}
+.em-t{font-size:15px}
+.ld{text-align:center;padding:60px;color:var(--muted);font-size:14px}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .header{padding:16px 20px}
+  .hero{padding:40px 20px}
+  .hero h1{font-size:28px}
+  .main{padding:20px 16px}
+  .layout{flex-direction:column}
+  .fpanel{width:100%;position:static;max-height:none}
+  .cg{grid-template-columns:1fr}
+  .mb{margin:0}
+  .mb-body{padding:20px 16px}
+  .info-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="w1">Welcome</div>
+    <div class="w2">Weddings</div>
+    <div class="ws">Destination Weddings</div>
+  </div>
+  <div class="header-right">
+    <strong>Nossos Destinos</strong>
+    Explore e inspire-se ✨
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-tag">Destination Wedding</div>
+  <h1>Encontre o cenário perfeito<br>para o seu <em>grande dia</em></h1>
+  <p>Explore nossa coleção de hotéis e resorts cuidadosamente selecionados para tornar o seu casamento inesquecível.</p>
+</div>
+
+<div class="main">
+  <div class="layout">
+
+    <div class="fpanel">
+      <div class="fp-title" style="margin-bottom:16px">Filtros</div>
+      <input id="search-h" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none" placeholder="Buscar hotel..." oninput="renderHoteis()">
+
+      <div class="fp-sec">
+        <div class="fp-sec-t">Região</div>
+        <label class="fl"><input type="checkbox" id="fh-reg-caribe" onchange="renderHoteis()"> 🏝️ Caribe</label>
+        <label class="fl"><input type="checkbox" id="fh-reg-sul" onchange="renderHoteis()"> 🌎 América do Sul</label>
+        <label class="fl"><input type="checkbox" id="fh-reg-europa" onchange="renderHoteis()"> 🏰 Europa</label>
+        <label class="fl"><input type="checkbox" id="fh-reg-asia" onchange="renderHoteis()"> 🏯 Ásia</label>
+      </div>
+
+      <div class="fp-sec">
+        <div class="fp-sec-t">País</div>
+        <input id="f-h-pais" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none" placeholder="Ex: México" oninput="renderHoteis()">
+      </div>
+
+      <div class="fp-sec">
+        <div class="fp-sec-t">Tipo de Hotel</div>
+        <label class="fl"><input type="checkbox" id="fh-tipo-ai" onchange="renderHoteis()"> All Inclusive</label>
+        <label class="fl"><input type="checkbox" id="fh-tipo-resort" onchange="renderHoteis()"> Resort</label>
+        <label class="fl"><input type="checkbox" id="fh-tipo-boutique" onchange="renderHoteis()"> Boutique</label>
+        <label class="fl"><input type="checkbox" id="fh-tipo-pousada" onchange="renderHoteis()"> Pousada</label>
+        <label class="fl"><input type="checkbox" id="fh-tipo-urbano" onchange="renderHoteis()"> Hotel Urbano</label>
+        <label class="fl"><input type="checkbox" id="fh-tipo-fazenda" onchange="renderHoteis()"> Fazenda/Vinhedo</label>
+      </div>
+
+      <div class="fp-sec">
+        <div class="fp-sec-t">Estrutura</div>
+        <label class="fl"><input type="checkbox" id="fh-kids" onchange="renderHoteis()"> 👶 Aceita Crianças</label>
+        <label class="fl"><input type="checkbox" id="fh-pets" onchange="renderHoteis()"> 🐾 Aceita Pets</label>
+        <label class="fl"><input type="checkbox" id="fh-spa" onchange="renderHoteis()"> 💆 Spa</label>
+        <label class="fl"><input type="checkbox" id="fh-cassino" onchange="renderHoteis()"> 🎰 Cassino</label>
+        <label class="fl"><input type="checkbox" id="fh-parque" onchange="renderHoteis()"> 🌊 Parque Aquático</label>
+        <label class="fl"><input type="checkbox" id="fh-sol" onchange="renderHoteis()"> 🌅 Pôr do Sol</label>
+      </div>
+    </div>
+
+    <div style="flex:1">
+      <div id="resultado-count" style="font-size:13px;color:var(--muted);margin-bottom:16px"></div>
+      <div class="cg" id="hoteis-grid"><div class="ld">Carregando hotéis...</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL HOTEL -->
+<div class="mo" id="modal-hotel">
+  <div class="mb">
+    <div class="mb-hero">
+      <button class="mb-close" onclick="closeModal()">✕</button>
+      <div class="mb-hero-name" id="mh-nome">—</div>
+      <div class="mb-hero-loc" id="mh-loc">—</div>
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap" id="mh-tags"></div>
+    </div>
+    <div class="mb-body">
+      <div class="atabs">
+        <button class="atab active" onclick="showTab('geral',this)">🏨 Geral</button>
+        <button class="atab" onclick="showTab('espec',this)">✨ Estrutura</button>
+        <button class="atab" onclick="showTab('valores',this)">💰 Valores</button>
+        <button class="atab" onclick="showTab('casamento',this)">💍 Casamentos</button>
+      </div>
+
+      <div class="atc active" id="atab-geral">
+        <div class="info-grid" id="info-geral"></div>
+        <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap" id="links-geral"></div>
+      </div>
+
+      <div class="atc" id="atab-espec">
+        <div class="sec"><div class="st">Alimentação & Hospedagem</div>
+          <div class="info-grid" id="info-alim"></div>
+        </div>
+        <div class="sec" style="margin-top:16px"><div class="st">Comodidades</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px" id="info-comod"></div>
+        </div>
+      </div>
+
+      <div class="atc" id="atab-valores">
+        <div class="info-grid" id="info-valores"></div>
+      </div>
+
+      <div class="atc" id="atab-casamento">
+        <div class="info-grid" id="info-casamento"></div>
+        <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap" id="links-casamento"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const{createClient}=supabase
+const sb=createClient('https://yrnlfarricrhtfomwynd.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlybmxmYXJyaWNyaHRmb213eW5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczOTIxODksImV4cCI6MjA5Mjk2ODE4OX0.Ad4awFjQ9vcDqNyBbWycgv0rvpc3DOz4pPTi41nSp8w')
+
+let hoteis=[]
+document.addEventListener('DOMContentLoaded',loadHoteis)
+document.getElementById('modal-hotel').addEventListener('click',e=>{if(e.target===document.getElementById('modal-hotel'))closeModal()})
+
+async function loadHoteis(){
+  const{data}=await sb.from('hoteis').select('id,nome,regiao,pais,cidade,site,email,instagram,tipo,regime,aceita_criancas,aceita_pets,num_acomodacoes,ano_construcao,restaurantes_ai,restaurantes_premium,cafeteria,bares_ai,bares_premium,frigobar,room_service,bar_pago,restaurante_pago,area_kids,parque_aquatico,pub_disco,cassino,spa,wifi,por_do_sol,valor_diaria,valor_sinal,valor_bloqueio,valor_luau,factsheet,tour_virtual,espacos,mapa').order('nome')
+  hoteis=data||[];renderHoteis()
+}
+
+function renderHoteis(){
+  const s=(document.getElementById('search-h')?.value||'').toLowerCase()
+  const pais=(document.getElementById('f-h-pais')?.value||'').toLowerCase()
+  const fI=id=>document.getElementById(id)?.checked
+  const regioes=[]
+  if(fI('fh-reg-caribe'))regioes.push('Caribe')
+  if(fI('fh-reg-sul'))regioes.push('América do Sul')
+  if(fI('fh-reg-europa'))regioes.push('Europa')
+  if(fI('fh-reg-asia'))regioes.push('Ásia')
+  const tipos=[]
+  if(fI('fh-tipo-ai'))tipos.push('All Inclusive')
+  if(fI('fh-tipo-resort'))tipos.push('Resort')
+  if(fI('fh-tipo-boutique'))tipos.push('Boutique')
+  if(fI('fh-tipo-pousada'))tipos.push('Pousada')
+  if(fI('fh-tipo-urbano'))tipos.push('Hotel Urbano')
+  if(fI('fh-tipo-fazenda'))tipos.push('Fazenda/Vinhedo')
+  const filtered=hoteis.filter(h=>{
+    const ms=!s||h.nome?.toLowerCase().includes(s)||h.cidade?.toLowerCase().includes(s)
+    const mp=!pais||h.pais?.toLowerCase().includes(pais)
+    const mr=!regioes.length||regioes.includes(h.regiao)
+    const mt=!tipos.length||tipos.includes(h.tipo)
+    return ms&&mp&&mr&&mt&&(!fI('fh-kids')||h.aceita_criancas)&&(!fI('fh-pets')||h.aceita_pets)&&(!fI('fh-spa')||h.spa)&&(!fI('fh-cassino')||h.cassino)&&(!fI('fh-parque')||h.parque_aquatico)&&(!fI('fh-sol')||h.por_do_sol)
+  })
+  document.getElementById('resultado-count').textContent=filtered.length+' hotel(is) encontrado(s)'
+  const grid=document.getElementById('hoteis-grid')
+  if(!filtered.length){grid.innerHTML='<div class="em"><div class="em-i">🏨</div><div class="em-t">Nenhum hotel encontrado com esses filtros</div></div>';return}
+  const flagPais=p=>{const f={'México':'🇲🇽','Brasil':'🇧🇷','República Dominicana':'🇩🇴','Cuba':'🇨🇺','Jamaica':'🇯🇲','Portugal':'🇵🇹','Espanha':'🇪🇸','Itália':'🇮🇹','França':'🇫🇷','Grécia':'🇬🇷','Turquia':'🇹🇷','Maldivas':'🇲🇻','Japão':'🇯🇵','Tailândia':'🇹🇭','Bali':'🇮🇩'};return f[p]||'🌍'}
+  grid.innerHTML=filtered.map(h=>`
+    <div class="card" onclick="openHotel('${h.id}')">
+      <div class="card-header">
+        <div class="card-flag">${flagPais(h.pais)}</div>
+        <div class="card-name">${h.nome}</div>
+        <div class="card-loc">📍 ${[h.cidade,h.pais,h.regiao].filter(Boolean).join(' · ')}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-tags">
+          ${h.tipo?`<span class="tag tg">${h.tipo}</span>`:''}
+          ${h.por_do_sol?'<span class="tag tg">🌅 Pôr do Sol</span>':''}
+          ${h.spa?'<span class="tag tgr">💆 Spa</span>':''}
+          ${h.aceita_criancas?'<span class="tag tgr">👶 Kids</span>':''}
+          ${h.parque_aquatico?'<span class="tag tb">🌊 Aquapark</span>':''}
+          ${h.cassino?'<span class="tag tgy">🎰 Cassino</span>':''}
+        </div>
+        ${h.valor_diaria?`<div class="card-info"><div class="card-info-row"><span class="card-info-label">Diária casal</span><span class="card-info-value">${h.valor_diaria.split('(')[0].trim()}</span></div></div>`:''}
+        <button class="btn-ver">Ver detalhes →</button>
+      </div>
+    </div>`).join('')
+}
+
+function openHotel(id){
+  const h=hoteis.find(x=>x.id===id);if(!h)return
+  document.getElementById('mh-nome').textContent=h.nome
+  document.getElementById('mh-loc').textContent=['📍',h.cidade,h.pais,h.regiao].filter(Boolean).join(' · ')
+  // Tags
+  const tags=document.getElementById('mh-tags')
+  tags.innerHTML=[h.tipo?`<span style="padding:4px 12px;border-radius:20px;background:rgba(184,150,90,.2);color:var(--gold);font-size:11px;font-weight:600">${h.tipo}</span>`:'',h.por_do_sol?'<span style="padding:4px 12px;border-radius:20px;background:rgba(184,150,90,.2);color:var(--gold);font-size:11px;font-weight:600">🌅 Pôr do Sol</span>':'',h.spa?'<span style="padding:4px 12px;border-radius:20px;background:rgba(46,125,50,.2);color:#2e7d32;font-size:11px;font-weight:600">💆 Spa</span>':''].filter(Boolean).join('')
+
+  // Aba Geral
+  const ig=document.getElementById('info-geral')
+  ig.innerHTML=[['País',h.pais],['Cidade',h.cidade],['Região',h.regiao],['Nº Acomodações',h.num_acomodacoes],['Ano Construção',h.ano_construcao]].filter(x=>x[1]).map(x=>`<div class="info-item"><label>${x[0]}</label><span>${x[1]}</span></div>`).join('')
+  const lg=document.getElementById('links-geral')
+  lg.innerHTML=[h.site?`<a href="${h.site}" target="_blank" class="link-btn">🌐 Site Oficial</a>`:'',h.instagram?`<a href="${h.instagram}" target="_blank" class="link-btn">📸 Instagram</a>`:''].filter(Boolean).join('')
+
+  // Aba Estrutura
+  const ia=document.getElementById('info-alim')
+  ia.innerHTML=[['Regime',h.regime],['Restaurantes AI',h.restaurantes_ai],['Restaurantes Premium',h.restaurantes_premium],['Cafeteria',h.cafeteria],['Bares AI',h.bares_ai],['Bares Premium',h.bares_premium]].filter(x=>x[1]).map(x=>`<div class="info-item"><label>${x[0]}</label><span>${x[1]}</span></div>`).join('')
+  const comod=[['Frigobar',h.frigobar],['Room Service',h.room_service],['Bar Pago',h.bar_pago],['Restaurante Pago',h.restaurante_pago],['Área Kids',h.area_kids],['Parque Aquático',h.parque_aquatico],['Pub/Disco',h.pub_disco],['Cassino',h.cassino],['Spa',h.spa],['Wi-Fi',h.wifi],['Pôr do Sol',h.por_do_sol],['Aceita Crianças',h.aceita_criancas],['Aceita Pets',h.aceita_pets]]
+  document.getElementById('info-comod').innerHTML=comod.map(([l,v])=>`<div class="toggle-display"><div class="td-dot ${v?'on':'off'}"></div><span class="td-label">${l}</span></div>`).join('')
+
+  // Aba Valores
+  document.getElementById('info-valores').innerHTML=[['Diária Casal',h.valor_diaria],['Sinal Casamento',h.valor_sinal],['Bloqueio Quartos',h.valor_bloqueio],['Luau (médio)',h.valor_luau]].filter(x=>x[1]).map(x=>`<div class="info-item"><label>${x[0]}</label><span>${x[1]}</span></div>`).join('')
+
+  // Aba Casamento
+  const ic=document.getElementById('info-casamento')
+  ic.innerHTML=[['Espaços',h.espacos]].filter(x=>x[1]).map(x=>`<div class="info-item" style="grid-column:1/-1"><label>${x[0]}</label><span style="white-space:pre-wrap">${x[1]}</span></div>`).join('')
+  const lc=document.getElementById('links-casamento')
+  lc.innerHTML=[h.factsheet?`<a href="${h.factsheet}" target="_blank" class="link-btn">📄 Factsheet</a>`:'',h.tour_virtual?`<a href="${h.tour_virtual}" target="_blank" class="link-btn">🎥 Tour Virtual</a>`:'',h.mapa?`<a href="${h.mapa}" target="_blank" class="link-btn">🗺️ Mapa do Hotel</a>`:''].filter(Boolean).join('')
+
+  // Reset tabs
+  document.querySelectorAll('.atab').forEach(t=>t.classList.remove('active'))
+  document.querySelectorAll('.atc').forEach(t=>t.classList.remove('active'))
+  document.getElementById('atab-geral').classList.add('active')
+  document.querySelector('.atab').classList.add('active')
+  document.getElementById('modal-hotel').classList.add('open')
+}
+
+function showTab(tab,btn){
+  document.querySelectorAll('.atc').forEach(t=>t.classList.remove('active'))
+  document.querySelectorAll('.atab').forEach(t=>t.classList.remove('active'))
+  document.getElementById('atab-'+tab).classList.add('active');if(btn)btn.classList.add('active')
+}
+function closeModal(){document.getElementById('modal-hotel').classList.remove('open')}
+</script>
+</body>
+</html>
