@@ -389,6 +389,23 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div class="f"><label>Extra</label><input id="c-extra"></div>
       </div>
       <div class="f"><label>Observações sobre o Casal</label><textarea id="c-obs"></textarea></div>
+
+      <!-- HOTEIS RECOMENDADOS -->
+      <div id="c-hoteis-section" style="display:none;margin-top:20px;padding-top:20px;border-top:1px solid var(--gold-border)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div class="st" style="margin-bottom:0">🏨 Hotéis Recomendados para o Casal</div>
+          <button class="btn bg bsm" onclick="toggleHotelPicker()">+ Adicionar Hotel</button>
+        </div>
+        <div id="c-hoteis-list"></div>
+        <div id="c-hotel-picker" style="display:none"></div>
+        <div id="c-link-area" style="display:none;margin-top:14px;padding:14px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:10px">
+          <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1px;margin-bottom:8px">LINK PERSONALIZADO PARA O CASAL</div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input id="c-link-input" readonly style="flex:1;padding:8px 12px;border-radius:8px;border:1px solid var(--gold-border);font-size:12px;font-family:'DM Sans',sans-serif;background:#fff;color:var(--gold)">
+            <button class="btn bg bsm" onclick="copiarLink()">Copiar</button>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="tc" id="tab-prod">
       <div class="g2">
@@ -990,6 +1007,9 @@ function openNovoCasamento(){
   casamentoAtual=null
   document.getElementById('mc-title').textContent='Novo Casamento'
   document.getElementById('c-tabs').style.display='none'
+  document.getElementById('c-hoteis-section').style.display='none'
+  document.getElementById('c-link-area').style.display='none'
+  casHoteis=[]
   document.querySelectorAll('.tc').forEach(t=>t.classList.remove('active'))
   document.getElementById('tab-plan').classList.add('active')
   clearCasForm();document.getElementById('modal-casamento').classList.add('open')
@@ -1005,6 +1025,9 @@ async function openCasamento(id){
   document.querySelector('.tab').classList.add('active')
   fillCasForm(c);await loadEscaladas(id)
   document.getElementById('modal-casamento').classList.add('open')
+  // Mostrar seção de hotéis
+  document.getElementById('c-hoteis-section').style.display='block'
+  loadCasHoteis(id)
   // Aplicar permissões na aba ativa
   setTimeout(()=>aplicarReadonlyAba('plan'),100)
 }
@@ -1610,6 +1633,94 @@ async function toggleUsuario(id,ativo){
   await sb.from('usuarios').update({ativo:!ativo}).eq('id',id)
   await registrarLog(ativo?'desativou usuário':'ativou usuário','usuarios',id,u?.nome,null,null)
   loadUsuarios()
+}
+
+// ── HOTEIS DO CASAMENTO
+let casHoteis=[], hotelPickerOpen=false
+
+async function loadCasHoteis(casId){
+  const{data}=await sb.from('casamento_hoteis').select('*,hotel:locais(id,nome,cidade,pais,regiao,tipo,ambiente,por_do_sol,spa,aceita_criancas)').eq('casamento_id',casId)
+  casHoteis=data||[]
+  renderCasHoteis()
+  renderLinkArea(casId)
+}
+
+function renderCasHoteis(){
+  const list=document.getElementById('c-hoteis-list');if(!list)return
+  if(!casHoteis.length){list.innerHTML='<div style="font-size:13px;color:#aaa;padding:8px 0">Nenhum hotel selecionado ainda</div>';return}
+  list.innerHTML=casHoteis.map(ch=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:8px;margin-bottom:8px">
+      <div style="flex:1">
+        <div style="font-weight:600;font-size:13px">${ch.hotel?.nome||'—'}</div>
+        <div style="font-size:11px;color:#888">${[ch.hotel?.cidade,ch.hotel?.pais].filter(Boolean).join(' · ')}</div>
+      </div>
+      <button class="btn bd bsm" onclick="removerCasHotel('${ch.id}')">✕</button>
+    </div>`).join('')
+}
+
+async function renderLinkArea(casId){
+  const area=document.getElementById('c-link-area');if(!area)return
+  if(!casHoteis.length){area.style.display='none';return}
+  // Gerar ou buscar token
+  let token=casamentoAtual?.link_token
+  if(!token){
+    token=Math.random().toString(36).substring(2,10).toUpperCase()
+    await sb.from('casamentos').update({link_token:token}).eq('id',casId)
+    if(casamentoAtual)casamentoAtual.link_token=token
+  }
+  const link=`${window.location.origin}/casal.html?c=${token}`
+  document.getElementById('c-link-input').value=link
+  area.style.display='block'
+}
+
+function copiarLink(){
+  const input=document.getElementById('c-link-input')
+  input.select();document.execCommand('copy')
+  const btn=event.target;btn.textContent='Copiado!';setTimeout(()=>btn.textContent='Copiar',2000)
+}
+
+function toggleHotelPicker(){
+  hotelPickerOpen=!hotelPickerOpen
+  const picker=document.getElementById('c-hotel-picker');if(!picker)return
+  if(!hotelPickerOpen){picker.style.display='none';return}
+  picker.style.display='block'
+  const selecionados=casHoteis.map(ch=>ch.hotel?.id)
+  const disponiveis=hoteis.filter(h=>!selecionados.includes(h.id))
+  if(!disponiveis.length){picker.innerHTML='<div style="font-size:13px;color:#aaa;padding:8px">Todos os locais já foram adicionados</div>';return}
+  picker.innerHTML=`<div style="border:2px dashed var(--gold);border-radius:10px;background:var(--gold-pale);padding:16px;margin-top:8px">
+    <input placeholder="Buscar local..." oninput="filtrarPickerHotel(this.value)" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--gold-border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:10px">
+    <div id="c-picker-list" style="max-height:250px;overflow-y:auto">
+      ${disponiveis.map(h=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gold-border)">
+          <div><span style="font-weight:600;font-size:13px">${h.nome}</span><span style="font-size:12px;color:#888;margin-left:6px">${[h.cidade,h.pais].filter(Boolean).join(' · ')}</span></div>
+          <button class="btn bg bsm" onclick="adicionarCasHotel('${h.id}')">+ Adicionar</button>
+        </div>`).join('')}
+    </div>
+    <button class="btn bo bsm" style="margin-top:10px" onclick="toggleHotelPicker()">Fechar</button>
+  </div>`
+}
+
+function filtrarPickerHotel(q){
+  const list=document.getElementById('c-picker-list');if(!list)return
+  const selecionados=casHoteis.map(ch=>ch.hotel?.id)
+  const filtrados=hoteis.filter(h=>!selecionados.includes(h.id)&&(!q||h.nome?.toLowerCase().includes(q.toLowerCase())||h.cidade?.toLowerCase().includes(q.toLowerCase())))
+  list.innerHTML=filtrados.map(h=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gold-border)">
+      <div><span style="font-weight:600;font-size:13px">${h.nome}</span><span style="font-size:12px;color:#888;margin-left:6px">${[h.cidade,h.pais].filter(Boolean).join(' · ')}</span></div>
+      <button class="btn bg bsm" onclick="adicionarCasHotel('${h.id}')">+ Adicionar</button>
+    </div>`).join('')||'<div style="font-size:13px;color:#aaa;padding:8px">Nenhum resultado</div>'
+}
+
+async function adicionarCasHotel(hotelId){
+  if(!casamentoAtual?.id)return
+  await sb.from('casamento_hoteis').insert({casamento_id:casamentoAtual.id,hotel_id:hotelId})
+  hotelPickerOpen=false
+  loadCasHoteis(casamentoAtual.id)
+}
+
+async function removerCasHotel(id){
+  await sb.from('casamento_hoteis').delete().eq('id',id)
+  loadCasHoteis(casamentoAtual?.id)
 }
 
 function fmtDate(d){if(!d)return'—';const[y,m,day]=d.split('-');return`${day}/${m}/${y}`}
