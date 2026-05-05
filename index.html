@@ -138,6 +138,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 </head>
 <body>
 
+<!-- LOGIN SCREEN -->
+<div id="login-screen" style="position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;z-index:9999">
+  <div style="background:var(--white);border-radius:20px;border:1px solid var(--border);padding:40px;width:100%;max-width:400px;text-align:center">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:var(--gold);letter-spacing:3px;text-transform:uppercase">Welcome</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:var(--text);letter-spacing:3px;text-transform:uppercase">Weddings</div>
+    <div style="font-size:10px;letter-spacing:2px;color:var(--muted);margin-top:4px;text-transform:uppercase;margin-bottom:32px">Gestão Operacional</div>
+    <input id="login-email" type="email" placeholder="Seu e-mail" onkeydown="if(event.key==='Enter')fazerLogin()" style="width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--border);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:12px;display:block;box-sizing:border-box">
+    <input id="login-senha" type="password" placeholder="Senha" onkeydown="if(event.key==='Enter')fazerLogin()" style="width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--border);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:12px;display:block;box-sizing:border-box">
+    <button id="login-btn" onclick="fazerLogin()" style="width:100%;padding:12px;border-radius:10px;background:var(--gold);color:white;border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">Entrar</button>
+    <div id="login-error" style="color:var(--red);font-size:13px;margin-top:10px;display:none">E-mail ou senha incorretos</div>
+  </div>
+</div>
+
 <div class="overlay-bg" id="overlay" onclick="closeSidebar()"></div>
 <button class="hamburger" onclick="toggleSidebar()" id="hamburger">
   <span></span><span></span><span></span>
@@ -756,6 +769,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
   // Verificar sessão existente
   const{data:{session}}=await sb.auth.getSession()
   if(session?.user){await carregarUsuario(session.user)}
+  else{document.getElementById('login-screen').style.display='flex'}
 })
 document.querySelectorAll('.mo').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}))
 
