@@ -1792,6 +1792,8 @@ async function salvarSolicitacao(){
   await sb.from('solicitacoes_viagem').insert(data)
   // Enviar e-mail via Resend
   await enviarEmailSolicitacao(data)
+  await enviarTarefaTeams(data)
+  await enviarTarefaTeams(data)
   await registrarLog('solicitou viagem','casamentos',casamentoAtual?.id,casamentoAtual?.nome,null,{assessora:data.assessora_nome})
   btn.textContent='✈️ Enviar Solicitação';btn.disabled=false
   closeModal('modal-solicitacao')
@@ -1823,7 +1825,19 @@ async function enviarEmailSolicitacao(data){
     })
   }catch(e){console.log('Email error:',e)}
 }
-let usuariosList=[], usuarioEditando=null
+async function enviarTarefaTeams(data){
+  try{
+    await sb.functions.invoke('create-teams-task',{
+      body:{
+        titulo:data.casamento_nome,
+        link_card:'https://welcome-weddings.vercel.app'
+      }
+    })
+  }catch(e){
+    console.error('Erro Teams:',e)
+  }
+}
+let usuariosList=[], usuarioEditando=null=[], usuarioEditando=null
 
 async function loadUsuarios(){
   const{data}=await sb.from('usuarios').select('*').order('nome')
