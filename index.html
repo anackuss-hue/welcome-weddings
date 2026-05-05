@@ -1929,21 +1929,11 @@ async function salvarNovaSenha(){
   const confirma=document.getElementById('confirma-senha').value
   if(!nova||nova.length<6){alert('A senha deve ter pelo menos 6 caracteres!');btn.textContent='Salvar Nova Senha';btn.disabled=false;return}
   if(nova!==confirma){alert('As senhas não coincidem!');btn.textContent='Salvar Nova Senha';btn.disabled=false;return}
-  // Usar Supabase Admin API via service role — precisamos de endpoint alternativo
-  const{error}=await sb.auth.admin?.updateUserById(usuarioSenhaId,{password:nova})
-  if(error){
-    // Fallback: atualizar via função do usuário logado se for ele mesmo
-    if(usuarioSenhaId===usuarioAtual?.id){
-      const{error:e2}=await sb.auth.updateUser({password:nova})
-      if(e2){alert('Erro: '+e2.message);btn.textContent='Salvar Nova Senha';btn.disabled=false;return}
-    } else {
-      alert('Não foi possível alterar a senha. Entre em contato com o suporte técnico.');
-      btn.textContent='Salvar Nova Senha';btn.disabled=false;return
-    }
-  }
+  const{error}=await sb.rpc('reset_user_password',{user_id:usuarioSenhaId,new_password:nova})
+  if(error){alert('Erro ao alterar senha: '+error.message);btn.textContent='Salvar Nova Senha';btn.disabled=false;return}
   btn.textContent='Salvar Nova Senha';btn.disabled=false
   closeModal('modal-senha')
-  alert('Senha alterada com sucesso!')
+  alert('✅ Senha alterada com sucesso!')
 }
 async function toggleUsuario(id,ativo){
   const u=usuariosList.find(x=>x.id===id)
