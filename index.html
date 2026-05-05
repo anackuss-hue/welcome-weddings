@@ -442,6 +442,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       </div>
       <div id="escaladas-list"></div>
       <div id="picker-container" style="display:none"></div>
+
+      <!-- SOLICITAÇÕES DE VIAGEM -->
+      <div id="solicitacoes-section" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--gold-border);display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <div class="st" style="margin-bottom:0">✈️ Solicitações de Viagem</div>
+        </div>
+        <div id="solicitacoes-list"></div>
+      </div>
     </div>
     <div class="mf">
       <button class="btn bo" onclick="closeModal('modal-casamento')">Cancelar</button>
@@ -692,6 +700,69 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div>
 </div>
 
+<!-- MODAL SOLICITAÇÃO DE VIAGEM -->
+<div class="mo" id="modal-solicitacao">
+  <div class="mb" style="max-width:600px">
+    <div class="mh">
+      <div>
+        <div class="mt" id="msol-title">Solicitar Viagem</div>
+        <div class="ms" id="msol-sub">Preencha os dados da solicitação</div>
+      </div>
+      <button class="mcl" onclick="closeModal('modal-solicitacao')">✕</button>
+    </div>
+
+    <div class="cb" style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="av" id="msol-avatar">?</div>
+        <div>
+          <div style="font-weight:600;font-size:15px" id="msol-nome">—</div>
+          <div style="font-size:12px;color:#888" id="msol-cidade">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="g2">
+      <div class="f">
+        <label>📅 Data que precisa estar lá</label>
+        <input id="sol-data-chegada" type="date">
+      </div>
+      <div class="f">
+        <label>⏰ Horário de chegada</label>
+        <input id="sol-hora-chegada" type="time">
+      </div>
+      <div class="f">
+        <label>📅 Data liberada para ir embora</label>
+        <input id="sol-data-saida" type="date">
+      </div>
+      <div class="f">
+        <label>⏰ Horário de saída</label>
+        <input id="sol-hora-saida" type="time">
+      </div>
+    </div>
+
+    <div class="sec" style="margin-top:8px">
+      <div class="st">Serviços Necessários</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:4px">
+        <div class="tr-row" onclick="tg('sol-passagem')"><div class="tr-track" id="track-sol-passagem"><div class="tr-thumb"></div></div><span class="tr-label">✈️ Passagem Aérea</span></div>
+        <div class="tr-row" onclick="tg('sol-hotel')"><div class="tr-track" id="track-sol-hotel"><div class="tr-thumb"></div></div><span class="tr-label">🏨 Hotel</span></div>
+        <div class="tr-row" onclick="tg('sol-seguro')"><div class="tr-track" id="track-sol-seguro"><div class="tr-thumb"></div></div><span class="tr-label">🛡️ Seguro</span></div>
+        <div class="tr-row" onclick="tg('sol-transfer')"><div class="tr-track" id="track-sol-transfer"><div class="tr-thumb"></div></div><span class="tr-label">🚌 Transfer</span></div>
+        <div class="tr-row" onclick="tg('sol-trem')"><div class="tr-track" id="track-sol-trem"><div class="tr-thumb"></div></div><span class="tr-label">🚂 Trem</span></div>
+      </div>
+    </div>
+
+    <div class="f" style="margin-top:8px">
+      <label>Observações</label>
+      <textarea id="sol-obs" placeholder="Informações adicionais, preferências..."></textarea>
+    </div>
+
+    <div class="mf">
+      <button class="btn bo" onclick="closeModal('modal-solicitacao')">Cancelar</button>
+      <button class="btn bg" id="btn-ssol" onclick="salvarSolicitacao()">✈️ Enviar Solicitação</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL USUARIO -->
 <div class="mo" id="modal-usuario">
   <div class="mb" style="max-width:500px">
@@ -929,7 +1000,7 @@ function showCTab(tab,btn){
   document.querySelectorAll('.tc').forEach(t=>t.classList.remove('active'))
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'))
   document.getElementById('tab-'+tab).classList.add('active');if(btn)btn.classList.add('active')
-  if(tab==='assess')renderEscaladas()
+  if(tab==='assess'){renderEscaladas();if(casamentoAtual?.id)loadSolicitacoes(casamentoAtual.id)}
   if(tab==='prod')renderProdAssessoras()
   // Aplicar readonly nas abas sem permissão
   aplicarReadonlyAba(tab)
@@ -1075,7 +1146,7 @@ async function renderEscaladas(){
   else{list.innerHTML=escaladas.map(e=>{
     const notaColor=e.nota==='Excelente'?'#2e7d32':e.nota==='Bom'?'#1565c0':e.nota==='Médio'?'#e65100':e.nota==='Ruim'?'#c0392b':'#888'
     const notaBg=e.nota==='Excelente'?'#e8f5e9':e.nota==='Bom'?'#e3f2fd':e.nota==='Médio'?'#fff3e0':e.nota==='Ruim'?'#fdecea':'#f0f0f0'
-    return`<div class="ai"><div class="aih"><div style="display:flex;align-items:center;gap:10px"><div class="av">${(e.assessora?.nome||'?')[0]}</div><div><div style="font-weight:600;font-size:14px">${e.assessora?.nome||'—'}</div><div style="font-size:12px;color:#888">${e.assessora?.cidade||''}</div></div></div><button class="btn bd bsm" onclick="removeEscalada('${e.id}')">Remover</button></div>
+    return`<div class="ai"><div class="aih"><div style="display:flex;align-items:center;gap:10px"><div class="av">${(e.assessora?.nome||'?')[0]}</div><div><div style="font-weight:600;font-size:14px">${e.assessora?.nome||'—'}</div><div style="font-size:12px;color:#888">${e.assessora?.cidade||''}</div></div></div><button class="btn bd bsm" onclick="removeEscalada('${e.id}')">Remover</button><button class="btn bg bsm" onclick="abrirSolicitacao('${e.id}')">✈️ Solicitar</button></div>
     <div class="g3"><div class="f"><label>Cidade de Saída</label><input value="${e.cidade_saida||''}" onchange="updEscalada('${e.id}','cidade_saida',this.value)"></div><div class="f"><label>Data de Ida</label><input type="date" value="${e.data_ida||''}" onchange="updEscalada('${e.id}','data_ida',this.value)"></div><div class="f"><label>Data de Volta</label><input type="date" value="${e.data_volta||''}" onchange="updEscalada('${e.id}','data_volta',this.value)"></div></div>
     <div class="tr-row" onclick="togBilhete('${e.id}',${e.bilhete_emitido})"><div class="tr-track ${e.bilhete_emitido?'on':''}"><div class="tr-thumb"></div></div><span class="tr-label">Bilhete Emitido</span></div>
     <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--gold-border)">
@@ -1536,7 +1607,133 @@ async function salvarHotel(){
 }
 async function deleteHotel(id){if(!confirm('Remover?'))return;await sb.from('locais').delete().eq('id',id);loadHoteis()}
 
-// ── USUÁRIOS
+// ── SOLICITAÇÕES DE VIAGEM
+let solAtual=null, solAssessoraAtual=null
+
+async function loadSolicitacoes(casId){
+  const{data}=await sb.from('solicitacoes_viagem').select('*').eq('casamento_id',casId).order('created_at',{ascending:false})
+  const sec=document.getElementById('solicitacoes-section')
+  const list=document.getElementById('solicitacoes-list')
+  if(!sec||!list)return
+  sec.style.display=data?.length?'block':'none'
+  if(!data?.length)return
+  const statusColor={pendente:'#e65100',em_andamento:'#1565c0',concluido:'#2e7d32'}
+  const statusLabel={pendente:'⏳ Pendente',em_andamento:'🔄 Em andamento',concluido:'✅ Concluída'}
+  list.innerHTML=data.map(s=>{
+    const servicos=[s.precisa_passagem&&'✈️ Passagem',s.precisa_hotel&&'🏨 Hotel',s.precisa_seguro&&'🛡️ Seguro',s.precisa_transfer&&'🚌 Transfer',s.precisa_trem&&'🚂 Trem'].filter(Boolean)
+    const okCount=[s.passagem_ok,s.hotel_ok,s.seguro_ok,s.transfer_ok,s.trem_ok].filter(Boolean).length
+    const totalServicos=servicos.length
+    return`<div class="ai" style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+        <div>
+          <div style="font-weight:600;font-size:14px">${s.assessora_nome}</div>
+          <div style="font-size:12px;color:#888;margin-top:2px">Solicitado por ${s.solicitado_por||'—'} · ${new Date(s.created_at).toLocaleDateString('pt-BR')}</div>
+        </div>
+        <span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:${statusColor[s.status]+'20'};color:${statusColor[s.status]}">${statusLabel[s.status]||s.status}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;font-size:12px">
+        <div><span style="color:#888">Chegada:</span> <strong>${s.data_chegada?fmtDate(s.data_chegada):'-'} ${s.hora_chegada?s.hora_chegada.slice(0,5):''}</strong></div>
+        <div><span style="color:#888">Saída:</span> <strong>${s.data_saida?fmtDate(s.data_saida):'-'} ${s.hora_saida?s.hora_saida.slice(0,5):''}</strong></div>
+      </div>
+      ${s.obs?`<div style="font-size:12px;color:#666;padding:8px;background:#f8f6f2;border-radius:6px;margin-bottom:10px">${s.obs}</div>`:''}
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+        ${s.precisa_passagem?`<span class="tag ${s.passagem_ok?'tgr':'tgy'}" style="cursor:pointer" onclick="toggleSolItem('${s.id}','passagem_ok',${s.passagem_ok})">✈️ Passagem ${s.passagem_ok?'✓':''}</span>`:''}
+        ${s.precisa_hotel?`<span class="tag ${s.hotel_ok?'tgr':'tgy'}" style="cursor:pointer" onclick="toggleSolItem('${s.id}','hotel_ok',${s.hotel_ok})">🏨 Hotel ${s.hotel_ok?'✓':''}</span>`:''}
+        ${s.precisa_seguro?`<span class="tag ${s.seguro_ok?'tgr':'tgy'}" style="cursor:pointer" onclick="toggleSolItem('${s.id}','seguro_ok',${s.seguro_ok})">🛡️ Seguro ${s.seguro_ok?'✓':''}</span>`:''}
+        ${s.precisa_transfer?`<span class="tag ${s.transfer_ok?'tgr':'tgy'}" style="cursor:pointer" onclick="toggleSolItem('${s.id}','transfer_ok',${s.transfer_ok})">🚌 Transfer ${s.transfer_ok?'✓':''}</span>`:''}
+        ${s.precisa_trem?`<span class="tag ${s.trem_ok?'tgr':'tgy'}" style="cursor:pointer" onclick="toggleSolItem('${s.id}','trem_ok',${s.trem_ok})">🚂 Trem ${s.trem_ok?'✓':''}</span>`:''}
+      </div>
+      ${totalServicos>0?`<div style="font-size:11px;color:#888">${okCount}/${totalServicos} serviços confirmados</div>`:''}
+    </div>`
+  }).join('')
+}
+
+async function toggleSolItem(id,campo,atual){
+  const novoVal=!atual
+  const update={[campo]:novoVal}
+  // Buscar solicitação para verificar se tudo está ok
+  const{data:s}=await sb.from('solicitacoes_viagem').select('*').eq('id',id).single()
+  if(!s)return
+  const campos={passagem_ok:s.precisa_passagem,hotel_ok:s.precisa_hotel,seguro_ok:s.precisa_seguro,transfer_ok:s.precisa_transfer,trem_ok:s.precisa_trem}
+  const valores={...s,[campo]:novoVal}
+  const tudo=Object.keys(campos).every(k=>!campos[k]||valores[k])
+  update.status=tudo?'concluido':'em_andamento'
+  await sb.from('solicitacoes_viagem').update(update).eq('id',id)
+  loadSolicitacoes(casamentoAtual?.id)
+}
+
+function abrirSolicitacao(escaladaId){
+  const e=escaladas.find(x=>x.id===escaladaId);if(!e)return
+  solAssessoraAtual=e
+  document.getElementById('msol-title').textContent='Solicitar Viagem'
+  document.getElementById('msol-sub').textContent=casamentoAtual?.nome||''
+  document.getElementById('msol-nome').textContent=e.assessora?.nome||'—'
+  document.getElementById('msol-cidade').textContent=e.assessora?.cidade||''
+  document.getElementById('msol-avatar').textContent=(e.assessora?.nome||'?')[0]
+  // Pré-preencher com datas da escalada
+  document.getElementById('sol-data-chegada').value=e.data_ida||''
+  document.getElementById('sol-data-saida').value=e.data_volta||''
+  document.getElementById('sol-hora-chegada').value=''
+  document.getElementById('sol-hora-saida').value=''
+  document.getElementById('sol-obs').value=''
+  ;['sol-passagem','sol-hotel','sol-seguro','sol-transfer','sol-trem'].forEach(id=>setTg(id,false))
+  document.getElementById('modal-solicitacao').classList.add('open')
+}
+
+async function salvarSolicitacao(){
+  const btn=document.getElementById('btn-ssol');btn.textContent='Enviando...';btn.disabled=true
+  const data={
+    casamento_id:casamentoAtual?.id,
+    casamento_nome:casamentoAtual?.nome,
+    assessora_id:solAssessoraAtual?.assessora_id,
+    assessora_nome:solAssessoraAtual?.assessora?.nome,
+    data_chegada:document.getElementById('sol-data-chegada').value||null,
+    hora_chegada:document.getElementById('sol-hora-chegada').value||null,
+    data_saida:document.getElementById('sol-data-saida').value||null,
+    hora_saida:document.getElementById('sol-hora-saida').value||null,
+    precisa_passagem:getTg('sol-passagem'),
+    precisa_hotel:getTg('sol-hotel'),
+    precisa_seguro:getTg('sol-seguro'),
+    precisa_transfer:getTg('sol-transfer'),
+    precisa_trem:getTg('sol-trem'),
+    obs:document.getElementById('sol-obs').value,
+    solicitado_por:usuarioAtual?.nome,
+    status:'pendente'
+  }
+  await sb.from('solicitacoes_viagem').insert(data)
+  // Enviar e-mail via Resend
+  await enviarEmailSolicitacao(data)
+  await registrarLog('solicitou viagem','casamentos',casamentoAtual?.id,casamentoAtual?.nome,null,{assessora:data.assessora_nome})
+  btn.textContent='✈️ Enviar Solicitação';btn.disabled=false
+  closeModal('modal-solicitacao')
+  loadSolicitacoes(casamentoAtual?.id)
+  document.getElementById('solicitacoes-section').style.display='block'
+}
+
+async function enviarEmailSolicitacao(data){
+  try{
+    await fetch('https://api.resend.com/emails',{
+      method:'POST',
+      headers:{'Authorization':'Bearer re_UdBcUNwe_4hEAQZ29tPm9dYQNHhajszBC','Content-Type':'application/json'},
+      body:JSON.stringify({
+        from:'Altar — Welcome Weddings <onboarding@resend.dev>',
+        to:['raphaela@welcomeweddings.com.br'],
+        subject:`✈️ Nova solicitação de viagem — ${data.casamento_nome}`,
+        html:`<div style="font-family:sans-serif;max-width:500px;margin:0 auto;padding:32px">
+          <h2 style="color:#b8965a;font-family:Georgia,serif">Nova Solicitação de Viagem</h2>
+          <p style="color:#555">Uma nova solicitação foi registrada no sistema <strong>Altar</strong>.</p>
+          <div style="background:#fdf8f0;border:1px solid #f0e8d0;border-radius:10px;padding:20px;margin:20px 0">
+            <p><strong>Casamento:</strong> ${data.casamento_nome}</p>
+            <p><strong>Assessora:</strong> ${data.assessora_nome}</p>
+            <p><strong>Solicitado por:</strong> ${data.solicitado_por}</p>
+          </div>
+          <p style="color:#888;font-size:13px">Acesse o sistema para ver todos os detalhes e marcar os serviços conforme forem sendo providenciados.</p>
+          <a href="https://welcome-weddings.vercel.app" style="display:inline-block;background:#b8965a;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:8px">Abrir o Altar →</a>
+        </div>`
+      })
+    })
+  }catch(e){console.log('Email error:',e)}
+}
 let usuariosList=[], usuarioEditando=null
 
 async function loadUsuarios(){
