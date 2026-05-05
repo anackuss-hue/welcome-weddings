@@ -85,6 +85,24 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:18px;color:#fff;font-weight:600;flex-shrink:0}
 .fl{display:flex;align-items:center;gap:8px;font-size:12px;color:#555;cursor:pointer;padding:4px 0}
 .fl input[type=checkbox]{accent-color:var(--gold);width:14px;height:14px;cursor:pointer;flex-shrink:0}
+.login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999}
+.login-box{background:var(--white);border-radius:20px;border:1px solid var(--border);padding:40px;width:100%;max-width:400px;text-align:center}
+.login-logo .w1{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:var(--gold);letter-spacing:3px;text-transform:uppercase}
+.login-logo .w2{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:var(--text);letter-spacing:3px;text-transform:uppercase}
+.login-logo .ws{font-size:10px;letter-spacing:2px;color:var(--muted);margin-top:4px;text-transform:uppercase;margin-bottom:32px}
+.login-input{width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--border);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:12px;transition:border .15s}
+.login-input:focus{border-color:var(--gold)}
+.login-btn{width:100%;padding:12px;border-radius:10px;background:var(--gold);color:white;border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s;margin-top:4px}
+.login-btn:hover{background:var(--gold-light)}
+.login-error{color:var(--red);font-size:13px;margin-top:8px;display:none}
+.user-bar{display:flex;align-items:center;gap:8px;padding:12px 24px;border-top:1px solid var(--border);margin-top:auto}
+.user-avatar{width:32px;height:32px;border-radius:50%;background:var(--gold-pale);border:1px solid var(--gold-border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--gold)}
+.user-info{flex:1} .user-name{font-size:12px;font-weight:600;color:var(--text)} .user-setor{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.logout-btn{font-size:11px;color:var(--muted);cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;padding:4px}
+.logout-btn:hover{color:var(--red)}
+.log-item{padding:10px 14px;border-radius:8px;background:var(--gold-pale);border:1px solid var(--gold-border);margin-bottom:8px;font-size:12px}
+.log-who{font-weight:600;color:var(--gold)}
+.log-when{color:var(--muted);font-size:11px}
 .fpanel{width:200px;flex-shrink:0;background:var(--white);border-radius:12px;border:1px solid var(--border);padding:20px;position:sticky;top:24px}
 .fp-title{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px}
 .fp-sec{margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
@@ -133,6 +151,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="nav active" onclick="showPage('casamentos')" id="nav-casamentos">💍 Casamentos</div>
   <div class="nav" onclick="showPage('assessoras')" id="nav-assessoras">👩 Assessoras</div>
   <div class="nav" onclick="showPage('hoteis')" id="nav-hoteis">🏨 Locais</div>
+  <div class="nav" onclick="showPage('logs')" id="nav-logs" style="display:none">📋 Logs</div>
+  <div class="user-bar" id="user-bar">
+    <div class="user-avatar" id="user-avatar">?</div>
+    <div class="user-info">
+      <div class="user-name" id="user-name">...</div>
+      <div class="user-setor" id="user-setor">...</div>
+    </div>
+    <button class="logout-btn" onclick="fazerLogout()">Sair</button>
+  </div>
 </div>
 
 <div class="main">
@@ -293,6 +320,24 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       </div>
       <div style="flex:1"><div class="cg" id="hoteis-grid"><div class="ld">Carregando...</div></div></div>
     </div>
+  </div>
+
+  <!-- LOGS PAGE -->
+  <div class="page" id="page-logs">
+    <div class="ph">
+      <div><div class="pt">Logs de Alterações</div><div class="ps" id="logs-count">Carregando...</div></div>
+      <button class="btn bo" onclick="loadLogs()">🔄 Atualizar</button>
+    </div>
+    <div class="card" style="margin-bottom:20px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+      <input style="padding:8px 14px;border-radius:8px;border:1px solid var(--border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;width:260px" placeholder="Buscar por usuário ou ação..." id="log-search" oninput="renderLogs()">
+      <select id="log-tabela" onchange="renderLogs()" style="padding:8px 12px;border-radius:8px;border:1px solid var(--border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+        <option value="">Todas as seções</option>
+        <option value="casamentos">Casamentos</option>
+        <option value="locais">Locais</option>
+        <option value="assessoras">Assessoras</option>
+      </select>
+    </div>
+    <div id="logs-list"><div class="ld">Carregando logs...</div></div>
   </div>
 
 </div><!-- /main -->
@@ -611,8 +656,107 @@ const sb=createClient('https://yrnlfarricrhtfomwynd.supabase.co','eyJhbGciOiJIUz
 
 let casamentos=[],assessoras=[],hoteis=[],casamentoAtual=null,assessoraAtual=null,hotelAtual=null
 let escaladas=[],tgStates={},filterA='',pickerOpen=false,hierAtual=''
+let usuarioAtual=null, logsData=[]
 
-document.addEventListener('DOMContentLoaded',()=>{loadCasamentos();loadAssessoras();loadHoteis()})
+// ── AUTH
+async function fazerLogin(){
+  const btn=document.getElementById('login-btn')
+  const email=document.getElementById('login-email').value.trim()
+  const senha=document.getElementById('login-senha').value
+  const err=document.getElementById('login-error')
+  if(!email||!senha)return
+  btn.textContent='Entrando...';btn.disabled=true;err.style.display='none'
+  const{data,error}=await sb.auth.signInWithPassword({email,password:senha})
+  if(error){btn.textContent='Entrar';btn.disabled=false;err.style.display='block';return}
+  await carregarUsuario(data.user)
+}
+
+async function carregarUsuario(user){
+  const{data}=await sb.from('usuarios').select('*').eq('id',user.id).single()
+  if(!data||!data.ativo){await sb.auth.signOut();document.getElementById('login-error').textContent='Acesso não autorizado.';document.getElementById('login-error').style.display='block';document.getElementById('login-btn').textContent='Entrar';document.getElementById('login-btn').disabled=false;return}
+  usuarioAtual=data
+  document.getElementById('login-screen').style.display='none'
+  document.getElementById('user-name').textContent=data.nome
+  document.getElementById('user-setor').textContent=data.setor
+  document.getElementById('user-avatar').textContent=data.nome[0].toUpperCase()
+  // Mostrar logs só para admin
+  if(data.setor==='admin')document.getElementById('nav-logs').style.display='flex'
+  aplicarPermissoes()
+  loadCasamentos();loadAssessoras();loadHoteis()
+}
+
+function aplicarPermissoes(){
+  const s=usuarioAtual?.setor
+  // Botões de edição por setor
+  window._podeEditarLocais=s==='admin'||s==='planejamento'
+  window._podeEditarPlanejamento=s==='admin'||s==='planejamento'
+  window._podeEditarProducao=s==='admin'||s==='producao'
+  window._podeEditarViagem=s==='admin'||s==='viagem'
+  window._podeEditarAssessoras=s==='admin'
+  // Esconder botões de novo se não tiver permissão
+  if(!window._podeEditarLocais)document.querySelector('[onclick="openNovoHotel()"]')?.style.setProperty('display','none')
+  if(!window._podeEditarAssessoras)document.querySelector('[onclick="openNovaAssessora()"]')?.style.setProperty('display','none')
+}
+
+async function fazerLogout(){
+  await sb.auth.signOut()
+  usuarioAtual=null
+  document.getElementById('login-screen').style.display='flex'
+  document.getElementById('login-email').value=''
+  document.getElementById('login-senha').value=''
+  document.getElementById('login-btn').textContent='Entrar'
+  document.getElementById('login-btn').disabled=false
+}
+
+// ── LOGS
+async function registrarLog(acao,tabela,registroId,registroNome,dadosAntes=null,dadosDepois=null){
+  if(!usuarioAtual)return
+  try{
+    await sb.from('logs').insert({
+      usuario_id:usuarioAtual.id,usuario_nome:usuarioAtual.nome,
+      acao,tabela,registro_id:registroId,registro_nome:registroNome,
+      dados_antes:dadosAntes?JSON.stringify(dadosAntes):null,
+      dados_depois:dadosDepois?JSON.stringify(dadosDepois):null
+    })
+  }catch(e){console.log('Erro ao registrar log:',e)}
+}
+
+async function loadLogs(){
+  const{data}=await sb.from('logs').select('*').order('created_at',{ascending:false}).limit(200)
+  logsData=data||[]
+  document.getElementById('logs-count').textContent=logsData.length+' alteração(ões) registrada(s)'
+  renderLogs()
+}
+
+function renderLogs(){
+  const s=(document.getElementById('log-search')?.value||'').toLowerCase()
+  const tab=document.getElementById('log-tabela')?.value||''
+  const filtered=logsData.filter(l=>{
+    const ms=!s||l.usuario_nome?.toLowerCase().includes(s)||l.acao?.toLowerCase().includes(s)||l.registro_nome?.toLowerCase().includes(s)
+    const mt=!tab||l.tabela===tab
+    return ms&&mt
+  })
+  const con=document.getElementById('logs-list')
+  if(!filtered.length){con.innerHTML='<div class="em"><div class="em-i">📋</div><div class="em-t">Nenhum log encontrado</div></div>';return}
+  const tabIcon={casamentos:'💍',locais:'🏨',assessoras:'👩'}
+  con.innerHTML=filtered.map(l=>{
+    const d=new Date(l.created_at)
+    const dt=d.toLocaleDateString('pt-BR')+' às '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})
+    return`<div class="log-item">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+        <div><span class="log-who">${l.usuario_nome||'—'}</span> <span style="color:#555">${l.acao}</span> ${l.registro_nome?`<span style="font-weight:600">"${l.registro_nome}"</span>`:''} ${l.tabela?`<span style="font-size:11px;color:#aaa">${tabIcon[l.tabela]||''} ${l.tabela}</span>`:''}
+        </div>
+        <span class="log-when">${dt}</span>
+      </div>
+    </div>`
+  }).join('')
+}
+
+document.addEventListener('DOMContentLoaded',async()=>{
+  // Verificar sessão existente
+  const{data:{session}}=await sb.auth.getSession()
+  if(session?.user){await carregarUsuario(session.user)}
+})
 document.querySelectorAll('.mo').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}))
 
 // ── NAVEGAÇÃO
@@ -630,6 +774,7 @@ function showPage(p){
   document.getElementById('page-'+p).classList.add('active')
   document.getElementById('nav-'+p).classList.add('active')
   closeSidebar()
+  if(p==='logs')loadLogs()
 }
 function closeModal(id){document.getElementById(id).classList.remove('open')}
 
@@ -776,8 +921,13 @@ async function salvarCasamento(){
   const btn=document.getElementById('btn-sc');btn.textContent='Salvando...';btn.disabled=true
   const data=getCasData()
   if(!data.nome){alert('Preencha o nome do casal!');btn.textContent='Salvar';btn.disabled=false;return}
-  if(casamentoAtual){await sb.from('casamentos').update(data).eq('id',casamentoAtual.id)}
-  else{await sb.from('casamentos').insert(data)}
+  if(casamentoAtual){
+    await sb.from('casamentos').update(data).eq('id',casamentoAtual.id)
+    await registrarLog('editou','casamentos',casamentoAtual.id,data.nome,casamentoAtual,data)
+  }else{
+    const{data:r}=await sb.from('casamentos').insert(data).select()
+    await registrarLog('criou','casamentos',r?.[0]?.id,data.nome,null,data)
+  }
   btn.textContent='Salvar';btn.disabled=false;closeModal('modal-casamento');loadCasamentos()
 }
 async function deleteCasamento(id){if(!confirm('Remover?'))return;await sb.from('casamentos').delete().eq('id',id);loadCasamentos()}
@@ -905,6 +1055,7 @@ function renderAssessoras(){
   }).join('')
 }
 function openNovaAssessora(){
+  if(!window._podeEditarAssessoras){alert('Você não tem permissão para cadastrar assessoras.');return}
   assessoraAtual=null;hierAtual='';tipoEquipeAtual='';membrosEquipe=[]
   document.getElementById('ma-title').textContent='Nova Assessora'
   document.getElementById('ma-sub').textContent='Preencha os dados da assessora'
@@ -975,8 +1126,10 @@ async function salvarAssessora(){
   const data=getAData()
   if(!data.nome){alert('Preencha o nome!');btn.textContent='Salvar';btn.disabled=false;return}
   let savedId=assessoraAtual?.id
-  if(assessoraAtual){await sb.from('assessoras').update(data).eq('id',assessoraAtual.id)}
-  else{const{data:r}=await sb.from('assessoras').insert(data).select();savedId=r?.[0]?.id}
+  if(assessoraAtual){
+    await sb.from('assessoras').update(data).eq('id',assessoraAtual.id)
+    await registrarLog('editou','assessoras',assessoraAtual.id,data.nome,null,null)
+  }else{const{data:r}=await sb.from('assessoras').insert(data).select();savedId=r?.[0]?.id;await registrarLog('criou','assessoras',savedId,data.nome,null,null)}
   // Salvar membros da equipe
   if(tipoEquipeAtual==='lidera'&&savedId){
     // Remove lider_equipe_id de quem não está mais na equipe
@@ -1158,6 +1311,7 @@ function renderHoteis(){
   grid.innerHTML=filtered.map(h=>`<div class="card" style="transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,.12)'" onmouseout="this.style.boxShadow=''"><div style="margin-bottom:8px"><div style="font-weight:600;font-size:15px;font-family:'Cormorant Garamond',serif;margin-bottom:2px">${h.nome}</div><div style="font-size:12px;color:#888">📍 ${[h.cidade,h.pais,h.regiao].filter(Boolean).join(' · ')}</div></div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">${h.blacklist_local?'<span class="tag tr">🚫 Blacklist</span>':''}${h.status_indicacao==='ja_indicamos'?'<span class="tag tgr">✅ Indicamos</span>':h.status_indicacao==='nao_indicamos'?'<span class="tag tgr">⭐ Nunca trab. — Indicamos</span>':h.status_indicacao==='ja_nao_indicamos'?'<span class="tag tr">⚠️ Não indicamos</span>':h.status_indicacao==='nao_nao_indicamos'?'<span class="tag tr">🚫 Não indicamos</span>':''}${h.ambiente?`<span class="tag tb">${h.ambiente}</span>`:''}${h.tipo?`<span class="tag tg">${h.tipo}</span>`:''}${h.por_do_sol?'<span class="tag tg">🌅 Pôr do Sol</span>':''}${h.spa?'<span class="tag tgr">💆 Spa</span>':''}${h.aceita_criancas?'<span class="tag tgr">👶 Kids</span>':''}${h.parque_aquatico?'<span class="tag tb">🌊 Aquapark</span>':''}${h.cassino?'<span class="tag tgy">🎰 Cassino</span>':''}</div>${h.valor_casamento?`<div style="font-size:12px;color:#888;margin-bottom:10px">💍 ${h.valor_casamento}</div>`:''}<div style="display:flex;gap:8px"><button class="btn bo" style="flex:1" onclick="openHotel('${h.id}')">Ver / Editar</button><button class="btn bd" onclick="deleteHotel('${h.id}')">✕</button></div></div>`).join('')
 }
 function openNovoHotel(){
+  if(!window._podeEditarLocais){alert('Você não tem permissão para cadastrar locais.');return}
   hotelAtual=null
   document.getElementById('mh-title').textContent='Novo Hotel'
   document.getElementById('mh-sub').textContent='Preencha os dados do hotel'
@@ -1221,8 +1375,13 @@ async function salvarHotel(){
   const btn=document.getElementById('btn-sh');btn.textContent='Salvando...';btn.disabled=true
   const data=getHData()
   if(!data.nome){alert('Preencha o nome do hotel!');btn.textContent='Salvar';btn.disabled=false;return}
-  if(hotelAtual){await sb.from('locais').update(data).eq('id',hotelAtual.id)}
-  else{await sb.from('locais').insert(data)}
+  if(hotelAtual){
+    await sb.from('locais').update(data).eq('id',hotelAtual.id)
+    await registrarLog('editou','locais',hotelAtual.id,data.nome,null,null)
+  }else{
+    const{data:r}=await sb.from('locais').insert(data).select()
+    await registrarLog('criou','locais',r?.[0]?.id,data.nome,null,null)
+  }
   btn.textContent='Salvar';btn.disabled=false;closeModal('modal-hotel');loadHoteis()
 }
 async function deleteHotel(id){if(!confirm('Remover?'))return;await sb.from('locais').delete().eq('id',id);loadHoteis()}
