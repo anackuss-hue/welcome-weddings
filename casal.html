@@ -149,12 +149,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
       <div class="fp-sec">
         <div class="fp-sec-t">Ambiente</div>
-        <label class="fl"><input type="checkbox" id="fh-amb-praia" onchange="renderHoteis()"> Praia</label>
-        <label class="fl"><input type="checkbox" id="fh-amb-montanha" onchange="renderHoteis()"> Montanha</label>
-        <label class="fl"><input type="checkbox" id="fh-amb-campo" onchange="renderHoteis()"> Campo / Fazenda</label>
-        <label class="fl"><input type="checkbox" id="fh-amb-cidade" onchange="renderHoteis()"> Cidade</label>
-        <label class="fl"><input type="checkbox" id="fh-amb-lago" onchange="renderHoteis()"> Lago / Rio</label>
-        <label class="fl"><input type="checkbox" id="fh-amb-vinhedo" onchange="renderHoteis()"> Vinhedo</label>
+        <label class="fl"><input type="checkbox" id="fh-amb-praia" onchange="renderHoteis()"> 🏖️ Praia</label>
+        <label class="fl"><input type="checkbox" id="fh-amb-montanha" onchange="renderHoteis()"> ⛰️ Montanha</label>
+        <label class="fl"><input type="checkbox" id="fh-amb-campo" onchange="renderHoteis()"> 🌿 Campo / Fazenda</label>
+        <label class="fl"><input type="checkbox" id="fh-amb-cidade" onchange="renderHoteis()"> 🏙️ Cidade</label>
+        <label class="fl"><input type="checkbox" id="fh-amb-lago" onchange="renderHoteis()"> 🏞️ Lago / Rio</label>
+        <label class="fl"><input type="checkbox" id="fh-amb-vinhedo" onchange="renderHoteis()"> 🍷 Vinhedo</label>
+      </div>
+
+      <div class="fp-sec">
+        <div class="fp-sec-t">Logística</div>
+        <label class="fl"><input type="checkbox" id="fh-voo-direto" onchange="renderHoteis()"> ✈️ Voo direto disponível</label>
+        <label class="fl"><input type="checkbox" id="fh-transfer" onchange="renderHoteis()"> 🚌 Transfer incluso</label>
+        <label class="fl"><input type="checkbox" id="fh-hosp-local" onchange="renderHoteis()"> 🏨 Hospedagem no local</label>
       </div>
 
       <div class="fp-sec">
@@ -255,7 +262,7 @@ function renderPaisChips(){
 document.getElementById('modal-hotel').addEventListener('click',e=>{if(e.target===document.getElementById('modal-hotel'))closeModal()})
 
 async function loadHoteis(){
-  const{data}=await sb.from('locais').select('id,nome,regiao,pais,cidade,site,email,instagram,tipo,regime,ambiente,aceita_criancas,aceita_pets,num_acomodacoes,ano_construcao,restaurantes_ai,restaurantes_premium,cafeteria,bares_ai,bares_premium,frigobar,room_service,bar_pago,restaurante_pago,area_kids,parque_aquatico,pub_disco,cassino,spa,wifi,por_do_sol,valor_diaria,valor_sinal,valor_bloqueio,valor_luau,factsheet,tour_virtual,espacos,mapa').order('nome')
+  const{data}=await sb.from('locais').select('id,nome,regiao,pais,cidade,site,email,instagram,tipo,regime,ambiente,aceita_criancas,aceita_pets,num_acomodacoes,ano_construcao,restaurantes_ai,bares_ai,restaurantes_total,bares_total,restaurantes_buffet,restaurantes_carte,frigobar,room_service,bar_pago,restaurante_pago,area_kids,parque_aquatico,pub_disco,cassino,spa,wifi,por_do_sol,voo_direto,transfer_incluso,tem_hospedagem,valor_diaria,valor_sinal,valor_bloqueio,valor_luau,factsheet,tour_virtual,espacos,mapa').order('nome')
   hoteis=data||[];renderHoteis()
 }
 
@@ -281,13 +288,20 @@ function renderHoteis(){
   if(fI('fh-amb-cidade'))ambientes.push('Cidade')
   if(fI('fh-amb-lago'))ambientes.push('Lago / Rio')
   if(fI('fh-amb-vinhedo'))ambientes.push('Vinhedo')
+  const ambientes=[]
+  if(fI('fh-amb-praia'))ambientes.push('Praia')
+  if(fI('fh-amb-montanha'))ambientes.push('Montanha')
+  if(fI('fh-amb-campo'))ambientes.push('Campo / Fazenda')
+  if(fI('fh-amb-cidade'))ambientes.push('Cidade')
+  if(fI('fh-amb-lago'))ambientes.push('Lago / Rio')
+  if(fI('fh-amb-vinhedo'))ambientes.push('Vinhedo')
   const filtered=hoteis.filter(h=>{
     const ms=!s||h.nome?.toLowerCase().includes(s)||h.cidade?.toLowerCase().includes(s)
     const mp=!paisChips.length||paisChips.some(p=>h.pais?.toLowerCase().includes(p))
     const mr=!regioes.length||regioes.includes(h.regiao)
     const mt=!tipos.length||tipos.includes(h.tipo)
     const ma=!ambientes.length||ambientes.includes(h.ambiente)
-    return ms&&mp&&mr&&mt&&ma&&(!fI('fh-kids')||h.aceita_criancas)&&(!fI('fh-pets')||h.aceita_pets)&&(!fI('fh-spa')||h.spa)&&(!fI('fh-cassino')||h.cassino)&&(!fI('fh-parque')||h.parque_aquatico)
+    return ms&&mp&&mr&&mt&&ma&&(!fI('fh-kids')||h.aceita_criancas)&&(!fI('fh-pets')||h.aceita_pets)&&(!fI('fh-spa')||h.spa)&&(!fI('fh-cassino')||h.cassino)&&(!fI('fh-parque')||h.parque_aquatico)&&(!fI('fh-voo-direto')||h.voo_direto)&&(!fI('fh-transfer')||h.transfer_incluso)&&(!fI('fh-hosp-local')||h.tem_hospedagem)
   })
   document.getElementById('resultado-count').textContent=filtered.length+' hotel(is) encontrado(s)'
   const grid=document.getElementById('hoteis-grid')
@@ -331,8 +345,8 @@ function openHotel(id){
 
   // Aba Estrutura
   const ia=document.getElementById('info-alim')
-  ia.innerHTML=[['Regime',h.regime],['Restaurantes AI',h.restaurantes_ai],['Restaurantes Premium',h.restaurantes_premium],['Cafeteria',h.cafeteria],['Bares AI',h.bares_ai],['Bares Premium',h.bares_premium]].filter(x=>x[1]).map(x=>`<div class="info-item"><label>${x[0]}</label><span>${x[1]}</span></div>`).join('')
-  const comod=[['Frigobar',h.frigobar],['Room Service',h.room_service],['Bar Pago',h.bar_pago],['Restaurante Pago',h.restaurante_pago],['Área Kids',h.area_kids],['Parque Aquático',h.parque_aquatico],['Pub/Disco',h.pub_disco],['Cassino',h.cassino],['Spa',h.spa],['Wi-Fi',h.wifi],['Pôr do Sol',h.por_do_sol],['Aceita Crianças',h.aceita_criancas],['Aceita Pets',h.aceita_pets]]
+  ia.innerHTML=[['Regime',h.regime],['Restaurantes no Total',h.restaurantes_total],['Bares no Total',h.bares_total],['Restaurantes Buffet',h.restaurantes_buffet],['Restaurantes à La Carte',h.restaurantes_carte],['Restaurantes All Inclusive',h.restaurantes_ai],['Bares All Inclusive',h.bares_ai]].filter(x=>x[1]).map(x=>`<div class="info-item"><label>${x[0]}</label><span>${x[1]}</span></div>`).join('')
+  const comod=[['✈️ Voo Direto',h.voo_direto],['🚌 Transfer Incluso',h.transfer_incluso],['🏨 Hospedagem no Local',h.tem_hospedagem],['Frigobar',h.frigobar],['Room Service',h.room_service],['Bar Pago',h.bar_pago],['Restaurante Pago',h.restaurante_pago],['Área Kids',h.area_kids],['Parque Aquático',h.parque_aquatico],['Pub/Disco',h.pub_disco],['Cassino',h.cassino],['Spa',h.spa],['Wi-Fi',h.wifi],['Aceita Crianças',h.aceita_criancas],['Aceita Pets',h.aceita_pets]]
   document.getElementById('info-comod').innerHTML=comod.map(([l,v])=>`<div class="toggle-display"><div class="td-dot ${v?'on':'off'}"></div><span class="td-label">${l}</span></div>`).join('')
 
   // Aba Valores
