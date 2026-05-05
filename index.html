@@ -747,15 +747,35 @@ async function carregarUsuario(user){
 
 function aplicarPermissoes(){
   const s=usuarioAtual?.setor
-  // Botões de edição por setor
   window._podeEditarLocais=s==='admin'||s==='planejamento'
   window._podeEditarPlanejamento=s==='admin'||s==='planejamento'
   window._podeEditarProducao=s==='admin'||s==='producao'
   window._podeEditarViagem=s==='admin'||s==='viagem'
   window._podeEditarAssessoras=s==='admin'
-  // Esconder botões de novo se não tiver permissão
-  if(!window._podeEditarLocais)document.querySelector('[onclick="openNovoHotel()"]')?.style.setProperty('display','none')
-  if(!window._podeEditarAssessoras)document.querySelector('[onclick="openNovaAssessora()"]')?.style.setProperty('display','none')
+  window._podeEditarCasamentos=s==='admin'||s==='planejamento'||s==='producao'||s==='viagem'
+
+  // Botão novo casamento - só admin e setores que editam algo
+  if(!window._podeEditarCasamentos){
+    document.querySelector('[onclick="openNovoCasamento()"]')?.style.setProperty('display','none')
+  }
+  // Botão novo local
+  if(!window._podeEditarLocais){
+    document.querySelector('[onclick="openNovoHotel()"]')?.style.setProperty('display','none')
+  }
+  // Botão nova assessora
+  if(!window._podeEditarAssessoras){
+    document.querySelector('[onclick="openNovaAssessora()"]')?.style.setProperty('display','none')
+  }
+}
+
+function verificarPermissaoAba(aba){
+  const s=usuarioAtual?.setor
+  if(s==='admin')return true
+  if(aba==='plan')return s==='planejamento'
+  if(aba==='prod')return s==='producao'
+  if(aba==='viag')return s==='viagem'
+  if(aba==='assess')return s==='admin'
+  return false
 }
 
 async function fazerLogout(){
@@ -894,6 +914,32 @@ function showCTab(tab,btn){
   document.getElementById('tab-'+tab).classList.add('active');if(btn)btn.classList.add('active')
   if(tab==='assess')renderEscaladas()
   if(tab==='prod')renderProdAssessoras()
+  // Aplicar readonly nas abas sem permissão
+  aplicarReadonlyAba(tab)
+}
+
+function aplicarReadonlyAba(tab){
+  const pode=verificarPermissaoAba(tab)
+  const tabEl=document.getElementById('tab-'+tab)
+  if(!tabEl)return
+  // Desabilita inputs, selects, textareas e botões de salvar na aba
+  tabEl.querySelectorAll('input,select,textarea').forEach(el=>{
+    el.disabled=!pode
+    el.style.background=pode?'':'#f8f8f8'
+    el.style.color=pode?'':'#aaa'
+    el.style.cursor=pode?'':'not-allowed'
+  })
+  // Desabilita toggles
+  tabEl.querySelectorAll('.tr-row').forEach(el=>{
+    el.style.pointerEvents=pode?'':'none'
+    el.style.opacity=pode?'':'0.5'
+  })
+  // Botão salvar
+  const btnSalvar=document.getElementById('btn-sc')
+  if(btnSalvar){
+    const algumaPode=['plan','prod','viag','assess'].some(t=>verificarPermissaoAba(t))
+    btnSalvar.style.display=algumaPode?'':'none'
+  }
 }
 function showATab(tab,btn){
   document.querySelectorAll('#modal-assessora .atc').forEach(t=>t.classList.remove('active'))
@@ -959,6 +1005,8 @@ async function openCasamento(id){
   document.querySelector('.tab').classList.add('active')
   fillCasForm(c);await loadEscaladas(id)
   document.getElementById('modal-casamento').classList.add('open')
+  // Aplicar permissões na aba ativa
+  setTimeout(()=>aplicarReadonlyAba('plan'),100)
 }
 function clearCasForm(){
   ['c-nome','c-destino','c-data','c-horario','c-hotel','c-pacote','c-extra','c-obs','c-produtora','c-num-assessores','c-datas','c-ultima-reuniao','c-servicos','c-programacao','c-fornecedores','c-prod-status','c-transfer','c-passeios-txt','c-hospedagem','c-viag-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
@@ -1113,7 +1161,7 @@ function renderAssessoras(){
       ${scoreLabel?`<span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:${scoreBg};color:${scoreColor};display:inline-block">${scoreIcon} ${scoreLabel}</span>`:''}
       ${a._notas?.length?`<div style="font-size:10px;color:#aaa;margin-top:2px">${a._notas.length} avaliação(ões)</div>`:''}
     </div>
-    </div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">${a.hierarquia?`<span class="tag tg">${a.hierarquia}</span>`:''}${a.ingles?'<span class="tag tb"><img src="https://flagcdn.com/w20/gb.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Inglês</span>':''}${a.espanhol?'<span class="tag tb"><img src="https://flagcdn.com/w20/es.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Espanhol</span>':''}${a.frances?'<span class="tag tb"><img src="https://flagcdn.com/w20/fr.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Francês</span>':''}${a.italiano?'<span class="tag tb"><img src="https://flagcdn.com/w20/it.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Italiano</span>':''}${a.possui_equipe?`<span class="tag tgr">👑 ${a.nome_equipe||'Tem Equipe'}</span>`:''}${a.lider_equipe_id&&!a.possui_equipe?`<span class="tag tb">👥 Membro de Equipe</span>`:''}${a.indicamos?'<span class="tag tgr">⭐ Indicamos</span>':''}${a.fala_camera?'<span class="tag tgy">📷 Câmera</span>':''}${a.febre_amarela?'<span class="tag tgr">💉 FY</span>':''}</div><div style="display:flex;gap:8px"><button class="btn bo" style="flex:1" onclick="openAssessora('${a.id}')">Ver / Editar</button><button class="btn bd" onclick="deleteAssessora('${a.id}')">✕</button></div></div>`
+    </div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">${a.hierarquia?`<span class="tag tg">${a.hierarquia}</span>`:''}${a.ingles?'<span class="tag tb"><img src="https://flagcdn.com/w20/gb.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Inglês</span>':''}${a.espanhol?'<span class="tag tb"><img src="https://flagcdn.com/w20/es.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Espanhol</span>':''}${a.frances?'<span class="tag tb"><img src="https://flagcdn.com/w20/fr.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Francês</span>':''}${a.italiano?'<span class="tag tb"><img src="https://flagcdn.com/w20/it.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Italiano</span>':''}${a.possui_equipe?`<span class="tag tgr">👑 ${a.nome_equipe||'Tem Equipe'}</span>`:''}${a.lider_equipe_id&&!a.possui_equipe?`<span class="tag tb">👥 Membro de Equipe</span>`:''}${a.indicamos?'<span class="tag tgr">⭐ Indicamos</span>':''}${a.fala_camera?'<span class="tag tgy">📷 Câmera</span>':''}${a.febre_amarela?'<span class="tag tgr">💉 FY</span>':''}</div><div style="display:flex;gap:8px"><button class="btn bo" style="flex:1" onclick="openAssessora('${a.id}')">${window._podeEditarAssessoras?"Ver / Editar":"👁️ Visualizar"}</button><button class="btn bd" onclick="deleteAssessora('${a.id}')">✕</button></div></div>`
   }).join('')
 }
 function openNovaAssessora(){
@@ -1137,6 +1185,14 @@ function openAssessora(id){
   document.getElementById('atab-dados').classList.add('active')
   document.querySelector('#modal-assessora .atab').classList.add('active')
   fillAForm(a);document.getElementById('modal-assessora').classList.add('open')
+  setTimeout(()=>{
+    const pode=window._podeEditarAssessoras
+    document.querySelectorAll('#modal-assessora input,#modal-assessora select,#modal-assessora textarea').forEach(el=>{
+      el.disabled=!pode;el.style.background=pode?'':'#f8f8f8';el.style.cursor=pode?'':'not-allowed'
+    })
+    document.querySelectorAll('#modal-assessora .tr-row,.ic-card,.ro-opt').forEach(el=>{el.style.pointerEvents=pode?'':'none';el.style.opacity=pode?'':'0.6'})
+    const btn=document.getElementById('btn-sa');if(btn)btn.style.display=pode?'':'none'
+  },100)
 }
 function clearAForm(){
   ['a-nome','a-nasc','a-cpf','a-email','a-cidade-res','a-cidade','a-whatsapp','a-perfil','a-rg','a-rg-val','a-pass-num','a-pass-val','a-pass-pais','a-visto-num','a-visto-val','a-visto-pais','a-nome-equipe','a-tam-blusa','a-tam-calca','a-tam-macacao','a-tam-vestido','a-tam-sapato','a-como-conhecemos'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
@@ -1370,7 +1426,7 @@ function renderHoteis(){
   })
   document.getElementById('hoteis-count').textContent=hoteis.length+' local(is) cadastrado(s)'
   if(!filtered.length){grid.innerHTML='<div class="em"><div class="em-i">🏨</div><div class="em-t">Nenhum hotel encontrado</div></div>';return}
-  grid.innerHTML=filtered.map(h=>`<div class="card" style="transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,.12)'" onmouseout="this.style.boxShadow=''"><div style="margin-bottom:8px"><div style="font-weight:600;font-size:15px;font-family:'Cormorant Garamond',serif;margin-bottom:2px">${h.nome}</div><div style="font-size:12px;color:#888">📍 ${[h.cidade,h.pais,h.regiao].filter(Boolean).join(' · ')}</div></div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">${h.blacklist_local?'<span class="tag tr">🚫 Blacklist</span>':''}${h.status_indicacao==='ja_indicamos'?'<span class="tag tgr">✅ Indicamos</span>':h.status_indicacao==='nao_indicamos'?'<span class="tag tgr">⭐ Nunca trab. — Indicamos</span>':h.status_indicacao==='ja_nao_indicamos'?'<span class="tag tr">⚠️ Não indicamos</span>':h.status_indicacao==='nao_nao_indicamos'?'<span class="tag tr">🚫 Não indicamos</span>':''}${h.ambiente?`<span class="tag tb">${h.ambiente}</span>`:''}${h.tipo?`<span class="tag tg">${h.tipo}</span>`:''}${h.por_do_sol?'<span class="tag tg">🌅 Pôr do Sol</span>':''}${h.spa?'<span class="tag tgr">💆 Spa</span>':''}${h.aceita_criancas?'<span class="tag tgr">👶 Kids</span>':''}${h.parque_aquatico?'<span class="tag tb">🌊 Aquapark</span>':''}${h.cassino?'<span class="tag tgy">🎰 Cassino</span>':''}</div>${h.valor_casamento?`<div style="font-size:12px;color:#888;margin-bottom:10px">💍 ${h.valor_casamento}</div>`:''}<div style="display:flex;gap:8px"><button class="btn bo" style="flex:1" onclick="openHotel('${h.id}')">Ver / Editar</button><button class="btn bd" onclick="deleteHotel('${h.id}')">✕</button></div></div>`).join('')
+  grid.innerHTML=filtered.map(h=>`<div class="card" style="transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,.12)'" onmouseout="this.style.boxShadow=''"><div style="margin-bottom:8px"><div style="font-weight:600;font-size:15px;font-family:'Cormorant Garamond',serif;margin-bottom:2px">${h.nome}</div><div style="font-size:12px;color:#888">📍 ${[h.cidade,h.pais,h.regiao].filter(Boolean).join(' · ')}</div></div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">${h.blacklist_local?'<span class="tag tr">🚫 Blacklist</span>':''}${h.status_indicacao==='ja_indicamos'?'<span class="tag tgr">✅ Indicamos</span>':h.status_indicacao==='nao_indicamos'?'<span class="tag tgr">⭐ Nunca trab. — Indicamos</span>':h.status_indicacao==='ja_nao_indicamos'?'<span class="tag tr">⚠️ Não indicamos</span>':h.status_indicacao==='nao_nao_indicamos'?'<span class="tag tr">🚫 Não indicamos</span>':''}${h.ambiente?`<span class="tag tb">${h.ambiente}</span>`:''}${h.tipo?`<span class="tag tg">${h.tipo}</span>`:''}${h.por_do_sol?'<span class="tag tg">🌅 Pôr do Sol</span>':''}${h.spa?'<span class="tag tgr">💆 Spa</span>':''}${h.aceita_criancas?'<span class="tag tgr">👶 Kids</span>':''}${h.parque_aquatico?'<span class="tag tb">🌊 Aquapark</span>':''}${h.cassino?'<span class="tag tgy">🎰 Cassino</span>':''}</div>${h.valor_casamento?`<div style="font-size:12px;color:#888;margin-bottom:10px">💍 ${h.valor_casamento}</div>`:''}<div style="display:flex;gap:8px"><button class="btn bo" style="flex:1" onclick="openHotel('${h.id}')">${window._podeEditarLocais?"Ver / Editar":"👁️ Visualizar"}</button><button class="btn bd" onclick="deleteHotel('${h.id}')">✕</button></div></div>`).join('')
 }
 function openNovoHotel(){
   if(!window._podeEditarLocais){alert('Você não tem permissão para cadastrar locais.');return}
@@ -1393,6 +1449,15 @@ function openHotel(id){
   document.getElementById('atab-hgeral').classList.add('active')
   document.querySelector('#modal-hotel .atab').classList.add('active')
   fillHForm(h);document.getElementById('modal-hotel').classList.add('open')
+  // Aplicar readonly se não tiver permissão
+  setTimeout(()=>{
+    const pode=window._podeEditarLocais
+    document.querySelectorAll('#modal-hotel input,#modal-hotel select,#modal-hotel textarea').forEach(el=>{
+      el.disabled=!pode;el.style.background=pode?'':'#f8f8f8';el.style.cursor=pode?'':'not-allowed'
+    })
+    document.querySelectorAll('#modal-hotel .tr-row').forEach(el=>{el.style.pointerEvents=pode?'':'none';el.style.opacity=pode?'':'0.5'})
+    const btn=document.getElementById('btn-sh');if(btn)btn.style.display=pode?'':'none'
+  },100)
 }
 function clearHForm(){
   ['h-nome','h-rep-nome','h-rep-tel','h-pais','h-cidade','h-site','h-email','h-instagram','h-regime','h-acomodacoes','h-ano','h-rest-total','h-bares-total','h-rest-buffet','h-rest-carte','h-rest-ai','h-bares-ai','h-diaria','h-sinal','h-bloqueio','h-val-casamento','h-luau','h-factsheet','h-tour','h-espacos','h-mapa','h-percentual','h-a-pagar','h-email-cobr','h-comissao-valor','h-motivo-ind','h-hoteis-regiao'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
