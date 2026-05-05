@@ -165,6 +165,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="nav" onclick="showPage('assessoras')" id="nav-assessoras">👩 Assessoras</div>
   <div class="nav" onclick="showPage('hoteis')" id="nav-hoteis">🏨 Locais</div>
   <div class="nav" onclick="showPage('logs')" id="nav-logs" style="display:none">📋 Logs</div>
+  <div class="nav" onclick="showPage('usuarios')" id="nav-usuarios" style="display:none">👤 Usuários</div>
   <div class="user-bar" id="user-bar">
     <div class="user-avatar" id="user-avatar">?</div>
     <div class="user-info">
@@ -332,6 +333,17 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         </div>
       </div>
       <div style="flex:1"><div class="cg" id="hoteis-grid"><div class="ld">Carregando...</div></div></div>
+    </div>
+  </div>
+
+  <!-- USUARIOS PAGE -->
+  <div class="page" id="page-usuarios">
+    <div class="ph">
+      <div><div class="pt">Usuários</div><div class="ps" id="usuarios-count">Carregando...</div></div>
+      <button class="btn bg" onclick="openNovoUsuario()">+ Novo Usuário</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px" id="usuarios-grid">
+      <div class="ld">Carregando...</div>
     </div>
   </div>
 
@@ -663,6 +675,38 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div>
 </div>
 
+<!-- MODAL USUARIO -->
+<div class="mo" id="modal-usuario">
+  <div class="mb" style="max-width:500px">
+    <div class="mh">
+      <div class="mt" id="mu-title">Novo Usuário</div>
+      <button class="mcl" onclick="closeModal('modal-usuario')">✕</button>
+    </div>
+    <div style="margin-bottom:20px">
+      <div class="f"><label>Nome Completo</label><input id="u-nome" placeholder="Ex: Maria Silva"></div>
+      <div class="f"><label>E-mail</label><input id="u-email" type="email" placeholder="maria@welcometrips.com.br"></div>
+      <div class="f" id="u-senha-field"><label>Senha</label><input id="u-senha" type="password" placeholder="Mínimo 6 caracteres"></div>
+      <div class="f"><label>Setor</label>
+        <select id="u-setor" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+          <option value="planejamento">📋 Planejamento</option>
+          <option value="viagem">✈️ Viagem</option>
+          <option value="producao">🎨 Produção</option>
+          <option value="visualizacao">👁️ Visualização</option>
+          <option value="admin">👑 Admin</option>
+        </select>
+      </div>
+      <div class="tr-row" onclick="tg('u-ativo')">
+        <div class="tr-track on" id="track-u-ativo"><div class="tr-thumb"></div></div>
+        <span class="tr-label">Usuário ativo</span>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn bo" onclick="closeModal('modal-usuario')">Cancelar</button>
+      <button class="btn bg" id="btn-su" onclick="salvarUsuario()">Salvar</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const{createClient}=supabase
 const sb=createClient('https://yrnlfarricrhtfomwynd.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlybmxmYXJyaWNyaHRmb213eW5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczOTIxODksImV4cCI6MjA5Mjk2ODE4OX0.Ad4awFjQ9vcDqNyBbWycgv0rvpc3DOz4pPTi41nSp8w')
@@ -693,7 +737,10 @@ async function carregarUsuario(user){
   document.getElementById('user-setor').textContent=data.setor
   document.getElementById('user-avatar').textContent=data.nome[0].toUpperCase()
   // Mostrar logs só para admin
-  if(data.setor==='admin')document.getElementById('nav-logs').style.display='flex'
+  if(data.setor==='admin'){
+    document.getElementById('nav-logs').style.display='flex'
+    document.getElementById('nav-usuarios').style.display='flex'
+  }
   aplicarPermissoes()
   loadCasamentos();loadAssessoras();loadHoteis()
 }
@@ -789,6 +836,7 @@ function showPage(p){
   document.getElementById('nav-'+p).classList.add('active')
   closeSidebar()
   if(p==='logs')loadLogs()
+  if(p==='usuarios')loadUsuarios()
 }
 function closeModal(id){document.getElementById(id).classList.remove('open')}
 
@@ -1399,6 +1447,105 @@ async function salvarHotel(){
   btn.textContent='Salvar';btn.disabled=false;closeModal('modal-hotel');loadHoteis()
 }
 async function deleteHotel(id){if(!confirm('Remover?'))return;await sb.from('locais').delete().eq('id',id);loadHoteis()}
+
+// ── USUÁRIOS
+let usuariosList=[], usuarioEditando=null
+
+async function loadUsuarios(){
+  const{data}=await sb.from('usuarios').select('*').order('nome')
+  usuariosList=data||[]
+  document.getElementById('usuarios-count').textContent=usuariosList.length+' usuário(s) cadastrado(s)'
+  renderUsuarios()
+}
+
+function renderUsuarios(){
+  const grid=document.getElementById('usuarios-grid')
+  if(!usuariosList.length){grid.innerHTML='<div class="em"><div class="em-i">👤</div><div class="em-t">Nenhum usuário cadastrado</div></div>';return}
+  const setorIcon={admin:'👑',planejamento:'📋',viagem:'✈️',producao:'🎨',visualizacao:'👁️'}
+  const setorNome={admin:'Admin',planejamento:'Planejamento',viagem:'Viagem',producao:'Produção',visualizacao:'Visualização'}
+  grid.innerHTML=usuariosList.map(u=>`
+    <div class="card" style="${!u.ativo?'opacity:.6':''}">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+        <div class="av">${u.nome[0]}</div>
+        <div>
+          <div style="font-weight:600;font-size:15px">${u.nome}</div>
+          <div style="font-size:12px;color:#888">${u.email}</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:14px">
+        <span class="tag tg">${setorIcon[u.setor]||'👤'} ${setorNome[u.setor]||u.setor}</span>
+        ${!u.ativo?'<span class="tag tr">Inativo</span>':'<span class="tag tgr">Ativo</span>'}
+        ${u.id===usuarioAtual?.id?'<span class="tag tb">Você</span>':''}
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn bo" style="flex:1" onclick="editarUsuario('${u.id}')">Editar</button>
+        ${u.id!==usuarioAtual?.id?`<button class="btn bo" style="color:${u.ativo?'var(--red)':'var(--green)'};border-color:${u.ativo?'var(--red)':'var(--green)'}" onclick="toggleUsuario('${u.id}',${u.ativo})">${u.ativo?'Desativar':'Ativar'}</button>`:''}
+      </div>
+    </div>`).join('')
+}
+
+function openNovoUsuario(){
+  usuarioEditando=null
+  document.getElementById('mu-title').textContent='Novo Usuário'
+  document.getElementById('u-nome').value=''
+  document.getElementById('u-email').value=''
+  document.getElementById('u-senha').value=''
+  document.getElementById('u-setor').value='planejamento'
+  document.getElementById('u-senha-field').style.display='block'
+  setTg('u-ativo',true)
+  document.getElementById('modal-usuario').classList.add('open')
+}
+
+function editarUsuario(id){
+  const u=usuariosList.find(x=>x.id===id);if(!u)return
+  usuarioEditando=u
+  document.getElementById('mu-title').textContent='Editar Usuário'
+  document.getElementById('u-nome').value=u.nome
+  document.getElementById('u-email').value=u.email
+  document.getElementById('u-senha').value=''
+  document.getElementById('u-setor').value=u.setor
+  document.getElementById('u-senha-field').style.display='none'
+  setTg('u-ativo',u.ativo)
+  document.getElementById('modal-usuario').classList.add('open')
+}
+
+async function salvarUsuario(){
+  const btn=document.getElementById('btn-su');btn.textContent='Salvando...';btn.disabled=true
+  const nome=document.getElementById('u-nome').value.trim()
+  const email=document.getElementById('u-email').value.trim()
+  const senha=document.getElementById('u-senha').value
+  const setor=document.getElementById('u-setor').value
+  const ativo=getTg('u-ativo')
+  if(!nome||!email){alert('Preencha nome e e-mail!');btn.textContent='Salvar';btn.disabled=false;return}
+  if(!usuarioEditando){
+    // Criar novo usuário no Auth
+    if(!senha||senha.length<6){alert('Senha deve ter pelo menos 6 caracteres!');btn.textContent='Salvar';btn.disabled=false;return}
+    const{data,error}=await sb.auth.admin?.createUser({email,password:senha,email_confirm:true})
+    if(error||!data?.user){
+      // Fallback: usar signUp
+      const{data:sd,error:se}=await sb.auth.signUp({email,password:senha})
+      if(se){alert('Erro ao criar usuário: '+se.message);btn.textContent='Salvar';btn.disabled=false;return}
+      const uid=sd?.user?.id
+      if(uid){await sb.from('usuarios').insert({id:uid,nome,email,setor,ativo})}
+    } else {
+      await sb.from('usuarios').insert({id:data.user.id,nome,email,setor,ativo})
+    }
+    await registrarLog('criou usuário','usuarios',null,nome,null,{nome,email,setor})
+  } else {
+    await sb.from('usuarios').update({nome,setor,ativo}).eq('id',usuarioEditando.id)
+    await registrarLog('editou usuário','usuarios',usuarioEditando.id,nome,null,{nome,setor,ativo})
+  }
+  btn.textContent='Salvar';btn.disabled=false
+  closeModal('modal-usuario');loadUsuarios()
+}
+
+async function toggleUsuario(id,ativo){
+  const u=usuariosList.find(x=>x.id===id)
+  if(!confirm(`${ativo?'Desativar':'Ativar'} ${u?.nome}?`))return
+  await sb.from('usuarios').update({ativo:!ativo}).eq('id',id)
+  await registrarLog(ativo?'desativou usuário':'ativou usuário','usuarios',id,u?.nome,null,null)
+  loadUsuarios()
+}
 
 function fmtDate(d){if(!d)return'—';const[y,m,day]=d.split('-');return`${day}/${m}/${y}`}
 </script>
