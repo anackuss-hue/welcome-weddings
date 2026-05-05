@@ -308,13 +308,6 @@ function renderHoteis(){
   if(fI('fh-amb-cidade'))ambientes.push('Cidade')
   if(fI('fh-amb-lago'))ambientes.push('Lago / Rio')
   if(fI('fh-amb-vinhedo'))ambientes.push('Vinhedo')
-  const ambientes=[]
-  if(fI('fh-amb-praia'))ambientes.push('Praia')
-  if(fI('fh-amb-montanha'))ambientes.push('Montanha')
-  if(fI('fh-amb-campo'))ambientes.push('Campo / Fazenda')
-  if(fI('fh-amb-cidade'))ambientes.push('Cidade')
-  if(fI('fh-amb-lago'))ambientes.push('Lago / Rio')
-  if(fI('fh-amb-vinhedo'))ambientes.push('Vinhedo')
   const filtered=hoteis.filter(h=>{
     const ms=!s||h.nome?.toLowerCase().includes(s)||h.cidade?.toLowerCase().includes(s)
     const mp=!paisChips.length||paisChips.some(p=>h.pais?.toLowerCase().includes(p))
