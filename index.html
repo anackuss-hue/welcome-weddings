@@ -1945,6 +1945,7 @@ async function salvarNovaSenha(){
   closeModal('modal-senha')
   alert('Senha alterada com sucesso!')
 }
+async function toggleUsuario(id,ativo){
   const u=usuariosList.find(x=>x.id===id)
   if(!confirm(`${ativo?'Desativar':'Ativar'} ${u?.nome}?`))return
   await sb.from('usuarios').update({ativo:!ativo}).eq('id',id)
