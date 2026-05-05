@@ -184,10 +184,56 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <div><div class="pt">Casamentos</div><div class="ps" id="casamentos-count">Carregando...</div></div>
       <button class="btn bg" onclick="openNovoCasamento()">+ Novo Casamento</button>
     </div>
-    <div class="card" style="margin-bottom:20px">
-      <input style="padding:8px 14px;border-radius:8px;border:1px solid var(--border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;width:340px" placeholder="Buscar por nome do casal ou destino..." oninput="filterCasamentos(this.value)">
+    <div style="display:flex;gap:20px;align-items:flex-start">
+      <div class="fpanel" style="width:200px;max-height:calc(100vh - 80px);overflow-y:auto;position:sticky;top:24px">
+        <div class="fp-title">Filtros</div>
+        <input id="search-c" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none" placeholder="Buscar casal..." oninput="renderCasamentos()">
+        <div class="fp-sec">
+          <div class="fp-sec-t">Ano do Casamento</div>
+          <select id="f-c-ano" onchange="renderCasamentos()" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none">
+            <option value="">Todos</option>
+          </select>
+        </div>
+        <div class="fp-sec">
+          <div class="fp-sec-t">Mês do Casamento</div>
+          <select id="f-c-mes" onchange="renderCasamentos()" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none">
+            <option value="">Todos</option>
+            <option value="1">Janeiro</option>
+            <option value="2">Fevereiro</option>
+            <option value="3">Março</option>
+            <option value="4">Abril</option>
+            <option value="5">Maio</option>
+            <option value="6">Junho</option>
+            <option value="7">Julho</option>
+            <option value="8">Agosto</option>
+            <option value="9">Setembro</option>
+            <option value="10">Outubro</option>
+            <option value="11">Novembro</option>
+            <option value="12">Dezembro</option>
+          </select>
+        </div>
+        <div class="fp-sec">
+          <div class="fp-sec-t">Destino</div>
+          <select id="f-c-destino" onchange="renderCasamentos()" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none">
+            <option value="">Todos</option>
+          </select>
+        </div>
+        <div class="fp-sec">
+          <div class="fp-sec-t">Hotel</div>
+          <select id="f-c-hotel" onchange="renderCasamentos()" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none">
+            <option value="">Todos</option>
+          </select>
+        </div>
+        <div class="fp-sec">
+          <div class="fp-sec-t">Status</div>
+          <label class="fl"><input type="checkbox" id="f-c-andamento" onchange="renderCasamentos()"> Em andamento</label>
+          <label class="fl"><input type="checkbox" id="f-c-confirmado" onchange="renderCasamentos()"> Confirmado</label>
+          <label class="fl"><input type="checkbox" id="f-c-concluido" onchange="renderCasamentos()"> Concluído</label>
+          <label class="fl"><input type="checkbox" id="f-c-cancelado" onchange="renderCasamentos()"> Cancelado</label>
+        </div>
+      </div>
+      <div style="flex:1"><div class="cg" id="casamentos-grid"><div class="ld">Carregando...</div></div></div>
     </div>
-    <div class="cg" id="casamentos-grid"><div class="ld">Carregando...</div></div>
   </div>
 
   <!-- ══ ASSESSORAS ══ -->
@@ -1028,7 +1074,7 @@ function showATab(tab,btn){
 
 // ══ CASAMENTOS ══
 async function loadCasamentos(){
-  const{data}=await sb.from('casamentos').select('*').order('created_at',{ascending:false})
+  const{data}=await sb.from('casamentos').select('*').order('plan_data',{ascending:true,nullsFirst:false})
   casamentos=data||[]
   // Cache de escaladas para filtros de assessoras
   const{data:esc}=await sb.from('casamento_assessoras').select('casamento_id,assessora_id')
@@ -1036,11 +1082,35 @@ async function loadCasamentos(){
   populateAssessoraFilters()
   renderCasamentos()
 }
-function filterCasamentos(q){renderCasamentos(q.toLowerCase())}
-function renderCasamentos(q){
-  const s=q!==undefined?q:''
+function filterCasamentos(q){renderCasamentos()}
+function populateCasamentoFilters(){
+  const destinos=[...new Set(casamentos.map(c=>c.destino).filter(Boolean))].sort()
+  const hoteis=[...new Set(casamentos.map(c=>c.plan_hotel).filter(Boolean))].sort()
+  const anos=[...new Set(casamentos.map(c=>c.plan_data?.split('-')[0]).filter(Boolean))].sort()
+  const fd=document.getElementById('f-c-destino')
+  const fh=document.getElementById('f-c-hotel')
+  const fa=document.getElementById('f-c-ano')
+  if(fd){const cur=fd.value;fd.innerHTML='<option value="">Todos</option>'+destinos.map(d=>`<option value="${d}">${d}</option>`).join('');fd.value=cur}
+  if(fh){const cur=fh.value;fh.innerHTML='<option value="">Todos</option>'+hoteis.map(h=>`<option value="${h}">${h}</option>`).join('');fh.value=cur}
+  if(fa){const cur=fa.value;fa.innerHTML='<option value="">Todos</option>'+anos.map(a=>`<option value="${a}">${a}</option>`).join('');fa.value=cur}
+}
+function renderCasamentos(){
+  const s=(document.getElementById('search-c')?.value||'').toLowerCase()
+  const ano=document.getElementById('f-c-ano')?.value||''
+  const mes=document.getElementById('f-c-mes')?.value||''
+  const destino=document.getElementById('f-c-destino')?.value||''
+  const hotel=document.getElementById('f-c-hotel')?.value||''
+  const fI=id=>document.getElementById(id)?.checked
+  const statusAtivos=[fI('f-c-andamento')&&'Em andamento',fI('f-c-confirmado')&&'Confirmado',fI('f-c-concluido')&&'Concluído',fI('f-c-cancelado')&&'Cancelado'].filter(Boolean)
   const grid=document.getElementById('casamentos-grid')
-  const filtered=casamentos.filter(c=>!s||c.nome?.toLowerCase().includes(s)||c.destino?.toLowerCase().includes(s))
+  const filtered=casamentos.filter(c=>{
+    const ms=!s||c.nome?.toLowerCase().includes(s)||c.destino?.toLowerCase().includes(s)
+    const mm=!mes||c.plan_data?.startsWith(new Date().getFullYear()+'-'+mes.padStart(2,'0'))||c.plan_data?.split('-')[1]===mes.padStart(2,'0')
+    const md=!destino||c.destino===destino
+    const mh=!hotel||c.plan_hotel===hotel
+    const mst=!statusAtivos.length||statusAtivos.includes(c.status||'Em andamento')
+    return ms&&ma&&mm&&md&&mh&&mst
+  })
   document.getElementById('casamentos-count').textContent=casamentos.length+' casamento(s)'
   if(!filtered.length){grid.innerHTML='<div class="em"><div class="em-i">💍</div><div class="em-t">Nenhum casamento encontrado</div></div>';return}
   const sc=s=>s==='Confirmado'?'tgr':s==='Cancelado'?'tr':s==='Concluído'?'tg':'tgy'
