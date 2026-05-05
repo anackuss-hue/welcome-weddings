@@ -241,9 +241,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
         <div class="fp-sec">
           <div class="fp-sec-t">Nº de Acomodações</div>
-          <div style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:6px">Até <span id="label-acom">500</span> quartos</div>
-          <input type="range" id="slider-acom" min="50" max="500" step="50" value="500" oninput="document.getElementById('label-acom').textContent=this.value;renderHoteis()" style="width:100%;accent-color:var(--gold)">
-          <div style="display:flex;justify-content:space-between;font-size:10px;color:#aaa;margin-top:2px"><span>50</span><span>500</span></div>
+          <div style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:6px">Até <span id="label-acom">3000</span> quartos</div>
+          <input type="range" id="slider-acom" min="50" max="3000" step="50" value="3000" oninput="document.getElementById('label-acom').textContent=this.value;renderHoteis()" style="width:100%;accent-color:var(--gold)">
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:#aaa;margin-top:2px"><span>50</span><span>3000</span></div>
         </div>
 
         <div class="fp-sec">
@@ -1046,7 +1046,7 @@ function limparFiltrosHotel(){
   ['fh-reg-caribe','fh-reg-sul','fh-reg-europa','fh-reg-asia','fh-tipo-ai','fh-tipo-resort','fh-tipo-boutique','fh-tipo-pousada','fh-tipo-urbano','fh-tipo-fazenda','fh-kids','fh-pets','fh-spa','fh-cassino','fh-parque','fh-sol'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=false})
   ;['search-h','f-h-pais','f-h-cidade'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
   document.getElementById('slider-moeda').value=''
-  document.getElementById('slider-acom').value=500;document.getElementById('label-acom').textContent='500'
+  document.getElementById('slider-acom').value=500;document.getElementById('label-acom').textContent='3000'
   atualizarSliderMoeda();renderHoteis()
 }
 function renderHoteis(){
@@ -1070,7 +1070,7 @@ function renderHoteis(){
   const maxAcom=parseInt(document.getElementById('slider-acom')?.value||500)
   const minDiaria=parseInt(document.getElementById('slider-diaria-min')?.value||100)
   const maxDiaria=parseInt(document.getElementById('slider-diaria-max')?.value||2000)
-  const anyActive=[s,pais,cidade,moeda,regioes.length,tipos.length,fI('fh-kids'),fI('fh-pets'),fI('fh-spa'),fI('fh-cassino'),fI('fh-parque'),fI('fh-sol'),maxAcom<500,moeda&&(minDiaria>100||maxDiaria<2000)].some(Boolean)
+  const anyActive=[s,pais,cidade,moeda,regioes.length,tipos.length,fI('fh-kids'),fI('fh-pets'),fI('fh-spa'),fI('fh-cassino'),fI('fh-parque'),fI('fh-sol'),maxAcom<3000,moeda&&(minDiaria>100||maxDiaria<2000)].some(Boolean)
   const fc=document.getElementById('h-filtros-count');if(fc)fc.style.display=anyActive?'inline':'none'
   const grid=document.getElementById('hoteis-grid')
   const filtered=hoteis.filter(h=>{
