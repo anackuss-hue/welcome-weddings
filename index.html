@@ -132,7 +132,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div>
   <div class="nav active" onclick="showPage('casamentos')" id="nav-casamentos">💍 Casamentos</div>
   <div class="nav" onclick="showPage('assessoras')" id="nav-assessoras">👩 Assessoras</div>
-  <div class="nav" onclick="showPage('hoteis')" id="nav-hoteis">🏨 Hotéis</div>
+  <div class="nav" onclick="showPage('hoteis')" id="nav-hoteis">🏨 Locais</div>
 </div>
 
 <div class="main">
@@ -200,8 +200,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <!-- ══ HOTÉIS ══ -->
   <div class="page" id="page-hoteis">
     <div class="ph">
-      <div><div class="pt">Banco de Hotéis</div><div class="ps" id="hoteis-count">Carregando...</div></div>
-      <button class="btn bg" onclick="openNovoHotel()">+ Novo Hotel</button>
+      <div><div class="pt">Banco de Locais</div><div class="ps" id="hoteis-count">Carregando...</div></div>
+      <button class="btn bg" onclick="openNovoHotel()">+ Novo Local</button>
     </div>
     <div style="display:flex;gap:20px;align-items:flex-start">
       <div class="fpanel" style="width:220px;max-height:calc(100vh - 80px);overflow-y:auto;position:sticky;top:24px">
@@ -230,7 +230,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         </div>
 
         <div class="fp-sec">
-          <div class="fp-sec-t">Tipo de Hotel</div>
+          <div class="fp-sec-t">Tipo de Local</div>
           <label class="fl"><input type="checkbox" id="fh-tipo-ai" onchange="renderHoteis()"> All Inclusive</label>
           <label class="fl"><input type="checkbox" id="fh-tipo-resort" onchange="renderHoteis()"> Resort</label>
           <label class="fl"><input type="checkbox" id="fh-tipo-boutique" onchange="renderHoteis()"> Boutique</label>
@@ -262,6 +262,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
           <div style="display:flex;justify-content:space-between;font-size:10px;color:#aaa;margin-top:2px"><span id="slider-min-label">100</span><span id="slider-max-label">2000</span></div>
         </div>
 
+        <div class="fp-sec">
+          <div class="fp-sec-t">Indicação</div>
+          <label class="fl"><input type="checkbox" id="fh-indicamos" onchange="renderHoteis()"> ✅ Indicamos</label>
+          <label class="fl"><input type="checkbox" id="fh-blacklist" onchange="renderHoteis()"> 🚫 Blacklist</label>
+        </div>
         <div class="fp-sec">
           <div class="fp-sec-t">Estrutura</div>
           <label class="fl"><input type="checkbox" id="fh-kids" onchange="renderHoteis()"> 👶 Aceita Crianças</label>
@@ -460,7 +465,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 <!-- ══ MODAL HOTEL ══ -->
 <div class="mo" id="modal-hotel">
   <div class="mb" style="max-width:820px">
-    <div class="mh"><div><div class="mt" id="mh-title">Novo Hotel</div><div class="ms" id="mh-sub">Preencha os dados do hotel</div></div><button class="mcl" onclick="closeModal('modal-hotel')">✕</button></div>
+    <div class="mh"><div><div class="mt" id="mh-title">Novo Local</div><div class="ms" id="mh-sub">Preencha os dados do local</div></div><button class="mcl" onclick="closeModal('modal-hotel')">✕</button></div>
     <div class="atabs" id="hotel-atabs">
       <button class="atab active" onclick="showHTab('hgeral',this)">01 · Informações Gerais</button>
       <button class="atab" onclick="showHTab('hespec',this)">02 · Específicas</button>
@@ -470,26 +475,29 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     </div>
     <div class="atc active" id="atab-hgeral">
       <div class="g2">
-        <div class="f"><label>Nome do Hotel</label><input id="h-nome" placeholder="Ex: Hard Rock Hotel Cancún"></div>
+        <div class="f"><label>Nome do Local</label><input id="h-nome" placeholder="Ex: Hard Rock Hotel Cancún"></div>
         <div class="f"><label>Região</label><select id="h-regiao"><option value="">Selecione</option><option>Caribe</option><option>América do Sul</option><option>Europa</option><option>Ásia</option></select></div>
         <div class="f"><label>País</label><input id="h-pais"></div>
         <div class="f"><label>Cidade</label><input id="h-cidade"></div>
         <div class="f"><label>Site Oficial</label><input id="h-site" placeholder="https://"></div>
         <div class="f"><label>E-mail para Contato</label><input id="h-email" type="email"></div>
+        <div class="f"><label>Representante no Brasil — Nome</label><input id="h-rep-nome" placeholder="Ex: Maria Silva"></div>
+        <div class="f"><label>Representante no Brasil — Telefone</label><input id="h-rep-tel" placeholder="+55 (00) 00000-0000"></div>
       </div>
       <div class="f"><label>Instagram</label><input id="h-instagram" placeholder="https://www.instagram.com/..."></div>
     </div>
     <div class="atc" id="atab-hespec">
       <div class="g2">
-        <div class="f"><label>Tipo de Hotel</label><select id="h-tipo"><option value="">Selecione</option><option>All Inclusive</option><option>Resort</option><option>Boutique</option><option>Pousada</option><option>Hotel Urbano</option><option>Fazenda/Vinhedo</option></select></div>
+        <div class="f"><label>Tipo de Local</label><select id="h-tipo"><option value="">Selecione</option><option>All Inclusive</option><option>Resort</option><option>Boutique</option><option>Pousada</option><option>Hotel Urbano</option><option>Fazenda/Vinhedo</option></select></div>
         <div class="f"><label>Regime de Alimentação</label><input id="h-regime" placeholder="Ex: All Inclusive"></div>
         <div class="f"><label>Nº de Acomodações</label><input id="h-acomodacoes"></div>
         <div class="f"><label>Ano Construção/Remodelação</label><input id="h-ano" placeholder="Ex: 2015 / 2022"></div>
-        <div class="f"><label>Restaurantes (All Inclusive)</label><input id="h-rest-ai"></div>
-        <div class="f"><label>Restaurantes Premium</label><input id="h-rest-prem"></div>
-        <div class="f"><label>Cafeteria</label><input id="h-cafeteria"></div>
-        <div class="f"><label>Bares (All Inclusive)</label><input id="h-bares-ai"></div>
-        <div class="f"><label>Bares Premium</label><input id="h-bares-prem"></div>
+        <div class="f"><label>Restaurantes no Total</label><input id="h-rest-total"></div>
+        <div class="f"><label>Bares no Total</label><input id="h-bares-total"></div>
+        <div class="f"><label>Restaurantes Buffet</label><input id="h-rest-buffet"></div>
+        <div class="f"><label>Restaurantes à La Carte</label><input id="h-rest-carte"></div>
+        <div class="f"><label>Restaurantes All Inclusive</label><input id="h-rest-ai"></div>
+        <div class="f"><label>Bares All Inclusive</label><input id="h-bares-ai"></div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:8px">
         <div class="tr-row" onclick="tg('h-frigobar')"><div class="tr-track" id="track-h-frigobar"><div class="tr-thumb"></div></div><span class="tr-label">Frigobar com Bebidas</span></div>
@@ -505,6 +513,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div class="tr-row" onclick="tg('h-sol')"><div class="tr-track" id="track-h-sol"><div class="tr-thumb"></div></div><span class="tr-label">🌅 Pôr do Sol</span></div>
         <div class="tr-row" onclick="tg('h-criancas')"><div class="tr-track" id="track-h-criancas"><div class="tr-thumb"></div></div><span class="tr-label">Aceita Crianças</span></div>
         <div class="tr-row" onclick="tg('h-pets')"><div class="tr-track" id="track-h-pets"><div class="tr-thumb"></div></div><span class="tr-label">Aceita Pets</span></div>
+      </div>
+      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--gold-border)">
+        <div class="tr-row" onclick="tg('h-hospedagem');toggleHospedagem()">
+          <div class="tr-track on" id="track-h-hospedagem"><div class="tr-thumb"></div></div>
+          <span class="tr-label" style="font-weight:600">Tem Hospedagem</span>
+        </div>
+        <div id="h-hospedagem-section" style="display:none;margin-top:12px">
+          <div class="f"><label>Hotéis Indicados na Região</label><textarea id="h-hoteis-regiao" placeholder="Ex: Hotel X, Hotel Y — ficam a 5 min do local..."></textarea></div>
+        </div>
       </div>
     </div>
     <div class="atc" id="atab-hvalores">
@@ -523,13 +540,28 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <div class="f"><label>Mapa do Hotel (link)</label><input id="h-mapa" placeholder="https://"></div>
     </div>
     <div class="atc" id="atab-hcomissao">
-      <div class="g2">
-        <div class="f"><label>Comissão</label><input id="h-comissao" placeholder="Ex: 10%"></div>
-        <div class="f"><label>Percentual</label><input id="h-percentual" placeholder="Ex: 10"></div>
-        <div class="f"><label>A ser Paga</label><input id="h-a-pagar" placeholder="Ex: USD 500"></div>
-        <div class="f"><label>E-mail para Cobrança</label><input id="h-email-cobr" type="email"></div>
+      <div class="sec"><div class="st">Indicação</div>
+        <div class="f"><label>Status de Indicação</label>
+          <select id="h-status-indicacao" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+            <option value="">Selecione...</option>
+            <option value="ja_indicamos">✅ Já trabalhamos — Indicamos muito</option>
+            <option value="ja_nao_indicamos">⚠️ Já trabalhamos — Não indicamos</option>
+            <option value="nao_indicamos">⭐ Nunca trabalhamos — Indicamos</option>
+            <option value="nao_nao_indicamos">🚫 Nunca trabalhamos — Não indicamos</option>
+          </select>
+        </div>
+        <div class="f"><label>Motivo (se não indicamos)</label><textarea id="h-motivo-ind" placeholder="Ex: Problemas com organização, atrasos..."></textarea></div>
+        <div class="tr-row" onclick="tg('h-blacklist-local')"><div class="tr-track" id="track-h-blacklist-local"><div class="tr-thumb"></div></div><span class="tr-label" style="font-weight:600;color:var(--red)">🚫 Blacklist</span></div>
       </div>
-      <div class="tr-row" onclick="tg('h-paga-com')"><div class="tr-track" id="track-h-paga-com"><div class="tr-thumb"></div></div><span class="tr-label" style="font-weight:600">✅ Comissão Paga</span></div>
+      <div class="sec" style="margin-top:16px"><div class="st">Comissão</div>
+        <div class="g2">
+          <div class="f"><label>Percentual</label><input id="h-percentual" placeholder="Ex: 10%"></div>
+          <div class="f"><label>E-mail para Cobrança</label><input id="h-email-cobr" type="email"></div>
+          <div class="f"><label>A ser Paga</label><input id="h-a-pagar" placeholder="Ex: USD 500"></div>
+          <div class="f"><label>Valor Pago</label><input id="h-comissao-valor" placeholder="Ex: USD 450"></div>
+        </div>
+        <div class="tr-row" onclick="tg('h-paga-com')"><div class="tr-track" id="track-h-paga-com"><div class="tr-thumb"></div></div><span class="tr-label" style="font-weight:600">✅ Paga Comissão</span></div>
+      </div>
     </div>
     <div class="mf">
       <button class="btn bo" onclick="closeModal('modal-hotel')">Cancelar</button>
@@ -988,7 +1020,7 @@ async function renderHistorico(){
 }
 
 // ══ HOTÉIS ══
-async function loadHoteis(){const{data}=await sb.from('hoteis').select('*').order('nome');hoteis=data||[];renderHoteis()}
+async function loadHoteis(){const{data}=await sb.from('locais').select('*').order('nome');hoteis=data||[];renderHoteis()}
 function atualizarSliderMoeda(){
   const moeda=document.getElementById('slider-moeda')?.value||''
   const configs={USD:{min:100,max:2000,step:100},EUR:{min:100,max:2000,step:100},BRL:{min:150,max:10000,step:150},'':{min:100,max:2000,step:100}}
@@ -1005,6 +1037,10 @@ function atualizarSliderMoeda(){
   document.getElementById('label-moeda-prefix2').textContent=prefix
   document.getElementById('slider-min-label').textContent=cfg.min
   document.getElementById('slider-max-label').textContent=cfg.max
+}
+function toggleHospedagem(){
+  const show=!getTg('h-hospedagem')
+  document.getElementById('h-hospedagem-section').style.display=show?'block':'none'
 }
 function limparFiltrosHotel(){
   ['fh-reg-caribe','fh-reg-sul','fh-reg-europa','fh-reg-asia','fh-tipo-ai','fh-tipo-resort','fh-tipo-boutique','fh-tipo-pousada','fh-tipo-urbano','fh-tipo-fazenda','fh-kids','fh-pets','fh-spa','fh-cassino','fh-parque','fh-sol'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=false})
@@ -1054,11 +1090,11 @@ function renderHoteis(){
         mdiaria=numDiaria>=minDiaria&&numDiaria<=maxDiaria
       }
     }
-    return ms&&mp&&mc&&mr&&mt&&macom&&mdiaria&&(!fI('fh-kids')||h.aceita_criancas)&&(!fI('fh-pets')||h.aceita_pets)&&(!fI('fh-spa')||h.spa)&&(!fI('fh-cassino')||h.cassino)&&(!fI('fh-parque')||h.parque_aquatico)&&(!fI('fh-sol')||h.por_do_sol)
+    return ms&&mp&&mc&&mr&&mt&&macom&&mdiaria&&(!fI('fh-indicamos')||['ja_indicamos','nao_indicamos'].includes(h.status_indicacao))&&(!fI('fh-blacklist')||h.blacklist_local)&&(!fI('fh-kids')||h.aceita_criancas)&&(!fI('fh-pets')||h.aceita_pets)&&(!fI('fh-spa')||h.spa)&&(!fI('fh-cassino')||h.cassino)&&(!fI('fh-parque')||h.parque_aquatico)&&(!fI('fh-sol')||h.por_do_sol)
   })
-  document.getElementById('hoteis-count').textContent=hoteis.length+' hotel(is) cadastrado(s)'
+  document.getElementById('hoteis-count').textContent=hoteis.length+' local(is) cadastrado(s)'
   if(!filtered.length){grid.innerHTML='<div class="em"><div class="em-i">🏨</div><div class="em-t">Nenhum hotel encontrado</div></div>';return}
-  grid.innerHTML=filtered.map(h=>`<div class="card" style="transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,.12)'" onmouseout="this.style.boxShadow=''"><div style="margin-bottom:8px"><div style="font-weight:600;font-size:15px;font-family:'Cormorant Garamond',serif;margin-bottom:2px">${h.nome}</div><div style="font-size:12px;color:#888">📍 ${[h.cidade,h.pais,h.regiao].filter(Boolean).join(' · ')}</div></div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">${h.tipo?`<span class="tag tg">${h.tipo}</span>`:''}${h.por_do_sol?'<span class="tag tg">🌅 Pôr do Sol</span>':''}${h.spa?'<span class="tag tgr">💆 Spa</span>':''}${h.aceita_criancas?'<span class="tag tgr">👶 Kids</span>':''}${h.parque_aquatico?'<span class="tag tb">🌊 Aquapark</span>':''}${h.cassino?'<span class="tag tgy">🎰 Cassino</span>':''}</div>${h.valor_casamento?`<div style="font-size:12px;color:#888;margin-bottom:10px">💍 ${h.valor_casamento}</div>`:''}<div style="display:flex;gap:8px"><button class="btn bo" style="flex:1" onclick="openHotel('${h.id}')">Ver / Editar</button><button class="btn bd" onclick="deleteHotel('${h.id}')">✕</button></div></div>`).join('')
+  grid.innerHTML=filtered.map(h=>`<div class="card" style="transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,.12)'" onmouseout="this.style.boxShadow=''"><div style="margin-bottom:8px"><div style="font-weight:600;font-size:15px;font-family:'Cormorant Garamond',serif;margin-bottom:2px">${h.nome}</div><div style="font-size:12px;color:#888">📍 ${[h.cidade,h.pais,h.regiao].filter(Boolean).join(' · ')}</div></div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">${h.blacklist_local?'<span class="tag tr">🚫 Blacklist</span>':''}${h.status_indicacao==='ja_indicamos'?'<span class="tag tgr">✅ Indicamos</span>':h.status_indicacao==='nao_indicamos'?'<span class="tag tgr">⭐ Nunca trab. — Indicamos</span>':h.status_indicacao==='ja_nao_indicamos'?'<span class="tag tr">⚠️ Não indicamos</span>':h.status_indicacao==='nao_nao_indicamos'?'<span class="tag tr">🚫 Não indicamos</span>':''}${h.tipo?`<span class="tag tg">${h.tipo}</span>`:''}${h.por_do_sol?'<span class="tag tg">🌅 Pôr do Sol</span>':''}${h.spa?'<span class="tag tgr">💆 Spa</span>':''}${h.aceita_criancas?'<span class="tag tgr">👶 Kids</span>':''}${h.parque_aquatico?'<span class="tag tb">🌊 Aquapark</span>':''}${h.cassino?'<span class="tag tgy">🎰 Cassino</span>':''}</div>${h.valor_casamento?`<div style="font-size:12px;color:#888;margin-bottom:10px">💍 ${h.valor_casamento}</div>`:''}<div style="display:flex;gap:8px"><button class="btn bo" style="flex:1" onclick="openHotel('${h.id}')">Ver / Editar</button><button class="btn bd" onclick="deleteHotel('${h.id}')">✕</button></div></div>`).join('')
 }
 function openNovoHotel(){
   hotelAtual=null
@@ -1082,30 +1118,50 @@ function openHotel(id){
   fillHForm(h);document.getElementById('modal-hotel').classList.add('open')
 }
 function clearHForm(){
-  ['h-nome','h-pais','h-cidade','h-site','h-email','h-instagram','h-regime','h-acomodacoes','h-ano','h-rest-ai','h-rest-prem','h-cafeteria','h-bares-ai','h-bares-prem','h-diaria','h-sinal','h-bloqueio','h-val-casamento','h-luau','h-factsheet','h-tour','h-espacos','h-mapa','h-comissao','h-percentual','h-a-pagar','h-email-cobr'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
+  ['h-nome','h-rep-nome','h-rep-tel','h-pais','h-cidade','h-site','h-email','h-instagram','h-regime','h-acomodacoes','h-ano','h-rest-total','h-bares-total','h-rest-buffet','h-rest-carte','h-rest-ai','h-bares-ai','h-diaria','h-sinal','h-bloqueio','h-val-casamento','h-luau','h-factsheet','h-tour','h-espacos','h-mapa','h-percentual','h-a-pagar','h-email-cobr','h-comissao-valor','h-motivo-ind','h-hoteis-regiao'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
   document.getElementById('h-regiao').value='';document.getElementById('h-tipo').value=''
-  ;['h-frigobar','h-room-service','h-bar-pago','h-rest-pago','h-kids','h-parque','h-pub','h-cassino','h-spa','h-wifi','h-sol','h-criancas','h-pets','h-paga-com'].forEach(id=>setTg(id,false))
+  const si=document.getElementById('h-status-indicacao');if(si)si.value=''
+  ;['h-frigobar','h-room-service','h-bar-pago','h-rest-pago','h-kids','h-parque','h-pub','h-cassino','h-spa','h-wifi','h-sol','h-criancas','h-pets','h-paga-com','h-blacklist-local'].forEach(id=>setTg(id,false))
+  setTg('h-hospedagem',true);document.getElementById('h-hospedagem-section').style.display='none'
 }
 function fillHForm(h){
   const s=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||''}
-  s('h-nome',h.nome);s('h-pais',h.pais);s('h-cidade',h.cidade);s('h-site',h.site);s('h-email',h.email);s('h-instagram',h.instagram);s('h-regime',h.regime);s('h-acomodacoes',h.num_acomodacoes);s('h-ano',h.ano_construcao);s('h-rest-ai',h.restaurantes_ai);s('h-rest-prem',h.restaurantes_premium);s('h-cafeteria',h.cafeteria);s('h-bares-ai',h.bares_ai);s('h-bares-prem',h.bares_prem);s('h-diaria',h.valor_diaria);s('h-sinal',h.valor_sinal);s('h-bloqueio',h.valor_bloqueio);s('h-val-casamento',h.valor_casamento);s('h-luau',h.valor_luau);s('h-factsheet',h.factsheet);s('h-tour',h.tour_virtual);s('h-espacos',h.espacos);s('h-mapa',h.mapa);s('h-comissao',h.comissao);s('h-percentual',h.percentual);s('h-a-pagar',h.comissao_a_pagar);s('h-email-cobr',h.email_cobranca)
+  s('h-nome',h.nome);s('h-rep-nome',h.representante_nome);s('h-rep-tel',h.representante_telefone)
+  s('h-pais',h.pais);s('h-cidade',h.cidade);s('h-site',h.site);s('h-email',h.email);s('h-instagram',h.instagram)
+  s('h-regime',h.regime);s('h-acomodacoes',h.num_acomodacoes);s('h-ano',h.ano_construcao)
+  s('h-rest-total',h.restaurantes_total);s('h-bares-total',h.bares_total)
+  s('h-rest-buffet',h.restaurantes_buffet);s('h-rest-carte',h.restaurantes_carte)
+  s('h-rest-ai',h.restaurantes_ai);s('h-bares-ai',h.bares_ai)
+  s('h-diaria',h.valor_diaria);s('h-sinal',h.valor_sinal);s('h-bloqueio',h.valor_bloqueio)
+  s('h-val-casamento',h.valor_casamento);s('h-luau',h.valor_luau)
+  s('h-factsheet',h.factsheet);s('h-tour',h.tour_virtual);s('h-espacos',h.espacos);s('h-mapa',h.mapa)
+  s('h-percentual',h.percentual);s('h-a-pagar',h.comissao_a_pagar);s('h-email-cobr',h.email_cobranca)
+  s('h-comissao-valor',h.paga_comissao_valor);s('h-motivo-ind',h.motivo_nao_indicacao);s('h-hoteis-regiao',h.hoteis_regiao)
   if(h.regiao)document.getElementById('h-regiao').value=h.regiao
   if(h.tipo)document.getElementById('h-tipo').value=h.tipo
-  setTg('h-frigobar',h.frigobar);setTg('h-room-service',h.room_service);setTg('h-bar-pago',h.bar_pago);setTg('h-rest-pago',h.restaurante_pago);setTg('h-kids',h.area_kids);setTg('h-parque',h.parque_aquatico);setTg('h-pub',h.pub_disco);setTg('h-cassino',h.cassino);setTg('h-spa',h.spa);setTg('h-wifi',h.wifi);setTg('h-sol',h.por_do_sol);setTg('h-criancas',h.aceita_criancas);setTg('h-pets',h.aceita_pets);setTg('h-paga-com',h.paga_comissao)
+  const si=document.getElementById('h-status-indicacao');if(si&&h.status_indicacao)si.value=h.status_indicacao
+  const temHosp=h.tem_hospedagem!==false
+  setTg('h-hospedagem',temHosp)
+  document.getElementById('h-hospedagem-section').style.display=temHosp?'none':'block'
+  setTg('h-frigobar',h.frigobar);setTg('h-room-service',h.room_service);setTg('h-bar-pago',h.bar_pago)
+  setTg('h-rest-pago',h.restaurante_pago);setTg('h-kids',h.area_kids);setTg('h-parque',h.parque_aquatico)
+  setTg('h-pub',h.pub_disco);setTg('h-cassino',h.cassino);setTg('h-spa',h.spa);setTg('h-wifi',h.wifi)
+  setTg('h-sol',h.por_do_sol);setTg('h-criancas',h.aceita_criancas);setTg('h-pets',h.aceita_pets)
+  setTg('h-paga-com',h.paga_comissao);setTg('h-blacklist-local',h.blacklist_local)
 }
 function getHData(){
   const v=id=>document.getElementById(id)?.value||''
-  return{nome:v('h-nome'),regiao:v('h-regiao'),pais:v('h-pais'),cidade:v('h-cidade'),site:v('h-site'),email:v('h-email'),instagram:v('h-instagram'),tipo:v('h-tipo'),regime:v('h-regime'),num_acomodacoes:v('h-acomodacoes'),ano_construcao:v('h-ano'),restaurantes_ai:v('h-rest-ai'),restaurantes_premium:v('h-rest-prem'),cafeteria:v('h-cafeteria'),bares_ai:v('h-bares-ai'),bares_prem:v('h-bares-prem'),valor_diaria:v('h-diaria'),valor_sinal:v('h-sinal'),valor_bloqueio:v('h-bloqueio'),valor_casamento:v('h-val-casamento'),valor_luau:v('h-luau'),factsheet:v('h-factsheet'),tour_virtual:v('h-tour'),espacos:v('h-espacos'),mapa:v('h-mapa'),comissao:v('h-comissao'),percentual:v('h-percentual'),comissao_a_pagar:v('h-a-pagar'),email_cobranca:v('h-email-cobr'),frigobar:getTg('h-frigobar'),room_service:getTg('h-room-service'),bar_pago:getTg('h-bar-pago'),restaurante_pago:getTg('h-rest-pago'),area_kids:getTg('h-kids'),parque_aquatico:getTg('h-parque'),pub_disco:getTg('h-pub'),cassino:getTg('h-cassino'),spa:getTg('h-spa'),wifi:getTg('h-wifi'),por_do_sol:getTg('h-sol'),aceita_criancas:getTg('h-criancas'),aceita_pets:getTg('h-pets'),paga_comissao:getTg('h-paga-com')}
+  return{nome:v('h-nome'),representante_nome:v('h-rep-nome'),representante_telefone:v('h-rep-tel'),regiao:v('h-regiao'),pais:v('h-pais'),cidade:v('h-cidade'),site:v('h-site'),email:v('h-email'),instagram:v('h-instagram'),tipo:v('h-tipo'),regime:v('h-regime'),num_acomodacoes:v('h-acomodacoes'),ano_construcao:v('h-ano'),restaurantes_total:v('h-rest-total'),bares_total:v('h-bares-total'),restaurantes_buffet:v('h-rest-buffet'),restaurantes_carte:v('h-rest-carte'),restaurantes_ai:v('h-rest-ai'),bares_ai:v('h-bares-ai'),valor_diaria:v('h-diaria'),valor_sinal:v('h-sinal'),valor_bloqueio:v('h-bloqueio'),valor_casamento:v('h-val-casamento'),valor_luau:v('h-luau'),factsheet:v('h-factsheet'),tour_virtual:v('h-tour'),espacos:v('h-espacos'),mapa:v('h-mapa'),percentual:v('h-percentual'),comissao_a_pagar:v('h-a-pagar'),email_cobranca:v('h-email-cobr'),paga_comissao_valor:v('h-comissao-valor'),status_indicacao:v('h-status-indicacao')||null,motivo_nao_indicacao:v('h-motivo-ind'),hoteis_regiao:v('h-hoteis-regiao'),tem_hospedagem:getTg('h-hospedagem'),frigobar:getTg('h-frigobar'),room_service:getTg('h-room-service'),bar_pago:getTg('h-bar-pago'),restaurante_pago:getTg('h-rest-pago'),area_kids:getTg('h-kids'),parque_aquatico:getTg('h-parque'),pub_disco:getTg('h-pub'),cassino:getTg('h-cassino'),spa:getTg('h-spa'),wifi:getTg('h-wifi'),por_do_sol:getTg('h-sol'),aceita_criancas:getTg('h-criancas'),aceita_pets:getTg('h-pets'),paga_comissao:getTg('h-paga-com'),blacklist_local:getTg('h-blacklist-local')}
 }
 async function salvarHotel(){
   const btn=document.getElementById('btn-sh');btn.textContent='Salvando...';btn.disabled=true
   const data=getHData()
   if(!data.nome){alert('Preencha o nome do hotel!');btn.textContent='Salvar';btn.disabled=false;return}
-  if(hotelAtual){await sb.from('hoteis').update(data).eq('id',hotelAtual.id)}
-  else{await sb.from('hoteis').insert(data)}
+  if(hotelAtual){await sb.from('locais').update(data).eq('id',hotelAtual.id)}
+  else{await sb.from('locais').insert(data)}
   btn.textContent='Salvar';btn.disabled=false;closeModal('modal-hotel');loadHoteis()
 }
-async function deleteHotel(id){if(!confirm('Remover?'))return;await sb.from('hoteis').delete().eq('id',id);loadHoteis()}
+async function deleteHotel(id){if(!confirm('Remover?'))return;await sb.from('locais').delete().eq('id',id);loadHoteis()}
 
 function fmtDate(d){if(!d)return'—';const[y,m,day]=d.split('-');return`${day}/${m}/${y}`}
 </script>
