@@ -1837,7 +1837,7 @@ async function enviarTarefaTeams(data){
     console.error('Erro Teams:',e)
   }
 }
-let usuariosList=[], usuarioEditando=null=[], usuarioEditando=null
+let usuariosList=[], usuarioEditando=null=[],
 
 async function loadUsuarios(){
   const{data}=await sb.from('usuarios').select('*').order('nome')
