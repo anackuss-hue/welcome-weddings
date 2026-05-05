@@ -408,32 +408,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       </div>
     </div>
     <div class="tc" id="tab-prod">
-      <div class="g2">
-        <div class="f"><label>Nome da Produtora</label><input id="c-produtora"></div>
-        <div class="f"><label>Nº de Assessores</label><input id="c-num-assessores"></div>
-        <div class="f"><label>Datas da Assessoria</label><input id="c-datas" placeholder="Ex: 10/08 → 14/08"></div>
-        <div class="f"><label>Última Reunião</label><input id="c-ultima-reuniao" type="date"></div>
+      <div style="text-align:center;padding:60px 20px">
+        <div style="font-size:48px;margin-bottom:16px">🚧</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold);margin-bottom:8px">Em Construção</div>
+        <div style="font-size:14px;color:var(--muted)">Esta seção está sendo desenvolvida</div>
       </div>
-      <div class="f"><label>Serviços Necessários</label><textarea id="c-servicos" placeholder="DJ, decoração, banda..."></textarea></div>
-      <div class="f"><label>Programação do Casamento</label><textarea id="c-programacao"></textarea></div>
-      <div class="f"><label>Fornecedores</label><textarea id="c-fornecedores"></textarea></div>
-      <div class="f"><label>Status / Comentários</label><textarea id="c-prod-status"></textarea></div>
       <div id="prod-assess-preview"></div>
     </div>
     <div class="tc" id="tab-viag">
-      <div class="cb">
-        <div class="st">Checklist para Produção</div>
-        <div class="tr-row" onclick="tg('c-voos')"><div class="tr-track" id="track-c-voos"><div class="tr-thumb"></div></div><span class="tr-label">✈️ Voos da Assessoria</span></div>
-        <div class="tr-row" onclick="tg('c-transfers')"><div class="tr-track" id="track-c-transfers"><div class="tr-thumb"></div></div><span class="tr-label">🚌 Transfers</span></div>
-        <div class="tr-row" onclick="tg('c-passeios')"><div class="tr-track" id="track-c-passeios"><div class="tr-thumb"></div></div><span class="tr-label">⛵ Passeios</span></div>
-        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--gold-border)">
-          <div class="tr-row" onclick="tg('c-vok')"><div class="tr-track" id="track-c-vok"><div class="tr-thumb"></div></div><span class="tr-label" style="font-weight:600">✅ TUDO OK — Avisar Produção</span></div>
-        </div>
+      <div style="text-align:center;padding:60px 20px">
+        <div style="font-size:48px;margin-bottom:16px">🚧</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold);margin-bottom:8px">Em Construção</div>
+        <div style="font-size:14px;color:var(--muted)">Esta seção está sendo desenvolvida</div>
       </div>
-      <div class="f"><label>Transfer</label><textarea id="c-transfer"></textarea></div>
-      <div class="f"><label>Passeios</label><textarea id="c-passeios-txt"></textarea></div>
-      <div class="f"><label>Hospedagem dos Convidados</label><textarea id="c-hospedagem"></textarea></div>
-      <div class="f"><label>Observações</label><textarea id="c-viag-obs"></textarea></div>
     </div>
     <div class="tc" id="tab-assess">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
@@ -1164,7 +1151,17 @@ async function renderEscaladas(){
 async function togBilhete(id,cur){await sb.from('casamento_assessoras').update({bilhete_emitido:!cur}).eq('id',id);renderEscaladas()}
 async function updEscalada(id,f,v){await sb.from('casamento_assessoras').update({[f]:v}).eq('id',id)}
 async function setNota(id,nota){await sb.from('casamento_assessoras').update({nota}).eq('id',id);renderEscaladas()}
-async function removeEscalada(id){await sb.from('casamento_assessoras').delete().eq('id',id);renderEscaladas()}
+async function removeEscalada(id){
+  if(!confirm('Remover assessora? As solicitações de viagem dela também serão removidas.'))return
+  // Buscar assessora_id antes de deletar
+  const esc=escaladas.find(e=>e.id===id)
+  // Remover solicitações de viagem relacionadas
+  if(esc&&casamentoAtual?.id){
+    await sb.from('solicitacoes_viagem').delete().eq('casamento_id',casamentoAtual.id).eq('assessora_id',esc.assessora_id)
+  }
+  await sb.from('casamento_assessoras').delete().eq('id',id)
+  renderEscaladas()
+}
 function togglePicker(){pickerOpen=!pickerOpen;renderPickerIfOpen()}
 function renderPickerIfOpen(){
   const con=document.getElementById('picker-container')
