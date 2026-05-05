@@ -238,8 +238,28 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 const{createClient}=supabase
 const sb=createClient('https://yrnlfarricrhtfomwynd.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlybmxmYXJyaWNyaHRmb213eW5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczOTIxODksImV4cCI6MjA5Mjk2ODE4OX0.Ad4awFjQ9vcDqNyBbWycgv0rvpc3DOz4pPTi41nSp8w')
 
-let hoteis=[],paisChips=[]
-document.addEventListener('DOMContentLoaded',loadHoteis)
+let hoteis=[],paisChips=[],tokenMode=false
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const params=new URLSearchParams(window.location.search)
+  const token=params.get('c')
+  if(token){loadHoteisPersonalizados(token)}
+  else{loadHoteis()}
+})
+
+async function loadHoteisPersonalizados(token){
+  // Buscar casamento pelo token
+  const{data:cas}=await sb.from('casamentos').select('id,nome').eq('link_token',token).single()
+  if(!cas){loadHoteis();return}
+  tokenMode=true
+  // Atualizar hero com nome do casal
+  const h1=document.querySelector('.hero h1')
+  if(h1)h1.innerHTML=`Uma seleção especial<br>para <em>${cas.nome}</em>`
+  // Buscar hotéis selecionados
+  const{data}=await sb.from('casamento_hoteis').select('hotel:locais(*)').eq('casamento_id',cas.id)
+  hoteis=(data||[]).map(d=>d.hotel).filter(Boolean)
+  renderHoteis()
+}
 
 function addPaisChip(e){
   if(e.key!=='Enter')return
