@@ -209,24 +209,38 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
           <div class="fp-title" style="margin-bottom:0">Filtros</div>
           <span id="h-filtros-count" style="display:none;font-size:10px;font-weight:700;background:var(--gold);color:white;border-radius:10px;padding:2px 7px;cursor:pointer" onclick="limparFiltrosHotel()">limpar</span>
         </div>
-        <input id="search-h" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none" placeholder="Buscar hotel..." oninput="renderHoteis()">
+        <input id="search-h" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none" placeholder="Buscar local..." oninput="renderHoteis()">
 
         <div class="fp-sec">
-          <div class="fp-sec-t">Região</div>
-          <label class="fl"><input type="checkbox" id="fh-reg-caribe" onchange="renderHoteis()"> 🏝️ Caribe</label>
-          <label class="fl"><input type="checkbox" id="fh-reg-sul" onchange="renderHoteis()"> 🌎 América do Sul</label>
-          <label class="fl"><input type="checkbox" id="fh-reg-europa" onchange="renderHoteis()"> 🏰 Europa</label>
-          <label class="fl"><input type="checkbox" id="fh-reg-asia" onchange="renderHoteis()"> 🏯 Ásia</label>
+          <div class="fp-sec-t">Continente</div>
+          <label class="fl"><input type="checkbox" id="fh-reg-caribe" onchange="renderHoteis()"> Caribe</label>
+          <label class="fl"><input type="checkbox" id="fh-reg-sul" onchange="renderHoteis()"> América do Sul</label>
+          <label class="fl"><input type="checkbox" id="fh-reg-europa" onchange="renderHoteis()"> Europa</label>
+          <label class="fl"><input type="checkbox" id="fh-reg-asia" onchange="renderHoteis()"> Ásia</label>
         </div>
 
         <div class="fp-sec">
           <div class="fp-sec-t">País</div>
-          <input id="f-h-pais" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none" placeholder="Ex: México" oninput="renderHoteis()">
+          <div id="pais-chips" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:7px"></div>
+          <input id="f-h-pais" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none" placeholder="Digitar e apertar Enter..." onkeydown="addPaisChip(event)">
         </div>
 
         <div class="fp-sec">
-          <div class="fp-sec-t">Cidade</div>
-          <input id="f-h-cidade" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none" placeholder="Ex: Cancún" oninput="renderHoteis()">
+          <div class="fp-sec-t">Ambiente</div>
+          <label class="fl"><input type="checkbox" id="fh-amb-praia" onchange="renderHoteis()"> Praia</label>
+          <label class="fl"><input type="checkbox" id="fh-amb-montanha" onchange="renderHoteis()"> Montanha</label>
+          <label class="fl"><input type="checkbox" id="fh-amb-campo" onchange="renderHoteis()"> Campo / Fazenda</label>
+          <label class="fl"><input type="checkbox" id="fh-amb-cidade" onchange="renderHoteis()"> Cidade</label>
+          <label class="fl"><input type="checkbox" id="fh-amb-lago" onchange="renderHoteis()"> Lago / Rio</label>
+          <label class="fl"><input type="checkbox" id="fh-amb-vinhedo" onchange="renderHoteis()"> Vinhedo</label>
+        </div>
+
+        <div class="fp-sec">
+          <div class="fp-sec-t">Logística do Convidado</div>
+          <label class="fl"><input type="checkbox" id="fh-voo-direto" onchange="renderHoteis()"> Voo direto disponível</label>
+          <label class="fl"><input type="checkbox" id="fh-transfer" onchange="renderHoteis()"> Transfer incluso</label>
+          <label class="fl"><input type="checkbox" id="fh-hosp-local" onchange="renderHoteis()"> Hospedagem no local</label>
+          <label class="fl"><input type="checkbox" id="fh-passaporte" onchange="renderHoteis()"> Passaporte necessário</label>
         </div>
 
         <div class="fp-sec">
@@ -250,9 +264,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
           <div class="fp-sec-t">Valor Diária Casal</div>
           <select id="slider-moeda" onchange="atualizarSliderMoeda();renderHoteis()" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:10px">
             <option value="">Qualquer moeda</option>
-            <option value="USD">🇺🇸 USD</option>
-            <option value="EUR">🇪🇺 EUR</option>
-            <option value="BRL">🇧🇷 BRL</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="BRL">BRL</option>
           </select>
           <div style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:6px"><span id="label-moeda-prefix"></span><span id="label-diaria-min">100</span> – <span id="label-moeda-prefix2"></span><span id="label-diaria-max">2000</span></div>
           <div style="font-size:10px;color:#aaa;margin-bottom:4px">Mínimo</div>
@@ -264,17 +278,17 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
         <div class="fp-sec">
           <div class="fp-sec-t">Indicação</div>
-          <label class="fl"><input type="checkbox" id="fh-indicamos" onchange="renderHoteis()"> ✅ Indicamos</label>
-          <label class="fl"><input type="checkbox" id="fh-blacklist" onchange="renderHoteis()"> 🚫 Blacklist</label>
+          <label class="fl"><input type="checkbox" id="fh-indicamos" onchange="renderHoteis()"> Indicamos</label>
+          <label class="fl"><input type="checkbox" id="fh-blacklist" onchange="renderHoteis()"> Blacklist</label>
         </div>
+
         <div class="fp-sec">
           <div class="fp-sec-t">Estrutura</div>
-          <label class="fl"><input type="checkbox" id="fh-kids" onchange="renderHoteis()"> 👶 Aceita Crianças</label>
-          <label class="fl"><input type="checkbox" id="fh-pets" onchange="renderHoteis()"> 🐾 Aceita Pets</label>
-          <label class="fl"><input type="checkbox" id="fh-spa" onchange="renderHoteis()"> 💆 Spa</label>
-          <label class="fl"><input type="checkbox" id="fh-cassino" onchange="renderHoteis()"> 🎰 Cassino</label>
-          <label class="fl"><input type="checkbox" id="fh-parque" onchange="renderHoteis()"> 🌊 Parque Aquático</label>
-          <label class="fl"><input type="checkbox" id="fh-sol" onchange="renderHoteis()"> 🌅 Pôr do Sol</label>
+          <label class="fl"><input type="checkbox" id="fh-kids" onchange="renderHoteis()"> Aceita Crianças</label>
+          <label class="fl"><input type="checkbox" id="fh-pets" onchange="renderHoteis()"> Aceita Pets</label>
+          <label class="fl"><input type="checkbox" id="fh-spa" onchange="renderHoteis()"> Spa</label>
+          <label class="fl"><input type="checkbox" id="fh-cassino" onchange="renderHoteis()"> Cassino</label>
+          <label class="fl"><input type="checkbox" id="fh-parque" onchange="renderHoteis()"> Parque Aquático</label>
         </div>
       </div>
       <div style="flex:1"><div class="cg" id="hoteis-grid"><div class="ld">Carregando...</div></div></div>
@@ -513,6 +527,27 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div class="tr-row" onclick="tg('h-sol')"><div class="tr-track" id="track-h-sol"><div class="tr-thumb"></div></div><span class="tr-label">🌅 Pôr do Sol</span></div>
         <div class="tr-row" onclick="tg('h-criancas')"><div class="tr-track" id="track-h-criancas"><div class="tr-thumb"></div></div><span class="tr-label">Aceita Crianças</span></div>
         <div class="tr-row" onclick="tg('h-pets')"><div class="tr-track" id="track-h-pets"><div class="tr-thumb"></div></div><span class="tr-label">Aceita Pets</span></div>
+      </div>
+      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--gold-border)">
+        <div class="f"><label>Ambiente</label>
+          <select id="h-ambiente" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+            <option value="">Selecione...</option>
+            <option value="Praia">Praia</option>
+            <option value="Montanha">Montanha</option>
+            <option value="Campo / Fazenda">Campo / Fazenda</option>
+            <option value="Cidade">Cidade</option>
+            <option value="Lago / Rio">Lago / Rio</option>
+            <option value="Vinhedo">Vinhedo</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--gold-border)">
+        <div class="st" style="margin-bottom:12px">Logística do Convidado</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+          <div class="tr-row" onclick="tg('h-voo-direto')"><div class="tr-track" id="track-h-voo-direto"><div class="tr-thumb"></div></div><span class="tr-label">Voo Direto</span></div>
+          <div class="tr-row" onclick="tg('h-transfer')"><div class="tr-track" id="track-h-transfer"><div class="tr-thumb"></div></div><span class="tr-label">Transfer Incluso</span></div>
+          <div class="tr-row" onclick="tg('h-passaporte')"><div class="tr-track" id="track-h-passaporte"><div class="tr-thumb"></div></div><span class="tr-label">Passaporte Necessário</span></div>
+        </div>
       </div>
       <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--gold-border)">
         <div class="tr-row" onclick="tg('h-hospedagem');toggleHospedagem()">
@@ -1021,6 +1056,25 @@ async function renderHistorico(){
 
 // ══ HOTÉIS ══
 async function loadHoteis(){const{data}=await sb.from('locais').select('*').order('nome');hoteis=data||[];renderHoteis()}
+let paisChips=[]
+function addPaisChip(e){
+  if(e.key!=='Enter')return
+  const val=e.target.value.trim()
+  if(!val||paisChips.includes(val.toLowerCase()))return
+  paisChips.push(val.toLowerCase())
+  renderPaisChips()
+  e.target.value=''
+  renderHoteis()
+}
+function removePaisChip(v){
+  paisChips=paisChips.filter(x=>x!==v)
+  renderPaisChips()
+  renderHoteis()
+}
+function renderPaisChips(){
+  const con=document.getElementById('pais-chips');if(!con)return
+  con.innerHTML=paisChips.map(p=>`<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:var(--gold-pale);color:var(--gold);border:1px solid var(--gold-border)">${p}<span onclick="removePaisChip('${p}')" style="cursor:pointer;opacity:.7;font-size:13px;line-height:1">×</span></span>`).join('')
+}
 function atualizarSliderMoeda(){
   const moeda=document.getElementById('slider-moeda')?.value||''
   const configs={USD:{min:100,max:2000,step:100},EUR:{min:100,max:2000,step:100},BRL:{min:150,max:10000,step:150},'':{min:100,max:2000,step:100}}
@@ -1043,10 +1097,11 @@ function toggleHospedagem(){
   document.getElementById('h-hospedagem-section').style.display=show?'block':'none'
 }
 function limparFiltrosHotel(){
-  ['fh-reg-caribe','fh-reg-sul','fh-reg-europa','fh-reg-asia','fh-tipo-ai','fh-tipo-resort','fh-tipo-boutique','fh-tipo-pousada','fh-tipo-urbano','fh-tipo-fazenda','fh-kids','fh-pets','fh-spa','fh-cassino','fh-parque','fh-sol'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=false})
-  ;['search-h','f-h-pais','f-h-cidade'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
+  ['fh-reg-caribe','fh-reg-sul','fh-reg-europa','fh-reg-asia','fh-tipo-ai','fh-tipo-resort','fh-tipo-boutique','fh-tipo-pousada','fh-tipo-urbano','fh-tipo-fazenda','fh-kids','fh-pets','fh-spa','fh-cassino','fh-parque','fh-amb-praia','fh-amb-montanha','fh-amb-campo','fh-amb-cidade','fh-amb-lago','fh-amb-vinhedo','fh-voo-direto','fh-transfer','fh-hosp-local','fh-passaporte','fh-indicamos','fh-blacklist'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=false})
+  ;['search-h','f-h-pais'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
+  paisChips=[];renderPaisChips()
   document.getElementById('slider-moeda').value=''
-  document.getElementById('slider-acom').value=500;document.getElementById('label-acom').textContent='3000'
+  document.getElementById('slider-acom').value=3000;document.getElementById('label-acom').textContent='3000'
   atualizarSliderMoeda();renderHoteis()
 }
 function renderHoteis(){
@@ -1073,15 +1128,21 @@ function renderHoteis(){
   const anyActive=[s,pais,cidade,moeda,regioes.length,tipos.length,fI('fh-kids'),fI('fh-pets'),fI('fh-spa'),fI('fh-cassino'),fI('fh-parque'),fI('fh-sol'),maxAcom<3000,moeda&&(minDiaria>100||maxDiaria<2000)].some(Boolean)
   const fc=document.getElementById('h-filtros-count');if(fc)fc.style.display=anyActive?'inline':'none'
   const grid=document.getElementById('hoteis-grid')
+  const ambientes=[]
+  if(fI('fh-amb-praia'))ambientes.push('Praia')
+  if(fI('fh-amb-montanha'))ambientes.push('Montanha')
+  if(fI('fh-amb-campo'))ambientes.push('Campo / Fazenda')
+  if(fI('fh-amb-cidade'))ambientes.push('Cidade')
+  if(fI('fh-amb-lago'))ambientes.push('Lago / Rio')
+  if(fI('fh-amb-vinhedo'))ambientes.push('Vinhedo')
   const filtered=hoteis.filter(h=>{
     const ms=!s||h.nome?.toLowerCase().includes(s)||h.cidade?.toLowerCase().includes(s)
-    const mp=!pais||h.pais?.toLowerCase().includes(pais)
-    const mc=!cidade||h.cidade?.toLowerCase().includes(cidade)
+    const mp=!paisChips.length||paisChips.some(p=>h.pais?.toLowerCase().includes(p))
     const mr=!regioes.length||regioes.includes(h.regiao)
     const mt=!tipos.length||tipos.includes(h.tipo)
+    const ma=!ambientes.length||ambientes.includes(h.ambiente)
     const numAcom=parseInt(h.num_acomodacoes)||9999
     const macom=numAcom<=maxAcom
-    // Filtro de moeda + valor
     let mdiaria=true
     if(moeda){
       if(h.moeda_diaria!==moeda){mdiaria=false}
@@ -1090,11 +1151,11 @@ function renderHoteis(){
         mdiaria=numDiaria>=minDiaria&&numDiaria<=maxDiaria
       }
     }
-    return ms&&mp&&mc&&mr&&mt&&macom&&mdiaria&&(!fI('fh-indicamos')||['ja_indicamos','nao_indicamos'].includes(h.status_indicacao))&&(!fI('fh-blacklist')||h.blacklist_local)&&(!fI('fh-kids')||h.aceita_criancas)&&(!fI('fh-pets')||h.aceita_pets)&&(!fI('fh-spa')||h.spa)&&(!fI('fh-cassino')||h.cassino)&&(!fI('fh-parque')||h.parque_aquatico)&&(!fI('fh-sol')||h.por_do_sol)
+    return ms&&mp&&mr&&mt&&ma&&macom&&mdiaria&&(!fI('fh-indicamos')||['ja_indicamos','nao_indicamos'].includes(h.status_indicacao))&&(!fI('fh-blacklist')||h.blacklist_local)&&(!fI('fh-kids')||h.aceita_criancas)&&(!fI('fh-pets')||h.aceita_pets)&&(!fI('fh-spa')||h.spa)&&(!fI('fh-cassino')||h.cassino)&&(!fI('fh-parque')||h.parque_aquatico)&&(!fI('fh-voo-direto')||h.voo_direto)&&(!fI('fh-transfer')||h.transfer_incluso)&&(!fI('fh-hosp-local')||h.tem_hospedagem)&&(!fI('fh-passaporte')||h.passaporte_necessario)
   })
   document.getElementById('hoteis-count').textContent=hoteis.length+' local(is) cadastrado(s)'
   if(!filtered.length){grid.innerHTML='<div class="em"><div class="em-i">🏨</div><div class="em-t">Nenhum hotel encontrado</div></div>';return}
-  grid.innerHTML=filtered.map(h=>`<div class="card" style="transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,.12)'" onmouseout="this.style.boxShadow=''"><div style="margin-bottom:8px"><div style="font-weight:600;font-size:15px;font-family:'Cormorant Garamond',serif;margin-bottom:2px">${h.nome}</div><div style="font-size:12px;color:#888">📍 ${[h.cidade,h.pais,h.regiao].filter(Boolean).join(' · ')}</div></div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">${h.blacklist_local?'<span class="tag tr">🚫 Blacklist</span>':''}${h.status_indicacao==='ja_indicamos'?'<span class="tag tgr">✅ Indicamos</span>':h.status_indicacao==='nao_indicamos'?'<span class="tag tgr">⭐ Nunca trab. — Indicamos</span>':h.status_indicacao==='ja_nao_indicamos'?'<span class="tag tr">⚠️ Não indicamos</span>':h.status_indicacao==='nao_nao_indicamos'?'<span class="tag tr">🚫 Não indicamos</span>':''}${h.tipo?`<span class="tag tg">${h.tipo}</span>`:''}${h.por_do_sol?'<span class="tag tg">🌅 Pôr do Sol</span>':''}${h.spa?'<span class="tag tgr">💆 Spa</span>':''}${h.aceita_criancas?'<span class="tag tgr">👶 Kids</span>':''}${h.parque_aquatico?'<span class="tag tb">🌊 Aquapark</span>':''}${h.cassino?'<span class="tag tgy">🎰 Cassino</span>':''}</div>${h.valor_casamento?`<div style="font-size:12px;color:#888;margin-bottom:10px">💍 ${h.valor_casamento}</div>`:''}<div style="display:flex;gap:8px"><button class="btn bo" style="flex:1" onclick="openHotel('${h.id}')">Ver / Editar</button><button class="btn bd" onclick="deleteHotel('${h.id}')">✕</button></div></div>`).join('')
+  grid.innerHTML=filtered.map(h=>`<div class="card" style="transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,.12)'" onmouseout="this.style.boxShadow=''"><div style="margin-bottom:8px"><div style="font-weight:600;font-size:15px;font-family:'Cormorant Garamond',serif;margin-bottom:2px">${h.nome}</div><div style="font-size:12px;color:#888">📍 ${[h.cidade,h.pais,h.regiao].filter(Boolean).join(' · ')}</div></div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">${h.blacklist_local?'<span class="tag tr">🚫 Blacklist</span>':''}${h.status_indicacao==='ja_indicamos'?'<span class="tag tgr">✅ Indicamos</span>':h.status_indicacao==='nao_indicamos'?'<span class="tag tgr">⭐ Nunca trab. — Indicamos</span>':h.status_indicacao==='ja_nao_indicamos'?'<span class="tag tr">⚠️ Não indicamos</span>':h.status_indicacao==='nao_nao_indicamos'?'<span class="tag tr">🚫 Não indicamos</span>':''}${h.ambiente?`<span class="tag tb">${h.ambiente}</span>`:''}${h.tipo?`<span class="tag tg">${h.tipo}</span>`:''}${h.por_do_sol?'<span class="tag tg">🌅 Pôr do Sol</span>':''}${h.spa?'<span class="tag tgr">💆 Spa</span>':''}${h.aceita_criancas?'<span class="tag tgr">👶 Kids</span>':''}${h.parque_aquatico?'<span class="tag tb">🌊 Aquapark</span>':''}${h.cassino?'<span class="tag tgy">🎰 Cassino</span>':''}</div>${h.valor_casamento?`<div style="font-size:12px;color:#888;margin-bottom:10px">💍 ${h.valor_casamento}</div>`:''}<div style="display:flex;gap:8px"><button class="btn bo" style="flex:1" onclick="openHotel('${h.id}')">Ver / Editar</button><button class="btn bd" onclick="deleteHotel('${h.id}')">✕</button></div></div>`).join('')
 }
 function openNovoHotel(){
   hotelAtual=null
@@ -1123,6 +1184,8 @@ function clearHForm(){
   const si=document.getElementById('h-status-indicacao');if(si)si.value=''
   ;['h-frigobar','h-room-service','h-bar-pago','h-rest-pago','h-kids','h-parque','h-pub','h-cassino','h-spa','h-wifi','h-sol','h-criancas','h-pets','h-paga-com','h-blacklist-local'].forEach(id=>setTg(id,false))
   setTg('h-hospedagem',true);document.getElementById('h-hospedagem-section').style.display='none'
+  ;['h-voo-direto','h-transfer','h-passaporte','h-blacklist-local'].forEach(id=>setTg(id,false))
+  const ha=document.getElementById('h-ambiente');if(ha)ha.value=''
 }
 function fillHForm(h){
   const s=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||''}
@@ -1148,10 +1211,14 @@ function fillHForm(h){
   setTg('h-pub',h.pub_disco);setTg('h-cassino',h.cassino);setTg('h-spa',h.spa);setTg('h-wifi',h.wifi)
   setTg('h-sol',h.por_do_sol);setTg('h-criancas',h.aceita_criancas);setTg('h-pets',h.aceita_pets)
   setTg('h-paga-com',h.paga_comissao);setTg('h-blacklist-local',h.blacklist_local)
+  setTg('h-voo-direto',h.voo_direto);setTg('h-transfer',h.transfer_incluso);setTg('h-passaporte',h.passaporte_necessario)
+  const ha=document.getElementById('h-ambiente');if(ha&&h.ambiente)ha.value=h.ambiente
+  const temHosp=h.tem_hospedagem!==false
+  setTg('h-hospedagem',temHosp);document.getElementById('h-hospedagem-section').style.display=temHosp?'none':'block'
 }
 function getHData(){
   const v=id=>document.getElementById(id)?.value||''
-  return{nome:v('h-nome'),representante_nome:v('h-rep-nome'),representante_telefone:v('h-rep-tel'),regiao:v('h-regiao'),pais:v('h-pais'),cidade:v('h-cidade'),site:v('h-site'),email:v('h-email'),instagram:v('h-instagram'),tipo:v('h-tipo'),regime:v('h-regime'),num_acomodacoes:v('h-acomodacoes'),ano_construcao:v('h-ano'),restaurantes_total:v('h-rest-total'),bares_total:v('h-bares-total'),restaurantes_buffet:v('h-rest-buffet'),restaurantes_carte:v('h-rest-carte'),restaurantes_ai:v('h-rest-ai'),bares_ai:v('h-bares-ai'),valor_diaria:v('h-diaria'),valor_sinal:v('h-sinal'),valor_bloqueio:v('h-bloqueio'),valor_casamento:v('h-val-casamento'),valor_luau:v('h-luau'),factsheet:v('h-factsheet'),tour_virtual:v('h-tour'),espacos:v('h-espacos'),mapa:v('h-mapa'),percentual:v('h-percentual'),comissao_a_pagar:v('h-a-pagar'),email_cobranca:v('h-email-cobr'),paga_comissao_valor:v('h-comissao-valor'),status_indicacao:v('h-status-indicacao')||null,motivo_nao_indicacao:v('h-motivo-ind'),hoteis_regiao:v('h-hoteis-regiao'),tem_hospedagem:getTg('h-hospedagem'),frigobar:getTg('h-frigobar'),room_service:getTg('h-room-service'),bar_pago:getTg('h-bar-pago'),restaurante_pago:getTg('h-rest-pago'),area_kids:getTg('h-kids'),parque_aquatico:getTg('h-parque'),pub_disco:getTg('h-pub'),cassino:getTg('h-cassino'),spa:getTg('h-spa'),wifi:getTg('h-wifi'),por_do_sol:getTg('h-sol'),aceita_criancas:getTg('h-criancas'),aceita_pets:getTg('h-pets'),paga_comissao:getTg('h-paga-com'),blacklist_local:getTg('h-blacklist-local')}
+  return{nome:v('h-nome'),representante_nome:v('h-rep-nome'),representante_telefone:v('h-rep-tel'),regiao:v('h-regiao'),pais:v('h-pais'),cidade:v('h-cidade'),site:v('h-site'),email:v('h-email'),instagram:v('h-instagram'),tipo:v('h-tipo'),regime:v('h-regime'),num_acomodacoes:v('h-acomodacoes'),ano_construcao:v('h-ano'),restaurantes_total:v('h-rest-total'),bares_total:v('h-bares-total'),restaurantes_buffet:v('h-rest-buffet'),restaurantes_carte:v('h-rest-carte'),restaurantes_ai:v('h-rest-ai'),bares_ai:v('h-bares-ai'),valor_diaria:v('h-diaria'),valor_sinal:v('h-sinal'),valor_bloqueio:v('h-bloqueio'),valor_casamento:v('h-val-casamento'),valor_luau:v('h-luau'),factsheet:v('h-factsheet'),tour_virtual:v('h-tour'),espacos:v('h-espacos'),mapa:v('h-mapa'),percentual:v('h-percentual'),comissao_a_pagar:v('h-a-pagar'),email_cobranca:v('h-email-cobr'),paga_comissao_valor:v('h-comissao-valor'),status_indicacao:v('h-status-indicacao')||null,motivo_nao_indicacao:v('h-motivo-ind'),hoteis_regiao:v('h-hoteis-regiao'),tem_hospedagem:getTg('h-hospedagem'),frigobar:getTg('h-frigobar'),room_service:getTg('h-room-service'),bar_pago:getTg('h-bar-pago'),restaurante_pago:getTg('h-rest-pago'),area_kids:getTg('h-kids'),parque_aquatico:getTg('h-parque'),pub_disco:getTg('h-pub'),cassino:getTg('h-cassino'),spa:getTg('h-spa'),wifi:getTg('h-wifi'),por_do_sol:getTg('h-sol'),aceita_criancas:getTg('h-criancas'),aceita_pets:getTg('h-pets'),paga_comissao:getTg('h-paga-com'),blacklist_local:getTg('h-blacklist-local'),ambiente:document.getElementById('h-ambiente')?.value||null,voo_direto:getTg('h-voo-direto'),transfer_incluso:getTg('h-transfer'),passaporte_necessario:getTg('h-passaporte')}
 }
 async function salvarHotel(){
   const btn=document.getElementById('btn-sh');btn.textContent='Salvando...';btn.disabled=true
