@@ -1203,9 +1203,6 @@ function fillHForm(h){
   if(h.regiao)document.getElementById('h-regiao').value=h.regiao
   if(h.tipo)document.getElementById('h-tipo').value=h.tipo
   const si=document.getElementById('h-status-indicacao');if(si&&h.status_indicacao)si.value=h.status_indicacao
-  const temHosp=h.tem_hospedagem!==false
-  setTg('h-hospedagem',temHosp)
-  document.getElementById('h-hospedagem-section').style.display=temHosp?'none':'block'
   setTg('h-frigobar',h.frigobar);setTg('h-room-service',h.room_service);setTg('h-bar-pago',h.bar_pago)
   setTg('h-rest-pago',h.restaurante_pago);setTg('h-kids',h.area_kids);setTg('h-parque',h.parque_aquatico)
   setTg('h-pub',h.pub_disco);setTg('h-cassino',h.cassino);setTg('h-spa',h.spa);setTg('h-wifi',h.wifi)
