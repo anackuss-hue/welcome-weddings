@@ -702,22 +702,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 <!-- MODAL SOLICITAÇÃO DE VIAGEM -->
 <div class="mo" id="modal-solicitacao">
-  <div class="mb" style="max-width:600px">
+  <div class="mb" style="max-width:560px">
     <div class="mh">
       <div>
         <div class="mt" id="msol-title">Solicitar Viagem</div>
-        <div class="ms" id="msol-sub">Preencha os dados da solicitação</div>
+        <div class="ms" id="msol-sub"></div>
       </div>
       <button class="mcl" onclick="closeModal('modal-solicitacao')">✕</button>
     </div>
 
-    <div class="cb" style="margin-bottom:16px">
-      <div style="display:flex;align-items:center;gap:12px">
-        <div class="av" id="msol-avatar">?</div>
-        <div>
-          <div style="font-weight:600;font-size:15px" id="msol-nome">—</div>
-          <div style="font-size:12px;color:#888" id="msol-cidade">—</div>
-        </div>
+    <div class="cb" style="margin-bottom:16px;display:flex;align-items:center;gap:12px">
+      <div class="av" id="msol-avatar">?</div>
+      <div>
+        <div style="font-weight:600;font-size:15px" id="msol-nome">—</div>
+        <div style="font-size:12px;color:#888" id="msol-cidade">—</div>
       </div>
     </div>
 
@@ -740,9 +738,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       </div>
     </div>
 
-    <div class="sec" style="margin-top:8px">
+    <div class="sec" style="margin-top:4px">
       <div class="st">Serviços Necessários</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:4px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:8px">
         <div class="tr-row" onclick="tg('sol-passagem')"><div class="tr-track" id="track-sol-passagem"><div class="tr-thumb"></div></div><span class="tr-label">✈️ Passagem Aérea</span></div>
         <div class="tr-row" onclick="tg('sol-hotel')"><div class="tr-track" id="track-sol-hotel"><div class="tr-thumb"></div></div><span class="tr-label">🏨 Hotel</span></div>
         <div class="tr-row" onclick="tg('sol-seguro')"><div class="tr-track" id="track-sol-seguro"><div class="tr-thumb"></div></div><span class="tr-label">🛡️ Seguro</span></div>
@@ -751,7 +749,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       </div>
     </div>
 
-    <div class="f" style="margin-top:8px">
+    <div class="f" style="margin-top:12px">
       <label>Observações</label>
       <textarea id="sol-obs" placeholder="Informações adicionais, preferências..."></textarea>
     </div>
@@ -1146,9 +1144,7 @@ async function renderEscaladas(){
   else{list.innerHTML=escaladas.map(e=>{
     const notaColor=e.nota==='Excelente'?'#2e7d32':e.nota==='Bom'?'#1565c0':e.nota==='Médio'?'#e65100':e.nota==='Ruim'?'#c0392b':'#888'
     const notaBg=e.nota==='Excelente'?'#e8f5e9':e.nota==='Bom'?'#e3f2fd':e.nota==='Médio'?'#fff3e0':e.nota==='Ruim'?'#fdecea':'#f0f0f0'
-    return`<div class="ai"><div class="aih"><div style="display:flex;align-items:center;gap:10px"><div class="av">${(e.assessora?.nome||'?')[0]}</div><div><div style="font-weight:600;font-size:14px">${e.assessora?.nome||'—'}</div><div style="font-size:12px;color:#888">${e.assessora?.cidade||''}</div></div></div><button class="btn bd bsm" onclick="removeEscalada('${e.id}')">Remover</button><button class="btn bg bsm" onclick="abrirSolicitacao('${e.id}')">✈️ Solicitar</button></div>
-    <div class="g3"><div class="f"><label>Cidade de Saída</label><input value="${e.cidade_saida||''}" onchange="updEscalada('${e.id}','cidade_saida',this.value)"></div><div class="f"><label>Data de Ida</label><input type="date" value="${e.data_ida||''}" onchange="updEscalada('${e.id}','data_ida',this.value)"></div><div class="f"><label>Data de Volta</label><input type="date" value="${e.data_volta||''}" onchange="updEscalada('${e.id}','data_volta',this.value)"></div></div>
-    <div class="tr-row" onclick="togBilhete('${e.id}',${e.bilhete_emitido})"><div class="tr-track ${e.bilhete_emitido?'on':''}"><div class="tr-thumb"></div></div><span class="tr-label">Bilhete Emitido</span></div>
+    return`<div class="ai"><div class="aih"><div style="display:flex;align-items:center;gap:10px"><div class="av">${(e.assessora?.nome||'?')[0]}</div><div><div style="font-weight:600;font-size:14px">${e.assessora?.nome||'—'}</div><div style="font-size:12px;color:#888">${e.assessora?.cidade||''}</div></div></div><div style="display:flex;gap:8px"><button class="btn bg bsm" onclick="abrirSolicitacao('${e.id}')">✈️ Solicitar</button><button class="btn bd bsm" onclick="removeEscalada('${e.id}')">Remover</button></div></div>
     <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--gold-border)">
       <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">Avaliação do Casamento</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
@@ -1670,9 +1666,8 @@ function abrirSolicitacao(escaladaId){
   document.getElementById('msol-nome').textContent=e.assessora?.nome||'—'
   document.getElementById('msol-cidade').textContent=e.assessora?.cidade||''
   document.getElementById('msol-avatar').textContent=(e.assessora?.nome||'?')[0]
-  // Pré-preencher com datas da escalada
-  document.getElementById('sol-data-chegada').value=e.data_ida||''
-  document.getElementById('sol-data-saida').value=e.data_volta||''
+  document.getElementById('sol-data-chegada').value=''
+  document.getElementById('sol-data-saida').value=''
   document.getElementById('sol-hora-chegada').value=''
   document.getElementById('sol-hora-saida').value=''
   document.getElementById('sol-obs').value=''
