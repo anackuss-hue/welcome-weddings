@@ -794,6 +794,23 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div>
 </div>
 
+<!-- MODAL REDEFINIR SENHA -->
+<div class="mo" id="modal-senha">
+  <div class="mb" style="max-width:400px">
+    <div class="mh">
+      <div class="mt" id="ms-title">Redefinir Senha</div>
+      <button class="mcl" onclick="closeModal('modal-senha')">✕</button>
+    </div>
+    <div class="ms" id="ms-sub" style="margin-bottom:16px"></div>
+    <div class="f"><label>Nova Senha</label><input id="nova-senha" type="password" placeholder="Mínimo 6 caracteres"></div>
+    <div class="f"><label>Confirmar Senha</label><input id="confirma-senha" type="password" placeholder="Repita a senha"></div>
+    <div class="mf">
+      <button class="btn bo" onclick="closeModal('modal-senha')">Cancelar</button>
+      <button class="btn bg" id="btn-senha" onclick="salvarNovaSenha()">Salvar Nova Senha</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL USUARIO -->
 <div class="mo" id="modal-usuario">
   <div class="mb" style="max-width:500px">
@@ -1836,6 +1853,7 @@ function renderUsuarios(){
       </div>
       <div style="display:flex;gap:8px">
         <button class="btn bo" style="flex:1" onclick="editarUsuario('${u.id}')">Editar</button>
+        <button class="btn bo" style="color:#1565c0;border-color:#1565c0" onclick="abrirRedefinirSenha('${u.id}','${u.nome.replace(/'/g,"\\'")}')">🔑</button>
         ${u.id!==usuarioAtual?.id?`<button class="btn bo" style="color:${u.ativo?'var(--red)':'var(--green)'};border-color:${u.ativo?'var(--red)':'var(--green)'}" onclick="toggleUsuario('${u.id}',${u.ativo})">${u.ativo?'Desativar':'Ativar'}</button>`:''}
       </div>
     </div>`).join('')
@@ -1896,7 +1914,37 @@ async function salvarUsuario(){
   closeModal('modal-usuario');loadUsuarios()
 }
 
-async function toggleUsuario(id,ativo){
+let usuarioSenhaId=null
+function abrirRedefinirSenha(id,nome){
+  usuarioSenhaId=id
+  document.getElementById('ms-title').textContent='Redefinir Senha'
+  document.getElementById('ms-sub').textContent=`Nova senha para ${nome}`
+  document.getElementById('nova-senha').value=''
+  document.getElementById('confirma-senha').value=''
+  document.getElementById('modal-senha').classList.add('open')
+}
+async function salvarNovaSenha(){
+  const btn=document.getElementById('btn-senha');btn.textContent='Salvando...';btn.disabled=true
+  const nova=document.getElementById('nova-senha').value
+  const confirma=document.getElementById('confirma-senha').value
+  if(!nova||nova.length<6){alert('A senha deve ter pelo menos 6 caracteres!');btn.textContent='Salvar Nova Senha';btn.disabled=false;return}
+  if(nova!==confirma){alert('As senhas não coincidem!');btn.textContent='Salvar Nova Senha';btn.disabled=false;return}
+  // Usar Supabase Admin API via service role — precisamos de endpoint alternativo
+  const{error}=await sb.auth.admin?.updateUserById(usuarioSenhaId,{password:nova})
+  if(error){
+    // Fallback: atualizar via função do usuário logado se for ele mesmo
+    if(usuarioSenhaId===usuarioAtual?.id){
+      const{error:e2}=await sb.auth.updateUser({password:nova})
+      if(e2){alert('Erro: '+e2.message);btn.textContent='Salvar Nova Senha';btn.disabled=false;return}
+    } else {
+      alert('Não foi possível alterar a senha. Entre em contato com o suporte técnico.');
+      btn.textContent='Salvar Nova Senha';btn.disabled=false;return
+    }
+  }
+  btn.textContent='Salvar Nova Senha';btn.disabled=false
+  closeModal('modal-senha')
+  alert('Senha alterada com sucesso!')
+}
   const u=usuariosList.find(x=>x.id===id)
   if(!confirm(`${ativo?'Desativar':'Ativar'} ${u?.nome}?`))return
   await sb.from('usuarios').update({ativo:!ativo}).eq('id',id)
