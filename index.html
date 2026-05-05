@@ -1105,7 +1105,8 @@ function renderCasamentos(){
   const grid=document.getElementById('casamentos-grid')
   const filtered=casamentos.filter(c=>{
     const ms=!s||c.nome?.toLowerCase().includes(s)||c.destino?.toLowerCase().includes(s)
-    const mm=!mes||c.plan_data?.startsWith(new Date().getFullYear()+'-'+mes.padStart(2,'0'))||c.plan_data?.split('-')[1]===mes.padStart(2,'0')
+    const ma=!ano||c.plan_data?.startsWith(ano)
+    const mm=!mes||c.plan_data?.split('-')[1]===mes.padStart(2,'0')
     const md=!destino||c.destino===destino
     const mh=!hotel||c.plan_hotel===hotel
     const mst=!statusAtivos.length||statusAtivos.includes(c.status||'Em andamento')
