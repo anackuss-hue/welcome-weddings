@@ -839,14 +839,25 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <div class="f"><label>📅 Data liberada para ir embora</label><input id="sol-data-saida" type="date"></div>
       <div class="f"><label>⏰ Horário de saída</label><input id="sol-hora-saida" type="time"></div>
     </div>
-    <div class="sec" style="margin-top:4px">
-      <div class="st">Serviços Necessários</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:8px">
-        <div class="tr-row" onclick="tg('sol-passagem')"><div class="tr-track" id="track-sol-passagem"><div class="tr-thumb"></div></div><span class="tr-label">✈️ Passagem Aérea</span></div>
-        <div class="tr-row" onclick="tg('sol-hotel')"><div class="tr-track" id="track-sol-hotel"><div class="tr-thumb"></div></div><span class="tr-label">🏨 Hotel</span></div>
-        <div class="tr-row" onclick="tg('sol-seguro')"><div class="tr-track" id="track-sol-seguro"><div class="tr-thumb"></div></div><span class="tr-label">🛡️ Seguro</span></div>
-        <div class="tr-row" onclick="tg('sol-transfer')"><div class="tr-track" id="track-sol-transfer"><div class="tr-thumb"></div></div><span class="tr-label">🚌 Transfer</span></div>
-        <div class="tr-row" onclick="tg('sol-trem')"><div class="tr-track" id="track-sol-trem"><div class="tr-thumb"></div></div><span class="tr-label">🚂 Trem</span></div>
+    <div class="f" style="margin-top:4px">
+      <label>✈️ Cidade de saída <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;color:var(--muted)">(se diferente do perfil)</span></label>
+      <input id="sol-cidade-saida" placeholder="Ex: Rio de Janeiro">
+    </div>
+    <div class="sec" style="margin-top:8px">
+      <div class="st">O que vai precisar</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px">
+        <div id="sol-card-passagem" onclick="toggleSolCard('passagem')" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 8px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;background:var(--bg);transition:all .15s;text-align:center">
+          <span style="font-size:22px">✈️</span>
+          <span style="font-size:12px;font-weight:600;color:#888">Voo</span>
+        </div>
+        <div id="sol-card-transfer" onclick="toggleSolCard('transfer')" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 8px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;background:var(--bg);transition:all .15s;text-align:center">
+          <span style="font-size:22px">🚌</span>
+          <span style="font-size:12px;font-weight:600;color:#888">Transfer</span>
+        </div>
+        <div id="sol-card-hotel" onclick="toggleSolCard('hotel')" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 8px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;background:var(--bg);transition:all .15s;text-align:center">
+          <span style="font-size:22px">🏨</span>
+          <span style="font-size:12px;font-weight:600;color:#888">Hospedagem</span>
+        </div>
       </div>
     </div>
     <div class="f" style="margin-top:12px"><label>Observações</label><textarea id="sol-obs" placeholder="Informações adicionais, preferências..."></textarea></div>
@@ -1722,42 +1733,117 @@ async function deleteHotel(id){if(!confirm('Remover?'))return;await sb.from('loc
 
 // ── SOLICITAÇÕES DE VIAGEM
 let solAtual=null, solAssessoraAtual=null
+let solCards={passagem:false,transfer:false,hotel:false}
+
+function toggleSolCard(tipo){
+  solCards[tipo]=!solCards[tipo]
+  setSolCard(tipo,solCards[tipo])
+}
+function setSolCard(tipo,val){
+  solCards[tipo]=val
+  const el=document.getElementById('sol-card-'+tipo)
+  if(!el)return
+  if(val){
+    el.style.border='1.5px solid var(--gold)'
+    el.style.background='var(--gold-pale)'
+    el.querySelector('span:last-child').style.color='var(--gold)'
+  }else{
+    el.style.border='1.5px solid var(--border)'
+    el.style.background='var(--bg)'
+    el.querySelector('span:last-child').style.color='#888'
+  }
+}
+
+// ── Estados de logística da Rapha: pendente → emitido → nao_necessario → pendente
+const logEstados=['pendente','emitido','nao_necessario']
+const logLabels={pendente:'⏳ Pendente',emitido:'✓ Emitido',nao_necessario:'✕ Não necessário'}
+const logStyles={
+  pendente:{bg:'#fff',border:'#e0d8cc',color:'#888',badgeBg:'#f5f0e8',badgeBorder:'#e8e0d0',badgeColor:'#888',opacity:'1',strike:false},
+  emitido:{bg:'#e8f5e9',border:'#c8e6c9',color:'#2e7d32',badgeBg:'#fff',badgeBorder:'#c8e6c9',badgeColor:'#2e7d32',opacity:'1',strike:false},
+  nao_necessario:{bg:'#f5f5f5',border:'#e0e0e0',color:'#aaa',badgeBg:'#fff',badgeBorder:'#e0e0e0',badgeColor:'#aaa',opacity:'0.65',strike:true}
+}
+async function ciclarLogItem(solId,campo,estadoAtual){
+  const idx=logEstados.indexOf(estadoAtual)
+  const novoEstado=logEstados[(idx+1)%logEstados.length]
+  await sb.from('solicitacoes_viagem').update({[campo]:novoEstado}).eq('id',solId)
+  loadSolicitacoes(casamentoAtual?.id)
+}
+async function adicionarLogItem(solId,tipo){
+  // tipo: seguro | trem
+  const campo=tipo==='seguro'?'status_seguro':'status_trem'
+  await sb.from('solicitacoes_viagem').update({[campo]:'pendente'}).eq('id',solId)
+  loadSolicitacoes(casamentoAtual?.id)
+}
 async function loadSolicitacoes(casId){
   const{data}=await sb.from('solicitacoes_viagem').select('*').eq('casamento_id',casId).order('created_at',{ascending:false})
   const sec=document.getElementById('solicitacoes-section'),list=document.getElementById('solicitacoes-list')
   if(!sec||!list)return
   sec.style.display=data?.length?'block':'none'
   if(!data?.length)return
-  const statusColor={pendente:'#e65100',em_andamento:'#1565c0',concluido:'#2e7d32'}
-  const statusLabel={pendente:'⏳ Pendente',em_andamento:'🔄 Em andamento',concluido:'✅ Concluída'}
+
+  function itemLog(solId,emoji,label,estado,adicionado=false){
+    if(estado===null||estado===undefined)return'' // não existe
+    const st=logStyles[estado]||logStyles.pendente
+    const lbl=logLabels[estado]||'⏳ Pendente'
+    return`<div onclick="ciclarLogItem('${solId}','status_${label.toLowerCase()}','${estado}')" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:${st.bg};border:1px solid ${st.border};border-radius:8px;cursor:pointer;opacity:${st.opacity};margin-bottom:6px;transition:all .15s">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:15px">${emoji}</span>
+        <span style="font-size:13px;font-weight:500;color:${st.color};${st.strike?'text-decoration:line-through':''}">${label}</span>
+        ${adicionado?`<span style="font-size:10px;color:var(--gold);background:var(--gold-pale);padding:2px 7px;border-radius:10px;border:1px solid var(--gold-border)">adicionado</span>`:''}
+      </div>
+      <span style="font-size:11px;font-weight:600;color:${st.badgeColor};background:${st.badgeBg};padding:3px 10px;border-radius:20px;border:1px solid ${st.badgeBorder};white-space:nowrap">${lbl}</span>
+    </div>`
+  }
+
   list.innerHTML=data.map(s=>{
-    const servicos=[s.precisa_passagem&&'✈️ Passagem',s.precisa_hotel&&'🏨 Hotel',s.precisa_seguro&&'🛡️ Seguro',s.precisa_transfer&&'🚌 Transfer',s.precisa_trem&&'🚂 Trem'].filter(Boolean)
-    const okCount=[s.passagem_ok,s.hotel_ok,s.seguro_ok,s.transfer_ok,s.trem_ok].filter(Boolean).length
-    const totalServicos=servicos.length
-    return`<div class="ai" style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;flex-wrap:wrap;gap:8px"><div><div style="font-weight:600;font-size:14px">${s.assessora_nome}</div><div style="font-size:12px;color:#888;margin-top:2px">Solicitado por ${s.solicitado_por||'—'} · ${new Date(s.created_at).toLocaleDateString('pt-BR')}</div></div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:${statusColor[s.status]+'20'};color:${statusColor[s.status]}">${statusLabel[s.status]||s.status}</span><button class="btn bd bsm" onclick="removerSolicitacao('${s.id}')">✕</button></div></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;font-size:12px"><div><span style="color:#888">Chegada:</span> <strong>${s.data_chegada?fmtDate(s.data_chegada):'-'} ${s.hora_chegada?s.hora_chegada.slice(0,5):''}</strong></div><div><span style="color:#888">Saída:</span> <strong>${s.data_saida?fmtDate(s.data_saida):'-'} ${s.hora_saida?s.hora_saida.slice(0,5):''}</strong></div></div>
-    ${s.obs?`<div style="font-size:12px;color:#666;padding:8px;background:#f8f6f2;border-radius:6px;margin-bottom:10px">${s.obs}</div>`:''}
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
-      ${s.precisa_passagem?`<span class="tag ${s.passagem_ok?'tgr':'tgy'}" style="cursor:pointer;min-height:32px;display:inline-flex;align-items:center" onclick="toggleSolItem('${s.id}','passagem_ok',${s.passagem_ok})">✈️ Passagem ${s.passagem_ok?'✓':''}</span>`:''}
-      ${s.precisa_hotel?`<span class="tag ${s.hotel_ok?'tgr':'tgy'}" style="cursor:pointer;min-height:32px;display:inline-flex;align-items:center" onclick="toggleSolItem('${s.id}','hotel_ok',${s.hotel_ok})">🏨 Hotel ${s.hotel_ok?'✓':''}</span>`:''}
-      ${s.precisa_seguro?`<span class="tag ${s.seguro_ok?'tgr':'tgy'}" style="cursor:pointer;min-height:32px;display:inline-flex;align-items:center" onclick="toggleSolItem('${s.id}','seguro_ok',${s.seguro_ok})">🛡️ Seguro ${s.seguro_ok?'✓':''}</span>`:''}
-      ${s.precisa_transfer?`<span class="tag ${s.transfer_ok?'tgr':'tgy'}" style="cursor:pointer;min-height:32px;display:inline-flex;align-items:center" onclick="toggleSolItem('${s.id}','transfer_ok',${s.transfer_ok})">🚌 Transfer ${s.transfer_ok?'✓':''}</span>`:''}
-      ${s.precisa_trem?`<span class="tag ${s.trem_ok?'tgr':'tgy'}" style="cursor:pointer;min-height:32px;display:inline-flex;align-items:center" onclick="toggleSolItem('${s.id}','trem_ok',${s.trem_ok})">🚂 Trem ${s.trem_ok?'✓':''}</span>`:''}
-    </div>
-    ${totalServicos>0?`<div style="font-size:11px;color:#888">${okCount}/${totalServicos} serviços confirmados</div>`:''}</div>`
+    // Itens pedidos pela assessora
+    const pedidos=[s.precisa_passagem&&'✈️ Voo',s.precisa_transfer&&'🚌 Transfer',s.precisa_hotel&&'🏨 Hospedagem'].filter(Boolean)
+    // Contagem de progresso
+    const todosItens=[s.status_passagem,s.status_hotel,s.status_transfer,s.status_seguro,s.status_trem].filter(v=>v&&v!==null)
+    const emitidos=todosItens.filter(v=>v==='emitido').length
+    const naoNec=todosItens.filter(v=>v==='nao_necessario').length
+    const total=todosItens.length
+    // Itens extras disponíveis pra adicionar
+    const podeAdicionarSeguro=s.status_seguro===null||s.status_seguro===undefined
+    const podeAdicionarTrem=s.status_trem===null||s.status_trem===undefined
+
+    return`<div class="ai" style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+        <div>
+          <div style="font-weight:600;font-size:14px">${s.assessora_nome}</div>
+          <div style="font-size:12px;color:#888;margin-top:2px">Solicitado por ${s.solicitado_por||'—'} · ${new Date(s.created_at).toLocaleDateString('pt-BR')}</div>
+        </div>
+        <button class="btn bd bsm" onclick="removerSolicitacao('${s.id}')">✕</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;font-size:12px">
+        <div><span style="color:#888">Chegada:</span> <strong>${s.data_chegada?fmtDate(s.data_chegada):'-'} ${s.hora_chegada?s.hora_chegada.slice(0,5):''}</strong></div>
+        <div><span style="color:#888">Saída:</span> <strong>${s.data_saida?fmtDate(s.data_saida):'-'} ${s.hora_saida?s.hora_saida.slice(0,5):''}</strong></div>
+        ${s.cidade_saida?`<div style="grid-column:1/-1"><span style="color:#888">Cidade de saída:</span> <strong>${s.cidade_saida}</strong></div>`:''}
+      </div>
+      ${s.obs?`<div style="font-size:12px;color:#666;padding:8px;background:#f8f6f2;border-radius:6px;margin-bottom:10px">${s.obs}</div>`:''}
+      ${pedidos.length?`<div style="margin-bottom:10px"><div style="font-size:10px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Pedido pela assessora</div><div style="display:flex;gap:5px;flex-wrap:wrap">${pedidos.map(p=>`<span style="padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600;background:var(--gold-pale);color:var(--gold);border:1px solid var(--gold-border)">${p}</span>`).join('')}</div></div>`:''}
+      <div style="margin-bottom:8px"><div style="font-size:10px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Logística — clique para alterar status</div>
+        ${itemLog(s.id,'✈️','Passagem',s.status_passagem||'pendente')}
+        ${itemLog(s.id,'🏨','Hotel',s.status_hotel||'pendente')}
+        ${itemLog(s.id,'🚌','Transfer',s.status_transfer||'pendente')}
+        ${s.status_seguro!=null?itemLog(s.id,'🛡️','Seguro',s.status_seguro,true):''}
+        ${s.status_trem!=null?itemLog(s.id,'🚂','Trem',s.status_trem,true):''}
+        ${podeAdicionarSeguro||podeAdicionarTrem?`<div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap">
+          ${podeAdicionarSeguro?`<button class="btn bo bsm" onclick="adicionarLogItem('${s.id}','seguro')">+ Seguro viagem</button>`:''}
+          ${podeAdicionarTrem?`<button class="btn bo bsm" onclick="adicionarLogItem('${s.id}','trem')">+ Trem</button>`:''}
+        </div>`:''}
+      </div>
+      ${total>0?`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#fff;border-radius:8px;border:1px solid var(--gold-border);margin-top:4px">
+        <span style="font-size:11px;color:#888">${emitidos} emitido${emitidos!==1?'s':''} · ${naoNec} não necessário${naoNec!==1?'s':''} · ${total-emitidos-naoNec} pendente${total-emitidos-naoNec!==1?'s':''}</span>
+        <div style="width:80px;height:5px;background:var(--gold-border);border-radius:3px;overflow:hidden;display:flex">
+          <div style="width:${total?Math.round(emitidos/total*100):0}%;background:var(--green)"></div>
+          <div style="width:${total?Math.round(naoNec/total*100):0}%;background:#ccc"></div>
+        </div>
+      </div>`:''}
+    </div>`
   }).join('')
 }
 async function removerSolicitacao(id){if(!confirm('Remover esta solicitação?'))return;await sb.from('solicitacoes_viagem').delete().eq('id',id);loadSolicitacoes(casamentoAtual?.id)}
-async function toggleSolItem(id,campo,atual){
-  const novoVal=!atual,update={[campo]:novoVal}
-  const{data:s}=await sb.from('solicitacoes_viagem').select('*').eq('id',id).single();if(!s)return
-  const campos={passagem_ok:s.precisa_passagem,hotel_ok:s.precisa_hotel,seguro_ok:s.precisa_seguro,transfer_ok:s.precisa_transfer,trem_ok:s.precisa_trem}
-  const valores={...s,[campo]:novoVal}
-  const tudo=Object.keys(campos).every(k=>!campos[k]||valores[k])
-  update.status=tudo?'concluido':'em_andamento'
-  await sb.from('solicitacoes_viagem').update(update).eq('id',id)
-  loadSolicitacoes(casamentoAtual?.id)
-}
 function abrirSolicitacao(escaladaId){
   const e=escaladas.find(x=>x.id===escaladaId);if(!e)return
   solAssessoraAtual=e
@@ -1766,15 +1852,15 @@ function abrirSolicitacao(escaladaId){
   document.getElementById('msol-nome').textContent=e.assessora?.nome||'—'
   document.getElementById('msol-cidade').textContent=e.assessora?.cidade||''
   document.getElementById('msol-avatar').textContent=(e.assessora?.nome||'?')[0]
-  ;['sol-data-chegada','sol-data-saida','sol-hora-chegada','sol-hora-saida','sol-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
-  ;['sol-passagem','sol-hotel','sol-seguro','sol-transfer','sol-trem'].forEach(id=>setTg(id,false))
+  ;['sol-data-chegada','sol-data-saida','sol-hora-chegada','sol-hora-saida','sol-obs','sol-cidade-saida'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
+  ;['passagem','transfer','hotel'].forEach(id=>setSolCard(id,false))
   document.getElementById('modal-solicitacao').classList.add('open')
 }
 async function salvarSolicitacao(){
   const btn=document.getElementById('btn-ssol');btn.textContent='Enviando...';btn.disabled=true
   const dataChegada=document.getElementById('sol-data-chegada').value||null
   const dataSaida=document.getElementById('sol-data-saida').value||null
-  const data={casamento_id:casamentoAtual?.id,casamento_nome:casamentoAtual?.nome,assessora_id:solAssessoraAtual?.assessora_id,assessora_nome:solAssessoraAtual?.assessora?.nome,data_chegada:dataChegada,hora_chegada:document.getElementById('sol-hora-chegada').value||null,data_saida:dataSaida,hora_saida:document.getElementById('sol-hora-saida').value||null,precisa_passagem:getTg('sol-passagem'),precisa_hotel:getTg('sol-hotel'),precisa_seguro:getTg('sol-seguro'),precisa_transfer:getTg('sol-transfer'),precisa_trem:getTg('sol-trem'),obs:document.getElementById('sol-obs').value,solicitado_por:usuarioAtual?.nome,status:'pendente'}
+  const data={casamento_id:casamentoAtual?.id,casamento_nome:casamentoAtual?.nome,assessora_id:solAssessoraAtual?.assessora_id,assessora_nome:solAssessoraAtual?.assessora?.nome,data_chegada:dataChegada,hora_chegada:document.getElementById('sol-hora-chegada').value||null,data_saida:dataSaida,hora_saida:document.getElementById('sol-hora-saida').value||null,cidade_saida:document.getElementById('sol-cidade-saida').value||null,precisa_passagem:solCards.passagem,precisa_hotel:solCards.hotel,precisa_transfer:solCards.transfer,obs:document.getElementById('sol-obs').value,solicitado_por:usuarioAtual?.nome,status:'pendente'}
   await sb.from('solicitacoes_viagem').insert(data)
   // Atualiza período de ocupação na escala automaticamente
   if(solAssessoraAtual?.id&&(dataChegada||dataSaida)){
