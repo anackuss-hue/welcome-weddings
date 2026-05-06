@@ -38,8 +38,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .mh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
 .mt{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600}
 .ms{font-size:12px;color:var(--muted);margin-bottom:20px}
-.mcl{background:none;border:none;font-size:20px;cursor:pointer;color:#999;padding:4px 8px}
-.atabs{display:flex;gap:0;margin-bottom:24px;border-bottom:2px solid var(--border);overflow-x:auto}
+.mcl{background:none;border:none;font-size:20px;cursor:pointer;color:#999;padding:4px 8px;min-width:44px;min-height:44px}
+.atabs{display:flex;gap:0;margin-bottom:24px;border-bottom:2px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.atabs::-webkit-scrollbar{display:none}
 .atab{padding:10px 16px;font-size:11px;font-weight:700;cursor:pointer;border:none;background:transparent;color:#aaa;font-family:'DM Sans',sans-serif;transition:all .15s;border-bottom:2px solid transparent;margin-bottom:-2px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
 .atab:hover{color:var(--gold)}.atab.active{color:var(--gold);border-bottom-color:var(--gold)}
 .atc{display:none}.atc.active{display:block}
@@ -54,7 +55,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .f input,.f select,.f textarea{width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;transition:border .15s;background:#fff}
 .f input:focus,.f select:focus,.f textarea:focus{border-color:var(--gold)}
 .f textarea{resize:vertical;min-height:75px}
-.tr-row{display:flex;align-items:center;gap:10px;cursor:pointer;padding:7px 0}
+.tr-row{display:flex;align-items:center;gap:10px;cursor:pointer;padding:7px 0;min-height:44px}
 .tr-track{width:36px;height:20px;border-radius:10px;background:#ddd;position:relative;transition:background .2s;flex-shrink:0}
 .tr-track.on{background:var(--gold)}
 .tr-thumb{width:16px;height:16px;border-radius:8px;background:#fff;position:absolute;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
@@ -83,26 +84,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .em{text-align:center;padding:60px 20px;color:var(--muted)}
 .em-i{font-size:40px;margin-bottom:12px}.em-t{font-size:14px}
 .av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:18px;color:#fff;font-weight:600;flex-shrink:0}
-.fl{display:flex;align-items:center;gap:8px;font-size:12px;color:#555;cursor:pointer;padding:4px 0}
-.fl input[type=checkbox]{accent-color:var(--gold);width:14px;height:14px;cursor:pointer;flex-shrink:0}
+.fl{display:flex;align-items:center;gap:8px;font-size:12px;color:#555;cursor:pointer;padding:5px 0;min-height:36px}
+.fl input[type=checkbox]{accent-color:var(--gold);width:16px;height:16px;cursor:pointer;flex-shrink:0}
 .login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999}
 .login-box{background:var(--white);border-radius:20px;border:1px solid var(--border);padding:40px;width:100%;max-width:400px;text-align:center}
-.login-logo .w1{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:var(--gold);letter-spacing:3px;text-transform:uppercase}
-.login-logo .w2{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:var(--text);letter-spacing:3px;text-transform:uppercase}
-.login-logo .ws{font-size:10px;letter-spacing:2px;color:var(--muted);margin-top:4px;text-transform:uppercase;margin-bottom:32px}
-.login-input{width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--border);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:12px;transition:border .15s}
-.login-input:focus{border-color:var(--gold)}
-.login-btn{width:100%;padding:12px;border-radius:10px;background:var(--gold);color:white;border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s;margin-top:4px}
-.login-btn:hover{background:var(--gold-light)}
-.login-error{color:var(--red);font-size:13px;margin-top:8px;display:none}
 .user-bar{display:flex;align-items:center;gap:8px;padding:12px 24px;border-top:1px solid var(--border);margin-top:auto}
-.user-avatar{width:32px;height:32px;border-radius:50%;background:var(--gold-pale);border:1px solid var(--gold-border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--gold)}
-.user-info{flex:1} .user-name{font-size:12px;font-weight:600;color:var(--text)} .user-setor{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
-.logout-btn{font-size:11px;color:var(--muted);cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;padding:4px}
+.user-avatar{width:32px;height:32px;border-radius:50%;background:var(--gold-pale);border:1px solid var(--gold-border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--gold);flex-shrink:0}
+.user-info{flex:1;min-width:0}.user-name{font-size:12px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:110px}.user-setor{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.logout-btn{font-size:11px;color:var(--muted);cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;padding:4px;min-height:36px;flex-shrink:0}
 .logout-btn:hover{color:var(--red)}
 .log-item{padding:10px 14px;border-radius:8px;background:var(--gold-pale);border:1px solid var(--gold-border);margin-bottom:8px;font-size:12px}
 .log-who{font-weight:600;color:var(--gold)}
-.log-when{color:var(--muted);font-size:11px}
+.log-when{color:var(--muted);font-size:11px;white-space:nowrap;flex-shrink:0}
 .fpanel{width:200px;flex-shrink:0;background:var(--white);border-radius:12px;border:1px solid var(--border);padding:20px;position:sticky;top:24px}
 .fp-title{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px}
 .fp-sec{margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
@@ -112,41 +105,98 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .hamburger span{display:block;width:20px;height:2px;background:var(--gold);border-radius:2px;transition:all .2s}
 .overlay-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99}
 .overlay-bg.open{display:block}
+
+/* ══ FAB DE FILTROS ══ */
+.filter-fab{display:none;position:fixed;bottom:22px;right:18px;z-index:90;background:var(--gold);color:#fff;border:none;border-radius:50px;padding:13px 22px;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;box-shadow:0 4px 18px rgba(184,150,90,.4);align-items:center;gap:8px}
+
+/* ══ DRAWER DE FILTROS ══ */
+.filter-drawer{display:none;position:fixed;inset:0;z-index:500}
+.filter-drawer.open{display:block}
+.filter-drawer-bg{position:absolute;inset:0;background:rgba(0,0,0,.45)}
+.filter-drawer-panel{position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;padding:20px 20px 36px;max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.filter-drawer-handle{width:36px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 16px}
+.filter-drawer-title{font-size:14px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+.filter-drawer-close{background:none;border:none;font-size:22px;cursor:pointer;color:#999;padding:0 4px;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center}
+
+/* ══ LABELS CURTAS MOBILE ══ */
+.atab-short{display:none}
+.atab-long{display:inline}
+@media(max-width:500px){
+  .atab-long{display:none}
+  .atab-short{display:inline}
+}
+
+/* ══ MEDIA QUERY MOBILE ══ */
 @media(max-width:768px){
   .hamburger{display:flex}
   .sidebar{transform:translateX(-100%);transition:transform .25s;z-index:150}
   .sidebar.open{transform:translateX(0)}
-  .main{margin-left:0;padding:20px 16px;padding-top:68px}
-  .ph{flex-direction:column;gap:12px}
-  .pt{font-size:22px}
+  .main{margin-left:0;padding:16px 14px;padding-top:68px;padding-bottom:84px}
+  /* Header da página */
+  .ph{flex-direction:row;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+  .ph > div:first-child{flex:1;min-width:0}
+  .ph .btn{flex-shrink:0;padding:9px 14px;font-size:12px;white-space:nowrap}
+  .pt{font-size:20px}
+  .ps{font-size:11px}
+  /* Grids */
   .g2,.g3{grid-template-columns:1fr}
-  .mb{padding:20px 16px;max-width:100%!important}
-  .atabs{overflow-x:auto}
-  .atab{padding:8px 12px;font-size:10px}
-  .fpanel{display:none}
+  /* Modal como bottom sheet */
+  .mb{padding:18px 14px 28px;max-width:100%!important;border-radius:16px 16px 0 0;position:fixed;bottom:0;left:0;right:0;max-height:92vh;overflow-y:auto;margin:0;-webkit-overflow-scrolling:touch}
+  .mo{padding:0;align-items:flex-end}
+  /* Abas do modal */
+  .atabs{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .atab{padding:9px 12px;font-size:10px;white-space:nowrap}
+  /* Filtros: painel lateral some, FAB aparece */
+  .fpanel{display:none!important}
+  .filter-fab{display:flex}
+  /* Grid de cards */
   .cg{grid-template-columns:1fr}
-  .tabs{overflow-x:auto;flex-wrap:nowrap}
-  .tab{white-space:nowrap;font-size:12px;padding:7px 14px}
-  .mf{flex-direction:column-reverse}
-  .mf .btn{width:100%;text-align:center}
-  .mo{padding:16px 12px}
-  .card{padding:16px}
+  /* Abas principais */
+  .tabs{overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;padding-bottom:2px;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{white-space:nowrap;font-size:12px;padding:8px 14px;flex-shrink:0}
+  /* Footer do modal */
+  .mf{flex-direction:column-reverse;gap:8px}
+  .mf .btn{width:100%;text-align:center;padding:13px}
+  /* Cards */
+  .card{padding:14px}
+  /* Targets de toque mínimo */
+  .btn{min-height:40px}
+  .bd{min-width:44px;min-height:44px;padding:8px 10px}
+  .bsm{min-height:36px}
+  /* Idiomas e radio */
   .ic{grid-template-columns:1fr 1fr}
+  .ic-card{padding:10px 12px}
   .ro{flex-direction:column}
+  .ro-opt{padding:12px 16px}
+  /* Toggles */
+  .tr-row{min-height:44px}
+  .fl{min-height:40px}
+  .fl input[type=checkbox]{width:18px;height:18px}
+  /* Solicitação de viagem: datas empilhadas */
+  #modal-solicitacao .g2{grid-template-columns:1fr}
+  /* ai-header wrap */
+  .aih{flex-wrap:wrap;gap:8px}
+  .aih > div:last-child{display:flex;flex-wrap:wrap;gap:6px}
+  /* Header do modal */
+  .mt{font-size:20px}
+  .ms{font-size:11px;margin-bottom:14px}
+  /* Picker hoteis scroll */
+  #c-picker-list{max-height:200px}
 }
 </style>
 </head>
 <body>
 
 <!-- LOGIN SCREEN -->
-<div id="login-screen" style="position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;z-index:9999">
-  <div style="background:var(--white);border-radius:20px;border:1px solid var(--border);padding:40px;width:100%;max-width:400px;text-align:center">
+<div id="login-screen" style="position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px">
+  <div style="background:var(--white);border-radius:20px;border:1px solid var(--border);padding:40px 28px;width:100%;max-width:400px;text-align:center">
     <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:var(--gold);letter-spacing:3px;text-transform:uppercase">Welcome</div>
     <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:var(--text);letter-spacing:3px;text-transform:uppercase">Weddings</div>
     <div style="font-size:10px;letter-spacing:2px;color:var(--muted);margin-top:4px;text-transform:uppercase;margin-bottom:32px">Gestão Operacional</div>
-    <input id="login-email" type="email" placeholder="Seu e-mail" onkeydown="if(event.key==='Enter')fazerLogin()" style="width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--border);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:12px;display:block;box-sizing:border-box">
-    <input id="login-senha" type="password" placeholder="Senha" onkeydown="if(event.key==='Enter')fazerLogin()" style="width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--border);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:12px;display:block;box-sizing:border-box">
-    <button id="login-btn" onclick="fazerLogin()" style="width:100%;padding:12px;border-radius:10px;background:var(--gold);color:white;border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">Entrar</button>
+    <input id="login-email" type="email" placeholder="Seu e-mail" onkeydown="if(event.key==='Enter')fazerLogin()" style="width:100%;padding:13px 14px;border-radius:10px;border:1px solid var(--border);font-size:16px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:12px;display:block;box-sizing:border-box">
+    <input id="login-senha" type="password" placeholder="Senha" onkeydown="if(event.key==='Enter')fazerLogin()" style="width:100%;padding:13px 14px;border-radius:10px;border:1px solid var(--border);font-size:16px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:12px;display:block;box-sizing:border-box">
+    <button id="login-btn" onclick="fazerLogin()" style="width:100%;padding:14px;border-radius:10px;background:var(--gold);color:white;border:none;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">Entrar</button>
     <div id="login-error" style="color:var(--red);font-size:13px;margin-top:10px;display:none">E-mail ou senha incorretos</div>
   </div>
 </div>
@@ -185,7 +235,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <button class="btn bg" onclick="openNovoCasamento()">+ Novo Casamento</button>
     </div>
     <div style="display:flex;gap:20px;align-items:flex-start">
-      <div class="fpanel" style="width:200px;max-height:calc(100vh - 80px);overflow-y:auto;position:sticky;top:24px">
+      <div class="fpanel" id="fpanel-casamentos" style="width:200px;max-height:calc(100vh - 80px);overflow-y:auto;position:sticky;top:24px">
         <div class="fp-title">Filtros</div>
         <input id="search-c" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none" placeholder="Buscar casal..." oninput="renderCasamentos()">
         <div class="fp-sec">
@@ -198,18 +248,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
           <div class="fp-sec-t">Mês do Casamento</div>
           <select id="f-c-mes" onchange="renderCasamentos()" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none">
             <option value="">Todos</option>
-            <option value="1">Janeiro</option>
-            <option value="2">Fevereiro</option>
-            <option value="3">Março</option>
-            <option value="4">Abril</option>
-            <option value="5">Maio</option>
-            <option value="6">Junho</option>
-            <option value="7">Julho</option>
-            <option value="8">Agosto</option>
-            <option value="9">Setembro</option>
-            <option value="10">Outubro</option>
-            <option value="11">Novembro</option>
-            <option value="12">Dezembro</option>
+            <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option>
+            <option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option>
+            <option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option>
+            <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
           </select>
         </div>
         <div class="fp-sec">
@@ -243,7 +285,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <button class="btn bg" onclick="openNovaAssessora()">+ Nova Assessora</button>
     </div>
     <div style="display:flex;gap:20px;align-items:flex-start">
-      <div class="fpanel">
+      <div class="fpanel" id="fpanel-assessoras">
         <div class="fp-title">Filtros</div>
         <input id="search-a" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none" placeholder="Nome ou cidade..." oninput="renderAssessoras()">
         <div class="fp-sec">
@@ -291,13 +333,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <button class="btn bg" onclick="openNovoHotel()">+ Novo Local</button>
     </div>
     <div style="display:flex;gap:20px;align-items:flex-start">
-      <div class="fpanel" style="width:220px;max-height:calc(100vh - 80px);overflow-y:auto;position:sticky;top:24px">
+      <div class="fpanel" id="fpanel-hoteis" style="width:220px;max-height:calc(100vh - 80px);overflow-y:auto;position:sticky;top:24px">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
           <div class="fp-title" style="margin-bottom:0">Filtros</div>
           <span id="h-filtros-count" style="display:none;font-size:10px;font-weight:700;background:var(--gold);color:white;border-radius:10px;padding:2px 7px;cursor:pointer" onclick="limparFiltrosHotel()">limpar</span>
         </div>
         <input id="search-h" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none" placeholder="Buscar local..." oninput="renderHoteis()">
-
         <div class="fp-sec">
           <div class="fp-sec-t">Continente</div>
           <label class="fl"><input type="checkbox" id="fh-reg-caribe" onchange="renderHoteis()"> Caribe</label>
@@ -305,13 +346,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
           <label class="fl"><input type="checkbox" id="fh-reg-europa" onchange="renderHoteis()"> Europa</label>
           <label class="fl"><input type="checkbox" id="fh-reg-asia" onchange="renderHoteis()"> Ásia</label>
         </div>
-
         <div class="fp-sec">
           <div class="fp-sec-t">País</div>
           <div id="pais-chips" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:7px"></div>
           <input id="f-h-pais" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none" placeholder="Digitar e apertar Enter..." onkeydown="addPaisChip(event)">
         </div>
-
         <div class="fp-sec">
           <div class="fp-sec-t">Ambiente</div>
           <label class="fl"><input type="checkbox" id="fh-amb-praia" onchange="renderHoteis()"> Praia</label>
@@ -321,7 +360,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
           <label class="fl"><input type="checkbox" id="fh-amb-lago" onchange="renderHoteis()"> Lago / Rio</label>
           <label class="fl"><input type="checkbox" id="fh-amb-vinhedo" onchange="renderHoteis()"> Vinhedo</label>
         </div>
-
         <div class="fp-sec">
           <div class="fp-sec-t">Logística do Convidado</div>
           <label class="fl"><input type="checkbox" id="fh-voo-direto" onchange="renderHoteis()"> Voo direto disponível</label>
@@ -329,7 +367,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
           <label class="fl"><input type="checkbox" id="fh-hosp-local" onchange="renderHoteis()"> Hospedagem no local</label>
           <label class="fl"><input type="checkbox" id="fh-passaporte" onchange="renderHoteis()"> Passaporte necessário</label>
         </div>
-
         <div class="fp-sec">
           <div class="fp-sec-t">Tipo de Local</div>
           <label class="fl"><input type="checkbox" id="fh-tipo-ai" onchange="renderHoteis()"> All Inclusive</label>
@@ -339,14 +376,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
           <label class="fl"><input type="checkbox" id="fh-tipo-urbano" onchange="renderHoteis()"> Hotel Urbano</label>
           <label class="fl"><input type="checkbox" id="fh-tipo-fazenda" onchange="renderHoteis()"> Fazenda/Vinhedo</label>
         </div>
-
         <div class="fp-sec">
           <div class="fp-sec-t">Nº de Acomodações</div>
           <div style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:6px">Até <span id="label-acom">3000</span> quartos</div>
           <input type="range" id="slider-acom" min="50" max="3000" step="50" value="3000" oninput="document.getElementById('label-acom').textContent=this.value;renderHoteis()" style="width:100%;accent-color:var(--gold)">
           <div style="display:flex;justify-content:space-between;font-size:10px;color:#aaa;margin-top:2px"><span>50</span><span>3000</span></div>
         </div>
-
         <div class="fp-sec">
           <div class="fp-sec-t">Valor Diária Casal</div>
           <select id="slider-moeda" onchange="atualizarSliderMoeda();renderHoteis()" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:10px">
@@ -362,13 +397,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
           <input type="range" id="slider-diaria-max" min="100" max="2000" step="100" value="2000" oninput="document.getElementById('label-diaria-max').textContent=this.value;renderHoteis()" style="width:100%;accent-color:var(--gold)">
           <div style="display:flex;justify-content:space-between;font-size:10px;color:#aaa;margin-top:2px"><span id="slider-min-label">100</span><span id="slider-max-label">2000</span></div>
         </div>
-
         <div class="fp-sec">
           <div class="fp-sec-t">Indicação</div>
           <label class="fl"><input type="checkbox" id="fh-indicamos" onchange="renderHoteis()"> Indicamos</label>
           <label class="fl"><input type="checkbox" id="fh-blacklist" onchange="renderHoteis()"> Blacklist</label>
         </div>
-
         <div class="fp-sec">
           <div class="fp-sec-t">Estrutura</div>
           <label class="fl"><input type="checkbox" id="fh-kids" onchange="renderHoteis()"> Aceita Crianças</label>
@@ -400,7 +433,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <button class="btn bo" onclick="loadLogs()">🔄 Atualizar</button>
     </div>
     <div class="card" style="margin-bottom:20px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
-      <input style="padding:8px 14px;border-radius:8px;border:1px solid var(--border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;width:260px" placeholder="Buscar por usuário ou ação..." id="log-search" oninput="renderLogs()">
+      <input style="padding:8px 14px;border-radius:8px;border:1px solid var(--border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;width:260px;max-width:100%" placeholder="Buscar por usuário ou ação..." id="log-search" oninput="renderLogs()">
       <select id="log-tabela" onchange="renderLogs()" style="padding:8px 12px;border-radius:8px;border:1px solid var(--border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
         <option value="">Todas as seções</option>
         <option value="casamentos">Casamentos</option>
@@ -412,6 +445,25 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div>
 
 </div><!-- /main -->
+
+<!-- ══ FABs de filtro (mobile) ══ -->
+<button class="filter-fab" id="fab-casamentos" onclick="openFilterDrawer('casamentos')" style="display:none">⚡ Filtros</button>
+<button class="filter-fab" id="fab-assessoras" onclick="openFilterDrawer('assessoras')" style="display:none">⚡ Filtros</button>
+<button class="filter-fab" id="fab-hoteis" onclick="openFilterDrawer('hoteis')" style="display:none">⚡ Filtros</button>
+
+<!-- ══ DRAWERS de filtro (mobile) ══ -->
+<div class="filter-drawer" id="filter-drawer-casamentos">
+  <div class="filter-drawer-bg" onclick="closeFilterDrawer('casamentos')"></div>
+  <div class="filter-drawer-panel" id="fdp-casamentos"></div>
+</div>
+<div class="filter-drawer" id="filter-drawer-assessoras">
+  <div class="filter-drawer-bg" onclick="closeFilterDrawer('assessoras')"></div>
+  <div class="filter-drawer-panel" id="fdp-assessoras"></div>
+</div>
+<div class="filter-drawer" id="filter-drawer-hoteis">
+  <div class="filter-drawer-bg" onclick="closeFilterDrawer('hoteis')"></div>
+  <div class="filter-drawer-panel" id="fdp-hoteis"></div>
+</div>
 
 <!-- ══ MODAL CASAMENTO ══ -->
 <div class="mo" id="modal-casamento">
@@ -435,10 +487,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div class="f"><label>Extra</label><input id="c-extra"></div>
       </div>
       <div class="f"><label>Observações sobre o Casal</label><textarea id="c-obs"></textarea></div>
-
-      <!-- HOTEIS RECOMENDADOS -->
       <div id="c-hoteis-section" style="display:none;margin-top:20px;padding-top:20px;border-top:1px solid var(--gold-border)">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
           <div class="st" style="margin-bottom:0">🏨 Hotéis Recomendados para o Casal</div>
           <button class="btn bg bsm" onclick="toggleHotelPicker()">+ Adicionar Hotel</button>
         </div>
@@ -469,14 +519,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       </div>
     </div>
     <div class="tc" id="tab-assess">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
         <div id="assess-count" style="font-size:13px;color:#666"></div>
         <button class="btn bg bsm" onclick="togglePicker()">+ Escalar Assessora</button>
       </div>
       <div id="escaladas-list"></div>
       <div id="picker-container" style="display:none"></div>
-
-      <!-- SOLICITAÇÕES DE VIAGEM -->
       <div id="solicitacoes-section" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--gold-border);display:none">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
           <div class="st" style="margin-bottom:0">✈️ Solicitações de Viagem</div>
@@ -496,11 +544,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="mb" style="max-width:800px">
     <div class="mh"><div><div class="mt" id="ma-title">Nova Assessora</div><div class="ms" id="ma-sub">Preencha os dados</div></div><button class="mcl" onclick="closeModal('modal-assessora')">✕</button></div>
     <div class="atabs">
-      <button class="atab active" onclick="showATab('dados',this)">01 · Dados Pessoais</button>
-      <button class="atab" onclick="showATab('docs',this)">02 · Documentos</button>
-      <button class="atab" onclick="showATab('idiomas',this)">03 · Idiomas & Perfil</button>
-      <button class="atab" onclick="showATab('caract',this)">04 · Características</button>
-      <button class="atab" onclick="showATab('historico',this)">05 · Histórico</button>
+      <button class="atab active" onclick="showATab('dados',this)"><span class="atab-long">01 · Dados Pessoais</span><span class="atab-short">Dados</span></button>
+      <button class="atab" onclick="showATab('docs',this)"><span class="atab-long">02 · Documentos</span><span class="atab-short">Docs</span></button>
+      <button class="atab" onclick="showATab('idiomas',this)"><span class="atab-long">03 · Idiomas & Perfil</span><span class="atab-short">Idiomas</span></button>
+      <button class="atab" onclick="showATab('caract',this)"><span class="atab-long">04 · Características</span><span class="atab-short">Caract.</span></button>
+      <button class="atab" onclick="showATab('historico',this)"><span class="atab-long">05 · Histórico</span><span class="atab-short">Histórico</span></button>
     </div>
     <div class="atc active" id="atab-dados">
       <div class="g2">
@@ -513,7 +561,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div class="f"><label>WhatsApp</label><input id="a-whatsapp" placeholder="+55 (00) 00000-0000"></div>
       </div>
       <div class="f"><label>Perfil / Observações Gerais</label><textarea id="a-perfil"></textarea></div>
-      <div style="display:flex;gap:32px;margin-top:4px">
+      <div style="display:flex;gap:32px;margin-top:4px;flex-wrap:wrap">
         <div>
           <div class="st" style="margin-bottom:8px">Status</div>
           <div class="tr-row" onclick="tg('a-blacklist')"><div class="tr-track" id="track-a-blacklist"><div class="tr-thumb"></div></div><span class="tr-label">🚫 Blacklist</span></div>
@@ -542,7 +590,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
           <div class="ic-card" id="card-espanhol" onclick="togIdioma('espanhol')"><img src="https://flagcdn.com/w40/es.png" style="width:28px;height:20px;object-fit:cover;border-radius:3px;flex-shrink:0"><span class="ic-name">Espanhol</span></div>
           <div class="ic-card" id="card-frances" onclick="togIdioma('frances')"><img src="https://flagcdn.com/w40/fr.png" style="width:28px;height:20px;object-fit:cover;border-radius:3px;flex-shrink:0"><span class="ic-name">Francês</span></div>
           <div class="ic-card" id="card-italiano" onclick="togIdioma('italiano')"><img src="https://flagcdn.com/w40/it.png" style="width:28px;height:20px;object-fit:cover;border-radius:3px;flex-shrink:0"><span class="ic-name">Italiano</span></div>
-        </div>      </div>
+        </div>
+      </div>
       <div class="sec" style="margin-top:24px"><div class="st">Hierarquia</div>
         <div class="ro">
           <div class="ro-opt" onclick="selHier('1ª Assessora')" id="hier-1">⭐ 1ª Assessora</div>
@@ -553,7 +602,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         </div>
       </div>
       <div class="sec" style="margin-top:24px"><div class="st">Equipe</div>
-        <div style="display:flex;gap:10px;margin-bottom:16px">
+        <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
           <div class="ro-opt" onclick="selTipoEquipe('lidera')" id="eq-lidera">👑 Tem equipe própria</div>
           <div class="ro-opt" onclick="selTipoEquipe('membro')" id="eq-membro">👥 É membro de uma equipe</div>
           <div class="ro-opt" onclick="selTipoEquipe('')" id="eq-nenhum">✕ Sem equipe</div>
@@ -609,11 +658,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="mb" style="max-width:820px">
     <div class="mh"><div><div class="mt" id="mh-title">Novo Local</div><div class="ms" id="mh-sub">Preencha os dados do local</div></div><button class="mcl" onclick="closeModal('modal-hotel')">✕</button></div>
     <div class="atabs" id="hotel-atabs">
-      <button class="atab active" onclick="showHTab('hgeral',this)">01 · Informações Gerais</button>
-      <button class="atab" onclick="showHTab('hespec',this)">02 · Específicas</button>
-      <button class="atab" onclick="showHTab('hvalores',this)">03 · Valores</button>
-      <button class="atab" onclick="showHTab('hcasamento',this)">04 · Casamentos</button>
-      <button class="atab" onclick="showHTab('hcomissao',this)">05 · Comissão</button>
+      <button class="atab active" onclick="showHTab('hgeral',this)"><span class="atab-long">01 · Informações Gerais</span><span class="atab-short">Geral</span></button>
+      <button class="atab" onclick="showHTab('hespec',this)"><span class="atab-long">02 · Específicas</span><span class="atab-short">Espec.</span></button>
+      <button class="atab" onclick="showHTab('hvalores',this)"><span class="atab-long">03 · Valores</span><span class="atab-short">Valores</span></button>
+      <button class="atab" onclick="showHTab('hcasamento',this)"><span class="atab-long">04 · Casamentos</span><span class="atab-short">Casam.</span></button>
+      <button class="atab" onclick="showHTab('hcomissao',this)"><span class="atab-long">05 · Comissão</span><span class="atab-short">Comissão</span></button>
     </div>
     <div class="atc active" id="atab-hgeral">
       <div class="g2">
@@ -623,7 +672,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div class="f"><label>Cidade</label><input id="h-cidade"></div>
         <div class="f"><label>Site Oficial</label><input id="h-site" placeholder="https://"></div>
         <div class="f"><label>E-mail para Contato</label><input id="h-email" type="email"></div>
-        <div class="f"><label>Representante no Brasil — Nome</label><input id="h-rep-nome" placeholder="Ex: Maria Silva"></div>
+        <div class="f"><label>Representante no Brasil — Nome</label><input id="h-rep-nome"></div>
         <div class="f"><label>Representante no Brasil — Telefone</label><input id="h-rep-tel" placeholder="+55 (00) 00000-0000"></div>
       </div>
       <div class="f"><label>Instagram</label><input id="h-instagram" placeholder="https://www.instagram.com/..."></div>
@@ -660,12 +709,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div class="f"><label>Ambiente</label>
           <select id="h-ambiente" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
             <option value="">Selecione...</option>
-            <option value="Praia">Praia</option>
-            <option value="Montanha">Montanha</option>
-            <option value="Campo / Fazenda">Campo / Fazenda</option>
-            <option value="Cidade">Cidade</option>
-            <option value="Lago / Rio">Lago / Rio</option>
-            <option value="Vinhedo">Vinhedo</option>
+            <option value="Praia">Praia</option><option value="Montanha">Montanha</option>
+            <option value="Campo / Fazenda">Campo / Fazenda</option><option value="Cidade">Cidade</option>
+            <option value="Lago / Rio">Lago / Rio</option><option value="Vinhedo">Vinhedo</option>
           </select>
         </div>
       </div>
@@ -737,13 +783,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 <div class="mo" id="modal-solicitacao">
   <div class="mb" style="max-width:560px">
     <div class="mh">
-      <div>
-        <div class="mt" id="msol-title">Solicitar Viagem</div>
-        <div class="ms" id="msol-sub"></div>
-      </div>
+      <div><div class="mt" id="msol-title">Solicitar Viagem</div><div class="ms" id="msol-sub"></div></div>
       <button class="mcl" onclick="closeModal('modal-solicitacao')">✕</button>
     </div>
-
     <div class="cb" style="margin-bottom:16px;display:flex;align-items:center;gap:12px">
       <div class="av" id="msol-avatar">?</div>
       <div>
@@ -751,26 +793,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div style="font-size:12px;color:#888" id="msol-cidade">—</div>
       </div>
     </div>
-
     <div class="g2">
-      <div class="f">
-        <label>📅 Data que precisa estar lá</label>
-        <input id="sol-data-chegada" type="date">
-      </div>
-      <div class="f">
-        <label>⏰ Horário de chegada</label>
-        <input id="sol-hora-chegada" type="time">
-      </div>
-      <div class="f">
-        <label>📅 Data liberada para ir embora</label>
-        <input id="sol-data-saida" type="date">
-      </div>
-      <div class="f">
-        <label>⏰ Horário de saída</label>
-        <input id="sol-hora-saida" type="time">
-      </div>
+      <div class="f"><label>📅 Data que precisa estar lá</label><input id="sol-data-chegada" type="date"></div>
+      <div class="f"><label>⏰ Horário de chegada</label><input id="sol-hora-chegada" type="time"></div>
+      <div class="f"><label>📅 Data liberada para ir embora</label><input id="sol-data-saida" type="date"></div>
+      <div class="f"><label>⏰ Horário de saída</label><input id="sol-hora-saida" type="time"></div>
     </div>
-
     <div class="sec" style="margin-top:4px">
       <div class="st">Serviços Necessários</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:8px">
@@ -781,12 +809,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div class="tr-row" onclick="tg('sol-trem')"><div class="tr-track" id="track-sol-trem"><div class="tr-thumb"></div></div><span class="tr-label">🚂 Trem</span></div>
       </div>
     </div>
-
-    <div class="f" style="margin-top:12px">
-      <label>Observações</label>
-      <textarea id="sol-obs" placeholder="Informações adicionais, preferências..."></textarea>
-    </div>
-
+    <div class="f" style="margin-top:12px"><label>Observações</label><textarea id="sol-obs" placeholder="Informações adicionais, preferências..."></textarea></div>
     <div class="mf">
       <button class="btn bo" onclick="closeModal('modal-solicitacao')">Cancelar</button>
       <button class="btn bg" id="btn-ssol" onclick="salvarSolicitacao()">✈️ Enviar Solicitação</button>
@@ -797,10 +820,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 <!-- MODAL REDEFINIR SENHA -->
 <div class="mo" id="modal-senha">
   <div class="mb" style="max-width:400px">
-    <div class="mh">
-      <div class="mt" id="ms-title">Redefinir Senha</div>
-      <button class="mcl" onclick="closeModal('modal-senha')">✕</button>
-    </div>
+    <div class="mh"><div class="mt" id="ms-title">Redefinir Senha</div><button class="mcl" onclick="closeModal('modal-senha')">✕</button></div>
     <div class="ms" id="ms-sub" style="margin-bottom:16px"></div>
     <div class="f"><label>Nova Senha</label><input id="nova-senha" type="password" placeholder="Mínimo 6 caracteres"></div>
     <div class="f"><label>Confirmar Senha</label><input id="confirma-senha" type="password" placeholder="Repita a senha"></div>
@@ -814,10 +834,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 <!-- MODAL USUARIO -->
 <div class="mo" id="modal-usuario">
   <div class="mb" style="max-width:500px">
-    <div class="mh">
-      <div class="mt" id="mu-title">Novo Usuário</div>
-      <button class="mcl" onclick="closeModal('modal-usuario')">✕</button>
-    </div>
+    <div class="mh"><div class="mt" id="mu-title">Novo Usuário</div><button class="mcl" onclick="closeModal('modal-usuario')">✕</button></div>
     <div style="margin-bottom:20px">
       <div class="f"><label>Nome Completo</label><input id="u-nome" placeholder="Ex: Maria Silva"></div>
       <div class="f"><label>E-mail</label><input id="u-email" type="email" placeholder="maria@welcometrips.com.br"></div>
@@ -872,13 +889,13 @@ async function carregarUsuario(user){
   document.getElementById('user-name').textContent=data.nome
   document.getElementById('user-setor').textContent=data.setor
   document.getElementById('user-avatar').textContent=data.nome[0].toUpperCase()
-  // Mostrar logs só para admin
   if(data.setor==='admin'){
     document.getElementById('nav-logs').style.display='flex'
     document.getElementById('nav-usuarios').style.display='flex'
   }
   aplicarPermissoes()
   loadCasamentos();loadAssessoras();loadHoteis()
+  setTimeout(()=>syncFabs(),400)
 }
 
 function aplicarPermissoes(){
@@ -889,19 +906,9 @@ function aplicarPermissoes(){
   window._podeEditarViagem=s==='admin'||s==='viagem'
   window._podeEditarAssessoras=s==='admin'
   window._podeEditarCasamentos=s==='admin'||s==='planejamento'||s==='producao'||s==='viagem'
-
-  // Botão novo casamento - só admin e setores que editam algo
-  if(!window._podeEditarCasamentos){
-    document.querySelector('[onclick="openNovoCasamento()"]')?.style.setProperty('display','none')
-  }
-  // Botão novo local
-  if(!window._podeEditarLocais){
-    document.querySelector('[onclick="openNovoHotel()"]')?.style.setProperty('display','none')
-  }
-  // Botão nova assessora
-  if(!window._podeEditarAssessoras){
-    document.querySelector('[onclick="openNovaAssessora()"]')?.style.setProperty('display','none')
-  }
+  if(!window._podeEditarCasamentos)document.querySelector('[onclick="openNovoCasamento()"]')?.style.setProperty('display','none')
+  if(!window._podeEditarLocais)document.querySelector('[onclick="openNovoHotel()"]')?.style.setProperty('display','none')
+  if(!window._podeEditarAssessoras)document.querySelector('[onclick="openNovaAssessora()"]')?.style.setProperty('display','none')
 }
 
 function verificarPermissaoAba(aba){
@@ -927,14 +934,7 @@ async function fazerLogout(){
 // ── LOGS
 async function registrarLog(acao,tabela,registroId,registroNome,dadosAntes=null,dadosDepois=null){
   if(!usuarioAtual)return
-  try{
-    await sb.from('logs').insert({
-      usuario_id:usuarioAtual.id,usuario_nome:usuarioAtual.nome,
-      acao,tabela,registro_id:registroId,registro_nome:registroNome,
-      dados_antes:dadosAntes?JSON.stringify(dadosAntes):null,
-      dados_depois:dadosDepois?JSON.stringify(dadosDepois):null
-    })
-  }catch(e){console.log('Erro ao registrar log:',e)}
+  try{await sb.from('logs').insert({usuario_id:usuarioAtual.id,usuario_nome:usuarioAtual.nome,acao,tabela,registro_id:registroId,registro_nome:registroNome,dados_antes:dadosAntes?JSON.stringify(dadosAntes):null,dados_depois:dadosDepois?JSON.stringify(dadosDepois):null})}catch(e){console.log('Erro ao registrar log:',e)}
 }
 
 async function loadLogs(){
@@ -958,23 +958,18 @@ function renderLogs(){
   con.innerHTML=filtered.map(l=>{
     const d=new Date(l.created_at)
     const dt=d.toLocaleDateString('pt-BR')+' às '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})
-    return`<div class="log-item">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
-        <div><span class="log-who">${l.usuario_nome||'—'}</span> <span style="color:#555">${l.acao}</span> ${l.registro_nome?`<span style="font-weight:600">"${l.registro_nome}"</span>`:''} ${l.tabela?`<span style="font-size:11px;color:#aaa">${tabIcon[l.tabela]||''} ${l.tabela}</span>`:''}
-        </div>
-        <span class="log-when">${dt}</span>
-      </div>
-    </div>`
+    return`<div class="log-item"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;gap:8px"><div style="flex:1;min-width:0"><span class="log-who">${l.usuario_nome||'—'}</span> <span style="color:#555">${l.acao}</span> ${l.registro_nome?`<span style="font-weight:600">"${l.registro_nome}"</span>`:''} ${l.tabela?`<span style="font-size:11px;color:#aaa">${tabIcon[l.tabela]||''} ${l.tabela}</span>`:''}</div><span class="log-when">${dt}</span></div></div>`
   }).join('')
 }
 
 document.addEventListener('DOMContentLoaded',async()=>{
-  // Verificar sessão existente
   const{data:{session}}=await sb.auth.getSession()
   if(session?.user){await carregarUsuario(session.user)}
   else{document.getElementById('login-screen').style.display='flex'}
 })
-document.querySelectorAll('.mo').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}))
+
+// Fechar modais no backdrop
+document.querySelectorAll('.mo').forEach(m=>m.addEventListener('click',e=>{if(e.target===m){m.classList.remove('open');document.body.style.overflow=''}}))
 
 // ── NAVEGAÇÃO
 function toggleSidebar(){
@@ -985,6 +980,14 @@ function closeSidebar(){
   document.getElementById('sidebar').classList.remove('open')
   document.getElementById('overlay').classList.remove('open')
 }
+function syncFabs(){
+  const active=document.querySelector('.page.active')?.id?.replace('page-','')
+  const isMobile=window.innerWidth<=768
+  ;['casamentos','assessoras','hoteis'].forEach(t=>{
+    const fab=document.getElementById('fab-'+t)
+    if(fab)fab.style.display=(active===t&&isMobile)?'flex':'none'
+  })
+}
 function showPage(p){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'))
   document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'))
@@ -993,14 +996,50 @@ function showPage(p){
   closeSidebar()
   if(p==='logs')loadLogs()
   if(p==='usuarios')loadUsuarios()
+  syncFabs()
 }
-function closeModal(id){document.getElementById(id).classList.remove('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow=''}
+window.addEventListener('resize',syncFabs)
+
+// ── DRAWER DE FILTROS MOBILE
+function openFilterDrawer(tipo){
+  const drawer=document.getElementById('filter-drawer-'+tipo)
+  if(!drawer)return
+  const panel=document.getElementById('fdp-'+tipo)
+  let fpanel=document.getElementById('fpanel-'+tipo)
+  if(!fpanel||!panel)return
+  // Clona o conteúdo do painel
+  panel.innerHTML=`<div class="filter-drawer-handle"></div>
+    <div class="filter-drawer-title">Filtros <button class="filter-drawer-close" onclick="closeFilterDrawer('${tipo}')">✕</button></div>
+    ${fpanel.innerHTML}
+    <div style="margin-top:20px;display:flex;gap:10px">
+      <button class="btn bg" style="flex:1" onclick="closeFilterDrawer('${tipo}')">Ver resultados</button>
+    </div>`
+  // Sincroniza estados dos inputs com os originais
+  panel.querySelectorAll('input,select').forEach(el=>{
+    if(!el.id)return
+    const orig=fpanel.querySelector('#'+el.id)
+    if(!orig)return
+    if(el.type==='checkbox'){el.checked=orig.checked}
+    else{el.value=orig.value}
+    el.addEventListener('input',()=>{orig.value=el.value;orig.dispatchEvent(new Event('input',{bubbles:true}))})
+    el.addEventListener('change',()=>{
+      if(el.type==='checkbox')orig.checked=el.checked
+      else orig.value=el.value
+      orig.dispatchEvent(new Event('change',{bubbles:true}))
+    })
+  })
+  drawer.classList.add('open')
+  document.body.style.overflow='hidden'
+}
+function closeFilterDrawer(tipo){
+  const drawer=document.getElementById('filter-drawer-'+tipo)
+  if(drawer)drawer.classList.remove('open')
+  document.body.style.overflow=''
+}
 
 // ── TOGGLE
-function tg(id){
-  tgStates[id]=!tgStates[id]
-  const t=document.getElementById('track-'+id);if(t)t.classList.toggle('on',tgStates[id])
-}
+function tg(id){tgStates[id]=!tgStates[id];const t=document.getElementById('track-'+id);if(t)t.classList.toggle('on',tgStates[id])}
 function setTg(id,val){tgStates[id]=!!val;const t=document.getElementById('track-'+id);if(t)t.classList.toggle('on',!!val)}
 function getTg(id){return!!tgStates[id]}
 
@@ -1023,16 +1062,11 @@ function selTipoEquipe(tipo){
   document.getElementById('equipe-lidera-section').style.display=tipo==='lidera'?'block':'none'
   document.getElementById('equipe-membro-section').style.display=tipo==='membro'?'block':'none'
 }
-function addMembro(id){
-  if(!id)return
-  const a=assessoras.find(x=>x.id===id)
-  if(!a||membrosEquipe.includes(id))return
-  membrosEquipe.push(id);renderMembros();document.getElementById('a-add-membro').value=''
-}
+function addMembro(id){if(!id)return;const a=assessoras.find(x=>x.id===id);if(!a||membrosEquipe.includes(id))return;membrosEquipe.push(id);renderMembros();document.getElementById('a-add-membro').value=''}
 function removeMembro(id){membrosEquipe=membrosEquipe.filter(x=>x!==id);renderMembros()}
 function renderMembros(){
   const list=document.getElementById('membros-list');if(!list)return
-  list.innerHTML=membrosEquipe.map(id=>{const a=assessoras.find(x=>x.id===id);return`<span style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;background:var(--gold-pale);border:1px solid var(--gold-border);font-size:12px;font-weight:500">${a?.nome||'?'}<span onclick="removeMembro('${id}')" style="cursor:pointer;color:#999;font-size:14px;line-height:1">✕</span></span>`}).join('')
+  list.innerHTML=membrosEquipe.map(id=>{const a=assessoras.find(x=>x.id===id);return`<span style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;background:var(--gold-pale);border:1px solid var(--gold-border);font-size:12px;font-weight:500">${a?.nome||'?'}<span onclick="removeMembro('${id}')" style="cursor:pointer;color:#999;font-size:14px;line-height:1;min-width:24px;text-align:center">✕</span></span>`}).join('')
   const sel=document.getElementById('a-add-membro');if(!sel)return
   const opts=assessoras.filter(a=>a.id!==assessoraAtual?.id&&!membrosEquipe.includes(a.id))
   sel.innerHTML='<option value="">+ Adicionar membro...</option>'+opts.map(a=>`<option value="${a.id}">${a.nome}</option>`).join('')
@@ -1050,32 +1084,16 @@ function showCTab(tab,btn){
   document.getElementById('tab-'+tab).classList.add('active');if(btn)btn.classList.add('active')
   if(tab==='assess'){renderEscaladas();if(casamentoAtual?.id)loadSolicitacoes(casamentoAtual.id)}
   if(tab==='prod')renderProdAssessoras()
-  // Aplicar readonly nas abas sem permissão
   aplicarReadonlyAba(tab)
 }
-
 function aplicarReadonlyAba(tab){
   const pode=verificarPermissaoAba(tab)
   const tabEl=document.getElementById('tab-'+tab)
   if(!tabEl)return
-  // Desabilita inputs, selects, textareas e botões de salvar na aba
-  tabEl.querySelectorAll('input,select,textarea').forEach(el=>{
-    el.disabled=!pode
-    el.style.background=pode?'':'#f8f8f8'
-    el.style.color=pode?'':'#aaa'
-    el.style.cursor=pode?'':'not-allowed'
-  })
-  // Desabilita toggles
-  tabEl.querySelectorAll('.tr-row').forEach(el=>{
-    el.style.pointerEvents=pode?'':'none'
-    el.style.opacity=pode?'':'0.5'
-  })
-  // Botão salvar
+  tabEl.querySelectorAll('input,select,textarea').forEach(el=>{el.disabled=!pode;el.style.background=pode?'':'#f8f8f8';el.style.color=pode?'':'#aaa';el.style.cursor=pode?'':'not-allowed'})
+  tabEl.querySelectorAll('.tr-row').forEach(el=>{el.style.pointerEvents=pode?'':'none';el.style.opacity=pode?'':'0.5'})
   const btnSalvar=document.getElementById('btn-sc')
-  if(btnSalvar){
-    const algumaPode=['plan','prod','viag','assess'].some(t=>verificarPermissaoAba(t))
-    btnSalvar.style.display=algumaPode?'':'none'
-  }
+  if(btnSalvar){const algumaPode=['plan','prod','viag','assess'].some(t=>verificarPermissaoAba(t));btnSalvar.style.display=algumaPode?'':'none'}
 }
 function showATab(tab,btn){
   document.querySelectorAll('#modal-assessora .atc').forEach(t=>t.classList.remove('active'))
@@ -1083,7 +1101,8 @@ function showATab(tab,btn){
   document.getElementById('atab-'+tab).classList.add('active');if(btn)btn.classList.add('active')
   if(tab==='historico')renderHistorico()
   if(tab==='idiomas'){populateLiderSelect();renderMembros()}
-}function showHTab(tab,btn){
+}
+function showHTab(tab,btn){
   document.querySelectorAll('#modal-hotel .atc').forEach(t=>t.classList.remove('active'))
   document.querySelectorAll('#modal-hotel .atab').forEach(t=>t.classList.remove('active'))
   document.getElementById('atab-'+tab).classList.add('active');if(btn)btn.classList.add('active')
@@ -1093,20 +1112,16 @@ function showATab(tab,btn){
 async function loadCasamentos(){
   const{data}=await sb.from('casamentos').select('*').order('plan_data',{ascending:true,nullsFirst:false})
   casamentos=data||[]
-  // Cache de escaladas para filtros de assessoras
   const{data:esc}=await sb.from('casamento_assessoras').select('casamento_id,assessora_id')
   window._escaladasCache=esc||[]
-  populateAssessoraFilters()
-  renderCasamentos()
+  populateAssessoraFilters();populateCasamentoFilters();renderCasamentos()
 }
 function filterCasamentos(q){renderCasamentos()}
 function populateCasamentoFilters(){
   const destinos=[...new Set(casamentos.map(c=>c.destino).filter(Boolean))].sort()
   const hoteis=[...new Set(casamentos.map(c=>c.plan_hotel).filter(Boolean))].sort()
   const anos=[...new Set(casamentos.map(c=>c.plan_data?.split('-')[0]).filter(Boolean))].sort()
-  const fd=document.getElementById('f-c-destino')
-  const fh=document.getElementById('f-c-hotel')
-  const fa=document.getElementById('f-c-ano')
+  const fd=document.getElementById('f-c-destino'),fh=document.getElementById('f-c-hotel'),fa=document.getElementById('f-c-ano')
   if(fd){const cur=fd.value;fd.innerHTML='<option value="">Todos</option>'+destinos.map(d=>`<option value="${d}">${d}</option>`).join('');fd.value=cur}
   if(fh){const cur=fh.value;fh.innerHTML='<option value="">Todos</option>'+hoteis.map(h=>`<option value="${h}">${h}</option>`).join('');fh.value=cur}
   if(fa){const cur=fa.value;fa.innerHTML='<option value="">Todos</option>'+anos.map(a=>`<option value="${a}">${a}</option>`).join('');fa.value=cur}
@@ -1134,8 +1149,8 @@ function renderCasamentos(){
   const sc=s=>s==='Confirmado'?'tgr':s==='Cancelado'?'tr':s==='Concluído'?'tg':'tgy'
   grid.innerHTML=filtered.map(c=>`<div class="card" style="transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,.12)'" onmouseout="this.style.boxShadow=''">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
-      <div style="font-weight:600;font-size:16px;font-family:'Cormorant Garamond',serif">${c.nome||'—'}</div>
-      <span class="tag ${sc(c.status)}">${c.status||'Em andamento'}</span>
+      <div style="font-weight:600;font-size:16px;font-family:'Cormorant Garamond',serif;flex:1;min-width:0;margin-right:8px">${c.nome||'—'}</div>
+      <span class="tag ${sc(c.status)}" style="flex-shrink:0">${c.status||'Em andamento'}</span>
     </div>
     <div style="font-size:13px;color:#888;margin-bottom:3px">📍 ${c.destino||'—'}</div>
     <div style="font-size:13px;color:#888;margin-bottom:3px">📅 ${c.plan_data?fmtDate(c.plan_data):'—'}</div>
@@ -1169,10 +1184,8 @@ async function openCasamento(id){
   document.querySelector('.tab').classList.add('active')
   fillCasForm(c);await loadEscaladas(id)
   document.getElementById('modal-casamento').classList.add('open')
-  // Mostrar seção de hotéis
   document.getElementById('c-hoteis-section').style.display='block'
   loadCasHoteis(id)
-  // Aplicar permissões na aba ativa
   setTimeout(()=>aplicarReadonlyAba('plan'),100)
 }
 function clearCasForm(){
@@ -1216,24 +1229,14 @@ async function renderEscaladas(){
   const list=document.getElementById('escaladas-list')
   document.getElementById('assess-count').textContent=escaladas.length+' assessora(s) escalada(s)'
   if(!escaladas.length){list.innerHTML='<div class="em" style="padding:30px"><div class="em-t">Nenhuma assessora escalada</div></div>'}
-  else{list.innerHTML=escaladas.map(e=>{
-    const notaColor=e.nota==='Excelente'?'#2e7d32':e.nota==='Bom'?'#1565c0':e.nota==='Médio'?'#e65100':e.nota==='Ruim'?'#c0392b':'#888'
-    const notaBg=e.nota==='Excelente'?'#e8f5e9':e.nota==='Bom'?'#e3f2fd':e.nota==='Médio'?'#fff3e0':e.nota==='Ruim'?'#fdecea':'#f0f0f0'
-    return`<div class="ai"><div class="aih"><div style="display:flex;align-items:center;gap:10px"><div class="av">${(e.assessora?.nome||'?')[0]}</div><div><div style="font-weight:600;font-size:14px">${e.assessora?.nome||'—'}</div><div style="font-size:12px;color:#888">${e.assessora?.cidade||''}</div></div></div><div style="display:flex;gap:8px"><button class="btn bg bsm" onclick="abrirSolicitacao('${e.id}')">✈️ Solicitar</button><button class="btn bd bsm" onclick="removeEscalada('${e.id}')">Remover</button></div></div>
+  else{list.innerHTML=escaladas.map(e=>`<div class="ai"><div class="aih"><div style="display:flex;align-items:center;gap:10px"><div class="av">${(e.assessora?.nome||'?')[0]}</div><div><div style="font-weight:600;font-size:14px">${e.assessora?.nome||'—'}</div><div style="font-size:12px;color:#888">${e.assessora?.cidade||''}</div></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn bg bsm" onclick="abrirSolicitacao('${e.id}')">✈️ Solicitar</button><button class="btn bd bsm" onclick="removeEscalada('${e.id}')">Remover</button></div></div>
     <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--gold-border)">
       <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">Avaliação do Casamento</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-        ${['Excelente','Bom','Médio','Ruim'].map(n=>{
-          const sel=e.nota===n
-          const colors={Excelente:'#2e7d32',Bom:'#1565c0',Médio:'#e65100',Ruim:'#c0392b'}
-          const bgs={Excelente:'#e8f5e9',Bom:'#e3f2fd',Médio:'#fff3e0',Ruim:'#fdecea'}
-          const icons={Excelente:'⭐',Bom:'👍',Médio:'😐',Ruim:'👎'}
-          return`<button onclick="setNota('${e.id}','${n}')" style="padding:7px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid ${sel?colors[n]:' #ddd'};background:${sel?bgs[n]:'#fff'};color:${sel?colors[n]:'#888'};font-family:'DM Sans',sans-serif;transition:all .15s">${icons[n]} ${n}</button>`
-        }).join('')}
+        ${['Excelente','Bom','Médio','Ruim'].map(n=>{const sel=e.nota===n;const colors={Excelente:'#2e7d32',Bom:'#1565c0',Médio:'#e65100',Ruim:'#c0392b'};const bgs={Excelente:'#e8f5e9',Bom:'#e3f2fd',Médio:'#fff3e0',Ruim:'#fdecea'};const icons={Excelente:'⭐',Bom:'👍',Médio:'😐',Ruim:'👎'};return`<button onclick="setNota('${e.id}','${n}')" style="padding:8px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid ${sel?colors[n]:'#ddd'};background:${sel?bgs[n]:'#fff'};color:${sel?colors[n]:'#888'};font-family:'DM Sans',sans-serif;min-height:40px">${icons[n]} ${n}</button>`}).join('')}
       </div>
       <div class="f"><label>Observações do Casamento</label><textarea style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;resize:vertical;min-height:70px" onchange="updEscalada('${e.id}','obs_casamento',this.value)" placeholder="Como foi o desempenho neste casamento...">${e.obs_casamento||''}</textarea></div>
-    </div>
-    </div>`}).join('')}
+    </div></div>`).join('')}
   renderPickerIfOpen()
 }
 async function togBilhete(id,cur){await sb.from('casamento_assessoras').update({bilhete_emitido:!cur}).eq('id',id);renderEscaladas()}
@@ -1241,12 +1244,8 @@ async function updEscalada(id,f,v){await sb.from('casamento_assessoras').update(
 async function setNota(id,nota){await sb.from('casamento_assessoras').update({nota}).eq('id',id);renderEscaladas()}
 async function removeEscalada(id){
   if(!confirm('Remover assessora? As solicitações de viagem dela também serão removidas.'))return
-  // Buscar assessora_id antes de deletar
   const esc=escaladas.find(e=>e.id===id)
-  // Remover solicitações de viagem relacionadas
-  if(esc&&casamentoAtual?.id){
-    await sb.from('solicitacoes_viagem').delete().eq('casamento_id',casamentoAtual.id).eq('assessora_id',esc.assessora_id)
-  }
+  if(esc&&casamentoAtual?.id)await sb.from('solicitacoes_viagem').delete().eq('casamento_id',casamentoAtual.id).eq('assessora_id',esc.assessora_id)
   await sb.from('casamento_assessoras').delete().eq('id',id)
   renderEscaladas()
 }
@@ -1258,7 +1257,7 @@ function renderPickerIfOpen(){
   const ids=escaladas.map(e=>e.assessora_id)
   const disp=assessoras.filter(a=>!a.blacklist&&!ids.includes(a.id))
   if(!disp.length){con.innerHTML='<div class="pl"><div style="text-align:center;color:#888;font-size:13px">Nenhuma disponível</div></div>';return}
-  con.innerHTML=`<div class="pl"><div style="font-weight:700;color:var(--gold);margin-bottom:12px;font-size:13px">Selecionar Assessora</div>${disp.map(a=>`<div class="pi"><div style="display:flex;align-items:center;gap:8px"><div class="av" style="width:32px;height:32px;font-size:14px">${a.nome[0]}</div><span style="font-weight:600;font-size:13px">${a.nome}</span><span style="font-size:12px;color:#888">${a.cidade||''}</span>${a.ingles?'<span class="tag tb" style="font-size:10px">EN</span>':''}${a.espanhol?'<span class="tag tb" style="font-size:10px">ES</span>':''}</div><button class="btn bg bsm" onclick="escalarA('${a.id}','${(a.cidade||'').replace(/'/g,"\\'")}')">Escalar</button></div>`).join('')}<button class="btn bo bsm" style="margin-top:12px" onclick="togglePicker()">Cancelar</button></div>`
+  con.innerHTML=`<div class="pl"><div style="font-weight:700;color:var(--gold);margin-bottom:12px;font-size:13px">Selecionar Assessora</div>${disp.map(a=>`<div class="pi"><div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0"><div class="av" style="width:32px;height:32px;font-size:14px;flex-shrink:0">${a.nome[0]}</div><div style="min-width:0"><span style="font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block">${a.nome}</span><span style="font-size:12px;color:#888">${a.cidade||''}</span></div></div><button class="btn bg bsm" style="flex-shrink:0" onclick="escalarA('${a.id}','${(a.cidade||'').replace(/'/g,"\\'")}')">Escalar</button></div>`).join('')}<button class="btn bo bsm" style="margin-top:12px" onclick="togglePicker()">Cancelar</button></div>`
 }
 async function escalarA(aid,cidade){
   if(!casamentoAtual?.id)return
@@ -1276,25 +1275,18 @@ async function renderProdAssessoras(){
 // ══ ASSESSORAS ══
 async function loadAssessoras(){
   const{data}=await sb.from('assessoras').select('*').order('nome')
-  // Para cada assessora, busca a média de notas
   if(data){
     const ids=data.map(a=>a.id)
     const{data:notas}=await sb.from('casamento_assessoras').select('assessora_id,nota').in('assessora_id',ids).not('nota','is',null)
     const pontos={Excelente:4,Bom:3,Médio:2,Ruim:1}
-    data.forEach(a=>{
-      const ns=(notas||[]).filter(n=>n.assessora_id===a.id).map(n=>n.nota)
-      a._notas=ns
-      a._media=ns.length?ns.reduce((s,n)=>s+(pontos[n]||0),0)/ns.length:null
-    })
+    data.forEach(a=>{const ns=(notas||[]).filter(n=>n.assessora_id===a.id).map(n=>n.nota);a._notas=ns;a._media=ns.length?ns.reduce((s,n)=>s+(pontos[n]||0),0)/ns.length:null})
   }
   assessoras=data||[];renderAssessoras()
 }
 function populateAssessoraFilters(){
-  // Popula destinos únicos dos casamentos
   const destinos=[...new Set(casamentos.map(c=>c.destino).filter(Boolean))].sort()
   const hoteisList=[...new Set(casamentos.map(c=>c.plan_hotel).filter(Boolean))].sort()
-  const fDest=document.getElementById('f-destino')
-  const fHot=document.getElementById('f-hotel')
+  const fDest=document.getElementById('f-destino'),fHot=document.getElementById('f-hotel')
   if(fDest){const cur=fDest.value;fDest.innerHTML='<option value="">Todos</option>'+destinos.map(d=>`<option value="${d}">${d}</option>`).join('');fDest.value=cur}
   if(fHot){const cur=fHot.value;fHot.innerHTML='<option value="">Todos</option>'+hoteisList.map(h=>`<option value="${h}">${h}</option>`).join('');fHot.value=cur}
 }
@@ -1304,23 +1296,12 @@ function renderAssessoras(){
   const fDest=document.getElementById('f-destino')?.value||''
   const fHot=document.getElementById('f-hotel')?.value||''
   const grid=document.getElementById('assessoras-grid')
-
-  // Filtro por destino/hotel: pega assessoras que foram a esses casamentos
   let aidsDestino=null, aidsHotel=null
-  if(fDest){
-    const cas=casamentos.filter(c=>c.destino===fDest).map(c=>c.id)
-    // busca escaladas para esses casamentos — usamos cache se disponível
-    aidsDestino=new Set((window._escaladasCache||[]).filter(e=>cas.includes(e.casamento_id)).map(e=>e.assessora_id))
-  }
-  if(fHot){
-    const cas=casamentos.filter(c=>c.plan_hotel===fHot).map(c=>c.id)
-    aidsHotel=new Set((window._escaladasCache||[]).filter(e=>cas.includes(e.casamento_id)).map(e=>e.assessora_id))
-  }
-
+  if(fDest){const cas=casamentos.filter(c=>c.destino===fDest).map(c=>c.id);aidsDestino=new Set((window._escaladasCache||[]).filter(e=>cas.includes(e.casamento_id)).map(e=>e.assessora_id))}
+  if(fHot){const cas=casamentos.filter(c=>c.plan_hotel===fHot).map(c=>c.id);aidsHotel=new Set((window._escaladasCache||[]).filter(e=>cas.includes(e.casamento_id)).map(e=>e.assessora_id))}
   const filtered=assessoras.filter(a=>{
     const ms=!s||a.nome?.toLowerCase().includes(s)||a.cidade?.toLowerCase().includes(s)
-    const mD=!aidsDestino||aidsDestino.has(a.id)
-    const mH=!aidsHotel||aidsHotel.has(a.id)
+    const mD=!aidsDestino||aidsDestino.has(a.id),mH=!aidsHotel||aidsHotel.has(a.id)
     return ms&&mD&&mH&&(!fI('f-ingles')||a.ingles)&&(!fI('f-espanhol')||a.espanhol)&&(!fI('f-frances')||a.frances)&&(!fI('f-italiano')||a.italiano)&&(!fI('f-h1')||a.hierarquia==='1ª Assessora')&&(!fI('f-h2')||a.hierarquia==='2ª Assessora')&&(!fI('f-h3')||a.hierarquia==='3ª Assessora')&&(!fI('f-h4')||a.hierarquia==='4ª Assessora')&&(!fI('f-h5')||a.hierarquia==='5ª Assessora')&&(!fI('f-equipe')||a.possui_equipe)&&(!fI('f-blacklist')||a.blacklist)&&(!fI('f-febre')||a.febre_amarela)&&(!fI('f-indicamos')||a.indicamos)&&(!fI('f-camera')||a.fala_camera)
   })
   document.getElementById('assessoras-count').textContent=assessoras.length+' assessoras cadastradas'
@@ -1330,12 +1311,8 @@ function renderAssessoras(){
     const scoreLabel=a._media>=3.5?'Excelente':a._media>=2.5?'Bom':a._media>=1.5?'Médio':a._media?'Ruim':null
     const scoreIcon=a._media>=3.5?'⭐':a._media>=2.5?'👍':a._media>=1.5?'😐':a._media?'👎':null
     const scoreBg=a._media>=3.5?'#e8f5e9':a._media>=2.5?'#e3f2fd':a._media>=1.5?'#fff3e0':a._media?'#fdecea':null
-    return`<div class="card" style="transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,.12)'" onmouseout="this.style.boxShadow=''"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px"><div style="display:flex;align-items:center;gap:12px"><div class="av">${a.nome[0]}</div><div><div style="font-weight:600;font-size:15px;font-family:'Cormorant Garamond',serif">${a.nome}</div><div style="font-size:12px;color:#888;margin-top:2px">📍 ${a.cidade||'—'}</div></div></div>
-    <div style="text-align:right">
-      ${a.blacklist?'<span class="tag tr" style="display:block;margin-bottom:4px">Blacklist</span>':''}
-      ${scoreLabel?`<span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:${scoreBg};color:${scoreColor};display:inline-block">${scoreIcon} ${scoreLabel}</span>`:''}
-      ${a._notas?.length?`<div style="font-size:10px;color:#aaa;margin-top:2px">${a._notas.length} avaliação(ões)</div>`:''}
-    </div>
+    return`<div class="card" style="transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,.12)'" onmouseout="this.style.boxShadow=''"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px"><div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0"><div class="av">${a.nome[0]}</div><div style="min-width:0"><div style="font-weight:600;font-size:15px;font-family:'Cormorant Garamond',serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.nome}</div><div style="font-size:12px;color:#888;margin-top:2px">📍 ${a.cidade||'—'}</div></div></div>
+    <div style="text-align:right;flex-shrink:0;margin-left:8px">${a.blacklist?'<span class="tag tr" style="display:block;margin-bottom:4px">Blacklist</span>':''}${scoreLabel?`<span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:${scoreBg};color:${scoreColor};display:inline-block">${scoreIcon} ${scoreLabel}</span>`:''}${a._notas?.length?`<div style="font-size:10px;color:#aaa;margin-top:2px">${a._notas.length} aval.</div>`:''}</div>
     </div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">${a.hierarquia?`<span class="tag tg">${a.hierarquia}</span>`:''}${a.ingles?'<span class="tag tb"><img src="https://flagcdn.com/w20/gb.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Inglês</span>':''}${a.espanhol?'<span class="tag tb"><img src="https://flagcdn.com/w20/es.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Espanhol</span>':''}${a.frances?'<span class="tag tb"><img src="https://flagcdn.com/w20/fr.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Francês</span>':''}${a.italiano?'<span class="tag tb"><img src="https://flagcdn.com/w20/it.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Italiano</span>':''}${a.possui_equipe?`<span class="tag tgr">👑 ${a.nome_equipe||'Tem Equipe'}</span>`:''}${a.lider_equipe_id&&!a.possui_equipe?`<span class="tag tb">👥 Membro de Equipe</span>`:''}${a.indicamos?'<span class="tag tgr">⭐ Indicamos</span>':''}${a.fala_camera?'<span class="tag tgy">📷 Câmera</span>':''}${a.febre_amarela?'<span class="tag tgr">💉 FY</span>':''}</div><div style="display:flex;gap:8px"><button class="btn bo" style="flex:1" onclick="openAssessora('${a.id}')">${window._podeEditarAssessoras?"Ver / Editar":"👁️ Visualizar"}</button><button class="btn bd" onclick="deleteAssessora('${a.id}')">✕</button></div></div>`
   }).join('')
 }
@@ -1362,9 +1339,7 @@ function openAssessora(id){
   fillAForm(a);document.getElementById('modal-assessora').classList.add('open')
   setTimeout(()=>{
     const pode=window._podeEditarAssessoras
-    document.querySelectorAll('#modal-assessora input,#modal-assessora select,#modal-assessora textarea').forEach(el=>{
-      el.disabled=!pode;el.style.background=pode?'':'#f8f8f8';el.style.cursor=pode?'':'not-allowed'
-    })
+    document.querySelectorAll('#modal-assessora input,#modal-assessora select,#modal-assessora textarea').forEach(el=>{el.disabled=!pode;el.style.background=pode?'':'#f8f8f8';el.style.cursor=pode?'':'not-allowed'})
     document.querySelectorAll('#modal-assessora .tr-row,.ic-card,.ro-opt').forEach(el=>{el.style.pointerEvents=pode?'':'none';el.style.opacity=pode?'':'0.6'})
     const btn=document.getElementById('btn-sa');if(btn)btn.style.display=pode?'':'none'
   },100)
@@ -1389,25 +1364,12 @@ function fillAForm(a){
   hierAtual=a.hierarquia||''
   document.querySelectorAll('.ro-opt[id^=hier]').forEach(e=>e.classList.remove('sel'))
   if(hierAtual){const map={'1ª Assessora':'hier-1','2ª Assessora':'hier-2','3ª Assessora':'hier-3','4ª Assessora':'hier-4','5ª Assessora':'hier-5'};document.getElementById(map[hierAtual])?.classList.add('sel')}
-  // Equipe
   tipoEquipeAtual='';membrosEquipe=[]
-  if(a.possui_equipe){
-    // Tem equipe própria — busca membros
-    tipoEquipeAtual='lidera'
-    const membros=assessoras.filter(x=>x.lider_equipe_id===a.id)
-    membrosEquipe=membros.map(x=>x.id)
-  } else if(a.lider_equipe_id){
-    tipoEquipeAtual='membro'
-  } else {
-    tipoEquipeAtual=''
-  }
+  if(a.possui_equipe){tipoEquipeAtual='lidera';membrosEquipe=assessoras.filter(x=>x.lider_equipe_id===a.id).map(x=>x.id)}
+  else if(a.lider_equipe_id){tipoEquipeAtual='membro'}
   selTipoEquipe(tipoEquipeAtual)
-  if(tipoEquipeAtual==='lidera'){renderMembros()}
-  if(tipoEquipeAtual==='membro'){
-    populateLiderSelect()
-    const sel=document.getElementById('a-lider-equipe')
-    if(sel&&a.lider_equipe_id)sel.value=a.lider_equipe_id
-  }
+  if(tipoEquipeAtual==='lidera')renderMembros()
+  if(tipoEquipeAtual==='membro'){populateLiderSelect();const sel=document.getElementById('a-lider-equipe');if(sel&&a.lider_equipe_id)sel.value=a.lider_equipe_id}
 }
 function getAData(){
   const v=id=>document.getElementById(id)?.value||''
@@ -1419,20 +1381,11 @@ async function salvarAssessora(){
   const data=getAData()
   if(!data.nome){alert('Preencha o nome!');btn.textContent='Salvar';btn.disabled=false;return}
   let savedId=assessoraAtual?.id
-  if(assessoraAtual){
-    await sb.from('assessoras').update(data).eq('id',assessoraAtual.id)
-    await registrarLog('editou','assessoras',assessoraAtual.id,data.nome,null,null)
-  }else{const{data:r}=await sb.from('assessoras').insert(data).select();savedId=r?.[0]?.id;await registrarLog('criou','assessoras',savedId,data.nome,null,null)}
-  // Salvar membros da equipe
+  if(assessoraAtual){await sb.from('assessoras').update(data).eq('id',assessoraAtual.id);await registrarLog('editou','assessoras',assessoraAtual.id,data.nome,null,null)}
+  else{const{data:r}=await sb.from('assessoras').insert(data).select();savedId=r?.[0]?.id;await registrarLog('criou','assessoras',savedId,data.nome,null,null)}
   if(tipoEquipeAtual==='lidera'&&savedId){
-    // Remove lider_equipe_id de quem não está mais na equipe
     await sb.from('assessoras').update({lider_equipe_id:null}).eq('lider_equipe_id',savedId)
-    // Adiciona os membros selecionados
-    if(membrosEquipe.length){
-      for(const mid of membrosEquipe){
-        await sb.from('assessoras').update({lider_equipe_id:savedId,possui_equipe:false}).eq('id',mid)
-      }
-    }
+    if(membrosEquipe.length)for(const mid of membrosEquipe)await sb.from('assessoras').update({lider_equipe_id:savedId,possui_equipe:false}).eq('id',mid)
   }
   btn.textContent='Salvar';btn.disabled=false;closeModal('modal-assessora');loadAssessoras()
 }
@@ -1442,62 +1395,21 @@ async function renderHistorico(){
   if(!assessoraAtual){con.innerHTML='<div class="em"><div class="em-t">Salve a assessora primeiro</div></div>';return}
   const{data}=await sb.from('casamento_assessoras').select('*,casamento:casamentos(nome,destino,plan_hotel,plan_data,status)').eq('assessora_id',assessoraAtual.id)
   if(!data||!data.length){con.innerHTML='<div class="em" style="padding:40px"><div class="em-i">💍</div><div class="em-t">Nenhum casamento no histórico ainda</div></div>';return}
-
-  // Calcular métrica
   const notas=data.filter(e=>e.nota).map(e=>e.nota)
   const pontos={Excelente:4,Bom:3,Médio:2,Ruim:1}
   const media=notas.length?notas.reduce((s,n)=>s+(pontos[n]||0),0)/notas.length:null
   const contagem={Excelente:notas.filter(n=>n==='Excelente').length,Bom:notas.filter(n=>n==='Bom').length,Médio:notas.filter(n=>n==='Médio').length,Ruim:notas.filter(n=>n==='Ruim').length}
-
   let metricaHTML=''
   if(notas.length){
     const scoreColor=media>=3.5?'#2e7d32':media>=2.5?'#1565c0':media>=1.5?'#e65100':'#c0392b'
     const scoreLabel=media>=3.5?'Excelente':media>=2.5?'Bom':media>=1.5?'Médio':'Ruim'
     const scoreIcon=media>=3.5?'⭐':media>=2.5?'👍':media>=1.5?'😐':'👎'
-    metricaHTML=`<div style="background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:12px;padding:20px;margin-bottom:20px">
-      <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px">📊 Performance Geral</div>
-      <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px">
-        <div style="text-align:center">
-          <div style="font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:600;color:${scoreColor};line-height:1">${scoreIcon}</div>
-          <div style="font-size:13px;font-weight:700;color:${scoreColor};margin-top:4px">${scoreLabel}</div>
-          <div style="font-size:11px;color:#888">${notas.length} avaliação(ões)</div>
-        </div>
-        <div style="flex:1">
-          ${['Excelente','Bom','Médio','Ruim'].map(n=>{
-            const pct=notas.length?Math.round(contagem[n]/notas.length*100):0
-            const bc=n==='Excelente'?'#2e7d32':n==='Bom'?'#1565c0':n==='Médio'?'#e65100':'#c0392b'
-            return`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-              <span style="font-size:11px;font-weight:500;color:#666;width:60px">${n}</span>
-              <div style="flex:1;height:8px;background:#f0f0f0;border-radius:4px;overflow:hidden">
-                <div style="height:100%;width:${pct}%;background:${bc};border-radius:4px;transition:width .3s"></div>
-              </div>
-              <span style="font-size:11px;color:#888;width:24px;text-align:right">${contagem[n]}</span>
-            </div>`
-          }).join('')}
-        </div>
-      </div>
-    </div>`
+    metricaHTML=`<div style="background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:12px;padding:20px;margin-bottom:20px"><div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px">📊 Performance Geral</div><div style="display:flex;align-items:center;gap:16px;margin-bottom:14px;flex-wrap:wrap"><div style="text-align:center"><div style="font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:600;color:${scoreColor};line-height:1">${scoreIcon}</div><div style="font-size:13px;font-weight:700;color:${scoreColor};margin-top:4px">${scoreLabel}</div><div style="font-size:11px;color:#888">${notas.length} avaliação(ões)</div></div><div style="flex:1;min-width:180px">${['Excelente','Bom','Médio','Ruim'].map(n=>{const pct=notas.length?Math.round(contagem[n]/notas.length*100):0;const bc=n==='Excelente'?'#2e7d32':n==='Bom'?'#1565c0':n==='Médio'?'#e65100':'#c0392b';return`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:11px;font-weight:500;color:#666;width:60px">${n}</span><div style="flex:1;height:8px;background:#f0f0f0;border-radius:4px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${bc};border-radius:4px;transition:width .3s"></div></div><span style="font-size:11px;color:#888;width:24px;text-align:right">${contagem[n]}</span></div>`}).join('')}</div></div></div>`
   }
-
   const notaColors={Excelente:'#2e7d32',Bom:'#1565c0',Médio:'#e65100',Ruim:'#c0392b'}
   const notaBgs={Excelente:'#e8f5e9',Bom:'#e3f2fd',Médio:'#fff3e0',Ruim:'#fdecea'}
   const notaIcons={Excelente:'⭐',Bom:'👍',Médio:'😐',Ruim:'👎'}
-
-  con.innerHTML=`${metricaHTML}
-    <div style="margin-bottom:12px;font-size:13px;color:#888">${data.length} casamento(s) no histórico</div>
-    ${data.map(e=>`<div class="hist" style="flex-direction:column;align-items:flex-start;gap:10px">
-      <div style="display:flex;justify-content:space-between;align-items:center;width:100%">
-        <div style="display:flex;align-items:center;gap:10px">
-          <div class="hdot"></div>
-          <div>
-            <div style="font-weight:600;font-size:14px;font-family:'Cormorant Garamond',serif">${e.casamento?.nome||'—'}</div>
-            <div style="font-size:12px;color:#888;margin-top:2px">📍 ${e.casamento?.destino||'—'} · 🏨 ${e.casamento?.plan_hotel||'—'}${e.casamento?.plan_data?' · 📅 '+fmtDate(e.casamento.plan_data):''}</div>
-          </div>
-        </div>
-        ${e.nota?`<span style="padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;background:${notaBgs[e.nota]};color:${notaColors[e.nota]}">${notaIcons[e.nota]} ${e.nota}</span>`:'<span style="font-size:12px;color:#aaa">Sem avaliação</span>'}
-      </div>
-      ${e.obs_casamento?`<div style="font-size:12px;color:#666;padding:8px 12px;background:#f8f6f2;border-radius:8px;width:100%;border-left:3px solid var(--gold-border)">"${e.obs_casamento}"</div>`:''}
-    </div>`).join('')}`
+  con.innerHTML=`${metricaHTML}<div style="margin-bottom:12px;font-size:13px;color:#888">${data.length} casamento(s) no histórico</div>${data.map(e=>`<div class="hist" style="flex-direction:column;align-items:flex-start;gap:10px"><div style="display:flex;justify-content:space-between;align-items:center;width:100%;flex-wrap:wrap;gap:8px"><div style="display:flex;align-items:center;gap:10px"><div class="hdot"></div><div><div style="font-weight:600;font-size:14px;font-family:'Cormorant Garamond',serif">${e.casamento?.nome||'—'}</div><div style="font-size:12px;color:#888;margin-top:2px">📍 ${e.casamento?.destino||'—'} · 🏨 ${e.casamento?.plan_hotel||'—'}${e.casamento?.plan_data?' · 📅 '+fmtDate(e.casamento.plan_data):''}</div></div></div>${e.nota?`<span style="padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;background:${notaBgs[e.nota]};color:${notaColors[e.nota]}">${notaIcons[e.nota]} ${e.nota}</span>`:'<span style="font-size:12px;color:#aaa">Sem avaliação</span>'}</div>${e.obs_casamento?`<div style="font-size:12px;color:#666;padding:8px 12px;background:#f8f6f2;border-radius:8px;width:100%;border-left:3px solid var(--gold-border)">"${e.obs_casamento}"</div>`:''}</div>`).join('')}`
 }
 
 // ══ HOTÉIS ══
@@ -1507,30 +1419,19 @@ function addPaisChip(e){
   if(e.key!=='Enter')return
   const val=e.target.value.trim()
   if(!val||paisChips.includes(val.toLowerCase()))return
-  paisChips.push(val.toLowerCase())
-  renderPaisChips()
-  e.target.value=''
-  renderHoteis()
+  paisChips.push(val.toLowerCase());renderPaisChips();e.target.value='';renderHoteis()
 }
-function removePaisChip(v){
-  paisChips=paisChips.filter(x=>x!==v)
-  renderPaisChips()
-  renderHoteis()
-}
+function removePaisChip(v){paisChips=paisChips.filter(x=>x!==v);renderPaisChips();renderHoteis()}
 function renderPaisChips(){
   const con=document.getElementById('pais-chips');if(!con)return
-  con.innerHTML=paisChips.map(p=>`<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:var(--gold-pale);color:var(--gold);border:1px solid var(--gold-border)">${p}<span onclick="removePaisChip('${p}')" style="cursor:pointer;opacity:.7;font-size:13px;line-height:1">×</span></span>`).join('')
+  con.innerHTML=paisChips.map(p=>`<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:var(--gold-pale);color:var(--gold);border:1px solid var(--gold-border)">${p}<span onclick="removePaisChip('${p}')" style="cursor:pointer;opacity:.7;font-size:13px;line-height:1;min-width:20px;text-align:center">×</span></span>`).join('')
 }
 function atualizarSliderMoeda(){
   const moeda=document.getElementById('slider-moeda')?.value||''
   const configs={USD:{min:100,max:2000,step:100},EUR:{min:100,max:2000,step:100},BRL:{min:150,max:10000,step:150},'':{min:100,max:2000,step:100}}
   const cfg=configs[moeda]||configs['']
   const prefix=moeda?moeda+' ':''
-  ;['slider-diaria-min','slider-diaria-max'].forEach((id,i)=>{
-    const el=document.getElementById(id);if(!el)return
-    el.min=cfg.min;el.max=cfg.max;el.step=cfg.step
-    el.value=i===0?cfg.min:cfg.max
-  })
+  ;['slider-diaria-min','slider-diaria-max'].forEach((id,i)=>{const el=document.getElementById(id);if(!el)return;el.min=cfg.min;el.max=cfg.max;el.step=cfg.step;el.value=i===0?cfg.min:cfg.max})
   document.getElementById('label-diaria-min').textContent=cfg.min
   document.getElementById('label-diaria-max').textContent=cfg.max
   document.getElementById('label-moeda-prefix').textContent=prefix
@@ -1538,10 +1439,7 @@ function atualizarSliderMoeda(){
   document.getElementById('slider-min-label').textContent=cfg.min
   document.getElementById('slider-max-label').textContent=cfg.max
 }
-function toggleHospedagem(){
-  const show=!getTg('h-hospedagem')
-  document.getElementById('h-hospedagem-section').style.display=show?'block':'none'
-}
+function toggleHospedagem(){const show=!getTg('h-hospedagem');document.getElementById('h-hospedagem-section').style.display=show?'block':'none'}
 function limparFiltrosHotel(){
   ['fh-reg-caribe','fh-reg-sul','fh-reg-europa','fh-reg-asia','fh-tipo-ai','fh-tipo-resort','fh-tipo-boutique','fh-tipo-pousada','fh-tipo-urbano','fh-tipo-fazenda','fh-kids','fh-pets','fh-spa','fh-cassino','fh-parque','fh-amb-praia','fh-amb-montanha','fh-amb-campo','fh-amb-cidade','fh-amb-lago','fh-amb-vinhedo','fh-voo-direto','fh-transfer','fh-hosp-local','fh-passaporte','fh-indicamos','fh-blacklist'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=false})
   ;['search-h','f-h-pais'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
@@ -1556,31 +1454,15 @@ function renderHoteis(){
   const cidade=(document.getElementById('f-h-cidade')?.value||'').toLowerCase()
   const moeda=document.getElementById('slider-moeda')?.value||''
   const fI=id=>document.getElementById(id)?.checked
-  const regioes=[]
-  if(fI('fh-reg-caribe'))regioes.push('Caribe')
-  if(fI('fh-reg-sul'))regioes.push('América do Sul')
-  if(fI('fh-reg-europa'))regioes.push('Europa')
-  if(fI('fh-reg-asia'))regioes.push('Ásia')
-  const tipos=[]
-  if(fI('fh-tipo-ai'))tipos.push('All Inclusive')
-  if(fI('fh-tipo-resort'))tipos.push('Resort')
-  if(fI('fh-tipo-boutique'))tipos.push('Boutique')
-  if(fI('fh-tipo-pousada'))tipos.push('Pousada')
-  if(fI('fh-tipo-urbano'))tipos.push('Hotel Urbano')
-  if(fI('fh-tipo-fazenda'))tipos.push('Fazenda/Vinhedo')
+  const regioes=[fI('fh-reg-caribe')&&'Caribe',fI('fh-reg-sul')&&'América do Sul',fI('fh-reg-europa')&&'Europa',fI('fh-reg-asia')&&'Ásia'].filter(Boolean)
+  const tipos=[fI('fh-tipo-ai')&&'All Inclusive',fI('fh-tipo-resort')&&'Resort',fI('fh-tipo-boutique')&&'Boutique',fI('fh-tipo-pousada')&&'Pousada',fI('fh-tipo-urbano')&&'Hotel Urbano',fI('fh-tipo-fazenda')&&'Fazenda/Vinhedo'].filter(Boolean)
+  const ambientes=[fI('fh-amb-praia')&&'Praia',fI('fh-amb-montanha')&&'Montanha',fI('fh-amb-campo')&&'Campo / Fazenda',fI('fh-amb-cidade')&&'Cidade',fI('fh-amb-lago')&&'Lago / Rio',fI('fh-amb-vinhedo')&&'Vinhedo'].filter(Boolean)
   const maxAcom=parseInt(document.getElementById('slider-acom')?.value||500)
   const minDiaria=parseInt(document.getElementById('slider-diaria-min')?.value||100)
   const maxDiaria=parseInt(document.getElementById('slider-diaria-max')?.value||2000)
-  const anyActive=[s,pais,cidade,moeda,regioes.length,tipos.length,fI('fh-kids'),fI('fh-pets'),fI('fh-spa'),fI('fh-cassino'),fI('fh-parque'),fI('fh-sol'),maxAcom<3000,moeda&&(minDiaria>100||maxDiaria<2000)].some(Boolean)
+  const anyActive=[s,pais,cidade,moeda,regioes.length,tipos.length,ambientes.length,paisChips.length,fI('fh-kids'),fI('fh-pets'),fI('fh-spa'),fI('fh-cassino'),fI('fh-parque'),maxAcom<3000].some(Boolean)
   const fc=document.getElementById('h-filtros-count');if(fc)fc.style.display=anyActive?'inline':'none'
   const grid=document.getElementById('hoteis-grid')
-  const ambientes=[]
-  if(fI('fh-amb-praia'))ambientes.push('Praia')
-  if(fI('fh-amb-montanha'))ambientes.push('Montanha')
-  if(fI('fh-amb-campo'))ambientes.push('Campo / Fazenda')
-  if(fI('fh-amb-cidade'))ambientes.push('Cidade')
-  if(fI('fh-amb-lago'))ambientes.push('Lago / Rio')
-  if(fI('fh-amb-vinhedo'))ambientes.push('Vinhedo')
   const filtered=hoteis.filter(h=>{
     const ms=!s||h.nome?.toLowerCase().includes(s)||h.cidade?.toLowerCase().includes(s)
     const mp=!paisChips.length||paisChips.some(p=>h.pais?.toLowerCase().includes(p))
@@ -1588,16 +1470,9 @@ function renderHoteis(){
     const mt=!tipos.length||tipos.includes(h.tipo)
     const ma=!ambientes.length||ambientes.includes(h.ambiente)
     const numAcom=parseInt(h.num_acomodacoes)||9999
-    const macom=numAcom<=maxAcom
     let mdiaria=true
-    if(moeda){
-      if(h.moeda_diaria!==moeda){mdiaria=false}
-      else{
-        const numDiaria=parseFloat((h.valor_diaria||'').replace(/\./g,'').replace(',','.').replace(/[^0-9.]/g,''))||0
-        mdiaria=numDiaria>=minDiaria&&numDiaria<=maxDiaria
-      }
-    }
-    return ms&&mp&&mr&&mt&&ma&&macom&&mdiaria&&(!fI('fh-indicamos')||['ja_indicamos','nao_indicamos'].includes(h.status_indicacao))&&(!fI('fh-blacklist')||h.blacklist_local)&&(!fI('fh-kids')||h.aceita_criancas)&&(!fI('fh-pets')||h.aceita_pets)&&(!fI('fh-spa')||h.spa)&&(!fI('fh-cassino')||h.cassino)&&(!fI('fh-parque')||h.parque_aquatico)&&(!fI('fh-voo-direto')||h.voo_direto)&&(!fI('fh-transfer')||h.transfer_incluso)&&(!fI('fh-hosp-local')||h.tem_hospedagem)&&(!fI('fh-passaporte')||h.passaporte_necessario)
+    if(moeda){if(h.moeda_diaria!==moeda){mdiaria=false}else{const numDiaria=parseFloat((h.valor_diaria||'').replace(/\./g,'').replace(',','.').replace(/[^0-9.]/g,''))||0;mdiaria=numDiaria>=minDiaria&&numDiaria<=maxDiaria}}
+    return ms&&mp&&mr&&mt&&ma&&numAcom<=maxAcom&&mdiaria&&(!fI('fh-indicamos')||['ja_indicamos','nao_indicamos'].includes(h.status_indicacao))&&(!fI('fh-blacklist')||h.blacklist_local)&&(!fI('fh-kids')||h.aceita_criancas)&&(!fI('fh-pets')||h.aceita_pets)&&(!fI('fh-spa')||h.spa)&&(!fI('fh-cassino')||h.cassino)&&(!fI('fh-parque')||h.parque_aquatico)&&(!fI('fh-voo-direto')||h.voo_direto)&&(!fI('fh-transfer')||h.transfer_incluso)&&(!fI('fh-hosp-local')||h.tem_hospedagem)&&(!fI('fh-passaporte')||h.passaporte_necessario)
   })
   document.getElementById('hoteis-count').textContent=hoteis.length+' local(is) cadastrado(s)'
   if(!filtered.length){grid.innerHTML='<div class="em"><div class="em-i">🏨</div><div class="em-t">Nenhum hotel encontrado</div></div>';return}
@@ -1624,12 +1499,9 @@ function openHotel(id){
   document.getElementById('atab-hgeral').classList.add('active')
   document.querySelector('#modal-hotel .atab').classList.add('active')
   fillHForm(h);document.getElementById('modal-hotel').classList.add('open')
-  // Aplicar readonly se não tiver permissão
   setTimeout(()=>{
     const pode=window._podeEditarLocais
-    document.querySelectorAll('#modal-hotel input,#modal-hotel select,#modal-hotel textarea').forEach(el=>{
-      el.disabled=!pode;el.style.background=pode?'':'#f8f8f8';el.style.cursor=pode?'':'not-allowed'
-    })
+    document.querySelectorAll('#modal-hotel input,#modal-hotel select,#modal-hotel textarea').forEach(el=>{el.disabled=!pode;el.style.background=pode?'':'#f8f8f8';el.style.cursor=pode?'':'not-allowed'})
     document.querySelectorAll('#modal-hotel .tr-row').forEach(el=>{el.style.pointerEvents=pode?'':'none';el.style.opacity=pode?'':'0.5'})
     const btn=document.getElementById('btn-sh');if(btn)btn.style.display=pode?'':'none'
   },100)
@@ -1638,9 +1510,8 @@ function clearHForm(){
   ['h-nome','h-rep-nome','h-rep-tel','h-pais','h-cidade','h-site','h-email','h-instagram','h-regime','h-acomodacoes','h-ano','h-rest-total','h-bares-total','h-rest-buffet','h-rest-carte','h-rest-ai','h-bares-ai','h-diaria','h-sinal','h-bloqueio','h-val-casamento','h-luau','h-factsheet','h-tour','h-espacos','h-mapa','h-percentual','h-a-pagar','h-email-cobr','h-comissao-valor','h-motivo-ind','h-hoteis-regiao'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
   document.getElementById('h-regiao').value='';document.getElementById('h-tipo').value=''
   const si=document.getElementById('h-status-indicacao');if(si)si.value=''
-  ;['h-frigobar','h-room-service','h-bar-pago','h-rest-pago','h-kids','h-parque','h-pub','h-cassino','h-spa','h-wifi','h-sol','h-criancas','h-pets','h-paga-com','h-blacklist-local'].forEach(id=>setTg(id,false))
+  ;['h-frigobar','h-room-service','h-bar-pago','h-rest-pago','h-kids','h-parque','h-pub','h-cassino','h-spa','h-wifi','h-sol','h-criancas','h-pets','h-paga-com','h-blacklist-local','h-voo-direto','h-transfer','h-passaporte'].forEach(id=>setTg(id,false))
   setTg('h-hospedagem',true);document.getElementById('h-hospedagem-section').style.display='none'
-  ;['h-voo-direto','h-transfer','h-passaporte','h-blacklist-local'].forEach(id=>setTg(id,false))
   const ha=document.getElementById('h-ambiente');if(ha)ha.value=''
 }
 function fillHForm(h){
@@ -1648,26 +1519,17 @@ function fillHForm(h){
   s('h-nome',h.nome);s('h-rep-nome',h.representante_nome);s('h-rep-tel',h.representante_telefone)
   s('h-pais',h.pais);s('h-cidade',h.cidade);s('h-site',h.site);s('h-email',h.email);s('h-instagram',h.instagram)
   s('h-regime',h.regime);s('h-acomodacoes',h.num_acomodacoes);s('h-ano',h.ano_construcao)
-  s('h-rest-total',h.restaurantes_total);s('h-bares-total',h.bares_total)
-  s('h-rest-buffet',h.restaurantes_buffet);s('h-rest-carte',h.restaurantes_carte)
-  s('h-rest-ai',h.restaurantes_ai);s('h-bares-ai',h.bares_ai)
-  s('h-diaria',h.valor_diaria);s('h-sinal',h.valor_sinal);s('h-bloqueio',h.valor_bloqueio)
-  s('h-val-casamento',h.valor_casamento);s('h-luau',h.valor_luau)
+  s('h-rest-total',h.restaurantes_total);s('h-bares-total',h.bares_total);s('h-rest-buffet',h.restaurantes_buffet);s('h-rest-carte',h.restaurantes_carte);s('h-rest-ai',h.restaurantes_ai);s('h-bares-ai',h.bares_ai)
+  s('h-diaria',h.valor_diaria);s('h-sinal',h.valor_sinal);s('h-bloqueio',h.valor_bloqueio);s('h-val-casamento',h.valor_casamento);s('h-luau',h.valor_luau)
   s('h-factsheet',h.factsheet);s('h-tour',h.tour_virtual);s('h-espacos',h.espacos);s('h-mapa',h.mapa)
   s('h-percentual',h.percentual);s('h-a-pagar',h.comissao_a_pagar);s('h-email-cobr',h.email_cobranca)
   s('h-comissao-valor',h.paga_comissao_valor);s('h-motivo-ind',h.motivo_nao_indicacao);s('h-hoteis-regiao',h.hoteis_regiao)
   if(h.regiao)document.getElementById('h-regiao').value=h.regiao
   if(h.tipo)document.getElementById('h-tipo').value=h.tipo
   const si=document.getElementById('h-status-indicacao');if(si&&h.status_indicacao)si.value=h.status_indicacao
-  setTg('h-frigobar',h.frigobar);setTg('h-room-service',h.room_service);setTg('h-bar-pago',h.bar_pago)
-  setTg('h-rest-pago',h.restaurante_pago);setTg('h-kids',h.area_kids);setTg('h-parque',h.parque_aquatico)
-  setTg('h-pub',h.pub_disco);setTg('h-cassino',h.cassino);setTg('h-spa',h.spa);setTg('h-wifi',h.wifi)
-  setTg('h-sol',h.por_do_sol);setTg('h-criancas',h.aceita_criancas);setTg('h-pets',h.aceita_pets)
-  setTg('h-paga-com',h.paga_comissao);setTg('h-blacklist-local',h.blacklist_local)
-  setTg('h-voo-direto',h.voo_direto);setTg('h-transfer',h.transfer_incluso);setTg('h-passaporte',h.passaporte_necessario)
+  setTg('h-frigobar',h.frigobar);setTg('h-room-service',h.room_service);setTg('h-bar-pago',h.bar_pago);setTg('h-rest-pago',h.restaurante_pago);setTg('h-kids',h.area_kids);setTg('h-parque',h.parque_aquatico);setTg('h-pub',h.pub_disco);setTg('h-cassino',h.cassino);setTg('h-spa',h.spa);setTg('h-wifi',h.wifi);setTg('h-sol',h.por_do_sol);setTg('h-criancas',h.aceita_criancas);setTg('h-pets',h.aceita_pets);setTg('h-paga-com',h.paga_comissao);setTg('h-blacklist-local',h.blacklist_local);setTg('h-voo-direto',h.voo_direto);setTg('h-transfer',h.transfer_incluso);setTg('h-passaporte',h.passaporte_necessario)
   const ha=document.getElementById('h-ambiente');if(ha&&h.ambiente)ha.value=h.ambiente
-  const temHosp=h.tem_hospedagem!==false
-  setTg('h-hospedagem',temHosp);document.getElementById('h-hospedagem-section').style.display=temHosp?'none':'block'
+  const temHosp=h.tem_hospedagem!==false;setTg('h-hospedagem',temHosp);document.getElementById('h-hospedagem-section').style.display=temHosp?'none':'block'
 }
 function getHData(){
   const v=id=>document.getElementById(id)?.value||''
@@ -1677,24 +1539,17 @@ async function salvarHotel(){
   const btn=document.getElementById('btn-sh');btn.textContent='Salvando...';btn.disabled=true
   const data=getHData()
   if(!data.nome){alert('Preencha o nome do hotel!');btn.textContent='Salvar';btn.disabled=false;return}
-  if(hotelAtual){
-    await sb.from('locais').update(data).eq('id',hotelAtual.id)
-    await registrarLog('editou','locais',hotelAtual.id,data.nome,null,null)
-  }else{
-    const{data:r}=await sb.from('locais').insert(data).select()
-    await registrarLog('criou','locais',r?.[0]?.id,data.nome,null,null)
-  }
+  if(hotelAtual){await sb.from('locais').update(data).eq('id',hotelAtual.id);await registrarLog('editou','locais',hotelAtual.id,data.nome,null,null)}
+  else{const{data:r}=await sb.from('locais').insert(data).select();await registrarLog('criou','locais',r?.[0]?.id,data.nome,null,null)}
   btn.textContent='Salvar';btn.disabled=false;closeModal('modal-hotel');loadHoteis()
 }
 async function deleteHotel(id){if(!confirm('Remover?'))return;await sb.from('locais').delete().eq('id',id);loadHoteis()}
 
 // ── SOLICITAÇÕES DE VIAGEM
 let solAtual=null, solAssessoraAtual=null
-
 async function loadSolicitacoes(casId){
   const{data}=await sb.from('solicitacoes_viagem').select('*').eq('casamento_id',casId).order('created_at',{ascending:false})
-  const sec=document.getElementById('solicitacoes-section')
-  const list=document.getElementById('solicitacoes-list')
+  const sec=document.getElementById('solicitacoes-section'),list=document.getElementById('solicitacoes-list')
   if(!sec||!list)return
   sec.style.display=data?.length?'block':'none'
   if(!data?.length)return
@@ -1704,46 +1559,23 @@ async function loadSolicitacoes(casId){
     const servicos=[s.precisa_passagem&&'✈️ Passagem',s.precisa_hotel&&'🏨 Hotel',s.precisa_seguro&&'🛡️ Seguro',s.precisa_transfer&&'🚌 Transfer',s.precisa_trem&&'🚂 Trem'].filter(Boolean)
     const okCount=[s.passagem_ok,s.hotel_ok,s.seguro_ok,s.transfer_ok,s.trem_ok].filter(Boolean).length
     const totalServicos=servicos.length
-    return`<div class="ai" style="margin-bottom:12px">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
-        <div>
-          <div style="font-weight:600;font-size:14px">${s.assessora_nome}</div>
-          <div style="font-size:12px;color:#888;margin-top:2px">Solicitado por ${s.solicitado_por||'—'} · ${new Date(s.created_at).toLocaleDateString('pt-BR')}</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:${statusColor[s.status]+'20'};color:${statusColor[s.status]}">${statusLabel[s.status]||s.status}</span>
-          <button class="btn bd bsm" onclick="removerSolicitacao('${s.id}')">✕</button>
-        </div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;font-size:12px">
-        <div><span style="color:#888">Chegada:</span> <strong>${s.data_chegada?fmtDate(s.data_chegada):'-'} ${s.hora_chegada?s.hora_chegada.slice(0,5):''}</strong></div>
-        <div><span style="color:#888">Saída:</span> <strong>${s.data_saida?fmtDate(s.data_saida):'-'} ${s.hora_saida?s.hora_saida.slice(0,5):''}</strong></div>
-      </div>
-      ${s.obs?`<div style="font-size:12px;color:#666;padding:8px;background:#f8f6f2;border-radius:6px;margin-bottom:10px">${s.obs}</div>`:''}
-      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
-        ${s.precisa_passagem?`<span class="tag ${s.passagem_ok?'tgr':'tgy'}" style="cursor:pointer" onclick="toggleSolItem('${s.id}','passagem_ok',${s.passagem_ok})">✈️ Passagem ${s.passagem_ok?'✓':''}</span>`:''}
-        ${s.precisa_hotel?`<span class="tag ${s.hotel_ok?'tgr':'tgy'}" style="cursor:pointer" onclick="toggleSolItem('${s.id}','hotel_ok',${s.hotel_ok})">🏨 Hotel ${s.hotel_ok?'✓':''}</span>`:''}
-        ${s.precisa_seguro?`<span class="tag ${s.seguro_ok?'tgr':'tgy'}" style="cursor:pointer" onclick="toggleSolItem('${s.id}','seguro_ok',${s.seguro_ok})">🛡️ Seguro ${s.seguro_ok?'✓':''}</span>`:''}
-        ${s.precisa_transfer?`<span class="tag ${s.transfer_ok?'tgr':'tgy'}" style="cursor:pointer" onclick="toggleSolItem('${s.id}','transfer_ok',${s.transfer_ok})">🚌 Transfer ${s.transfer_ok?'✓':''}</span>`:''}
-        ${s.precisa_trem?`<span class="tag ${s.trem_ok?'tgr':'tgy'}" style="cursor:pointer" onclick="toggleSolItem('${s.id}','trem_ok',${s.trem_ok})">🚂 Trem ${s.trem_ok?'✓':''}</span>`:''}
-      </div>
-      ${totalServicos>0?`<div style="font-size:11px;color:#888">${okCount}/${totalServicos} serviços confirmados</div>`:''}
-    </div>`
+    return`<div class="ai" style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;flex-wrap:wrap;gap:8px"><div><div style="font-weight:600;font-size:14px">${s.assessora_nome}</div><div style="font-size:12px;color:#888;margin-top:2px">Solicitado por ${s.solicitado_por||'—'} · ${new Date(s.created_at).toLocaleDateString('pt-BR')}</div></div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:${statusColor[s.status]+'20'};color:${statusColor[s.status]}">${statusLabel[s.status]||s.status}</span><button class="btn bd bsm" onclick="removerSolicitacao('${s.id}')">✕</button></div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;font-size:12px"><div><span style="color:#888">Chegada:</span> <strong>${s.data_chegada?fmtDate(s.data_chegada):'-'} ${s.hora_chegada?s.hora_chegada.slice(0,5):''}</strong></div><div><span style="color:#888">Saída:</span> <strong>${s.data_saida?fmtDate(s.data_saida):'-'} ${s.hora_saida?s.hora_saida.slice(0,5):''}</strong></div></div>
+    ${s.obs?`<div style="font-size:12px;color:#666;padding:8px;background:#f8f6f2;border-radius:6px;margin-bottom:10px">${s.obs}</div>`:''}
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+      ${s.precisa_passagem?`<span class="tag ${s.passagem_ok?'tgr':'tgy'}" style="cursor:pointer;min-height:32px;display:inline-flex;align-items:center" onclick="toggleSolItem('${s.id}','passagem_ok',${s.passagem_ok})">✈️ Passagem ${s.passagem_ok?'✓':''}</span>`:''}
+      ${s.precisa_hotel?`<span class="tag ${s.hotel_ok?'tgr':'tgy'}" style="cursor:pointer;min-height:32px;display:inline-flex;align-items:center" onclick="toggleSolItem('${s.id}','hotel_ok',${s.hotel_ok})">🏨 Hotel ${s.hotel_ok?'✓':''}</span>`:''}
+      ${s.precisa_seguro?`<span class="tag ${s.seguro_ok?'tgr':'tgy'}" style="cursor:pointer;min-height:32px;display:inline-flex;align-items:center" onclick="toggleSolItem('${s.id}','seguro_ok',${s.seguro_ok})">🛡️ Seguro ${s.seguro_ok?'✓':''}</span>`:''}
+      ${s.precisa_transfer?`<span class="tag ${s.transfer_ok?'tgr':'tgy'}" style="cursor:pointer;min-height:32px;display:inline-flex;align-items:center" onclick="toggleSolItem('${s.id}','transfer_ok',${s.transfer_ok})">🚌 Transfer ${s.transfer_ok?'✓':''}</span>`:''}
+      ${s.precisa_trem?`<span class="tag ${s.trem_ok?'tgr':'tgy'}" style="cursor:pointer;min-height:32px;display:inline-flex;align-items:center" onclick="toggleSolItem('${s.id}','trem_ok',${s.trem_ok})">🚂 Trem ${s.trem_ok?'✓':''}</span>`:''}
+    </div>
+    ${totalServicos>0?`<div style="font-size:11px;color:#888">${okCount}/${totalServicos} serviços confirmados</div>`:''}</div>`
   }).join('')
 }
-
-async function removerSolicitacao(id){
-  if(!confirm('Remover esta solicitação?'))return
-  await sb.from('solicitacoes_viagem').delete().eq('id',id)
-  loadSolicitacoes(casamentoAtual?.id)
-}
-
+async function removerSolicitacao(id){if(!confirm('Remover esta solicitação?'))return;await sb.from('solicitacoes_viagem').delete().eq('id',id);loadSolicitacoes(casamentoAtual?.id)}
 async function toggleSolItem(id,campo,atual){
-  const novoVal=!atual
-  const update={[campo]:novoVal}
-  // Buscar solicitação para verificar se tudo está ok
-  const{data:s}=await sb.from('solicitacoes_viagem').select('*').eq('id',id).single()
-  if(!s)return
+  const novoVal=!atual,update={[campo]:novoVal}
+  const{data:s}=await sb.from('solicitacoes_viagem').select('*').eq('id',id).single();if(!s)return
   const campos={passagem_ok:s.precisa_passagem,hotel_ok:s.precisa_hotel,seguro_ok:s.precisa_seguro,transfer_ok:s.precisa_transfer,trem_ok:s.precisa_trem}
   const valores={...s,[campo]:novoVal}
   const tudo=Object.keys(campos).every(k=>!campos[k]||valores[k])
@@ -1751,7 +1583,6 @@ async function toggleSolItem(id,campo,atual){
   await sb.from('solicitacoes_viagem').update(update).eq('id',id)
   loadSolicitacoes(casamentoAtual?.id)
 }
-
 function abrirSolicitacao(escaladaId){
   const e=escaladas.find(x=>x.id===escaladaId);if(!e)return
   solAssessoraAtual=e
@@ -1760,131 +1591,52 @@ function abrirSolicitacao(escaladaId){
   document.getElementById('msol-nome').textContent=e.assessora?.nome||'—'
   document.getElementById('msol-cidade').textContent=e.assessora?.cidade||''
   document.getElementById('msol-avatar').textContent=(e.assessora?.nome||'?')[0]
-  document.getElementById('sol-data-chegada').value=''
-  document.getElementById('sol-data-saida').value=''
-  document.getElementById('sol-hora-chegada').value=''
-  document.getElementById('sol-hora-saida').value=''
-  document.getElementById('sol-obs').value=''
+  ;['sol-data-chegada','sol-data-saida','sol-hora-chegada','sol-hora-saida','sol-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
   ;['sol-passagem','sol-hotel','sol-seguro','sol-transfer','sol-trem'].forEach(id=>setTg(id,false))
   document.getElementById('modal-solicitacao').classList.add('open')
 }
-
 async function salvarSolicitacao(){
   const btn=document.getElementById('btn-ssol');btn.textContent='Enviando...';btn.disabled=true
-  const data={
-    casamento_id:casamentoAtual?.id,
-    casamento_nome:casamentoAtual?.nome,
-    assessora_id:solAssessoraAtual?.assessora_id,
-    assessora_nome:solAssessoraAtual?.assessora?.nome,
-    data_chegada:document.getElementById('sol-data-chegada').value||null,
-    hora_chegada:document.getElementById('sol-hora-chegada').value||null,
-    data_saida:document.getElementById('sol-data-saida').value||null,
-    hora_saida:document.getElementById('sol-hora-saida').value||null,
-    precisa_passagem:getTg('sol-passagem'),
-    precisa_hotel:getTg('sol-hotel'),
-    precisa_seguro:getTg('sol-seguro'),
-    precisa_transfer:getTg('sol-transfer'),
-    precisa_trem:getTg('sol-trem'),
-    obs:document.getElementById('sol-obs').value,
-    solicitado_por:usuarioAtual?.nome,
-    status:'pendente'
-  }
+  const data={casamento_id:casamentoAtual?.id,casamento_nome:casamentoAtual?.nome,assessora_id:solAssessoraAtual?.assessora_id,assessora_nome:solAssessoraAtual?.assessora?.nome,data_chegada:document.getElementById('sol-data-chegada').value||null,hora_chegada:document.getElementById('sol-hora-chegada').value||null,data_saida:document.getElementById('sol-data-saida').value||null,hora_saida:document.getElementById('sol-hora-saida').value||null,precisa_passagem:getTg('sol-passagem'),precisa_hotel:getTg('sol-hotel'),precisa_seguro:getTg('sol-seguro'),precisa_transfer:getTg('sol-transfer'),precisa_trem:getTg('sol-trem'),obs:document.getElementById('sol-obs').value,solicitado_por:usuarioAtual?.nome,status:'pendente'}
   await sb.from('solicitacoes_viagem').insert(data)
-  // Enviar e-mail via Resend
   await enviarEmailSolicitacao(data)
-  await enviarTarefaTeams(data)
   await enviarTarefaTeams(data)
   await registrarLog('solicitou viagem','casamentos',casamentoAtual?.id,casamentoAtual?.nome,null,{assessora:data.assessora_nome})
   btn.textContent='✈️ Enviar Solicitação';btn.disabled=false
-  closeModal('modal-solicitacao')
-  loadSolicitacoes(casamentoAtual?.id)
+  closeModal('modal-solicitacao');loadSolicitacoes(casamentoAtual?.id)
   document.getElementById('solicitacoes-section').style.display='block'
 }
-
 async function enviarEmailSolicitacao(data){
-  try{
-    await fetch('https://api.resend.com/emails',{
-      method:'POST',
-      headers:{'Authorization':'Bearer re_UdBcUNwe_4hEAQZ29tPm9dYQNHhajszBC','Content-Type':'application/json'},
-      body:JSON.stringify({
-        from:'Altar — Welcome Weddings <onboarding@resend.dev>',
-        to:['raphaela@welcomeweddings.com.br'],
-        subject:`✈️ Nova solicitação de viagem — ${data.casamento_nome}`,
-        html:`<div style="font-family:sans-serif;max-width:500px;margin:0 auto;padding:32px">
-          <h2 style="color:#b8965a;font-family:Georgia,serif">Nova Solicitação de Viagem</h2>
-          <p style="color:#555">Uma nova solicitação foi registrada no sistema <strong>Altar</strong>.</p>
-          <div style="background:#fdf8f0;border:1px solid #f0e8d0;border-radius:10px;padding:20px;margin:20px 0">
-            <p><strong>Casamento:</strong> ${data.casamento_nome}</p>
-            <p><strong>Assessora:</strong> ${data.assessora_nome}</p>
-            <p><strong>Solicitado por:</strong> ${data.solicitado_por}</p>
-          </div>
-          <p style="color:#888;font-size:13px">Acesse o sistema para ver todos os detalhes e marcar os serviços conforme forem sendo providenciados.</p>
-          <a href="https://welcome-weddings.vercel.app" style="display:inline-block;background:#b8965a;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:8px">Abrir o Altar →</a>
-        </div>`
-      })
-    })
-  }catch(e){console.log('Email error:',e)}
+  try{await fetch('https://api.resend.com/emails',{method:'POST',headers:{'Authorization':'Bearer re_UdBcUNwe_4hEAQZ29tPm9dYQNHhajszBC','Content-Type':'application/json'},body:JSON.stringify({from:'Altar — Welcome Weddings <onboarding@resend.dev>',to:['raphaela@welcomeweddings.com.br'],subject:`✈️ Nova solicitação de viagem — ${data.casamento_nome}`,html:`<div style="font-family:sans-serif;max-width:500px;margin:0 auto;padding:32px"><h2 style="color:#b8965a;font-family:Georgia,serif">Nova Solicitação de Viagem</h2><p style="color:#555">Uma nova solicitação foi registrada no sistema <strong>Altar</strong>.</p><div style="background:#fdf8f0;border:1px solid #f0e8d0;border-radius:10px;padding:20px;margin:20px 0"><p><strong>Casamento:</strong> ${data.casamento_nome}</p><p><strong>Assessora:</strong> ${data.assessora_nome}</p><p><strong>Solicitado por:</strong> ${data.solicitado_por}</p></div><a href="https://welcome-weddings.vercel.app" style="display:inline-block;background:#b8965a;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:8px">Abrir o Altar →</a></div>`})})}catch(e){console.log('Email error:',e)}
 }
 async function enviarTarefaTeams(data){
-  try{
-    await sb.functions.invoke('create-teams-task',{
-      body:{
-        titulo:data.casamento_nome,
-        link_card:'https://welcome-weddings.vercel.app'
-      }
-    })
-  }catch(e){
-    console.error('Erro Teams:',e)
-  }
+  try{await sb.functions.invoke('create-teams-task',{body:{titulo:data.casamento_nome,link_card:'https://welcome-weddings.vercel.app'}})}catch(e){console.error('Erro Teams:',e)}
 }
-let usuariosList=[], usuarioEditando=null=[],
 
+// ── USUARIOS
+let usuariosList=[], usuarioEditando=null
 async function loadUsuarios(){
   const{data}=await sb.from('usuarios').select('*').order('nome')
   usuariosList=data||[]
   document.getElementById('usuarios-count').textContent=usuariosList.length+' usuário(s) cadastrado(s)'
   renderUsuarios()
 }
-
 function renderUsuarios(){
   const grid=document.getElementById('usuarios-grid')
   if(!usuariosList.length){grid.innerHTML='<div class="em"><div class="em-i">👤</div><div class="em-t">Nenhum usuário cadastrado</div></div>';return}
   const setorIcon={admin:'👑',planejamento:'📋',viagem:'✈️',producao:'🎨',visualizacao:'👁️'}
   const setorNome={admin:'Admin',planejamento:'Planejamento',viagem:'Viagem',producao:'Produção',visualizacao:'Visualização'}
-  grid.innerHTML=usuariosList.map(u=>`
-    <div class="card" style="${!u.ativo?'opacity:.6':''}">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
-        <div class="av">${u.nome[0]}</div>
-        <div>
-          <div style="font-weight:600;font-size:15px">${u.nome}</div>
-          <div style="font-size:12px;color:#888">${u.email}</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;margin-bottom:14px">
-        <span class="tag tg">${setorIcon[u.setor]||'👤'} ${setorNome[u.setor]||u.setor}</span>
-        ${!u.ativo?'<span class="tag tr">Inativo</span>':'<span class="tag tgr">Ativo</span>'}
-        ${u.id===usuarioAtual?.id?'<span class="tag tb">Você</span>':''}
-      </div>
-      <div style="display:flex;gap:8px">
-        <button class="btn bo" style="flex:1" onclick="editarUsuario('${u.id}')">Editar</button>
-        <button class="btn bo" style="color:#1565c0;border-color:#1565c0" onclick="abrirRedefinirSenha('${u.id}','${u.nome.replace(/'/g,"\\'")}')">🔑</button>
-        ${u.id!==usuarioAtual?.id?`<button class="btn bo" style="color:${u.ativo?'var(--red)':'var(--green)'};border-color:${u.ativo?'var(--red)':'var(--green)'}" onclick="toggleUsuario('${u.id}',${u.ativo})">${u.ativo?'Desativar':'Ativar'}</button>`:''}
-      </div>
-    </div>`).join('')
+  grid.innerHTML=usuariosList.map(u=>`<div class="card" style="${!u.ativo?'opacity:.6':''}"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><div class="av">${u.nome[0]}</div><div style="min-width:0"><div style="font-weight:600;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u.nome}</div><div style="font-size:12px;color:#888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u.email}</div></div></div><div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap"><span class="tag tg">${setorIcon[u.setor]||'👤'} ${setorNome[u.setor]||u.setor}</span>${!u.ativo?'<span class="tag tr">Inativo</span>':'<span class="tag tgr">Ativo</span>'}${u.id===usuarioAtual?.id?'<span class="tag tb">Você</span>':''}</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn bo" style="flex:1" onclick="editarUsuario('${u.id}')">Editar</button><button class="btn bo" style="color:#1565c0;border-color:#1565c0" onclick="abrirRedefinirSenha('${u.id}','${u.nome.replace(/'/g,"\\'")}')">🔑</button>${u.id!==usuarioAtual?.id?`<button class="btn bo" style="color:${u.ativo?'var(--red)':'var(--green)'};border-color:${u.ativo?'var(--red)':'var(--green)'}" onclick="toggleUsuario('${u.id}',${u.ativo})">${u.ativo?'Desativar':'Ativar'}</button>`:''}</div></div>`).join('')
 }
-
 function openNovoUsuario(){
   usuarioEditando=null
   document.getElementById('mu-title').textContent='Novo Usuário'
-  document.getElementById('u-nome').value=''
-  document.getElementById('u-email').value=''
-  document.getElementById('u-senha').value=''
+  ;['u-nome','u-email','u-senha'].forEach(id=>document.getElementById(id).value='')
   document.getElementById('u-setor').value='planejamento'
   document.getElementById('u-senha-field').style.display='block'
   setTg('u-ativo',true)
   document.getElementById('modal-usuario').classList.add('open')
 }
-
 function editarUsuario(id){
   const u=usuariosList.find(x=>x.id===id);if(!u)return
   usuarioEditando=u
@@ -1897,7 +1649,6 @@ function editarUsuario(id){
   setTg('u-ativo',u.ativo)
   document.getElementById('modal-usuario').classList.add('open')
 }
-
 async function salvarUsuario(){
   const btn=document.getElementById('btn-su');btn.textContent='Salvando...';btn.disabled=true
   const nome=document.getElementById('u-nome').value.trim()
@@ -1907,47 +1658,37 @@ async function salvarUsuario(){
   const ativo=getTg('u-ativo')
   if(!nome||!email){alert('Preencha nome e e-mail!');btn.textContent='Salvar';btn.disabled=false;return}
   if(!usuarioEditando){
-    // Criar novo usuário no Auth
     if(!senha||senha.length<6){alert('Senha deve ter pelo menos 6 caracteres!');btn.textContent='Salvar';btn.disabled=false;return}
-    const{data,error}=await sb.auth.admin?.createUser({email,password:senha,email_confirm:true})
-    if(error||!data?.user){
-      // Fallback: usar signUp
+    const{data:ad,error:ae}=await sb.auth.admin?.createUser({email,password:senha,email_confirm:true})
+    if(ae||!ad?.user){
       const{data:sd,error:se}=await sb.auth.signUp({email,password:senha})
       if(se){alert('Erro ao criar usuário: '+se.message);btn.textContent='Salvar';btn.disabled=false;return}
       const uid=sd?.user?.id
-      if(uid){await sb.from('usuarios').insert({id:uid,nome,email,setor,ativo})}
-    } else {
-      await sb.from('usuarios').insert({id:data.user.id,nome,email,setor,ativo})
-    }
+      if(uid)await sb.from('usuarios').insert({id:uid,nome,email,setor,ativo})
+    }else{await sb.from('usuarios').insert({id:ad.user.id,nome,email,setor,ativo})}
     await registrarLog('criou usuário','usuarios',null,nome,null,{nome,email,setor})
-  } else {
+  }else{
     await sb.from('usuarios').update({nome,setor,ativo}).eq('id',usuarioEditando.id)
     await registrarLog('editou usuário','usuarios',usuarioEditando.id,nome,null,{nome,setor,ativo})
   }
-  btn.textContent='Salvar';btn.disabled=false
-  closeModal('modal-usuario');loadUsuarios()
+  btn.textContent='Salvar';btn.disabled=false;closeModal('modal-usuario');loadUsuarios()
 }
-
 let usuarioSenhaId=null
 function abrirRedefinirSenha(id,nome){
   usuarioSenhaId=id
   document.getElementById('ms-title').textContent='Redefinir Senha'
   document.getElementById('ms-sub').textContent=`Nova senha para ${nome}`
-  document.getElementById('nova-senha').value=''
-  document.getElementById('confirma-senha').value=''
+  document.getElementById('nova-senha').value='';document.getElementById('confirma-senha').value=''
   document.getElementById('modal-senha').classList.add('open')
 }
 async function salvarNovaSenha(){
   const btn=document.getElementById('btn-senha');btn.textContent='Salvando...';btn.disabled=true
-  const nova=document.getElementById('nova-senha').value
-  const confirma=document.getElementById('confirma-senha').value
+  const nova=document.getElementById('nova-senha').value,confirma=document.getElementById('confirma-senha').value
   if(!nova||nova.length<6){alert('A senha deve ter pelo menos 6 caracteres!');btn.textContent='Salvar Nova Senha';btn.disabled=false;return}
   if(nova!==confirma){alert('As senhas não coincidem!');btn.textContent='Salvar Nova Senha';btn.disabled=false;return}
   const{error}=await sb.rpc('reset_user_password',{user_id:usuarioSenhaId,new_password:nova})
   if(error){alert('Erro ao alterar senha: '+error.message);btn.textContent='Salvar Nova Senha';btn.disabled=false;return}
-  btn.textContent='Salvar Nova Senha';btn.disabled=false
-  closeModal('modal-senha')
-  alert('✅ Senha alterada com sucesso!')
+  btn.textContent='Salvar Nova Senha';btn.disabled=false;closeModal('modal-senha');alert('✅ Senha alterada com sucesso!')
 }
 async function toggleUsuario(id,ativo){
   const u=usuariosList.find(x=>x.id===id)
@@ -1959,48 +1700,27 @@ async function toggleUsuario(id,ativo){
 
 // ── HOTEIS DO CASAMENTO
 let casHoteis=[], hotelPickerOpen=false
-
 async function loadCasHoteis(casId){
   const{data}=await sb.from('casamento_hoteis').select('*,hotel:locais(id,nome,cidade,pais,regiao,tipo,ambiente,por_do_sol,spa,aceita_criancas)').eq('casamento_id',casId)
-  casHoteis=data||[]
-  renderCasHoteis()
-  renderLinkArea(casId)
+  casHoteis=data||[];renderCasHoteis();renderLinkArea(casId)
 }
-
 function renderCasHoteis(){
   const list=document.getElementById('c-hoteis-list');if(!list)return
   if(!casHoteis.length){list.innerHTML='<div style="font-size:13px;color:#aaa;padding:8px 0">Nenhum hotel selecionado ainda</div>';return}
-  list.innerHTML=casHoteis.map(ch=>`
-    <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:8px;margin-bottom:8px">
-      <div style="flex:1">
-        <div style="font-weight:600;font-size:13px">${ch.hotel?.nome||'—'}</div>
-        <div style="font-size:11px;color:#888">${[ch.hotel?.cidade,ch.hotel?.pais].filter(Boolean).join(' · ')}</div>
-      </div>
-      <button class="btn bd bsm" onclick="removerCasHotel('${ch.id}')">✕</button>
-    </div>`).join('')
+  list.innerHTML=casHoteis.map(ch=>`<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:8px;margin-bottom:8px"><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${ch.hotel?.nome||'—'}</div><div style="font-size:11px;color:#888">${[ch.hotel?.cidade,ch.hotel?.pais].filter(Boolean).join(' · ')}</div></div><button class="btn bd bsm" onclick="removerCasHotel('${ch.id}')">✕</button></div>`).join('')
 }
-
 async function renderLinkArea(casId){
   const area=document.getElementById('c-link-area');if(!area)return
   if(!casHoteis.length){area.style.display='none';return}
-  // Gerar ou buscar token
   let token=casamentoAtual?.link_token
-  if(!token){
-    token=Math.random().toString(36).substring(2,10).toUpperCase()
-    await sb.from('casamentos').update({link_token:token}).eq('id',casId)
-    if(casamentoAtual)casamentoAtual.link_token=token
-  }
+  if(!token){token=Math.random().toString(36).substring(2,10).toUpperCase();await sb.from('casamentos').update({link_token:token}).eq('id',casId);if(casamentoAtual)casamentoAtual.link_token=token}
   const link=`${window.location.origin}/casal.html?c=${token}`
-  document.getElementById('c-link-input').value=link
-  area.style.display='block'
+  document.getElementById('c-link-input').value=link;area.style.display='block'
 }
-
 function copiarLink(){
-  const input=document.getElementById('c-link-input')
-  input.select();document.execCommand('copy')
+  const input=document.getElementById('c-link-input');input.select();document.execCommand('copy')
   const btn=event.target;btn.textContent='Copiado!';setTimeout(()=>btn.textContent='Copiar',2000)
 }
-
 function toggleHotelPicker(){
   hotelPickerOpen=!hotelPickerOpen
   const picker=document.getElementById('c-hotel-picker');if(!picker)return
@@ -2009,41 +1729,20 @@ function toggleHotelPicker(){
   const selecionados=casHoteis.map(ch=>ch.hotel?.id)
   const disponiveis=hoteis.filter(h=>!selecionados.includes(h.id))
   if(!disponiveis.length){picker.innerHTML='<div style="font-size:13px;color:#aaa;padding:8px">Todos os locais já foram adicionados</div>';return}
-  picker.innerHTML=`<div style="border:2px dashed var(--gold);border-radius:10px;background:var(--gold-pale);padding:16px;margin-top:8px">
-    <input placeholder="Buscar local..." oninput="filtrarPickerHotel(this.value)" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--gold-border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:10px">
-    <div id="c-picker-list" style="max-height:250px;overflow-y:auto">
-      ${disponiveis.map(h=>`
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gold-border)">
-          <div><span style="font-weight:600;font-size:13px">${h.nome}</span><span style="font-size:12px;color:#888;margin-left:6px">${[h.cidade,h.pais].filter(Boolean).join(' · ')}</span></div>
-          <button class="btn bg bsm" onclick="adicionarCasHotel('${h.id}')">+ Adicionar</button>
-        </div>`).join('')}
-    </div>
-    <button class="btn bo bsm" style="margin-top:10px" onclick="toggleHotelPicker()">Fechar</button>
-  </div>`
+  picker.innerHTML=`<div style="border:2px dashed var(--gold);border-radius:10px;background:var(--gold-pale);padding:16px;margin-top:8px"><input placeholder="Buscar local..." oninput="filtrarPickerHotel(this.value)" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--gold-border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:10px"><div id="c-picker-list" style="max-height:250px;overflow-y:auto">${disponiveis.map(h=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gold-border)"><div style="flex:1;min-width:0;margin-right:8px"><span style="font-weight:600;font-size:13px">${h.nome}</span><span style="font-size:12px;color:#888;margin-left:6px">${[h.cidade,h.pais].filter(Boolean).join(' · ')}</span></div><button class="btn bg bsm" style="flex-shrink:0" onclick="adicionarCasHotel('${h.id}')">+ Adicionar</button></div>`).join('')}</div><button class="btn bo bsm" style="margin-top:10px" onclick="toggleHotelPicker()">Fechar</button></div>`
 }
-
 function filtrarPickerHotel(q){
   const list=document.getElementById('c-picker-list');if(!list)return
   const selecionados=casHoteis.map(ch=>ch.hotel?.id)
   const filtrados=hoteis.filter(h=>!selecionados.includes(h.id)&&(!q||h.nome?.toLowerCase().includes(q.toLowerCase())||h.cidade?.toLowerCase().includes(q.toLowerCase())))
-  list.innerHTML=filtrados.map(h=>`
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gold-border)">
-      <div><span style="font-weight:600;font-size:13px">${h.nome}</span><span style="font-size:12px;color:#888;margin-left:6px">${[h.cidade,h.pais].filter(Boolean).join(' · ')}</span></div>
-      <button class="btn bg bsm" onclick="adicionarCasHotel('${h.id}')">+ Adicionar</button>
-    </div>`).join('')||'<div style="font-size:13px;color:#aaa;padding:8px">Nenhum resultado</div>'
+  list.innerHTML=filtrados.map(h=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gold-border)"><div style="flex:1;min-width:0;margin-right:8px"><span style="font-weight:600;font-size:13px">${h.nome}</span></div><button class="btn bg bsm" style="flex-shrink:0" onclick="adicionarCasHotel('${h.id}')">+ Adicionar</button></div>`).join('')||'<div style="font-size:13px;color:#aaa;padding:8px">Nenhum resultado</div>'
 }
-
 async function adicionarCasHotel(hotelId){
   if(!casamentoAtual?.id)return
   await sb.from('casamento_hoteis').insert({casamento_id:casamentoAtual.id,hotel_id:hotelId})
-  hotelPickerOpen=false
-  loadCasHoteis(casamentoAtual.id)
+  hotelPickerOpen=false;loadCasHoteis(casamentoAtual.id)
 }
-
-async function removerCasHotel(id){
-  await sb.from('casamento_hoteis').delete().eq('id',id)
-  loadCasHoteis(casamentoAtual?.id)
-}
+async function removerCasHotel(id){await sb.from('casamento_hoteis').delete().eq('id',id);loadCasHoteis(casamentoAtual?.id)}
 
 function fmtDate(d){if(!d)return'—';const[y,m,day]=d.split('-');return`${day}/${m}/${y}`}
 </script>
