@@ -1772,14 +1772,28 @@ function abrirSolicitacao(escaladaId){
 }
 async function salvarSolicitacao(){
   const btn=document.getElementById('btn-ssol');btn.textContent='Enviando...';btn.disabled=true
-  const data={casamento_id:casamentoAtual?.id,casamento_nome:casamentoAtual?.nome,assessora_id:solAssessoraAtual?.assessora_id,assessora_nome:solAssessoraAtual?.assessora?.nome,data_chegada:document.getElementById('sol-data-chegada').value||null,hora_chegada:document.getElementById('sol-hora-chegada').value||null,data_saida:document.getElementById('sol-data-saida').value||null,hora_saida:document.getElementById('sol-hora-saida').value||null,precisa_passagem:getTg('sol-passagem'),precisa_hotel:getTg('sol-hotel'),precisa_seguro:getTg('sol-seguro'),precisa_transfer:getTg('sol-transfer'),precisa_trem:getTg('sol-trem'),obs:document.getElementById('sol-obs').value,solicitado_por:usuarioAtual?.nome,status:'pendente'}
+  const dataChegada=document.getElementById('sol-data-chegada').value||null
+  const dataSaida=document.getElementById('sol-data-saida').value||null
+  const data={casamento_id:casamentoAtual?.id,casamento_nome:casamentoAtual?.nome,assessora_id:solAssessoraAtual?.assessora_id,assessora_nome:solAssessoraAtual?.assessora?.nome,data_chegada:dataChegada,hora_chegada:document.getElementById('sol-hora-chegada').value||null,data_saida:dataSaida,hora_saida:document.getElementById('sol-hora-saida').value||null,precisa_passagem:getTg('sol-passagem'),precisa_hotel:getTg('sol-hotel'),precisa_seguro:getTg('sol-seguro'),precisa_transfer:getTg('sol-transfer'),precisa_trem:getTg('sol-trem'),obs:document.getElementById('sol-obs').value,solicitado_por:usuarioAtual?.nome,status:'pendente'}
   await sb.from('solicitacoes_viagem').insert(data)
+  // Atualiza período de ocupação na escala automaticamente
+  if(solAssessoraAtual?.id&&(dataChegada||dataSaida)){
+    const update={}
+    if(dataChegada)update.periodo_inicio=dataChegada
+    if(dataSaida)update.periodo_fim=dataSaida
+    await sb.from('casamento_assessoras').update(update).eq('id',solAssessoraAtual.id)
+    // Atualiza cache local
+    const esc=window._escaladasCache||[]
+    const idx=esc.findIndex(e=>e.casamento_id===casamentoAtual?.id&&e.assessora_id===solAssessoraAtual?.assessora_id)
+    if(idx>=0){if(dataChegada)esc[idx].periodo_inicio=dataChegada;if(dataSaida)esc[idx].periodo_fim=dataSaida}
+  }
   await enviarEmailSolicitacao(data)
   await enviarTarefaTeams(data)
   await registrarLog('solicitou viagem','casamentos',casamentoAtual?.id,casamentoAtual?.nome,null,{assessora:data.assessora_nome})
   btn.textContent='✈️ Enviar Solicitação';btn.disabled=false
   closeModal('modal-solicitacao');loadSolicitacoes(casamentoAtual?.id)
   document.getElementById('solicitacoes-section').style.display='block'
+  renderEscaladas()
 }
 async function enviarEmailSolicitacao(data){
   try{await fetch('https://api.resend.com/emails',{method:'POST',headers:{'Authorization':'Bearer re_UdBcUNwe_4hEAQZ29tPm9dYQNHhajszBC','Content-Type':'application/json'},body:JSON.stringify({from:'Altar — Welcome Weddings <onboarding@resend.dev>',to:['raphaela@welcomeweddings.com.br'],subject:`✈️ Nova solicitação de viagem — ${data.casamento_nome}`,html:`<div style="font-family:sans-serif;max-width:500px;margin:0 auto;padding:32px"><h2 style="color:#b8965a;font-family:Georgia,serif">Nova Solicitação de Viagem</h2><p style="color:#555">Uma nova solicitação foi registrada no sistema <strong>Altar</strong>.</p><div style="background:#fdf8f0;border:1px solid #f0e8d0;border-radius:10px;padding:20px;margin:20px 0"><p><strong>Casamento:</strong> ${data.casamento_nome}</p><p><strong>Assessora:</strong> ${data.assessora_nome}</p><p><strong>Solicitado por:</strong> ${data.solicitado_por}</p></div><a href="https://welcome-weddings.vercel.app" style="display:inline-block;background:#b8965a;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:8px">Abrir o Altar →</a></div>`})})}catch(e){console.log('Email error:',e)}
