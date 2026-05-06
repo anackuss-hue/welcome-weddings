@@ -293,9 +293,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <input id="search-a" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none" placeholder="Nome ou cidade..." oninput="renderAssessoras()">
         <div class="fp-sec">
           <div class="fp-sec-t">Disponível para</div>
-          <select id="f-disponivel-casamento" onchange="renderAssessoras()" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none">
-            <option value="">Todos</option>
-          </select>
+          <div style="position:relative">
+            <input id="f-disponivel-search" placeholder="Buscar casamento..." autocomplete="off"
+              oninput="filtrarDropdownDisp(this.value)"
+              onfocus="abrirDropdownDisp()"
+              style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none">
+            <div id="f-disponivel-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.1);max-height:220px;overflow-y:auto;z-index:300;margin-top:3px"></div>
+          </div>
+          <input type="hidden" id="f-disponivel-casamento" value="">
+          <div id="f-disponivel-selecionado" style="display:none;margin-top:6px;padding:5px 10px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:6px;font-size:11px;color:var(--gold);font-weight:600;align-items:center;justify-content:space-between;gap:6px">
+            <span id="f-disponivel-label" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+            <span onclick="limparFiltroDisp()" style="cursor:pointer;font-size:14px;flex-shrink:0;line-height:1">✕</span>
+          </div>
         </div>
         <div class="fp-sec">
           <div class="fp-sec-t">Idiomas</div>
@@ -1182,7 +1191,7 @@ function showHTab(tab,btn){
 async function loadCasamentos(){
   const{data}=await sb.from('casamentos').select('*').order('plan_data',{ascending:true,nullsFirst:false})
   casamentos=data||[]
-  const{data:esc}=await sb.from('casamento_assessoras').select('casamento_id,assessora_id')
+  const{data:esc}=await sb.from('casamento_assessoras').select('casamento_id,assessora_id,periodo_inicio,periodo_fim')
   window._escaladasCache=esc||[]
   populateAssessoraFilters();populateCasamentoFilters();populateDisponivelFiltro();renderCasamentos()
 }
@@ -1198,12 +1207,40 @@ function populateCasamentoFilters(){
 }
 function populateDisponivelFiltro(){
   const hoje=new Date().toISOString().split('T')[0]
-  const futuros=casamentos.filter(c=>c.plan_data&&c.plan_data>=hoje&&c.status!=='Cancelado').sort((a,b)=>a.plan_data.localeCompare(b.plan_data))
-  const sel=document.getElementById('f-disponivel-casamento');if(!sel)return
-  const cur=sel.value
-  sel.innerHTML='<option value="">Todos</option>'+futuros.map(c=>`<option value="${c.id}">${c.nome} — ${fmtDate(c.plan_data)}</option>`).join('')
-  if(cur)sel.value=cur
+  window._casamentosFuturos=casamentos.filter(c=>c.plan_data&&c.plan_data>=hoje&&c.status!=='Cancelado').sort((a,b)=>a.plan_data.localeCompare(b.plan_data))
 }
+function abrirDropdownDisp(){filtrarDropdownDisp(document.getElementById('f-disponivel-search')?.value||'')}
+function filtrarDropdownDisp(q){
+  const dd=document.getElementById('f-disponivel-dropdown');if(!dd)return
+  const lista=window._casamentosFuturos||[]
+  const filtrados=q?lista.filter(c=>c.nome?.toLowerCase().includes(q.toLowerCase())||c.destino?.toLowerCase().includes(q.toLowerCase())):lista
+  if(!filtrados.length){dd.innerHTML='<div style="padding:10px 12px;font-size:12px;color:#aaa">Nenhum encontrado</div>';dd.style.display='block';return}
+  dd.innerHTML=filtrados.map(c=>`<div onclick="selecionarCasamentoDisp('${c.id}','${(c.nome||'').replace(/'/g,"\\'")}','${fmtDate(c.plan_data)}')" style="padding:9px 12px;font-size:12px;cursor:pointer;border-bottom:1px solid #f5f0e8" onmouseover="this.style.background='var(--gold-pale)'" onmouseout="this.style.background=''"><div style="font-weight:600;color:var(--text)">${c.nome||'—'}</div><div style="font-size:11px;color:#aaa;margin-top:1px">📅 ${fmtDate(c.plan_data)}${c.destino?' · '+c.destino:''}</div></div>`).join('')
+  dd.style.display='block'
+}
+async function selecionarCasamentoDisp(id,nome,data){
+  document.getElementById('f-disponivel-casamento').value=id
+  document.getElementById('f-disponivel-search').value=''
+  document.getElementById('f-disponivel-dropdown').style.display='none'
+  document.getElementById('f-disponivel-label').textContent=nome+' · '+data
+  document.getElementById('f-disponivel-selecionado').style.display='flex'
+  await loadIndispCache()
+  const{data:esc}=await sb.from('casamento_assessoras').select('casamento_id,assessora_id,periodo_inicio,periodo_fim')
+  window._escaladasCache=esc||[]
+  renderAssessoras()
+}
+function limparFiltroDisp(){
+  document.getElementById('f-disponivel-casamento').value=''
+  document.getElementById('f-disponivel-search').value=''
+  document.getElementById('f-disponivel-dropdown').style.display='none'
+  document.getElementById('f-disponivel-selecionado').style.display='none'
+  renderAssessoras()
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#fpanel-assessoras')&&!e.target.closest('#filter-drawer-assessoras')){
+    const dd=document.getElementById('f-disponivel-dropdown');if(dd)dd.style.display='none'
+  }
+})
 function renderCasamentos(){
   const s=(document.getElementById('search-c')?.value||'').toLowerCase()
   const ano=document.getElementById('f-c-ano')?.value||''
@@ -1308,6 +1345,14 @@ async function renderEscaladas(){
   document.getElementById('assess-count').textContent=escaladas.length+' assessora(s) escalada(s)'
   if(!escaladas.length){list.innerHTML='<div class="em" style="padding:30px"><div class="em-t">Nenhuma assessora escalada</div></div>'}
   else{list.innerHTML=escaladas.map(e=>`<div class="ai"><div class="aih"><div style="display:flex;align-items:center;gap:10px"><div class="av">${(e.assessora?.nome||'?')[0]}</div><div><div style="font-weight:600;font-size:14px">${e.assessora?.nome||'—'}</div><div style="font-size:12px;color:#888">${e.assessora?.cidade||''}</div></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn bg bsm" onclick="abrirSolicitacao('${e.id}')">✈️ Solicitar</button><button class="btn bd bsm" onclick="removeEscalada('${e.id}')">Remover</button></div></div>
+    <div style="margin-top:12px;padding:10px 12px;background:#fff;border-radius:8px;border:1px solid var(--gold-border)">
+      <div style="font-size:10px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">📅 Período de Ocupação</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div><div style="font-size:10px;color:#999;margin-bottom:3px;text-transform:uppercase;font-weight:600">De</div><input type="date" value="${e.periodo_inicio||''}" onchange="updEscalada('${e.id}','periodo_inicio',this.value)" style="width:100%;padding:7px 10px;border-radius:7px;border:1px solid #ddd;font-size:12px;font-family:'DM Sans',sans-serif;outline:none" /></div>
+        <div><div style="font-size:10px;color:#999;margin-bottom:3px;text-transform:uppercase;font-weight:600">Até</div><input type="date" value="${e.periodo_fim||''}" onchange="updEscalada('${e.id}','periodo_fim',this.value)" style="width:100%;padding:7px 10px;border-radius:7px;border:1px solid #ddd;font-size:12px;font-family:'DM Sans',sans-serif;outline:none" /></div>
+      </div>
+      ${!e.periodo_inicio?'<div style="font-size:11px;color:#f0a500;margin-top:6px">⚠️ Preencha para o filtro de disponibilidade funcionar</div>':''}
+    </div>
     <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--gold-border)">
       <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">Avaliação do Casamento</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
@@ -1337,8 +1382,15 @@ function renderPickerIfOpen(){
   const disp=assessoras.filter(a=>{
     if(a.blacklist||ids.includes(a.id))return false
     if(dataCas){
-      const outrosCas=casamentos.filter(c=>c.id!==casamentoAtual?.id&&c.plan_data===dataCas).map(c=>c.id)
-      if((window._escaladasCache||[]).some(e=>outrosCas.includes(e.casamento_id)&&e.assessora_id===a.id))return false
+      // Bloqueia se tem período de ocupação de outra escala cobrindo esta data
+      const ocupada=(window._escaladasCache||[]).some(e=>{
+        if(e.assessora_id!==a.id||e.casamento_id===casamentoAtual?.id)return false
+        if(e.periodo_inicio&&e.periodo_fim)return dataCas>=e.periodo_inicio&&dataCas<=e.periodo_fim
+        if(e.periodo_inicio)return dataCas>=e.periodo_inicio
+        return false
+      })
+      if(ocupada)return false
+      // Bloqueia se tem indisponibilidade pessoal
       if(!assessoraDisponivel(a.id,dataCas))return false
     }
     return true
@@ -1391,8 +1443,16 @@ function renderAssessoras(){
     const cas=casamentos.find(c=>c.id===fDispCas)
     if(cas?.plan_data){
       const dataCas=cas.plan_data
-      const outrosCas=casamentos.filter(c=>c.id!==fDispCas&&c.plan_data===dataCas).map(c=>c.id)
-      ;(window._escaladasCache||[]).forEach(e=>{if(outrosCas.includes(e.casamento_id))aidsIndisponiveis.add(e.assessora_id)})
+      // Bloqueia quem tem período de ocupação (de outra escala) cobrindo a data
+      ;(window._escaladasCache||[]).forEach(e=>{
+        if(e.casamento_id===fDispCas)return
+        if(e.periodo_inicio&&e.periodo_fim){
+          if(dataCas>=e.periodo_inicio&&dataCas<=e.periodo_fim)aidsIndisponiveis.add(e.assessora_id)
+        } else if(e.periodo_inicio){
+          if(dataCas>=e.periodo_inicio)aidsIndisponiveis.add(e.assessora_id)
+        }
+      })
+      // Bloqueia quem tem indisponibilidade pessoal (aba Datas) cobrindo a data
       assessoras.forEach(a=>{if(!assessoraDisponivel(a.id,dataCas))aidsIndisponiveis.add(a.id)})
     }
   }
