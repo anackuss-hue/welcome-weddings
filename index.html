@@ -288,7 +288,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <button class="btn bg" onclick="openNovaAssessora()">+ Nova Assessora</button>
     </div>
     <div style="display:flex;gap:20px;align-items:flex-start">
-      <div class="fpanel" id="fpanel-assessoras">
+      <div class="fpanel" id="fpanel-assessoras" style="max-height:calc(100vh - 80px);overflow-y:auto;position:sticky;top:24px">
         <div class="fp-title">Filtros</div>
         <input id="search-a" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none" placeholder="Nome ou cidade..." oninput="renderAssessoras()">
         <div class="fp-sec">
@@ -421,6 +421,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         </div>
         <div class="fp-sec">
           <div class="fp-sec-t">Regime de Alimentação</div>
+          <label class="fl"><input type="checkbox" id="fh-regime-ai" onchange="renderHoteis()"> All Inclusive</label>
           <label class="fl"><input type="checkbox" id="fh-regime-pc" onchange="renderHoteis()"> Pensão completa</label>
           <label class="fl"><input type="checkbox" id="fh-regime-cm" onchange="renderHoteis()"> Café da manhã</label>
           <label class="fl"><input type="checkbox" id="fh-regime-mp" onchange="renderHoteis()"> Meia pensão</label>
@@ -735,11 +736,29 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div class="f"><label>Representante no Brasil — Telefone</label><input id="h-rep-tel" placeholder="+55 (00) 00000-0000"></div>
       </div>
       <div class="f"><label>Instagram</label><input id="h-instagram" placeholder="https://www.instagram.com/..."></div>
+      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--gold-border)">
+        <div class="st" style="margin-bottom:12px">Indicação & Status</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:14px">
+          <div class="tr-row" onclick="tg('h-favorito')"><div class="tr-track" id="track-h-favorito"><div class="tr-thumb"></div></div><span class="tr-label" style="font-weight:600;color:var(--gold)">⭐ Favorito Welcome</span></div>
+          <div class="tr-row" onclick="tg('h-blacklist-local')"><div class="tr-track" id="track-h-blacklist-local"><div class="tr-thumb"></div></div><span class="tr-label" style="font-weight:600;color:var(--red)">🚫 Blacklist</span></div>
+          <div class="tr-row" onclick="tg('h-ja-fizemos')"><div class="tr-track" id="track-h-ja-fizemos"><div class="tr-thumb"></div></div><span class="tr-label">✅ Já fizemos casamento aqui</span></div>
+        </div>
+        <div class="f"><label>Status de Indicação</label>
+          <select id="h-status-indicacao" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+            <option value="">Selecione...</option>
+            <option value="ja_indicamos">✅ Já trabalhamos — Indicamos muito</option>
+            <option value="ja_nao_indicamos">⚠️ Já trabalhamos — Não indicamos</option>
+            <option value="nao_indicamos">⭐ Nunca trabalhamos — Indicamos</option>
+            <option value="nao_nao_indicamos">🚫 Nunca trabalhamos — Não indicamos</option>
+          </select>
+        </div>
+        <div class="f"><label>Motivo (se não indicamos)</label><textarea id="h-motivo-ind" placeholder="Ex: Problemas com organização, atrasos..."></textarea></div>
+      </div>
     </div>
     <div class="atc" id="atab-hespec">
       <div class="g2">
         <div class="f"><label>Tipo de Local</label><select id="h-tipo"><option value="">Selecione</option><option>Resort</option><option>Boutique</option><option>Pousada</option><option>Hotel Urbano</option><option>Fazenda/Vinhedo</option></select></div>
-        <div class="f"><label>Regime de Alimentação</label><select id="h-regime-select" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none"><option value="">Selecione...</option><option value="Pensão completa">Pensão completa</option><option value="Café da manhã">Café da manhã</option><option value="Meia pensão">Meia pensão</option><option value="Sem regime de alimentação">Sem regime de alimentação</option><option value="Airbnb">Airbnb</option></select></div>
+        <div class="f"><label>Regime de Alimentação</label><select id="h-regime-select" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none"><option value="">Selecione...</option><option value="All Inclusive">All Inclusive</option><option value="Pensão completa">Pensão completa</option><option value="Café da manhã">Café da manhã</option><option value="Meia pensão">Meia pensão</option><option value="Sem regime de alimentação">Sem regime de alimentação</option><option value="Airbnb">Airbnb</option></select></div>
         <div class="f"><label>Nº de Acomodações</label><input id="h-acomodacoes"></div>
         <div class="f"><label>Ano Construção/Remodelação</label><input id="h-ano" placeholder="Ex: 2015 / 2022"></div>
         <div class="f"><label>Restaurantes no Total</label><input id="h-rest-total"></div>
@@ -814,21 +833,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <div class="f"><label>Mapa do Hotel (link)</label><input id="h-mapa" placeholder="https://"></div>
     </div>
     <div class="atc" id="atab-hcomissao">
-      <div class="sec"><div class="st">Indicação</div>
-        <div class="tr-row" onclick="tg('h-favorito')"><div class="tr-track" id="track-h-favorito"><div class="tr-thumb"></div></div><span class="tr-label" style="font-weight:600;color:var(--gold)">⭐ Favorito Welcome</span></div>
-        <div class="f" style="margin-top:12px"><label>Status de Indicação</label>
-          <select id="h-status-indicacao" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
-            <option value="">Selecione...</option>
-            <option value="ja_indicamos">✅ Já trabalhamos — Indicamos muito</option>
-            <option value="ja_nao_indicamos">⚠️ Já trabalhamos — Não indicamos</option>
-            <option value="nao_indicamos">⭐ Nunca trabalhamos — Indicamos</option>
-            <option value="nao_nao_indicamos">🚫 Nunca trabalhamos — Não indicamos</option>
-          </select>
-        </div>
-        <div class="f"><label>Motivo (se não indicamos)</label><textarea id="h-motivo-ind" placeholder="Ex: Problemas com organização, atrasos..."></textarea></div>
-        <div class="tr-row" onclick="tg('h-blacklist-local')"><div class="tr-track" id="track-h-blacklist-local"><div class="tr-thumb"></div></div><span class="tr-label" style="font-weight:600;color:var(--red)">🚫 Blacklist</span></div>
-      </div>
-      <div class="sec" style="margin-top:16px"><div class="st">Comissão</div>
+      <div class="sec" style="margin-top:0"><div class="st">Comissão</div>
         <div class="g2">
           <div class="f"><label>Percentual</label><input id="h-percentual" placeholder="Ex: 10%"></div>
           <div class="f"><label>E-mail para Cobrança</label><input id="h-email-cobr" type="email"></div>
@@ -1671,7 +1676,7 @@ function atualizarSliderMoeda(){
 }
 function toggleHospedagem(){const show=!getTg('h-hospedagem');document.getElementById('h-hospedagem-section').style.display=show?'block':'none'}
 function limparFiltrosHotel(){
-  ['fh-reg-caribe','fh-reg-sul','fh-reg-europa','fh-reg-asia','fh-tipo-resort','fh-tipo-boutique','fh-tipo-pousada','fh-tipo-urbano','fh-tipo-fazenda','fh-kids','fh-pets','fh-spa','fh-cassino','fh-parque','fh-amb-praia','fh-amb-montanha','fh-amb-campo','fh-amb-cidade','fh-amb-lago','fh-amb-vinhedo','fh-voo-direto','fh-hosp-local','fh-visto','fh-indicamos','fh-blacklist','fh-favorito','fh-ja-fizemos','fh-nao-fizemos','fh-regime-pc','fh-regime-cm','fh-regime-mp','fh-regime-sem','fh-regime-air'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=false});const _fhd=document.getElementById('fh-distancia');if(_fhd)_fhd.value=''
+  ['fh-reg-caribe','fh-reg-sul','fh-reg-europa','fh-reg-asia','fh-tipo-resort','fh-tipo-boutique','fh-tipo-pousada','fh-tipo-urbano','fh-tipo-fazenda','fh-kids','fh-pets','fh-spa','fh-cassino','fh-parque','fh-amb-praia','fh-amb-montanha','fh-amb-campo','fh-amb-cidade','fh-amb-lago','fh-amb-vinhedo','fh-voo-direto','fh-hosp-local','fh-visto','fh-indicamos','fh-blacklist','fh-favorito','fh-ja-fizemos','fh-nao-fizemos','fh-regime-ai','fh-regime-pc','fh-regime-cm','fh-regime-mp','fh-regime-sem','fh-regime-air'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=false});const _fhd=document.getElementById('fh-distancia');if(_fhd)_fhd.value=''
   ;['search-h','f-h-pais'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
   paisChips=[];renderPaisChips()
   document.getElementById('slider-moeda').value=''
@@ -1703,11 +1708,11 @@ function renderHoteis(){
     let mdiaria=true
     if(moeda){if(h.moeda_diaria!==moeda){mdiaria=false}else{const numDiaria=parseFloat((h.valor_diaria||'').replace(/\./g,'').replace(',','.').replace(/[^0-9.]/g,''))||0;mdiaria=numDiaria>=minDiaria&&numDiaria<=maxDiaria}}
     const distMax=document.getElementById('fh-distancia')?.value
-    const regimes=[fI('fh-regime-pc')&&'Pensão completa',fI('fh-regime-cm')&&'Café da manhã',fI('fh-regime-mp')&&'Meia pensão',fI('fh-regime-sem')&&'Sem regime de alimentação',fI('fh-regime-air')&&'Airbnb'].filter(Boolean)
+    const regimes=[fI('fh-regime-ai')&&'All Inclusive',fI('fh-regime-pc')&&'Pensão completa',fI('fh-regime-cm')&&'Café da manhã',fI('fh-regime-mp')&&'Meia pensão',fI('fh-regime-sem')&&'Sem regime de alimentação',fI('fh-regime-air')&&'Airbnb'].filter(Boolean)
     const mReg=!regimes.length||regimes.includes(h.regime_select)
     const mDist=!distMax||!h.distancia_aeroporto||(parseInt(h.distancia_aeroporto)<=parseInt(distMax))
-    const mJaFiz=!fI('fh-ja-fizemos')||(h._num_casamentos>0)
-    const mNaoFiz=!fI('fh-nao-fizemos')||(!h._num_casamentos||h._num_casamentos===0)
+    const mJaFiz=!fI('fh-ja-fizemos')||(h._num_casamentos>0||h.ja_fizemos_casamento)
+    const mNaoFiz=!fI('fh-nao-fizemos')||(!h._num_casamentos&&!h.ja_fizemos_casamento)
     return ms&&mp&&mr&&mt&&ma&&numAcom<=maxAcom&&mdiaria&&mReg&&mDist&&mJaFiz&&mNaoFiz&&(!fI('fh-favorito')||h.favorito)&&(!fI('fh-indicamos')||['ja_indicamos','nao_indicamos'].includes(h.status_indicacao))&&(!fI('fh-blacklist')||h.blacklist_local)&&(!fI('fh-kids')||h.aceita_criancas)&&(!fI('fh-pets')||h.aceita_pets)&&(!fI('fh-spa')||h.spa)&&(!fI('fh-cassino')||h.cassino)&&(!fI('fh-parque')||h.parque_aquatico)&&(!fI('fh-voo-direto')||h.voo_direto)&&(!fI('fh-hosp-local')||h.tem_hospedagem)&&(!fI('fh-visto')||h.visto_necessario)
   })
   document.getElementById('hoteis-count').textContent=hoteis.length+' local(is) cadastrado(s)'
@@ -1751,7 +1756,7 @@ function clearHForm(){
   ['h-nome','h-rep-nome','h-rep-tel','h-pais','h-cidade','h-site','h-email','h-instagram','h-regime','h-acomodacoes','h-ano','h-rest-total','h-bares-total','h-rest-buffet','h-rest-carte','h-rest-ai','h-bares-ai','h-diaria','h-sinal','h-bloqueio','h-val-casamento','h-luau','h-factsheet','h-tour','h-espacos','h-mapa','h-percentual','h-a-pagar','h-email-cobr','h-comissao-valor','h-motivo-ind','h-hoteis-regiao'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
   document.getElementById('h-regiao').value='';document.getElementById('h-tipo').value='';const hrs=document.getElementById('h-regime-select');if(hrs)hrs.value='';const hda=document.getElementById('h-distancia-aero');if(hda)hda.value=''
   const si=document.getElementById('h-status-indicacao');if(si)si.value=''
-  ;['h-frigobar','h-room-service','h-bar-pago','h-rest-pago','h-kids','h-parque','h-pub','h-cassino','h-spa','h-wifi','h-criancas','h-pets','h-paga-com','h-blacklist-local','h-voo-direto','h-visto','h-favorito'].forEach(id=>setTg(id,false))
+  ;['h-frigobar','h-room-service','h-bar-pago','h-rest-pago','h-kids','h-parque','h-pub','h-cassino','h-spa','h-wifi','h-criancas','h-pets','h-paga-com','h-blacklist-local','h-voo-direto','h-visto','h-favorito','h-ja-fizemos'].forEach(id=>setTg(id,false))
   setTg('h-hospedagem',true);document.getElementById('h-hospedagem-section').style.display='none'
   const ha=document.getElementById('h-ambiente');if(ha)ha.value=''
 }
@@ -1768,13 +1773,13 @@ function fillHForm(h){
   if(h.regiao)document.getElementById('h-regiao').value=h.regiao
   if(h.tipo)document.getElementById('h-tipo').value=h.tipo
   const si=document.getElementById('h-status-indicacao');if(si&&h.status_indicacao)si.value=h.status_indicacao
-  setTg('h-frigobar',h.frigobar);setTg('h-room-service',h.room_service);setTg('h-bar-pago',h.bar_pago);setTg('h-rest-pago',h.restaurante_pago);setTg('h-kids',h.area_kids);setTg('h-parque',h.parque_aquatico);setTg('h-pub',h.pub_disco);setTg('h-cassino',h.cassino);setTg('h-spa',h.spa);setTg('h-wifi',h.wifi);setTg('h-criancas',h.aceita_criancas);setTg('h-pets',h.aceita_pets);setTg('h-paga-com',h.paga_comissao);setTg('h-blacklist-local',h.blacklist_local);setTg('h-voo-direto',h.voo_direto);setTg('h-visto',h.visto_necessario);setTg('h-favorito',h.favorito);const _hrsf=document.getElementById('h-regime-select');if(_hrsf&&h.regime_select)_hrsf.value=h.regime_select;const _hdaf=document.getElementById('h-distancia-aero');if(_hdaf&&h.distancia_aeroporto)_hdaf.value=h.distancia_aeroporto
+  setTg('h-frigobar',h.frigobar);setTg('h-room-service',h.room_service);setTg('h-bar-pago',h.bar_pago);setTg('h-rest-pago',h.restaurante_pago);setTg('h-kids',h.area_kids);setTg('h-parque',h.parque_aquatico);setTg('h-pub',h.pub_disco);setTg('h-cassino',h.cassino);setTg('h-spa',h.spa);setTg('h-wifi',h.wifi);setTg('h-criancas',h.aceita_criancas);setTg('h-pets',h.aceita_pets);setTg('h-paga-com',h.paga_comissao);setTg('h-blacklist-local',h.blacklist_local);setTg('h-voo-direto',h.voo_direto);setTg('h-visto',h.visto_necessario);setTg('h-favorito',h.favorito);setTg('h-ja-fizemos',h.ja_fizemos_casamento||(h._num_casamentos>0));const _hrsf=document.getElementById('h-regime-select');if(_hrsf&&h.regime_select)_hrsf.value=h.regime_select;const _hdaf=document.getElementById('h-distancia-aero');if(_hdaf&&h.distancia_aeroporto)_hdaf.value=h.distancia_aeroporto
   const ha=document.getElementById('h-ambiente');if(ha&&h.ambiente)ha.value=h.ambiente
   const temHosp=h.tem_hospedagem!==false;setTg('h-hospedagem',temHosp);document.getElementById('h-hospedagem-section').style.display=temHosp?'none':'block'
 }
 function getHData(){
   const v=id=>document.getElementById(id)?.value||''
-  return{nome:v('h-nome'),representante_nome:v('h-rep-nome'),representante_telefone:v('h-rep-tel'),regiao:v('h-regiao'),pais:v('h-pais'),cidade:v('h-cidade'),site:v('h-site'),email:v('h-email'),instagram:v('h-instagram'),tipo:v('h-tipo'),regime:v('h-regime'),num_acomodacoes:v('h-acomodacoes'),ano_construcao:v('h-ano'),restaurantes_total:v('h-rest-total'),bares_total:v('h-bares-total'),restaurantes_buffet:v('h-rest-buffet'),restaurantes_carte:v('h-rest-carte'),restaurantes_ai:v('h-rest-ai'),bares_ai:v('h-bares-ai'),valor_diaria:v('h-diaria'),valor_sinal:v('h-sinal'),valor_bloqueio:v('h-bloqueio'),valor_casamento:v('h-val-casamento'),valor_luau:v('h-luau'),factsheet:v('h-factsheet'),tour_virtual:v('h-tour'),espacos:v('h-espacos'),mapa:v('h-mapa'),percentual:v('h-percentual'),comissao_a_pagar:v('h-a-pagar'),email_cobranca:v('h-email-cobr'),paga_comissao_valor:v('h-comissao-valor'),status_indicacao:v('h-status-indicacao')||null,motivo_nao_indicacao:v('h-motivo-ind'),hoteis_regiao:v('h-hoteis-regiao'),tem_hospedagem:getTg('h-hospedagem'),frigobar:getTg('h-frigobar'),room_service:getTg('h-room-service'),bar_pago:getTg('h-bar-pago'),restaurante_pago:getTg('h-rest-pago'),area_kids:getTg('h-kids'),parque_aquatico:getTg('h-parque'),pub_disco:getTg('h-pub'),cassino:getTg('h-cassino'),spa:getTg('h-spa'),wifi:getTg('h-wifi'),aceita_criancas:getTg('h-criancas'),aceita_pets:getTg('h-pets'),paga_comissao:getTg('h-paga-com'),blacklist_local:getTg('h-blacklist-local'),ambiente:document.getElementById('h-ambiente')?.value||null,voo_direto:getTg('h-voo-direto'),visto_necessario:getTg('h-visto'),favorito:getTg('h-favorito'),regime_select:document.getElementById('h-regime-select')?.value||null,distancia_aeroporto:document.getElementById('h-distancia-aero')?.value||null}
+  return{nome:v('h-nome'),representante_nome:v('h-rep-nome'),representante_telefone:v('h-rep-tel'),regiao:v('h-regiao'),pais:v('h-pais'),cidade:v('h-cidade'),site:v('h-site'),email:v('h-email'),instagram:v('h-instagram'),tipo:v('h-tipo'),regime:v('h-regime'),num_acomodacoes:v('h-acomodacoes'),ano_construcao:v('h-ano'),restaurantes_total:v('h-rest-total'),bares_total:v('h-bares-total'),restaurantes_buffet:v('h-rest-buffet'),restaurantes_carte:v('h-rest-carte'),restaurantes_ai:v('h-rest-ai'),bares_ai:v('h-bares-ai'),valor_diaria:v('h-diaria'),valor_sinal:v('h-sinal'),valor_bloqueio:v('h-bloqueio'),valor_casamento:v('h-val-casamento'),valor_luau:v('h-luau'),factsheet:v('h-factsheet'),tour_virtual:v('h-tour'),espacos:v('h-espacos'),mapa:v('h-mapa'),percentual:v('h-percentual'),comissao_a_pagar:v('h-a-pagar'),email_cobranca:v('h-email-cobr'),paga_comissao_valor:v('h-comissao-valor'),status_indicacao:v('h-status-indicacao')||null,motivo_nao_indicacao:v('h-motivo-ind'),hoteis_regiao:v('h-hoteis-regiao'),tem_hospedagem:getTg('h-hospedagem'),frigobar:getTg('h-frigobar'),room_service:getTg('h-room-service'),bar_pago:getTg('h-bar-pago'),restaurante_pago:getTg('h-rest-pago'),area_kids:getTg('h-kids'),parque_aquatico:getTg('h-parque'),pub_disco:getTg('h-pub'),cassino:getTg('h-cassino'),spa:getTg('h-spa'),wifi:getTg('h-wifi'),aceita_criancas:getTg('h-criancas'),aceita_pets:getTg('h-pets'),paga_comissao:getTg('h-paga-com'),blacklist_local:getTg('h-blacklist-local'),ambiente:document.getElementById('h-ambiente')?.value||null,voo_direto:getTg('h-voo-direto'),visto_necessario:getTg('h-visto'),favorito:getTg('h-favorito'),ja_fizemos_casamento:getTg('h-ja-fizemos'),regime_select:document.getElementById('h-regime-select')?.value||null,distancia_aeroporto:document.getElementById('h-distancia-aero')?.value||null}
 }
 async function salvarHotel(){
   const btn=document.getElementById('btn-sh');btn.textContent='Salvando...';btn.disabled=true
