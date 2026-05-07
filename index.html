@@ -67,6 +67,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .ic-flag{font-size:28px;line-height:1;font-family:apple color emoji,segoe ui emoji,noto color emoji,sans-serif}.ic-name{font-size:13px;font-weight:600;color:#666}
 .ic-card.on .ic-name{color:var(--gold)}
 /* ══ BADGES DOCUMENTO ══ */
+.upload-area{border:2px dashed var(--gold-border);border-radius:10px;padding:28px;text-align:center;cursor:pointer;background:var(--gold-pale);transition:all .15s}
+.upload-area:hover,.upload-area.drag{border-color:var(--gold);background:#fdf3e0}
+.upload-area input[type=file]{display:none}
+.anexo-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#fff;border:1px solid var(--border);border-radius:8px;margin-bottom:8px}
+.anexo-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 .doc-alert-red{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:12px;font-size:11px;font-weight:700;background:#fdecea;color:#c0392b;border:1px solid #f5c6c6}
 .doc-alert-yellow{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:12px;font-size:11px;font-weight:700;background:#fff8e1;color:#e65100;border:1px solid #ffe082}
 .ro{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
@@ -511,6 +516,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <button class="tab" onclick="showCTab('prod',this)">🎨 Produção</button>
       <button class="tab" onclick="showCTab('viag',this)">✈️ Viagem</button>
       <button class="tab" onclick="showCTab('assess',this)">👩 Assessoras</button>
+      <button class="tab" onclick="showCTab('anexos-c',this)">📎 Anexos</button>
     </div>
     <div class="tc active" id="tab-plan">
       <div class="g2">
@@ -569,6 +575,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div id="solicitacoes-list"></div>
       </div>
     </div>
+    <div class="tc" id="tab-anexos-c"><div id="anexos-c-content"></div></div>
     <div class="mf">
       <button class="btn bo" onclick="closeModal('modal-casamento')">Cancelar</button>
       <button class="btn bg" id="btn-sc" onclick="salvarCasamento()">Salvar</button>
@@ -587,6 +594,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <button class="atab" onclick="showATab('caract',this)"><span class="atab-long">04 · Características</span><span class="atab-short">Caract.</span></button>
       <button class="atab" onclick="showATab('historico',this)"><span class="atab-long">05 · Histórico</span><span class="atab-short">Histórico</span></button>
       <button class="atab" onclick="showATab('datas',this)"><span class="atab-long">06 · Datas</span><span class="atab-short">Datas</span></button>
+      <button class="atab" onclick="showATab('anexos-a',this)"><span class="atab-long">07 · Anexos</span><span class="atab-short">Anexos</span></button>
     </div>
     <div class="atc active" id="atab-dados">
       <div class="g2">
@@ -705,6 +713,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div id="indisp-list"><div class="ld">Carregando...</div></div>
       </div>
     </div>
+    <div class="atc" id="atab-anexos-a"><div id="anexos-a-content"></div></div>
     <div class="mf">
       <button class="btn bo" onclick="closeModal('modal-assessora')">Cancelar</button>
       <button class="btn bg" id="btn-sa" onclick="salvarAssessora()">Salvar</button>
@@ -723,6 +732,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <button class="atab" onclick="showHTab('hcasamento',this)"><span class="atab-long">04 · Casamentos</span><span class="atab-short">Casam.</span></button>
       <button class="atab" onclick="showHTab('hcomissao',this)"><span class="atab-long">05 · Comissão</span><span class="atab-short">Comissão</span></button>
       <button class="atab" onclick="showHTab('hhistorico',this)"><span class="atab-long">06 · Histórico</span><span class="atab-short">Histórico</span></button>
+      <button class="atab" onclick="showHTab('hanexos',this)"><span class="atab-long">07 · Anexos</span><span class="atab-short">Anexos</span></button>
     </div>
     <div class="atc active" id="atab-hgeral">
       <div class="g2">
@@ -844,6 +854,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       </div>
     </div>
     <div class="atc" id="atab-hhistorico"><div id="hotel-historico-content"><div class="ld">Carregando...</div></div></div>
+    <div class="atc" id="atab-hanexos"><div id="anexos-h-content"></div></div>
     <div class="mf">
       <button class="btn bo" onclick="closeModal('modal-hotel')">Cancelar</button>
       <button class="btn bg" id="btn-sh" onclick="salvarHotel()">Salvar</button>
@@ -1204,6 +1215,7 @@ function showCTab(tab,btn){
   document.getElementById('tab-'+tab).classList.add('active');if(btn)btn.classList.add('active')
   if(tab==='assess'){renderEscaladas();if(casamentoAtual?.id)loadSolicitacoes(casamentoAtual.id)}
   if(tab==='prod')renderProdAssessoras()
+  if(tab==='anexos-c')renderAnexosUI('anexos-c-content','casamento',casamentoAtual?.id)
   aplicarReadonlyAba(tab)
 }
 function aplicarReadonlyAba(tab){
@@ -1222,6 +1234,7 @@ function showATab(tab,btn){
   if(tab==='historico')renderHistorico()
   if(tab==='datas')renderIndisponibilidades()
   if(tab==='docs')atualizarAlertasDocs()
+  if(tab==='anexos-a')renderAnexosUI('anexos-a-content','assessora',assessoraAtual?.id)
   if(tab==='idiomas'){populateLiderSelect();renderMembros()}
 }
 function showHTab(tab,btn){
@@ -1229,6 +1242,7 @@ function showHTab(tab,btn){
   document.querySelectorAll('#modal-hotel .atab').forEach(t=>t.classList.remove('active'))
   document.getElementById('atab-'+tab).classList.add('active');if(btn)btn.classList.add('active')
   if(tab==='hhistorico')renderHotelHistorico()
+  if(tab==='hanexos')renderAnexosUI('anexos-h-content','local',hotelAtual?.id)
 }
 
 // ══ CASAMENTOS ══
@@ -2148,6 +2162,111 @@ async function deletarIndisponibilidade(id){
     indispCache[assessoraAtual.id]=(indispCache[assessoraAtual.id]||[]).filter(p=>!(p.data_inicio===r.data_inicio&&p.data_fim===r.data_fim))
   }
   renderIndisponibilidades()
+}
+
+// ══ SISTEMA DE ANEXOS ══
+const BUCKET='anexos'
+
+function anexoIcone(tipo){
+  if(!tipo)return'📄'
+  if(tipo.includes('pdf'))return'📕'
+  if(tipo.includes('image'))return'🖼️'
+  if(tipo.includes('word')||tipo.includes('doc'))return'📝'
+  if(tipo.includes('sheet')||tipo.includes('excel')||tipo.includes('xls'))return'📊'
+  return'📄'
+}
+
+function formatBytes(b){
+  if(!b)return''
+  if(b<1024)return b+'B'
+  if(b<1024*1024)return(b/1024).toFixed(0)+'KB'
+  return(b/(1024*1024)).toFixed(1)+'MB'
+}
+
+function renderAnexosUI(containerId,tipo,referenciaId){
+  const con=document.getElementById(containerId)
+  if(!con)return
+  if(!referenciaId){
+    con.innerHTML='<div class="em" style="padding:30px"><div class="em-t">Salve o registro primeiro para adicionar anexos</div></div>'
+    return
+  }
+  con.innerHTML=`
+    <div style="margin-bottom:18px">
+      <div class="upload-area" id="upload-area-${containerId}" onclick="document.getElementById('file-input-${containerId}').click()"
+        ondragover="event.preventDefault();this.classList.add('drag')"
+        ondragleave="this.classList.remove('drag')"
+        ondrop="event.preventDefault();this.classList.remove('drag');handleAnexoDrop(event,'${containerId}','${tipo}','${referenciaId}')">
+        <input type="file" id="file-input-${containerId}" multiple accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,.doc,.docx,.xls,.xlsx"
+          onchange="handleAnexoUpload(this,'${containerId}','${tipo}','${referenciaId}')">
+        <div style="font-size:28px;margin-bottom:8px">📎</div>
+        <div style="font-size:13px;font-weight:600;color:var(--gold);margin-bottom:4px">Clique ou arraste arquivos aqui</div>
+        <div style="font-size:11px;color:#aaa">PDF, imagens, Word, Excel — máx. 10MB por arquivo</div>
+      </div>
+    </div>
+    <div id="anexos-list-${containerId}"><div class="ld">Carregando...</div></div>`
+  carregarAnexos(containerId,tipo,referenciaId)
+}
+
+async function carregarAnexos(containerId,tipo,referenciaId){
+  const list=document.getElementById('anexos-list-'+containerId)
+  if(!list)return
+  const{data,error}=await sb.from('anexos').select('*').eq('referencia_tipo',tipo).eq('referencia_id',referenciaId).order('created_at',{ascending:false})
+  if(!data||!data.length){list.innerHTML='<div style="text-align:center;padding:20px;color:#aaa;font-size:13px">Nenhum anexo ainda</div>';return}
+  list.innerHTML=data.map(a=>`<div class="anexo-item">
+    <div class="anexo-icon" style="background:var(--gold-pale)">${anexoIcone(a.tipo_arquivo)}</div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.nome}</div>
+      <div style="font-size:11px;color:#aaa;margin-top:1px">${formatBytes(a.tamanho)}${a.criado_por?' · '+a.criado_por:''} · ${new Date(a.created_at).toLocaleDateString('pt-BR')}</div>
+    </div>
+    <div style="display:flex;gap:6px;flex-shrink:0">
+      <a href="${a.url}" target="_blank" style="padding:5px 12px;border-radius:7px;font-size:12px;font-weight:600;background:var(--gold-pale);color:var(--gold);border:1px solid var(--gold-border);text-decoration:none;display:inline-flex;align-items:center">Abrir</a>
+      <button onclick="deletarAnexo('${a.id}','${a.url}','${containerId}','${tipo}','${referenciaId}')" style="padding:5px 8px;border-radius:7px;font-size:12px;background:var(--red);color:#fff;border:none;cursor:pointer;font-family:'DM Sans',sans-serif">✕</button>
+    </div>
+  </div>`).join('')
+}
+
+async function handleAnexoUpload(input,containerId,tipo,referenciaId){
+  const files=Array.from(input.files)
+  if(!files.length)return
+  await uploadAnexos(files,containerId,tipo,referenciaId)
+  input.value=''
+}
+
+async function handleAnexoDrop(event,containerId,tipo,referenciaId){
+  const files=Array.from(event.dataTransfer.files)
+  if(!files.length)return
+  await uploadAnexos(files,containerId,tipo,referenciaId)
+}
+
+async function uploadAnexos(files,containerId,tipo,referenciaId){
+  const area=document.getElementById('upload-area-'+containerId)
+  const list=document.getElementById('anexos-list-'+containerId)
+  if(area){area.innerHTML='<div style="font-size:13px;color:var(--gold);font-weight:600">⏳ Enviando '+files.length+' arquivo(s)...</div>';area.style.pointerEvents='none'}
+  for(const file of files){
+    if(file.size>10*1024*1024){alert(`${file.name} é maior que 10MB, pulando...`);continue}
+    const ext=file.name.split('.').pop()
+    const path=`${tipo}/${referenciaId}/${Date.now()}-${Math.random().toString(36).substring(2,8)}.${ext}`
+    const{error:upErr}=await sb.storage.from(BUCKET).upload(path,file,{upsert:false})
+    if(upErr){alert('Erro ao enviar '+file.name+': '+upErr.message);continue}
+    const{data:urlData}=sb.storage.from(BUCKET).getPublicUrl(path)
+    await sb.from('anexos').insert({referencia_tipo:tipo,referencia_id:referenciaId,nome:file.name,url:urlData.publicUrl,tipo_arquivo:file.type,tamanho:file.size,criado_por:usuarioAtual?.nome})
+  }
+  // Restaura área de upload
+  if(area){
+    area.innerHTML=`<input type="file" id="file-input-${containerId}" multiple accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,.doc,.docx,.xls,.xlsx" onchange="handleAnexoUpload(this,'${containerId}','${tipo}','${referenciaId}')"><div style="font-size:28px;margin-bottom:8px">📎</div><div style="font-size:13px;font-weight:600;color:var(--gold);margin-bottom:4px">Clique ou arraste arquivos aqui</div><div style="font-size:11px;color:#aaa">PDF, imagens, Word, Excel — máx. 10MB por arquivo</div>`
+    area.style.pointerEvents=''
+    area.onclick=()=>document.getElementById('file-input-'+containerId)?.click()
+  }
+  carregarAnexos(containerId,tipo,referenciaId)
+}
+
+async function deletarAnexo(id,url,containerId,tipo,referenciaId){
+  if(!confirm('Remover este anexo?'))return
+  // Extrai path do storage a partir da URL
+  const match=url.match(/\/storage\/v1\/object\/public\/anexos\/(.+)/)
+  if(match)await sb.storage.from(BUCKET).remove([decodeURIComponent(match[1])])
+  await sb.from('anexos').delete().eq('id',id)
+  carregarAnexos(containerId,tipo,referenciaId)
 }
 
 function fmtDate(d){if(!d)return'—';const[y,m,day]=d.split('-');return`${day}/${m}/${y}`}
