@@ -84,7 +84,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .c-tab:hover{color:var(--gold)}
 .c-tab.active{color:var(--gold);border-bottom-color:var(--gold);font-weight:600}
 .c-tab-badge{font-size:11px;font-weight:600;background:var(--gold-pale);color:var(--gold);padding:1px 7px;border-radius:20px;margin-left:5px;border:1px solid var(--gold-border)}
-.c-tab.active .c-tab-badge{background:var(--gold);color:#fff;border-color:var(--gold)}display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:12px;font-size:11px;font-weight:700;background:#fdecea;color:#c0392b;border:1px solid #f5c6c6}
+.c-tab.active .c-tab-badge{background:var(--gold);color:#fff;border-color:var(--gold)}
 .doc-alert-yellow{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:12px;font-size:11px;font-weight:700;background:#fff8e1;color:#e65100;border:1px solid #ffe082}
 .ro{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
 .ro-opt{padding:10px 18px;border-radius:8px;border:1.5px solid var(--border);cursor:pointer;font-size:13px;transition:all .15s;font-weight:500;color:#666}
@@ -1572,6 +1572,18 @@ function renderCasamentos(){
     const mh=!hotel||c.plan_hotel===hotel
     const mst=!tabStatus||(c.status||'Em andamento')===tabStatus
     return ms&&ma&&mm&&md&&mh&&mst
+  })
+  // Ordenação: futuros primeiro (mais próximo antes), sem data depois, concluídos/cancelados no fim
+  const hoje2=new Date().toISOString().split('T')[0]
+  filtered.sort((a,b)=>{
+    const stA=a.status||'Em andamento', stB=b.status||'Em andamento'
+    const concA=['Concluído','Cancelado'].includes(stA), concB=['Concluído','Cancelado'].includes(stB)
+    if(concA&&!concB)return 1
+    if(!concA&&concB)return -1
+    if(!a.plan_data&&!b.plan_data)return 0
+    if(!a.plan_data)return 1
+    if(!b.plan_data)return -1
+    return a.plan_data.localeCompare(b.plan_data)
   })
   // Atualizar badges das abas
   const counts={todos:casamentos.length,andamento:0,confirmado:0,concluido:0,cancelado:0}
