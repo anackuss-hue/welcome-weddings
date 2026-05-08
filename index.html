@@ -1815,6 +1815,7 @@ function renderHoteis(){
   const tipos=[fI('fh-tipo-resort')&&'Resort',fI('fh-tipo-boutique')&&'Boutique',fI('fh-tipo-pousada')&&'Pousada',fI('fh-tipo-urbano')&&'Hotel Urbano',fI('fh-tipo-fazenda')&&'Fazenda/Vinhedo'].filter(Boolean)
   const ambientes=[fI('fh-amb-praia')&&'Praia',fI('fh-amb-montanha')&&'Montanha',fI('fh-amb-campo')&&'Campo / Fazenda',fI('fh-amb-cidade')&&'Cidade',fI('fh-amb-lago')&&'Lago / Rio',fI('fh-amb-vinhedo')&&'Vinhedo'].filter(Boolean)
   const maxAcom=parseInt(document.getElementById('slider-acom')?.value||3000)
+  const filtrarAcom=maxAcom<3000
   const minDiaria=parseInt(document.getElementById('slider-diaria-min')?.value||100)
   const maxDiaria=parseInt(document.getElementById('slider-diaria-max')?.value||2000)
   const anyActive=[s,pais,cidade,moeda,regioes.length,tipos.length,ambientes.length,paisChips.length,fI('fh-kids'),fI('fh-pets'),fI('fh-spa'),fI('fh-cassino'),fI('fh-parque'),maxAcom<3000].some(Boolean)
@@ -1827,6 +1828,7 @@ function renderHoteis(){
     const mt=!tipos.length||tipos.includes(h.tipo)
     const ma=!ambientes.length||ambientes.includes(h.ambiente)
     const numAcom=parseInt(h.num_acomodacoes)||0
+    const mAcom=!filtrarAcom||numAcom<=maxAcom
     let mdiaria=true
     if(moeda){if(h.moeda_diaria!==moeda){mdiaria=false}else{const numDiaria=parseFloat((h.valor_diaria||'').replace(/\./g,'').replace(',','.').replace(/[^0-9.]/g,''))||0;mdiaria=numDiaria>=minDiaria&&numDiaria<=maxDiaria}}
     const distMax=document.getElementById('fh-distancia')?.value
@@ -1835,7 +1837,7 @@ function renderHoteis(){
     const mDist=!distMax||!h.distancia_aeroporto||(parseInt(h.distancia_aeroporto)<=parseInt(distMax))
     const mJaFiz=!fI('fh-ja-fizemos')||(h._num_casamentos>0||h.ja_fizemos_casamento)
     const mNaoFiz=!fI('fh-nao-fizemos')||(!h._num_casamentos&&!h.ja_fizemos_casamento)
-    return ms&&mp&&mr&&mt&&ma&&(numAcom===0||numAcom<=maxAcom)&&mdiaria&&mReg&&mDist&&mJaFiz&&mNaoFiz&&(!fI('fh-favorito')||h.favorito)&&(!fI('fh-indicamos')||['ja_indicamos','nao_indicamos'].includes(h.status_indicacao))&&(!fI('fh-blacklist')||h.blacklist_local)&&(!fI('fh-kids')||h.aceita_criancas)&&(!fI('fh-pets')||h.aceita_pets)&&(!fI('fh-spa')||h.spa)&&(!fI('fh-cassino')||h.cassino)&&(!fI('fh-parque')||h.parque_aquatico)&&(!fI('fh-voo-direto')||h.voo_direto)&&(!fI('fh-hosp-local')||h.tem_hospedagem)&&(!fI('fh-visto')||h.visto_necessario)
+    return ms&&mp&&mr&&mt&&ma&&mAcom&&mdiaria&&mReg&&mDist&&mJaFiz&&mNaoFiz&&(!fI('fh-favorito')||h.favorito)&&(!fI('fh-indicamos')||['ja_indicamos','nao_indicamos'].includes(h.status_indicacao))&&(!fI('fh-blacklist')||h.blacklist_local)&&(!fI('fh-kids')||h.aceita_criancas)&&(!fI('fh-pets')||h.aceita_pets)&&(!fI('fh-spa')||h.spa)&&(!fI('fh-cassino')||h.cassino)&&(!fI('fh-parque')||h.parque_aquatico)&&(!fI('fh-voo-direto')||h.voo_direto)&&(!fI('fh-hosp-local')||h.tem_hospedagem)&&(!fI('fh-visto')||h.visto_necessario)
   })
   document.getElementById('hoteis-count').textContent=hoteis.length+' local(is) cadastrado(s)'
   if(!filtered.length){grid.innerHTML='<div class="em"><div class="em-i">🏨</div><div class="em-t">Nenhum hotel encontrado</div></div>';return}
