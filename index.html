@@ -1826,7 +1826,7 @@ function renderHoteis(){
     const mr=!regioes.length||regioes.includes(h.regiao)
     const mt=!tipos.length||tipos.includes(h.tipo)
     const ma=!ambientes.length||ambientes.includes(h.ambiente)
-    const numAcom=parseInt(h.num_acomodacoes)||9999
+    const numAcom=parseInt(h.num_acomodacoes)||0
     let mdiaria=true
     if(moeda){if(h.moeda_diaria!==moeda){mdiaria=false}else{const numDiaria=parseFloat((h.valor_diaria||'').replace(/\./g,'').replace(',','.').replace(/[^0-9.]/g,''))||0;mdiaria=numDiaria>=minDiaria&&numDiaria<=maxDiaria}}
     const distMax=document.getElementById('fh-distancia')?.value
@@ -1835,7 +1835,7 @@ function renderHoteis(){
     const mDist=!distMax||!h.distancia_aeroporto||(parseInt(h.distancia_aeroporto)<=parseInt(distMax))
     const mJaFiz=!fI('fh-ja-fizemos')||(h._num_casamentos>0||h.ja_fizemos_casamento)
     const mNaoFiz=!fI('fh-nao-fizemos')||(!h._num_casamentos&&!h.ja_fizemos_casamento)
-    return ms&&mp&&mr&&mt&&ma&&numAcom<=maxAcom&&mdiaria&&mReg&&mDist&&mJaFiz&&mNaoFiz&&(!fI('fh-favorito')||h.favorito)&&(!fI('fh-indicamos')||['ja_indicamos','nao_indicamos'].includes(h.status_indicacao))&&(!fI('fh-blacklist')||h.blacklist_local)&&(!fI('fh-kids')||h.aceita_criancas)&&(!fI('fh-pets')||h.aceita_pets)&&(!fI('fh-spa')||h.spa)&&(!fI('fh-cassino')||h.cassino)&&(!fI('fh-parque')||h.parque_aquatico)&&(!fI('fh-voo-direto')||h.voo_direto)&&(!fI('fh-hosp-local')||h.tem_hospedagem)&&(!fI('fh-visto')||h.visto_necessario)
+    return ms&&mp&&mr&&mt&&ma&&(numAcom===0||numAcom<=maxAcom)&&mdiaria&&mReg&&mDist&&mJaFiz&&mNaoFiz&&(!fI('fh-favorito')||h.favorito)&&(!fI('fh-indicamos')||['ja_indicamos','nao_indicamos'].includes(h.status_indicacao))&&(!fI('fh-blacklist')||h.blacklist_local)&&(!fI('fh-kids')||h.aceita_criancas)&&(!fI('fh-pets')||h.aceita_pets)&&(!fI('fh-spa')||h.spa)&&(!fI('fh-cassino')||h.cassino)&&(!fI('fh-parque')||h.parque_aquatico)&&(!fI('fh-voo-direto')||h.voo_direto)&&(!fI('fh-hosp-local')||h.tem_hospedagem)&&(!fI('fh-visto')||h.visto_necessario)
   })
   document.getElementById('hoteis-count').textContent=hoteis.length+' local(is) cadastrado(s)'
   if(!filtered.length){grid.innerHTML='<div class="em"><div class="em-i">🏨</div><div class="em-t">Nenhum hotel encontrado</div></div>';return}
