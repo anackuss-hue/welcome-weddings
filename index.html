@@ -785,6 +785,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div class="f"><label>Cidade</label><input id="h-cidade"></div>
         <div class="f"><label>Site Oficial</label><input id="h-site" placeholder="https://"></div>
         <div class="f"><label>E-mail para Contato</label><input id="h-email" type="email"></div>
+        <div class="f"><label>E-mail do Representante</label><input id="h-email-rep" type="email"></div>
         <div class="f"><label>Representante no Brasil — Nome</label><input id="h-rep-nome"></div>
         <div class="f"><label>Representante no Brasil — Telefone</label><input id="h-rep-tel" placeholder="+55 (00) 00000-0000"></div>
       </div>
@@ -809,7 +810,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       </div>
     </div>
     <div class="atc" id="atab-hespec">
-      <div class="g2">
+      <div class="f" style="margin-bottom:16px;padding:10px 14px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:8px;display:flex;align-items:center;gap:10px"><label style="margin-bottom:0;white-space:nowrap">📅 Última atualização</label><input id="h-atualizacao-hespec" type="date" style="margin-bottom:0;border:none;background:transparent;padding:0;font-size:13px;flex:1"></div>
+<div class="g2">
         <div class="f"><label>Tipo de Local</label><select id="h-tipo"><option value="">Selecione</option><option>Resort</option><option>Boutique</option><option>Pousada</option><option>Hotel Urbano</option><option>Fazenda/Vinhedo</option></select></div>
         <div class="f"><label>Regime de Alimentação</label><select id="h-regime-select" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none"><option value="">Selecione...</option><option value="All Inclusive">All Inclusive</option><option value="Pensão completa">Pensão completa</option><option value="Café da manhã">Café da manhã</option><option value="Meia pensão">Meia pensão</option><option value="Sem regime de alimentação">Sem regime de alimentação</option><option value="Airbnb">Airbnb</option></select></div>
         <div class="f"><label>Nº de Acomodações</label><input id="h-acomodacoes"></div>
@@ -818,8 +820,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div class="f"><label>Bares no Total</label><input id="h-bares-total"></div>
         <div class="f"><label>Restaurantes Buffet</label><input id="h-rest-buffet"></div>
         <div class="f"><label>Restaurantes à La Carte</label><input id="h-rest-carte"></div>
-        <div class="f"><label>Restaurantes All Inclusive</label><input id="h-rest-ai"></div>
-        <div class="f"><label>Bares All Inclusive</label><input id="h-bares-ai"></div>
+        <div class="f"><label>Capacidade Máx. de Hóspedes</label><input id="h-cap-hospedes" placeholder="Ex: 500"></div>
+        <div class="f"><label>Capacidade Máx. para Eventos</label><input id="h-cap-eventos" placeholder="Ex: 300"></div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:8px">
         <div class="tr-row" onclick="tg('h-frigobar')"><div class="tr-track" id="track-h-frigobar"><div class="tr-thumb"></div></div><span class="tr-label">Frigobar com Bebidas</span></div>
@@ -871,7 +873,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       </div>
     </div>
     <div class="atc" id="atab-hvalores">
-      <div class="g2">
+      <div class="f" style="margin-bottom:16px;padding:10px 14px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:8px;display:flex;align-items:center;gap:10px"><label style="margin-bottom:0;white-space:nowrap">📅 Última atualização</label><input id="h-atualizacao-hvalores" type="date" style="margin-bottom:0;border:none;background:transparent;padding:0;font-size:13px;flex:1"></div>
+<div class="g2">
         <div class="f"><label>Valor Diária Casal</label><input id="h-diaria" placeholder="Ex: USD 450,00"></div>
         <div class="f"><label>Valor Sinal Casamento</label><input id="h-sinal" placeholder="Ex: USD 300"></div>
         <div class="f"><label>Valor Bloqueio de Quartos</label><input id="h-bloqueio" placeholder="Ex: USD 350–500"></div>
@@ -880,13 +883,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       </div>
     </div>
     <div class="atc" id="atab-hcasamento">
-      <div class="f"><label>Factsheet (link)</label><input id="h-factsheet" placeholder="https://"></div>
+      <div class="f" style="margin-bottom:16px;padding:10px 14px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:8px;display:flex;align-items:center;gap:10px"><label style="margin-bottom:0;white-space:nowrap">📅 Última atualização</label><input id="h-atualizacao-hcasamento" type="date" style="margin-bottom:0;border:none;background:transparent;padding:0;font-size:13px;flex:1"></div>
+<div class="f"><label>Factsheet (link)</label><input id="h-factsheet" placeholder="https://"></div>
       <div class="f"><label>Tour Virtual (link)</label><input id="h-tour" placeholder="https://"></div>
       <div class="f"><label>Espaços para Casamento</label><textarea id="h-espacos" style="min-height:100px" placeholder="Ex: Praia (200p – cerimônia, jantar), Gazebo (80p)..."></textarea></div>
       <div class="f"><label>Mapa do Hotel (link)</label><input id="h-mapa" placeholder="https://"></div>
     </div>
     <div class="atc" id="atab-hcomissao">
-      <div class="sec" style="margin-top:0"><div class="st">Comissão</div>
+      <div class="f" style="margin-bottom:16px;padding:10px 14px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:8px;display:flex;align-items:center;gap:10px"><label style="margin-bottom:0;white-space:nowrap">📅 Última atualização</label><input id="h-atualizacao-hcomissao" type="date" style="margin-bottom:0;border:none;background:transparent;padding:0;font-size:13px;flex:1"></div>
+<div class="sec" style="margin-top:0"><div class="st">Comissão</div>
         <div class="g2">
           <div class="f"><label>Percentual</label><input id="h-percentual" placeholder="Ex: 10%"></div>
           <div class="f"><label>E-mail para Cobrança</label><input id="h-email-cobr" type="email"></div>
@@ -1870,7 +1875,7 @@ function openHotel(id){
   },100)
 }
 function clearHForm(){
-  ['h-nome','h-rep-nome','h-rep-tel','h-pais','h-cidade','h-site','h-email','h-instagram','h-regime','h-acomodacoes','h-ano','h-rest-total','h-bares-total','h-rest-buffet','h-rest-carte','h-rest-ai','h-bares-ai','h-diaria','h-sinal','h-bloqueio','h-val-casamento','h-luau','h-factsheet','h-tour','h-espacos','h-mapa','h-percentual','h-a-pagar','h-email-cobr','h-comissao-valor','h-motivo-ind','h-hoteis-regiao'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
+  ['h-nome','h-rep-nome','h-rep-tel','h-email-rep','h-pais','h-cidade','h-site','h-email','h-instagram','h-acomodacoes','h-ano','h-cap-hospedes','h-cap-eventos','h-rest-total','h-bares-total','h-rest-buffet','h-rest-carte','h-diaria','h-sinal','h-bloqueio','h-val-casamento','h-luau','h-factsheet','h-tour','h-espacos','h-mapa','h-percentual','h-a-pagar','h-email-cobr','h-comissao-valor','h-motivo-ind','h-hoteis-regiao','h-atualizacao-hgeral','h-atualizacao-hespec','h-atualizacao-hvalores','h-atualizacao-hcasamento','h-atualizacao-hcomissao'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
   document.getElementById('h-regiao').value='';document.getElementById('h-tipo').value='';const hrs=document.getElementById('h-regime-select');if(hrs)hrs.value='';const hda=document.getElementById('h-distancia-aero');if(hda)hda.value=''
   const si=document.getElementById('h-status-indicacao');if(si)si.value=''
   ;['h-frigobar','h-room-service','h-bar-pago','h-rest-pago','h-kids','h-parque','h-pub','h-cassino','h-spa','h-wifi','h-criancas','h-pets','h-paga-com','h-blacklist-local','h-voo-direto','h-visto','h-favorito','h-ja-fizemos'].forEach(id=>setTg(id,false))
@@ -1881,8 +1886,8 @@ function fillHForm(h){
   const s=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||''}
   s('h-nome',h.nome);s('h-rep-nome',h.representante_nome);s('h-rep-tel',h.representante_telefone)
   s('h-pais',h.pais);s('h-cidade',h.cidade);s('h-site',h.site);s('h-email',h.email);s('h-instagram',h.instagram)
-  s('h-regime',h.regime);s('h-acomodacoes',h.num_acomodacoes);s('h-ano',h.ano_construcao)
-  s('h-rest-total',h.restaurantes_total);s('h-bares-total',h.bares_total);s('h-rest-buffet',h.restaurantes_buffet);s('h-rest-carte',h.restaurantes_carte);s('h-rest-ai',h.restaurantes_ai);s('h-bares-ai',h.bares_ai)
+  s('h-acomodacoes',h.num_acomodacoes);s('h-ano',h.ano_construcao);s('h-cap-hospedes',h.capacidade_hospedes);s('h-cap-eventos',h.capacidade_eventos);s('h-email-rep',h.email_representante)
+  s('h-rest-total',h.restaurantes_total);s('h-bares-total',h.bares_total);s('h-rest-buffet',h.restaurantes_buffet);s('h-rest-carte',h.restaurantes_carte)
   s('h-diaria',h.valor_diaria);s('h-sinal',h.valor_sinal);s('h-bloqueio',h.valor_bloqueio);s('h-val-casamento',h.valor_casamento);s('h-luau',h.valor_luau)
   s('h-factsheet',h.factsheet);s('h-tour',h.tour_virtual);s('h-espacos',h.espacos);s('h-mapa',h.mapa)
   s('h-percentual',h.percentual);s('h-a-pagar',h.comissao_a_pagar);s('h-email-cobr',h.email_cobranca)
@@ -1893,10 +1898,12 @@ function fillHForm(h){
   setTg('h-frigobar',h.frigobar);setTg('h-room-service',h.room_service);setTg('h-bar-pago',h.bar_pago);setTg('h-rest-pago',h.restaurante_pago);setTg('h-kids',h.area_kids);setTg('h-parque',h.parque_aquatico);setTg('h-pub',h.pub_disco);setTg('h-cassino',h.cassino);setTg('h-spa',h.spa);setTg('h-wifi',h.wifi);setTg('h-criancas',h.aceita_criancas);setTg('h-pets',h.aceita_pets);setTg('h-paga-com',h.paga_comissao);setTg('h-blacklist-local',h.blacklist_local);setTg('h-voo-direto',h.voo_direto);setTg('h-visto',h.visto_necessario);setTg('h-favorito',h.favorito);setTg('h-ja-fizemos',h.ja_fizemos_casamento||(h._num_casamentos>0));const _hrsf=document.getElementById('h-regime-select');if(_hrsf&&h.regime_select)_hrsf.value=h.regime_select;const _hdaf=document.getElementById('h-distancia-aero');if(_hdaf&&h.distancia_aeroporto)_hdaf.value=h.distancia_aeroporto
   const ha=document.getElementById('h-ambiente');if(ha&&h.ambiente)ha.value=h.ambiente
   const temHosp=h.tem_hospedagem!==false;setTg('h-hospedagem',temHosp);document.getElementById('h-hospedagem-section').style.display=temHosp?'none':'block'
+  if(h.ultima_atualizacao){['hgeral','hespec','hvalores','hcasamento','hcomissao'].forEach(t=>{const el=document.getElementById('h-atualizacao-'+t);if(el)el.value=h.ultima_atualizacao})}
 }
 function getHData(){
   const v=id=>document.getElementById(id)?.value||''
-  return{nome:v('h-nome'),representante_nome:v('h-rep-nome'),representante_telefone:v('h-rep-tel'),regiao:v('h-regiao'),pais:v('h-pais'),cidade:v('h-cidade'),site:v('h-site'),email:v('h-email'),instagram:v('h-instagram'),tipo:v('h-tipo'),regime:v('h-regime'),num_acomodacoes:v('h-acomodacoes'),ano_construcao:v('h-ano'),restaurantes_total:v('h-rest-total'),bares_total:v('h-bares-total'),restaurantes_buffet:v('h-rest-buffet'),restaurantes_carte:v('h-rest-carte'),restaurantes_ai:v('h-rest-ai'),bares_ai:v('h-bares-ai'),valor_diaria:v('h-diaria'),valor_sinal:v('h-sinal'),valor_bloqueio:v('h-bloqueio'),valor_casamento:v('h-val-casamento'),valor_luau:v('h-luau'),factsheet:v('h-factsheet'),tour_virtual:v('h-tour'),espacos:v('h-espacos'),mapa:v('h-mapa'),percentual:v('h-percentual'),comissao_a_pagar:v('h-a-pagar'),email_cobranca:v('h-email-cobr'),paga_comissao_valor:v('h-comissao-valor'),status_indicacao:v('h-status-indicacao')||null,motivo_nao_indicacao:v('h-motivo-ind'),hoteis_regiao:v('h-hoteis-regiao'),tem_hospedagem:getTg('h-hospedagem'),frigobar:getTg('h-frigobar'),room_service:getTg('h-room-service'),bar_pago:getTg('h-bar-pago'),restaurante_pago:getTg('h-rest-pago'),area_kids:getTg('h-kids'),parque_aquatico:getTg('h-parque'),pub_disco:getTg('h-pub'),cassino:getTg('h-cassino'),spa:getTg('h-spa'),wifi:getTg('h-wifi'),aceita_criancas:getTg('h-criancas'),aceita_pets:getTg('h-pets'),paga_comissao:getTg('h-paga-com'),blacklist_local:getTg('h-blacklist-local'),ambiente:document.getElementById('h-ambiente')?.value||null,voo_direto:getTg('h-voo-direto'),visto_necessario:getTg('h-visto'),favorito:getTg('h-favorito'),ja_fizemos_casamento:getTg('h-ja-fizemos'),regime_select:document.getElementById('h-regime-select')?.value||null,distancia_aeroporto:document.getElementById('h-distancia-aero')?.value||null}
+  const _atu=['hgeral','hespec','hvalores','hcasamento','hcomissao'].map(t=>v('h-atualizacao-'+t)).filter(Boolean);const _atuDate=_atu[0]||null
+  return{nome:v('h-nome'),representante_nome:v('h-rep-nome'),representante_telefone:v('h-rep-tel'),email_representante:v('h-email-rep'),regiao:v('h-regiao'),pais:v('h-pais'),cidade:v('h-cidade'),site:v('h-site'),email:v('h-email'),instagram:v('h-instagram'),tipo:v('h-tipo'),num_acomodacoes:v('h-acomodacoes'),ano_construcao:v('h-ano'),capacidade_hospedes:v('h-cap-hospedes')||null,capacidade_eventos:v('h-cap-eventos')||null,restaurantes_total:v('h-rest-total'),bares_total:v('h-bares-total'),restaurantes_buffet:v('h-rest-buffet'),restaurantes_carte:v('h-rest-carte'),valor_diaria:v('h-diaria'),valor_sinal:v('h-sinal'),valor_bloqueio:v('h-bloqueio'),valor_casamento:v('h-val-casamento'),valor_luau:v('h-luau'),factsheet:v('h-factsheet'),tour_virtual:v('h-tour'),espacos:v('h-espacos'),mapa:v('h-mapa'),percentual:v('h-percentual'),comissao_a_pagar:v('h-a-pagar'),email_cobranca:v('h-email-cobr'),paga_comissao_valor:v('h-comissao-valor'),status_indicacao:v('h-status-indicacao')||null,motivo_nao_indicacao:v('h-motivo-ind'),hoteis_regiao:v('h-hoteis-regiao'),ultima_atualizacao:_atuDate,tem_hospedagem:getTg('h-hospedagem'),frigobar:getTg('h-frigobar'),room_service:getTg('h-room-service'),bar_pago:getTg('h-bar-pago'),restaurante_pago:getTg('h-rest-pago'),area_kids:getTg('h-kids'),parque_aquatico:getTg('h-parque'),pub_disco:getTg('h-pub'),cassino:getTg('h-cassino'),spa:getTg('h-spa'),wifi:getTg('h-wifi'),aceita_criancas:getTg('h-criancas'),aceita_pets:getTg('h-pets'),paga_comissao:getTg('h-paga-com'),blacklist_local:getTg('h-blacklist-local'),ambiente:document.getElementById('h-ambiente')?.value||null,voo_direto:getTg('h-voo-direto'),visto_necessario:getTg('h-visto'),favorito:getTg('h-favorito'),ja_fizemos_casamento:getTg('h-ja-fizemos'),regime_select:document.getElementById('h-regime-select')?.value||null,distancia_aeroporto:document.getElementById('h-distancia-aero')?.value||null}
 }
 async function salvarHotel(){
   const btn=document.getElementById('btn-sh');btn.textContent='Salvando...';btn.disabled=true
