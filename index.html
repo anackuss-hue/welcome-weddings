@@ -126,7 +126,32 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .filter-drawer-title{font-size:14px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
 .filter-drawer-close{background:none;border:none;font-size:22px;cursor:pointer;color:#999;padding:0 4px;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center}
 
-/* ══ LABELS CURTAS MOBILE ══ */
+/* ══ KANBAN ══ */
+.kb-board{display:flex;gap:14px;overflow-x:auto;padding-bottom:16px;align-items:flex-start}
+.kb-col{min-width:220px;width:220px;flex-shrink:0}
+.kb-col-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding:0 2px}
+.kb-col-title{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase}
+.kb-count{font-size:11px;font-weight:600;color:var(--muted);background:#f0ebe2;border-radius:20px;padding:1px 8px}
+.kb-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:box-shadow .15s,border-color .15s}
+.kb-card:hover{border-color:var(--gold);box-shadow:0 2px 12px rgba(184,150,90,.1)}
+.kb-card-name{font-size:13px;font-weight:600;color:var(--text);margin:6px 0 5px;line-height:1.4}
+.kb-card-meta{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.kb-avatar{width:22px;height:22px;border-radius:50%;background:var(--gold-pale);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--gold);flex-shrink:0}
+.kb-date{font-size:11px;color:var(--muted)}
+.kb-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
+.kb-tag{font-size:10px;padding:2px 6px;border-radius:4px;background:#f5f0e8;color:#888;border:1px solid var(--gold-border)}
+.tipo-tag{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px}
+.tipo-viagem{background:var(--gold-pale);color:var(--gold);border:1px solid var(--gold-border)}
+.tipo-convidado{background:#e3f2fd;color:#1565c0;border:1px solid #bbdefb}
+.tipo-passeio{background:#e8f5e9;color:#2e7d32;border:1px solid #c8e6c9}
+.kb-add-btn{width:100%;padding:8px;font-size:12px;font-weight:600;color:var(--gold);background:var(--gold-pale);border:1.5px dashed var(--gold-border);border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:8px;transition:all .15s}
+.kb-add-btn:hover{border-color:var(--gold);background:#fdf3e0}
+.kb-tabs{display:flex;gap:6px;margin-bottom:22px;border-bottom:2px solid var(--border)}
+.kb-tab{padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:transparent;color:#aaa;font-family:'DM Sans',sans-serif;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
+.kb-tab:hover{color:var(--gold)}.kb-tab.active{color:var(--gold);border-bottom-color:var(--gold);font-weight:600}
+.kb-new-badge{font-size:10px;font-weight:700;background:var(--red);color:#fff;padding:1px 6px;border-radius:20px;margin-left:5px}
+.form-section{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:28px;padding-top:24px;border-top:1px solid var(--border)}
+@media(max-width:768px){.form-section{grid-template-columns:1fr}.kb-col{min-width:80vw}}
 .atab-short{display:none}
 .atab-long{display:inline}
 @media(max-width:500px){
@@ -222,6 +247,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="nav active" onclick="showPage('casamentos')" id="nav-casamentos">💍 Casamentos</div>
   <div class="nav" onclick="showPage('assessoras')" id="nav-assessoras">👩 Assessoras</div>
   <div class="nav" onclick="showPage('hoteis')" id="nav-hoteis">🏨 Locais</div>
+  <div class="nav" onclick="showPage('viagens')" id="nav-viagens">✈️ Viagens</div>
   <div class="nav" onclick="showPage('logs')" id="nav-logs" style="display:none">📋 Logs</div>
   <div class="nav" onclick="showPage('usuarios')" id="nav-usuarios" style="display:none">👤 Usuários</div>
   <div class="user-bar" id="user-bar">
@@ -454,6 +480,58 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         </div>
       </div>
       <div style="flex:1"><div class="cg" id="hoteis-grid"><div class="ld">Carregando...</div></div></div>
+    </div>
+  </div>
+
+  <!-- ══ VIAGENS / KANBAN ══ -->
+  <div class="page" id="page-viagens">
+    <div class="ph">
+      <div><div class="pt">Solicitações de Viagem</div><div class="ps" id="viagens-count">Carregando...</div></div>
+    </div>
+    <!-- Tabs por responsável -->
+    <div class="kb-tabs">
+      <button class="kb-tab active" onclick="showKanbanTab('rapha',this)">Rapha <span class="kb-new-badge" id="badge-rapha" style="display:none">0</span></button>
+      <button class="kb-tab" onclick="showKanbanTab('mari',this)">Mari <span class="kb-new-badge" id="badge-mari" style="display:none">0</span></button>
+      <button class="kb-tab" onclick="showKanbanTab('juliana',this)">Juliana <span class="kb-new-badge" id="badge-juliana" style="display:none">0</span></button>
+    </div>
+    <!-- Board -->
+    <div class="kb-board" id="kb-board"></div>
+    <!-- Formulários internos -->
+    <div class="form-section">
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--gold-border)">
+          <div style="width:34px;height:34px;border-radius:8px;background:#e3f2fd;display:flex;align-items:center;justify-content:center;font-size:18px">👥</div>
+          <div><div style="font-size:14px;font-weight:600">Atendimento a Convidado</div><div style="font-size:11px;color:var(--muted)">Solicitação interna</div></div>
+        </div>
+        <div class="f"><label>Casamento</label>
+          <select id="form-cong-casamento" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none"><option value="">Selecionar casamento...</option></select>
+        </div>
+        <div class="f"><label>Nome do Convidado</label><input id="form-cong-nome" placeholder="Ex: Carlos Mendes"></div>
+        <div class="f"><label>Telefone</label><input id="form-cong-tel" placeholder="+55 (00) 00000-0000"></div>
+        <div class="f"><label>Responsável</label>
+          <select id="form-cong-resp" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+            <option value="rapha">Rapha</option><option value="mari">Mari</option><option value="juliana">Juliana</option>
+          </select>
+        </div>
+        <div class="f"><label>Solicitação</label><textarea id="form-cong-sol" placeholder="Descreva a solicitação do convidado..."></textarea></div>
+        <button class="btn bg" style="width:100%" onclick="criarSolicitacaoKanban('convidado')">Criar solicitação</button>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--gold-border)">
+          <div style="width:34px;height:34px;border-radius:8px;background:#e8f5e9;display:flex;align-items:center;justify-content:center;font-size:18px">🗺️</div>
+          <div><div style="font-size:14px;font-weight:600">Solicitação de Passeio</div><div style="font-size:11px;color:var(--muted)">Solicitação interna</div></div>
+        </div>
+        <div class="f"><label>Casamento</label>
+          <select id="form-pass-casamento" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none"><option value="">Selecionar casamento...</option></select>
+        </div>
+        <div class="f"><label>Responsável</label>
+          <select id="form-pass-resp" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+            <option value="rapha">Rapha</option><option value="mari">Mari</option><option value="juliana">Juliana</option>
+          </select>
+        </div>
+        <div class="f"><label>Solicitação</label><textarea id="form-pass-sol" style="min-height:120px" placeholder="Descreva o passeio solicitado..."></textarea></div>
+        <button class="btn bg" style="width:100%" onclick="criarSolicitacaoKanban('passeio')">Criar solicitação</button>
+      </div>
     </div>
   </div>
 
@@ -911,6 +989,65 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div>
 </div>
 
+<!-- MODAL KANBAN CARD DETALHE -->
+<div class="mo" id="modal-kanban-card">
+  <div class="mb" style="max-width:480px">
+    <div class="mh"><div><div class="mt" id="kc-title">Solicitação</div><div class="ms" id="kc-criado"></div></div><button class="mcl" onclick="closeModal('modal-kanban-card')">✕</button></div>
+    <div style="font-size:15px;font-weight:600;margin-bottom:14px" id="kc-nome"></div>
+    <div id="kc-detalhes" style="margin-bottom:20px"></div>
+    <div class="f"><label>Mover para coluna</label>
+      <select id="kc-coluna" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+        <option value="nova">Nova solicitação</option>
+        <option value="andamento">Em andamento / Contato</option>
+        <option value="orcamento">Orçamento / Aguardando</option>
+        <option value="ganho">Ganho</option>
+        <option value="perdido">Perdido</option>
+      </select>
+    </div>
+    <div class="mf">
+      <button class="btn bd" onclick="deletarKanbanCard()">Remover</button>
+      <button class="btn bo" onclick="closeModal('modal-kanban-card')">Fechar</button>
+      <button class="btn bg" onclick="moverKanbanCard()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL KANBAN NOVO CARD -->
+<div class="mo" id="modal-kanban-novo">
+  <div class="mb" style="max-width:460px">
+    <div class="mh"><div class="mt">Nova Solicitação</div><button class="mcl" onclick="closeModal('modal-kanban-novo')">✕</button></div>
+    <div class="f"><label>Tipo</label>
+      <select id="kn-tipo" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+        <option value="viagem_assessora">🧳 Viagem de Assessora</option>
+        <option value="atendimento_convidado">👥 Atendimento a Convidado</option>
+        <option value="passeio">🗺️ Passeio</option>
+      </select>
+    </div>
+    <div class="f"><label>Casamento</label>
+      <select id="kn-casamento" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none"><option value="">Selecionar...</option></select>
+    </div>
+    <div class="f"><label>Responsável</label>
+      <select id="kn-resp" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+        <option value="rapha">Rapha</option><option value="mari">Mari</option><option value="juliana">Juliana</option>
+      </select>
+    </div>
+    <div class="f"><label>Coluna</label>
+      <select id="kn-coluna" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+        <option value="nova">Nova solicitação</option>
+        <option value="andamento">Em andamento / Contato</option>
+        <option value="orcamento">Orçamento / Aguardando</option>
+        <option value="ganho">Ganho</option>
+        <option value="perdido">Perdido</option>
+      </select>
+    </div>
+    <div class="f"><label>Solicitação / Observações</label><textarea id="kn-sol" placeholder="Descreva a solicitação..."></textarea></div>
+    <div class="mf">
+      <button class="btn bo" onclick="closeModal('modal-kanban-novo')">Cancelar</button>
+      <button class="btn bg" id="btn-kn" onclick="salvarNovoKanban()">Salvar</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL REDEFINIR SENHA -->
 <div class="mo" id="modal-senha">
   <div class="mb" style="max-width:400px">
@@ -1127,6 +1264,7 @@ function showPage(p){
   closeSidebar()
   if(p==='logs')loadLogs()
   if(p==='usuarios')loadUsuarios()
+  if(p==='viagens')loadKanban()
   syncFabs()
 }
 function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow=''}
@@ -1961,6 +2099,9 @@ async function salvarSolicitacao(){
   const dataSaida=document.getElementById('sol-data-saida').value||null
   const data={casamento_id:casamentoAtual?.id,casamento_nome:casamentoAtual?.nome,assessora_id:solAssessoraAtual?.assessora_id,assessora_nome:solAssessoraAtual?.assessora?.nome,data_chegada:dataChegada,hora_chegada:document.getElementById('sol-hora-chegada').value||null,data_saida:dataSaida,hora_saida:document.getElementById('sol-hora-saida').value||null,cidade_saida:document.getElementById('sol-cidade-saida').value||null,precisa_passagem:solCards.passagem,precisa_hotel:solCards.hotel,precisa_transfer:solCards.transfer,obs:document.getElementById('sol-obs').value,solicitado_por:usuarioAtual?.nome,status:'pendente'}
   await sb.from('solicitacoes_viagem').insert(data)
+  // Cria card no Kanban automaticamente
+  const servicos=[solCards.passagem&&'Voo',solCards.transfer&&'Transfer',solCards.hotel&&'Hospedagem'].filter(Boolean).join(' · ')
+  await sb.from('solicitacoes_kanban').insert({tipo:'viagem_assessora',coluna:'nova',responsavel:'rapha',casamento_id:casamentoAtual?.id,casamento_nome:casamentoAtual?.nome,assessora_id:solAssessoraAtual?.assessora_id,assessora_nome:solAssessoraAtual?.assessora?.nome,periodo_de:dataChegada,periodo_ate:dataSaida,servicos:servicos||null,solicitacao:document.getElementById('sol-obs').value||null,criado_por:usuarioAtual?.nome})
   // Atualiza período de ocupação na escala automaticamente
   if(solAssessoraAtual?.id&&(dataChegada||dataSaida)){
     const update={}
@@ -2267,6 +2408,178 @@ async function deletarAnexo(id,url,containerId,tipo,referenciaId){
   if(match)await sb.storage.from(BUCKET).remove([decodeURIComponent(match[1])])
   await sb.from('anexos').delete().eq('id',id)
   carregarAnexos(containerId,tipo,referenciaId)
+}
+
+// ══ KANBAN DE VIAGENS ══
+let kanbanData=[], kanbanTabAtual='rapha'
+
+const KB_COLUNAS=[
+  {id:'nova',label:'Nova solicitação'},
+  {id:'andamento',label:'Em andamento / Contato'},
+  {id:'orcamento',label:'Orçamento / Aguardando'},
+  {id:'ganho',label:'Ganho'},
+  {id:'perdido',label:'Perdido'}
+]
+
+async function loadKanban(){
+  const{data}=await sb.from('solicitacoes_kanban').select('*').order('created_at',{ascending:false})
+  kanbanData=data||[]
+  // Atualiza badges de novas
+  ;['rapha','mari','juliana'].forEach(r=>{
+    const novas=kanbanData.filter(k=>k.responsavel===r&&k.coluna==='nova').length
+    const badge=document.getElementById('badge-'+r)
+    if(badge){badge.textContent=novas;badge.style.display=novas>0?'inline':'none'}
+  })
+  const total=kanbanData.length
+  document.getElementById('viagens-count').textContent=total+' solicitação(ões) no total'
+  populateFormCasamentos()
+  renderKanban()
+}
+
+function populateFormCasamentos(){
+  const hoje=new Date().toISOString().split('T')[0]
+  const futuros=casamentos.filter(c=>c.plan_data>=hoje&&c.status!=='Cancelado').sort((a,b)=>a.plan_data.localeCompare(b.plan_data))
+  ;['form-cong-casamento','form-pass-casamento'].forEach(id=>{
+    const sel=document.getElementById(id);if(!sel)return
+    sel.innerHTML='<option value="">Selecionar casamento...</option>'+futuros.map(c=>`<option value="${c.id}" data-nome="${c.nome}">${c.nome}${c.plan_data?' — '+fmtDate(c.plan_data):''}</option>`).join('')
+  })
+}
+
+function showKanbanTab(tab,btn){
+  kanbanTabAtual=tab
+  document.querySelectorAll('.kb-tab').forEach(t=>t.classList.remove('active'))
+  if(btn)btn.classList.add('active')
+  renderKanban()
+}
+
+function renderKanban(){
+  const board=document.getElementById('kb-board');if(!board)return
+  const filtered=kanbanData.filter(k=>k.responsavel===kanbanTabAtual)
+  board.innerHTML=KB_COLUNAS.map(col=>{
+    const cards=filtered.filter(k=>k.coluna===col.id)
+    return`<div class="kb-col">
+      <div class="kb-col-header">
+        <span class="kb-col-title">${col.label}</span>
+        <span class="kb-count">${cards.length}</span>
+      </div>
+      <button class="kb-add-btn" onclick="openNovaKanban('${col.id}')">+ Adicionar</button>
+      ${cards.map(k=>renderKanbanCard(k)).join('')}
+    </div>`
+  }).join('')
+}
+
+function renderKanbanCard(k){
+  const tipoTag={
+    viagem_assessora:`<span class="tipo-tag tipo-viagem">🧳 Viagem assessora</span>`,
+    atendimento_convidado:`<span class="tipo-tag tipo-convidado">👥 Atend. convidado</span>`,
+    passeio:`<span class="tipo-tag tipo-passeio">🗺️ Passeio</span>`
+  }[k.tipo]||''
+
+  const nome=k.tipo==='viagem_assessora'
+    ?`${k.assessora_nome||'?'} — ${k.casamento_nome||'?'}`
+    :k.casamento_nome||'—'
+
+  const tags=[]
+  if(k.periodo_de&&k.periodo_ate)tags.push(`${fmtDate(k.periodo_de)} → ${fmtDate(k.periodo_ate)}`)
+  if(k.servicos)tags.push(k.servicos)
+  if(k.convidado_nome)tags.push(k.convidado_nome)
+  if(k.solicitacao)tags.push(k.solicitacao.slice(0,30)+(k.solicitacao.length>30?'...':''))
+
+  const avatar=(k.assessora_nome||k.casamento_nome||'?')[0].toUpperCase()
+  const dt=new Date(k.created_at).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})
+
+  return`<div class="kb-card" onclick="openKanbanCard('${k.id}')">
+    ${tipoTag}
+    <div class="kb-card-name">${nome}</div>
+    ${tags.length?`<div class="kb-tags">${tags.map(t=>`<span class="kb-tag">${t}</span>`).join('')}</div>`:''}
+    <div class="kb-card-meta">
+      <span class="kb-date">${dt}</span>
+      <div class="kb-avatar">${avatar}</div>
+    </div>
+  </div>`
+}
+
+// Modal de detalhe/edição do card
+let kanbanCardAtual=null
+function openKanbanCard(id){
+  kanbanCardAtual=kanbanData.find(k=>k.id===id);if(!kanbanCardAtual)return
+  const k=kanbanCardAtual
+  const tipoLabel={viagem_assessora:'🧳 Viagem de Assessora',atendimento_convidado:'👥 Atendimento a Convidado',passeio:'🗺️ Passeio'}[k.tipo]||k.tipo
+  document.getElementById('kc-title').textContent=tipoLabel
+  document.getElementById('kc-nome').textContent=k.tipo==='viagem_assessora'?`${k.assessora_nome||'?'} — ${k.casamento_nome||'?'}`:k.casamento_nome||'—'
+  document.getElementById('kc-criado').textContent='Criado por '+( k.criado_por||'—')+' em '+new Date(k.created_at).toLocaleDateString('pt-BR')
+  // Preenche detalhes
+  const det=document.getElementById('kc-detalhes')
+  let html=''
+  if(k.periodo_de)html+=`<div style="margin-bottom:8px"><span style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.5px;text-transform:uppercase">Período</span><div style="font-size:13px;margin-top:3px">${fmtDate(k.periodo_de)} → ${fmtDate(k.periodo_ate)}</div></div>`
+  if(k.servicos)html+=`<div style="margin-bottom:8px"><span style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.5px;text-transform:uppercase">Serviços</span><div style="font-size:13px;margin-top:3px">${k.servicos}</div></div>`
+  if(k.convidado_nome)html+=`<div style="margin-bottom:8px"><span style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.5px;text-transform:uppercase">Convidado</span><div style="font-size:13px;margin-top:3px">${k.convidado_nome}${k.convidado_telefone?' · '+k.convidado_telefone:''}</div></div>`
+  if(k.solicitacao)html+=`<div style="margin-bottom:8px"><span style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.5px;text-transform:uppercase">Solicitação</span><div style="font-size:13px;margin-top:3px;padding:10px;background:var(--gold-pale);border-radius:8px;border:1px solid var(--gold-border)">${k.solicitacao}</div></div>`
+  det.innerHTML=html||'<div style="color:var(--muted);font-size:13px">Sem detalhes adicionais</div>'
+  // Coluna atual
+  document.getElementById('kc-coluna').value=k.coluna
+  document.getElementById('modal-kanban-card').classList.add('open')
+}
+
+async function moverKanbanCard(){
+  if(!kanbanCardAtual)return
+  const novaColuna=document.getElementById('kc-coluna').value
+  await sb.from('solicitacoes_kanban').update({coluna:novaColuna}).eq('id',kanbanCardAtual.id)
+  closeModal('modal-kanban-card');loadKanban()
+}
+
+async function deletarKanbanCard(){
+  if(!kanbanCardAtual||!confirm('Remover esta solicitação?'))return
+  await sb.from('solicitacoes_kanban').delete().eq('id',kanbanCardAtual.id)
+  closeModal('modal-kanban-card');loadKanban()
+}
+
+function openNovaKanban(coluna){
+  // Abre modal simples para criar card manual
+  document.getElementById('kn-coluna').value=coluna||'nova'
+  document.getElementById('modal-kanban-novo').classList.add('open')
+  // Popula select de casamentos
+  const sel=document.getElementById('kn-casamento')
+  if(sel){
+    const hoje=new Date().toISOString().split('T')[0]
+    const futuros=casamentos.filter(c=>c.plan_data>=hoje).sort((a,b)=>a.plan_data.localeCompare(b.plan_data))
+    sel.innerHTML='<option value="">Selecionar...</option>'+futuros.map(c=>`<option value="${c.id}" data-nome="${c.nome}">${c.nome}</option>`).join('')
+  }
+}
+
+async function salvarNovoKanban(){
+  const btn=document.getElementById('btn-kn');btn.textContent='Salvando...';btn.disabled=true
+  const casEl=document.getElementById('kn-casamento')
+  const casId=casEl?.value||null
+  const casNome=casEl?.options[casEl.selectedIndex]?.dataset.nome||''
+  await sb.from('solicitacoes_kanban').insert({
+    tipo:document.getElementById('kn-tipo').value,
+    coluna:document.getElementById('kn-coluna').value,
+    responsavel:document.getElementById('kn-resp').value,
+    casamento_id:casId||null,casamento_nome:casNome,
+    solicitacao:document.getElementById('kn-sol').value,
+    criado_por:usuarioAtual?.nome
+  })
+  btn.textContent='Salvar';btn.disabled=false
+  closeModal('modal-kanban-novo');loadKanban()
+}
+
+async function criarSolicitacaoKanban(tipo){
+  if(tipo==='convidado'){
+    const casEl=document.getElementById('form-cong-casamento')
+    const casId=casEl?.value;if(!casId){alert('Selecione o casamento!');return}
+    const casNome=casEl.options[casEl.selectedIndex]?.dataset.nome||''
+    await sb.from('solicitacoes_kanban').insert({tipo:'atendimento_convidado',coluna:'nova',responsavel:document.getElementById('form-cong-resp').value,casamento_id:casId,casamento_nome:casNome,convidado_nome:document.getElementById('form-cong-nome').value,convidado_telefone:document.getElementById('form-cong-tel').value,solicitacao:document.getElementById('form-cong-sol').value,criado_por:usuarioAtual?.nome})
+    ;['form-cong-casamento','form-cong-nome','form-cong-tel','form-cong-sol'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
+  }else{
+    const casEl=document.getElementById('form-pass-casamento')
+    const casId=casEl?.value;if(!casId){alert('Selecione o casamento!');return}
+    const casNome=casEl.options[casEl.selectedIndex]?.dataset.nome||''
+    await sb.from('solicitacoes_kanban').insert({tipo:'passeio',coluna:'nova',responsavel:document.getElementById('form-pass-resp').value,casamento_id:casId,casamento_nome:casNome,solicitacao:document.getElementById('form-pass-sol').value,criado_por:usuarioAtual?.nome})
+    ;['form-pass-casamento','form-pass-sol'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
+  }
+  loadKanban()
+  alert('✅ Solicitação criada!')
 }
 
 function fmtDate(d){if(!d)return'—';const[y,m,day]=d.split('-');return`${day}/${m}/${y}`}
