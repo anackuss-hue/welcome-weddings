@@ -144,6 +144,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .tipo-viagem{background:var(--gold-pale);color:var(--gold);border:1px solid var(--gold-border)}
 .tipo-convidado{background:#e3f2fd;color:#1565c0;border:1px solid #bbdefb}
 .tipo-passeio{background:#e8f5e9;color:#2e7d32;border:1px solid #c8e6c9}
+.tipo-operacional{background:#f3e5f5;color:#6a1b9a;border:1px solid #e1bee7}
 .kb-add-btn{width:100%;padding:8px;font-size:12px;font-weight:600;color:var(--gold);background:var(--gold-pale);border:1.5px dashed var(--gold-border);border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:8px;transition:all .15s}
 .kb-add-btn:hover{border-color:var(--gold);background:#fdf3e0}
 .kb-tabs{display:flex;gap:6px;margin-bottom:22px;border-bottom:2px solid var(--border)}
@@ -2435,7 +2436,8 @@ function renderKanbanCard(k){
   const tipoTag={
     viagem_assessora:`<span class="tipo-tag tipo-viagem">🧳 Viagem assessora</span>`,
     atendimento_convidado:`<span class="tipo-tag tipo-convidado">👥 Atend. convidado</span>`,
-    passeio:`<span class="tipo-tag tipo-passeio">🗺️ Passeio</span>`
+    passeio:`<span class="tipo-tag tipo-passeio">🗺️ Passeio</span>`,
+    operacional:`<span class="tipo-tag tipo-operacional">📋 Operacional</span>`
   }[k.tipo]||''
 
   const nome=k.tipo==='viagem_assessora'
