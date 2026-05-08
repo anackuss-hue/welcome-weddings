@@ -1,1 +1,379 @@
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome Weddings — Cadastro de Assessora</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#b8965a;--gold-light:#d4af7a;--gold-pale:#fdf8f0;--gold-border:#f0e8d0;--white:#fff;--bg:#f7f4ef;--text:#1a1a1a;--muted:#888;--border:#e8e0d4;--red:#c0392b}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.header{background:var(--white);border-bottom:1px solid var(--border);padding:18px 40px;position:sticky;top:0;z-index:50}
+.logo .w1{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--gold);letter-spacing:3px;text-transform:uppercase}
+.logo .w2{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--text);letter-spacing:3px;text-transform:uppercase}
+.logo .ws{font-size:9px;letter-spacing:2px;color:var(--muted);margin-top:2px;text-transform:uppercase}
+.main{max-width:600px;margin:0 auto;padding:40px 24px 60px}
+
+/* Progress */
+.progress{display:flex;align-items:center;gap:0;margin-bottom:36px}
+.prog-step{display:flex;flex-direction:column;align-items:center;flex:1;position:relative}
+.prog-step:not(:last-child)::after{content:'';position:absolute;top:16px;left:50%;width:100%;height:2px;background:var(--border);z-index:0}
+.prog-step.done::after{background:var(--gold)}
+.prog-dot{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--muted);z-index:1;transition:all .2s}
+.prog-step.active .prog-dot{border-color:var(--gold);background:var(--gold);color:#fff}
+.prog-step.done .prog-dot{border-color:var(--gold);background:var(--gold);color:#fff}
+.prog-label{font-size:10px;color:var(--muted);margin-top:5px;text-align:center;font-weight:500}
+.prog-step.active .prog-label{color:var(--gold);font-weight:600}
+
+/* Etapa */
+.etapa{display:none}.etapa.active{display:block}
+.etapa-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;margin-bottom:4px}
+.etapa-sub{font-size:13px;color:var(--muted);margin-bottom:28px}
+
+/* Fields */
+.f{margin-bottom:16px}
+.f label{display:block;font-size:11px;font-weight:700;color:#666;margin-bottom:5px;letter-spacing:.5px;text-transform:uppercase}
+.f label .req{color:var(--red)}
+.f input,.f select,.f textarea{width:100%;padding:12px 14px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border .15s;background:#fff;color:var(--text)}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--gold)}
+.f input.err,.f select.err{border-color:var(--red)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.sec{margin-bottom:24px}
+.sec-title{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;padding-bottom:7px;border-bottom:1px solid var(--gold-border)}
+
+/* Doc toggle */
+.doc-toggle{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.doc-opt{padding:8px 16px;border-radius:20px;border:1.5px solid var(--border);cursor:pointer;font-size:13px;font-weight:500;color:#888;transition:all .15s;background:#fff}
+.doc-opt.sel{border-color:var(--gold);background:var(--gold-pale);color:var(--gold);font-weight:600}
+
+/* Idiomas */
+.idioma-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.idioma-card{border:1.5px solid var(--border);border-radius:10px;padding:12px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all .15s;background:#fff}
+.idioma-card.sel{border-color:var(--gold);background:var(--gold-pale)}
+.idioma-card img{width:26px;height:18px;object-fit:cover;border-radius:3px;flex-shrink:0}
+.idioma-card span{font-size:13px;font-weight:600;color:#888}
+.idioma-card.sel span{color:var(--gold)}
+
+/* Toggle febre */
+.tr-row{display:flex;align-items:center;gap:10px;cursor:pointer;padding:8px 0}
+.tr-track{width:36px;height:20px;border-radius:10px;background:#ddd;position:relative;transition:background .2s;flex-shrink:0}
+.tr-track.on{background:var(--gold)}
+.tr-thumb{width:16px;height:16px;border-radius:8px;background:#fff;position:absolute;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.tr-track.on .tr-thumb{left:18px}
+.tr-label{font-size:13px;color:#555}
+
+/* Nav buttons */
+.nav-btns{display:flex;gap:10px;margin-top:32px;padding-top:20px;border-top:1px solid var(--border)}
+.btn-prev{padding:13px 24px;border-radius:10px;border:1.5px solid var(--gold);background:transparent;color:var(--gold);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
+.btn-prev:hover{background:var(--gold-pale)}
+.btn-next{flex:1;padding:13px;border-radius:10px;background:var(--gold);color:#fff;border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s}
+.btn-next:hover{background:var(--gold-light)}
+.btn-next:disabled{opacity:.6;cursor:not-allowed}
+
+/* Sucesso */
+.sucesso{text-align:center;padding:40px 20px}
+.sucesso-icon{font-size:60px;margin-bottom:20px}
+.sucesso-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:var(--gold);margin-bottom:10px}
+.sucesso-sub{font-size:14px;color:var(--muted);line-height:1.7}
+
+@media(max-width:500px){
+  .header{padding:14px 20px}
+  .main{padding:28px 16px 60px}
+  .g2{grid-template-columns:1fr}
+  .idioma-grid{grid-template-columns:1fr 1fr}
+  .prog-label{display:none}
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo">
+    <div class="w1">Welcome</div><div class="w2">Weddings</div>
+    <div class="ws">Cadastro de Assessora</div>
+  </div>
+</div>
+<div class="main">
+
+  <!-- PROGRESS -->
+  <div class="progress" id="progress">
+    <div class="prog-step active" id="ps-1"><div class="prog-dot">1</div><div class="prog-label">Dados</div></div>
+    <div class="prog-step" id="ps-2"><div class="prog-dot">2</div><div class="prog-label">Documentos</div></div>
+    <div class="prog-step" id="ps-3"><div class="prog-dot">3</div><div class="prog-label">Idiomas</div></div>
+    <div class="prog-step" id="ps-4"><div class="prog-dot">4</div><div class="prog-label">Medidas</div></div>
+  </div>
+
+  <!-- ETAPA 1: Dados Pessoais -->
+  <div class="etapa active" id="etapa-1">
+    <div class="etapa-title">Dados Pessoais</div>
+    <div class="etapa-sub">Preencha todos os campos obrigatórios</div>
+    <div class="g2">
+      <div class="f" style="grid-column:1/-1"><label>Nome Completo <span class="req">*</span></label><input id="a-nome" placeholder="Seu nome completo"></div>
+      <div class="f"><label>Data de Nascimento <span class="req">*</span></label><input id="a-nasc" type="date"></div>
+      <div class="f"><label>CPF <span class="req">*</span></label><input id="a-cpf" placeholder="000.000.000-00"></div>
+      <div class="f" style="grid-column:1/-1"><label>E-mail <span class="req">*</span></label><input id="a-email" type="email" placeholder="seu@email.com"></div>
+      <div class="f"><label>Cidade de Residência <span class="req">*</span></label><input id="a-cidade-res" placeholder="Ex: São Paulo"></div>
+      <div class="f"><label>Cidade de Origem (Voo) <span class="req">*</span></label><input id="a-cidade" placeholder="Ex: São Paulo"></div>
+      <div class="f" style="grid-column:1/-1"><label>WhatsApp <span class="req">*</span></label><input id="a-whatsapp" placeholder="+55 (00) 00000-0000" type="tel"></div>
+    </div>
+    <div class="nav-btns">
+      <button class="btn-next" onclick="irPara(2)">Próximo →</button>
+    </div>
+  </div>
+
+  <!-- ETAPA 2: Documentos -->
+  <div class="etapa" id="etapa-2">
+    <div class="etapa-title">Documentos</div>
+    <div class="etapa-sub">Informe seus documentos. Passaporte e visto são opcionais se não possuir.</div>
+
+    <div class="sec">
+      <div class="sec-title">RG</div>
+      <div class="g2">
+        <div class="f"><label>Número do RG <span class="req">*</span></label><input id="a-rg" placeholder="000.000.000-0"></div>
+        <div class="f"><label>Validade <span class="req">*</span></label><input id="a-rg-val" type="date"></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">Passaporte</div>
+      <div class="doc-toggle">
+        <div class="doc-opt sel" id="pass-tem" onclick="toggleDoc('pass','tem')">✅ Tenho passaporte</div>
+        <div class="doc-opt" id="pass-nao" onclick="toggleDoc('pass','nao')">❌ Não tenho</div>
+      </div>
+      <div id="pass-fields">
+        <div class="g2">
+          <div class="f"><label>Número</label><input id="a-pass-num" placeholder="Ex: AA123456"></div>
+          <div class="f"><label>Validade</label><input id="a-pass-val" type="date"></div>
+          <div class="f" style="grid-column:1/-1"><label>País Emissor</label><input id="a-pass-pais" placeholder="Ex: Brasil"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">Visto</div>
+      <div class="doc-toggle">
+        <div class="doc-opt sel" id="visto-tem" onclick="toggleDoc('visto','tem')">✅ Tenho visto</div>
+        <div class="doc-opt" id="visto-nao" onclick="toggleDoc('visto','nao')">❌ Não tenho</div>
+      </div>
+      <div id="visto-fields">
+        <div class="g2">
+          <div class="f"><label>Número</label><input id="a-visto-num" placeholder="Ex: V123456"></div>
+          <div class="f"><label>Validade</label><input id="a-visto-val" type="date"></div>
+          <div class="f" style="grid-column:1/-1"><label>País</label><input id="a-visto-pais" placeholder="Ex: Estados Unidos"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">Saúde</div>
+      <div class="tr-row" onclick="toggleFebre()">
+        <div class="tr-track" id="track-febre"><div class="tr-thumb"></div></div>
+        <span class="tr-label">💉 Vacina Febre Amarela</span>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn-prev" onclick="irPara(1)">← Voltar</button>
+      <button class="btn-next" onclick="irPara(3)">Próximo →</button>
+    </div>
+  </div>
+
+  <!-- ETAPA 3: Idiomas -->
+  <div class="etapa" id="etapa-3">
+    <div class="etapa-title">Idiomas & Perfil</div>
+    <div class="etapa-sub">Selecione os idiomas que você fala</div>
+
+    <div class="sec">
+      <div class="sec-title">Idiomas <span style="font-size:10px;font-weight:400;color:var(--muted)">(selecione todos que fala)</span></div>
+      <div class="idioma-grid">
+        <div class="idioma-card" id="id-ingles" onclick="togIdioma('ingles')">
+          <img src="https://flagcdn.com/w40/gb.png" alt="UK"><span>Inglês</span>
+        </div>
+        <div class="idioma-card" id="id-espanhol" onclick="togIdioma('espanhol')">
+          <img src="https://flagcdn.com/w40/es.png" alt="ES"><span>Espanhol</span>
+        </div>
+        <div class="idioma-card" id="id-frances" onclick="togIdioma('frances')">
+          <img src="https://flagcdn.com/w40/fr.png" alt="FR"><span>Francês</span>
+        </div>
+        <div class="idioma-card" id="id-italiano" onclick="togIdioma('italiano')">
+          <img src="https://flagcdn.com/w40/it.png" alt="IT"><span>Italiano</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn-prev" onclick="irPara(2)">← Voltar</button>
+      <button class="btn-next" onclick="irPara(4)">Próximo →</button>
+    </div>
+  </div>
+
+  <!-- ETAPA 4: Medidas -->
+  <div class="etapa" id="etapa-4">
+    <div class="etapa-title">Medidas & Vestuário</div>
+    <div class="etapa-sub">Informe seus tamanhos de roupa e calçado</div>
+
+    <div class="g2">
+      <div class="f"><label>Blusa <span class="req">*</span></label><input id="a-blusa" placeholder="Ex: M, G, 38..."></div>
+      <div class="f"><label>Calça <span class="req">*</span></label><input id="a-calca" placeholder="Ex: 40, P..."></div>
+      <div class="f"><label>Macacão <span class="req">*</span></label><input id="a-macacao" placeholder="Ex: M, 38..."></div>
+      <div class="f"><label>Vestido <span class="req">*</span></label><input id="a-vestido" placeholder="Ex: 38, M..."></div>
+      <div class="f" style="grid-column:1/-1"><label>Sapato <span class="req">*</span></label><input id="a-sapato" placeholder="Ex: 37, 38..."></div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn-prev" onclick="irPara(3)">← Voltar</button>
+      <button class="btn-next" id="btn-enviar" onclick="enviarCadastro()">✅ Finalizar Cadastro</button>
+    </div>
+  </div>
+
+  <!-- SUCESSO -->
+  <div class="etapa" id="etapa-sucesso">
+    <div class="sucesso">
+      <div class="sucesso-icon">🌸</div>
+      <div class="sucesso-title">Cadastro enviado!</div>
+      <div class="sucesso-sub">Obrigada por se cadastrar no banco de assessoras da<br><strong>Welcome Weddings</strong>.<br><br>Nossa equipe irá analisar seu perfil e entrará em contato em breve.</div>
+    </div>
+  </div>
+
+</div>
+<script>
+const{createClient}=supabase
+const sb=createClient('https://yrnlfarricrhtfomwynd.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlybmxmYXJyaWNyaHRmb213eW5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczOTIxODksImV4cCI6MjA5Mjk2ODE4OX0.Ad4awFjQ9vcDqNyBbWycgv0rvpc3DOz4pPTi41nSp8w')
+
+let etapaAtual=1
+let febreAmarela=false
+let temPassaporte=true, temVisto=true
+let idiomas={ingles:false,espanhol:false,frances:false,italiano:false}
+
+function v(id){return(document.getElementById(id)?.value||'').trim()}
+
+function irPara(n){
+  // Valida etapa atual antes de avançar
+  if(n>etapaAtual&&!validarEtapa(etapaAtual))return
+  document.getElementById('etapa-'+etapaAtual)?.classList.remove('active')
+  document.getElementById('ps-'+etapaAtual)?.classList.remove('active')
+  document.getElementById('ps-'+etapaAtual)?.classList.add('done')
+  etapaAtual=n
+  document.getElementById('etapa-'+n)?.classList.add('active')
+  document.querySelectorAll('.prog-step').forEach((s,i)=>{
+    s.classList.remove('active')
+    if(i+1===n)s.classList.add('active')
+  })
+  window.scrollTo(0,0)
+}
+
+function validarEtapa(n){
+  if(n===1){
+    const campos=['a-nome','a-nasc','a-cpf','a-email','a-cidade-res','a-cidade','a-whatsapp']
+    let ok=true
+    campos.forEach(id=>{
+      const el=document.getElementById(id)
+      if(!v(id)){el.classList.add('err');ok=false}
+      else el.classList.remove('err')
+    })
+    if(!ok){alert('Preencha todos os campos obrigatórios!');return false}
+    // Valida email
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v('a-email'))){
+      document.getElementById('a-email').classList.add('err')
+      alert('Informe um e-mail válido!');return false
+    }
+  }
+  if(n===2){
+    if(!v('a-rg')||!v('a-rg-val')){alert('Preencha os dados do RG!');return false}
+    if(temPassaporte&&(!v('a-pass-num')||!v('a-pass-val')||!v('a-pass-pais'))){alert('Preencha os dados do passaporte ou marque "Não tenho"!');return false}
+    if(temVisto&&(!v('a-visto-num')||!v('a-visto-val')||!v('a-visto-pais'))){alert('Preencha os dados do visto ou marque "Não tenho"!');return false}
+  }
+  if(n===4){
+    const campos=['a-blusa','a-calca','a-macacao','a-vestido','a-sapato']
+    let ok=true
+    campos.forEach(id=>{
+      const el=document.getElementById(id)
+      if(!v(id)){el.classList.add('err');ok=false}
+      else el.classList.remove('err')
+    })
+    if(!ok){alert('Preencha todas as medidas!');return false}
+  }
+  return true
+}
+
+function toggleDoc(doc,opcao){
+  if(doc==='pass'){
+    temPassaporte=opcao==='tem'
+    document.getElementById('pass-tem').classList.toggle('sel',temPassaporte)
+    document.getElementById('pass-nao').classList.toggle('sel',!temPassaporte)
+    document.getElementById('pass-fields').style.display=temPassaporte?'block':'none'
+  }else{
+    temVisto=opcao==='tem'
+    document.getElementById('visto-tem').classList.toggle('sel',temVisto)
+    document.getElementById('visto-nao').classList.toggle('sel',!temVisto)
+    document.getElementById('visto-fields').style.display=temVisto?'block':'none'
+  }
+}
+
+function toggleFebre(){
+  febreAmarela=!febreAmarela
+  document.getElementById('track-febre').classList.toggle('on',febreAmarela)
+}
+
+function togIdioma(l){
+  idiomas[l]=!idiomas[l]
+  document.getElementById('id-'+l).classList.toggle('sel',idiomas[l])
+}
+
+async function enviarCadastro(){
+  if(!validarEtapa(4))return
+  const btn=document.getElementById('btn-enviar')
+  btn.textContent='Enviando...';btn.disabled=true
+
+  const dados={
+    nome:v('a-nome'),
+    nascimento:v('a-nasc'),
+    cpf:v('a-cpf'),
+    email:v('a-email'),
+    cidade_residencia:v('a-cidade-res'),
+    cidade:v('a-cidade'),
+    whatsapp:v('a-whatsapp'),
+    rg:v('a-rg'),
+    rg_validade:v('a-rg-val')||null,
+    passaporte_numero:temPassaporte?v('a-pass-num'):null,
+    passaporte_validade:temPassaporte?v('a-pass-val')||null:null,
+    passaporte_pais:temPassaporte?v('a-pass-pais'):null,
+    visto_numero:temVisto?v('a-visto-num'):null,
+    visto_validade:temVisto?v('a-visto-val')||null:null,
+    visto_pais:temVisto?v('a-visto-pais'):null,
+    febre_amarela:febreAmarela,
+    ingles:idiomas.ingles,
+    espanhol:idiomas.espanhol,
+    frances:idiomas.frances,
+    italiano:idiomas.italiano,
+    tam_blusa:v('a-blusa'),
+    tam_calca:v('a-calca'),
+    tam_macacao:v('a-macacao'),
+    tam_vestido:v('a-vestido'),
+    tam_sapato:v('a-sapato')
+  }
+
+  const{error}=await sb.from('assessoras').insert(dados)
+  btn.textContent='✅ Finalizar Cadastro';btn.disabled=false
+
+  if(error){
+    // Verifica se é email duplicado
+    if(error.message?.includes('email')||error.code==='23505'){
+      alert('Este e-mail já está cadastrado no nosso banco!')
+    }else{
+      alert('Erro ao enviar: '+error.message)
+    }
+    return
+  }
+
+  // Esconde progress e mostra sucesso
+  document.getElementById('progress').style.display='none'
+  document.getElementById('etapa-4').classList.remove('active')
+  document.getElementById('etapa-sucesso').classList.add('active')
+  window.scrollTo(0,0)
+}
+</script>
+</body>
+</html>
