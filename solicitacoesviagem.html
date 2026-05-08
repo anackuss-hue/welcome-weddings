@@ -106,17 +106,17 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="resp-cards">
       <div class="resp-card" onclick="escolherResp('rapha')">
         <div class="resp-avatar">R</div>
-        <div class="resp-name">Rapha</div>
+        <div class="resp-name">Solicitações de Extras de Viagem</div>
         <div class="resp-desc">Viagens de assessoras, atendimento a convidados e passeios</div>
       </div>
       <div class="resp-card" onclick="escolherResp('mari')">
         <div class="resp-avatar">M</div>
-        <div class="resp-name">Mari</div>
+        <div class="resp-name">Solicitações de Operacional</div>
         <div class="resp-desc">Solicitações de operacional</div>
       </div>
       <div class="resp-card" onclick="escolherResp('juliana')">
         <div class="resp-avatar">J</div>
-        <div class="resp-name">Juliana</div>
+        <div class="resp-name">Solicitações a Convidado</div>
         <div class="resp-desc">Comunicação, reservas e atendimento a convidados</div>
       </div>
     </div>
@@ -125,7 +125,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <!-- TELA 2a: Escolha o tipo (só Rapha) -->
   <div class="page" id="page-tipo-rapha">
     <button class="form-back" onclick="showPage('page-responsavel')">← Voltar</button>
-    <div class="escolha-title" style="font-size:24px;text-align:left;margin-bottom:6px">Rapha</div>
+    <div class="escolha-title" style="font-size:24px;text-align:left;margin-bottom:6px">Solicitações de Extras de Viagem</div>
     <div class="escolha-sub" style="text-align:left;margin-bottom:24px">Qual o tipo de solicitação?</div>
     <div class="tipo-cards">
       <div class="tipo-card" onclick="showPage('page-form-convidado')">
@@ -231,7 +231,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <!-- TELA: Escolha tipo Juliana -->
   <div class="page" id="page-tipo-juliana">
     <button class="form-back" onclick="showPage('page-responsavel')">← Voltar</button>
-    <div class="escolha-title" style="font-size:24px;text-align:left;margin-bottom:6px">Juliana</div>
+    <div class="escolha-title" style="font-size:24px;text-align:left;margin-bottom:6px">Solicitações a Convidado</div>
     <div class="escolha-sub" style="text-align:left;margin-bottom:24px">Qual o tipo de solicitação?</div>
     <div style="display:flex;flex-direction:column;gap:10px">
       <div class="tipo-card" style="text-align:left;display:flex;align-items:center;gap:14px;padding:16px 18px" onclick="showPage('page-ju-comunicacao')">
@@ -258,7 +258,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <button class="form-back" onclick="showPage('page-tipo-juliana')">← Voltar</button>
     <div class="form-header">
       <div class="form-icon" style="background:#fff3e0">📢</div>
-      <div><div class="form-title">Adicionar na comunicação</div><div class="form-sub">Juliana · Preencha os dados do convidado</div></div>
+      <div><div class="form-title">Adicionar na comunicação</div><div class="form-sub">Preencha os dados do convidado</div></div>
     </div>
     <div class="f"><label>Casamento</label><select id="ju-com-cas"><option value="">Selecionar casamento...</option></select></div>
     <div class="f"><label>Nome do Convidado</label><input id="ju-com-nome" placeholder="Nome completo"></div>
@@ -271,7 +271,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <button class="form-back" onclick="showPage('page-tipo-juliana')">← Voltar</button>
     <div class="form-header">
       <div class="form-icon" style="background:#e8f5e9">🏨</div>
-      <div><div class="form-title">Reenviar confirmação de reserva</div><div class="form-sub">Juliana · Preencha os dados do convidado</div></div>
+      <div><div class="form-title">Reenviar confirmação de reserva</div><div class="form-sub">Preencha os dados do convidado</div></div>
     </div>
     <div class="f"><label>Casamento</label><select id="ju-res-cas"><option value="">Selecionar casamento...</option></select></div>
     <div class="f"><label>Nome do Convidado</label><input id="ju-res-nome" placeholder="Nome completo"></div>
@@ -285,7 +285,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <button class="form-back" onclick="showPage('page-tipo-juliana')">← Voltar</button>
     <div class="form-header">
       <div class="form-icon" style="background:#e3f2fd">📞</div>
-      <div><div class="form-title">Contato para diária extra</div><div class="form-sub">Juliana · Preencha os dados do convidado</div></div>
+      <div><div class="form-title">Contato para diária extra</div><div class="form-sub">Preencha os dados do convidado</div></div>
     </div>
     <div class="f"><label>Casamento</label><select id="ju-dia-cas"><option value="">Selecionar casamento...</option></select></div>
     <div class="f"><label>Nome do Convidado</label><input id="ju-dia-nome" placeholder="Nome completo"></div>
@@ -299,7 +299,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <button class="form-back" onclick="showPage('page-tipo-juliana')">← Voltar</button>
     <div class="form-header">
       <div class="form-icon" style="background:#fdecea">👥</div>
-      <div><div class="form-title">Atendimento a convidado</div><div class="form-sub">Juliana · Preencha os dados do convidado</div></div>
+      <div><div class="form-title">Atendimento a convidado</div><div class="form-sub">Preencha os dados do convidado</div></div>
     </div>
     <div class="f"><label>Casamento</label><select id="ju-ate-cas"><option value="">Selecionar casamento...</option></select></div>
     <div class="f"><label>Nome do Convidado</label><input id="ju-ate-nome" placeholder="Nome completo"></div>
@@ -437,29 +437,6 @@ const JU_TIPOS={
   reserva:{label:'🏨 Reenviar confirmação de reserva',pag:'page-ju-reserva',cas:'ju-res-cas',nome:'ju-res-nome',tel:'ju-res-tel',obs:'ju-res-obs'},
   diaria:{label:'📞 Diária extra',pag:'page-ju-diaria',cas:'ju-dia-cas',nome:'ju-dia-nome',tel:'ju-dia-tel',obs:'ju-dia-obs'},
   atendimento:{label:'👥 Atendimento a convidado',pag:'page-ju-atendimento',cas:'ju-ate-cas',nome:'ju-ate-nome',tel:'ju-ate-tel',obs:'ju-ate-obs'}
-}
-
-async function enviarJuliana(tipo){
-  const t=JU_TIPOS[tipo]
-  const btn=document.getElementById('btn-ju-'+tipo.slice(0,3))
-  const casEl=document.getElementById(t.cas)
-  const casId=casEl?.value
-  const casNome=casEl?.options[casEl.selectedIndex]?.dataset.nome||''
-  const nome=document.getElementById(t.nome).value.trim()
-  const tel=document.getElementById(t.tel).value.trim()
-  const obs=t.obs?document.getElementById(t.obs).value.trim():''
-  if(!casId){alert('Selecione o casamento!');return}
-  if(!nome){alert('Preencha o nome do convidado!');return}
-  if(btn){btn.textContent='Enviando...';btn.disabled=true}
-  await sb.from('solicitacoes_kanban').insert({
-    tipo:'ju_'+tipo,coluna:'nova',responsavel:'juliana',
-    casamento_id:casId,casamento_nome:casNome,
-    convidado_nome:nome,convidado_telefone:tel||null,
-    solicitacao:obs||(t.label),
-    servicos:t.label
-  })
-  if(btn){btn.textContent='Enviar Solicitação';btn.disabled=false}
-  showPage('page-sucesso')
 }
 
 carregarCasamentos()
