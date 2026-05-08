@@ -342,8 +342,93 @@ function selUrgencia(v){
   ;['alta','media','baixa'].forEach(u=>{document.getElementById('urg-'+u).className='urg-opt'+(v===u?' sel-'+u:'')})
 }
 
-async function 
 const JU_TIPOS={
+  comunicacao:{label:'📢 Adicionar na comunicação',cas:'ju-com-cas',nome:'ju-com-nome',tel:'ju-com-tel',obs:null},
+  reserva:{label:'🏨 Reenviar confirmação de reserva',cas:'ju-res-cas',nome:'ju-res-nome',tel:'ju-res-tel',obs:'ju-res-obs'},
+  diaria:{label:'📞 Diária extra',cas:'ju-dia-cas',nome:'ju-dia-nome',tel:'ju-dia-tel',obs:'ju-dia-obs'},
+  atendimento:{label:'👥 Atendimento a convidado',cas:'ju-ate-cas',nome:'ju-ate-nome',tel:'ju-ate-tel',obs:'ju-ate-obs'}
+}
+
+async function enviarJuliana(tipo){
+  const t=JU_TIPOS[tipo]
+  const btnId='btn-ju-'+{comunicacao:'com',reserva:'res',diaria:'dia',atendimento:'ate'}[tipo]
+  const btn=document.getElementById(btnId)
+  const casEl=document.getElementById(t.cas)
+  const casId=casEl?.value
+  const casNome=casEl?.options[casEl.selectedIndex]?.dataset.nome||''
+  const nome=document.getElementById(t.nome).value.trim()
+  const tel=document.getElementById(t.tel).value.trim()
+  const obs=t.obs?document.getElementById(t.obs).value.trim():''
+  if(!casId){alert('Selecione o casamento!');return}
+  if(!nome){alert('Preencha o nome do convidado!');return}
+  if(btn){btn.textContent='Enviando...';btn.disabled=true}
+  await sb.from('solicitacoes_kanban').insert({tipo:'ju_'+tipo,coluna:'nova',responsavel:'juliana',casamento_id:casId,casamento_nome:casNome,convidado_nome:nome,convidado_telefone:tel||null,solicitacao:obs||t.label,servicos:t.label})
+  if(btn){btn.textContent='Enviar Solicitação';btn.disabled=false}
+  showPage('page-sucesso')
+}
+
+async function enviarConvidado(){
+  const btn=document.getElementById('btn-cong')
+  const casEl=document.getElementById('cong-casamento')
+  const casId=casEl?.value
+  const casNome=casEl?.options[casEl.selectedIndex]?.dataset.nome||''
+  const nome=document.getElementById('cong-nome').value.trim()
+  const sol=document.getElementById('cong-sol').value.trim()
+  if(!casId){alert('Selecione o casamento!');return}
+  if(!nome){alert('Preencha o nome do convidado!');return}
+  if(!sol){alert('Descreva a solicitação!');return}
+  btn.textContent='Enviando...';btn.disabled=true
+  await sb.from('solicitacoes_kanban').insert({tipo:'atendimento_convidado',coluna:'nova',responsavel:'rapha',casamento_id:casId,casamento_nome:casNome,convidado_nome:nome,convidado_telefone:document.getElementById('cong-tel').value.trim()||null,solicitacao:sol})
+  btn.textContent='Enviar Solicitação';btn.disabled=false
+  showPage('page-sucesso')
+}
+
+async function enviarPasseio(){
+  const btn=document.getElementById('btn-pass')
+  const casEl=document.getElementById('pass-casamento')
+  const casId=casEl?.value
+  const casNome=casEl?.options[casEl.selectedIndex]?.dataset.nome||''
+  const sol=document.getElementById('pass-sol').value.trim()
+  if(!casId){alert('Selecione o casamento!');return}
+  if(!sol){alert('Descreva a solicitação!');return}
+  btn.textContent='Enviando...';btn.disabled=true
+  await sb.from('solicitacoes_kanban').insert({tipo:'passeio',coluna:'nova',responsavel:'rapha',casamento_id:casId,casamento_nome:casNome,solicitacao:sol})
+  btn.textContent='Enviar Solicitação';btn.disabled=false
+  showPage('page-sucesso')
+}
+
+async function enviarMari(){
+  const btn=document.getElementById('btn-mari')
+  const casEl=document.getElementById('mari-casamento')
+  const casId=casEl?.value
+  const casNome=casEl?.options[casEl.selectedIndex]?.dataset.nome||''
+  const nome=document.getElementById('mari-nome').value.trim()
+  const sol=document.getElementById('mari-sol').value.trim()
+  if(!casId){alert('Selecione o casamento!');return}
+  if(!nome){alert('Preencha o nome do convidado!');return}
+  if(!sol){alert('Descreva a solicitação!');return}
+  if(!urgenciaSel){alert('Selecione a urgência!');return}
+  btn.textContent='Enviando...';btn.disabled=true
+  const urgLabel={alta:'🔴 Alta',media:'🟡 Média',baixa:'🟢 Baixa'}[urgenciaSel]
+  await sb.from('solicitacoes_kanban').insert({tipo:'operacional',coluna:'nova',responsavel:'mari',casamento_id:casId,casamento_nome:casNome,convidado_nome:nome,convidado_telefone:document.getElementById('mari-tel').value.trim()||null,solicitacao:sol,servicos:urgLabel})
+  btn.textContent='Enviar Solicitação';btn.disabled=false
+  showPage('page-sucesso')
+}
+
+async function carregarCasamentos(){
+  const hoje=new Date().toISOString().split('T')[0]
+  const{data}=await sb.from('casamentos').select('id,nome,plan_data').gte('plan_data',hoje).neq('status','Cancelado').order('plan_data',{ascending:true})
+  const opts=(data||[]).map(c=>`<option value="${c.id}" data-nome="${c.nome}">${c.nome}</option>`).join('')
+  ;['cong-casamento','pass-casamento','mari-casamento','ju-com-cas','ju-res-cas','ju-dia-cas','ju-ate-cas'].forEach(id=>{
+    const sel=document.getElementById(id)
+    if(sel)sel.innerHTML='<option value="">Selecionar casamento...</option>'+opts
+  })
+}
+
+carregarCasamentos()
+</script>
+</body>
+</html>
   comunicacao:{label:'📢 Adicionar na comunicação',pag:'page-ju-comunicacao',cas:'ju-com-cas',nome:'ju-com-nome',tel:'ju-com-tel',obs:null},
   reserva:{label:'🏨 Reenviar confirmação de reserva',pag:'page-ju-reserva',cas:'ju-res-cas',nome:'ju-res-nome',tel:'ju-res-tel',obs:'ju-res-obs'},
   diaria:{label:'📞 Diária extra',pag:'page-ju-diaria',cas:'ju-dia-cas',nome:'ju-dia-nome',tel:'ju-dia-tel',obs:'ju-dia-obs'},
