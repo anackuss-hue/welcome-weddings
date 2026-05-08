@@ -7,7 +7,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--gold:#b8965a;--gold-light:#d4af7a;--gold-pale:#fdf8f0;--gold-border:#f0e8d0;--white:#fff;--bg:#f7f4ef;--text:#1a1a1a;--muted:#888;--border:#e8e0d4;--red:#c0392b;--green:#2e7d32}
+:root{--gold:#b8965a;--gold-light:#d4af7a;--gold-pale:#fdf8f0;--gold-border:#f0e8d0;--white:#fff;--bg:#f7f4ef;--text:#1a1a1a;--muted:#888;--border:#e8e0d4}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 .header{background:var(--white);border-bottom:1px solid var(--border);padding:20px 40px;position:sticky;top:0;z-index:50}
@@ -16,512 +16,295 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .logo .ws{font-size:9px;letter-spacing:2px;color:var(--muted);margin-top:2px;text-transform:uppercase}
 .main{max-width:580px;margin:0 auto;padding:48px 24px}
 .page{display:none}.page.active{display:block}
-
-/* ESCOLHA RESPONSÁVEL */
-.escolha-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:var(--text);margin-bottom:8px;text-align:center}
-.escolha-sub{font-size:14px;color:var(--muted);text-align:center;margin-bottom:36px;line-height:1.6}
+.title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;text-align:center;margin-bottom:8px}
+.sub{font-size:14px;color:var(--muted);text-align:center;margin-bottom:36px;line-height:1.6}
 .resp-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
 .resp-card{background:var(--white);border:1.5px solid var(--border);border-radius:16px;padding:28px 20px;cursor:pointer;text-align:center;transition:all .2s}
 .resp-card:hover{border-color:var(--gold);background:var(--gold-pale);transform:translateY(-2px);box-shadow:0 8px 24px rgba(184,150,90,.12)}
 .resp-avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:28px;color:#fff;font-weight:600;margin:0 auto 14px}
-.resp-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--text);margin-bottom:6px}
-.resp-desc{font-size:12px;color:var(--muted);line-height:1.5}
-
-/* ESCOLHA TIPO (Rapha) */
-.tipo-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.tipo-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:22px 16px;cursor:pointer;text-align:center;transition:all .2s}
-.tipo-card:hover{border-color:var(--gold);background:var(--gold-pale);transform:translateY(-2px)}
-.tipo-icon{font-size:36px;margin-bottom:10px}
-.tipo-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:5px}
-.tipo-desc{font-size:11px;color:var(--muted);line-height:1.5}
-
-/* FORMULÁRIO */
+.resp-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--text);margin-bottom:6px}
+.resp-desc{font-size:11px;color:var(--muted);line-height:1.5}
+.tipo-list{display:flex;flex-direction:column;gap:10px}
+.tipo-card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:16px 18px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:all .2s}
+.tipo-card:hover{border-color:var(--gold);background:var(--gold-pale)}
+.tipo-icon{font-size:26px;flex-shrink:0}
+.tipo-title{font-size:14px;font-weight:600;color:var(--text)}
 .form-header{display:flex;align-items:center;gap:12px;margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--gold-border)}
 .form-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
 .form-title{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600}
 .form-sub{font-size:12px;color:var(--muted);margin-top:2px}
-.form-back{background:none;border:none;cursor:pointer;font-size:13px;color:var(--gold);font-family:'DM Sans',sans-serif;font-weight:600;display:flex;align-items:center;gap:5px;padding:0;margin-bottom:18px}
+.back{background:none;border:none;cursor:pointer;font-size:13px;color:var(--gold);font-family:'DM Sans',sans-serif;font-weight:600;display:flex;align-items:center;gap:5px;padding:0;margin-bottom:18px}
 .f{margin-bottom:15px}
 .f label{display:block;font-size:11px;font-weight:700;color:#666;margin-bottom:5px;letter-spacing:.5px;text-transform:uppercase}
 .f input,.f select,.f textarea{width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border .15s;background:#fff;color:var(--text)}
 .f input:focus,.f select:focus,.f textarea:focus{border-color:var(--gold)}
 .f textarea{resize:vertical;min-height:90px}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-
-/* Cards de serviços (Rapha) */
-.servicos-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:4px}
-.serv-card{padding:12px 8px;border-radius:10px;border:1.5px solid var(--border);cursor:pointer;text-align:center;transition:all .15s;background:#fff}
-.serv-card.sel{border-color:var(--gold);background:var(--gold-pale)}
-.serv-card .serv-icon{font-size:20px;margin-bottom:4px}
-.serv-card .serv-label{font-size:11px;font-weight:600;color:#888}
-.serv-card.sel .serv-label{color:var(--gold)}
-
-/* Urgência (Mari) */
-.urgencia-opts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:4px}
+.urg-opts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:4px}
 .urg-opt{padding:12px 8px;border-radius:10px;border:1.5px solid var(--border);cursor:pointer;text-align:center;transition:all .15s;background:#fff}
-.urg-opt .urg-icon{font-size:22px;margin-bottom:5px}
-.urg-opt .urg-label{font-size:12px;font-weight:700;color:#888}
-.urg-opt.sel-alta{border-color:#c0392b;background:#fdecea}.urg-opt.sel-alta .urg-label{color:#c0392b}
-.urg-opt.sel-media{border-color:#e65100;background:#fff3e0}.urg-opt.sel-media .urg-label{color:#e65100}
-.urg-opt.sel-baixa{border-color:#2e7d32;background:#e8f5e9}.urg-opt.sel-baixa .urg-label{color:#2e7d32}
-
-.btn-enviar{width:100%;padding:15px;border-radius:10px;background:var(--gold);color:#fff;border:none;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;transition:background .15s}
-.btn-enviar:hover{background:var(--gold-light)}
-.btn-enviar:disabled{opacity:.6;cursor:not-allowed}
-
-/* Sucesso */
+.urg-opt .ui{font-size:22px;margin-bottom:5px}
+.urg-opt .ul{font-size:12px;font-weight:700;color:#888}
+.urg-opt.sel-alta{border-color:#c0392b;background:#fdecea}.urg-opt.sel-alta .ul{color:#c0392b}
+.urg-opt.sel-media{border-color:#e65100;background:#fff3e0}.urg-opt.sel-media .ul{color:#e65100}
+.urg-opt.sel-baixa{border-color:#2e7d32;background:#e8f5e9}.urg-opt.sel-baixa .ul{color:#2e7d32}
+.btn-send{width:100%;padding:15px;border-radius:10px;background:var(--gold);color:#fff;border:none;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;transition:background .15s}
+.btn-send:hover{background:var(--gold-light)}
+.btn-send:disabled{opacity:.6;cursor:not-allowed}
 .sucesso{text-align:center;padding:40px 20px}
 .sucesso-icon{font-size:56px;margin-bottom:20px}
 .sucesso-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:var(--gold);margin-bottom:10px}
 .sucesso-sub{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:28px}
 .btn-nova{background:none;border:1.5px solid var(--gold);color:var(--gold);padding:12px 28px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
 .btn-nova:hover{background:var(--gold-pale)}
-
-@media(max-width:480px){
+@media(max-width:500px){
   .header{padding:16px 20px}
   .main{padding:28px 16px}
   .resp-cards{grid-template-columns:1fr}
-  .tipo-cards{grid-template-columns:1fr}
-  .g2{grid-template-columns:1fr}
-  .servicos-grid{grid-template-columns:1fr 1fr 1fr}
 }
 </style>
 </head>
 <body>
-
 <div class="header">
   <div class="logo">
-    <div class="w1">Welcome</div>
-    <div class="w2">Weddings</div>
+    <div class="w1">Welcome</div><div class="w2">Weddings</div>
     <div class="ws">Solicitações de Viagem</div>
   </div>
 </div>
-
 <div class="main">
 
-  <!-- TELA 1: Escolha o responsável -->
-  <div class="page active" id="page-responsavel">
-    <div class="escolha-title">Olá! Como podemos ajudar?</div>
-    <div class="escolha-sub">Selecione com quem você precisa falar</div>
+  <!-- TELA 1: Escolha responsável -->
+  <div class="page active" id="p-resp">
+    <div class="title">Como podemos ajudar?</div>
+    <div class="sub">Selecione com quem você precisa falar</div>
     <div class="resp-cards">
-      <div class="resp-card" onclick="escolherResp('rapha')">
+      <div class="resp-card" onclick="go('p-tipo-rapha')">
         <div class="resp-avatar">R</div>
         <div class="resp-name">Solicitações de Extras de Viagem</div>
-        <div class="resp-desc">Viagens de assessoras, atendimento a convidados e passeios</div>
+        <div class="resp-desc">Rapha · Convidados e passeios</div>
       </div>
-      <div class="resp-card" onclick="escolherResp('mari')">
+      <div class="resp-card" onclick="go('p-form-mari')">
         <div class="resp-avatar">M</div>
         <div class="resp-name">Solicitações de Operacional</div>
-        <div class="resp-desc">Solicitações de operacional</div>
+        <div class="resp-desc">Mari · Suporte operacional</div>
       </div>
-      <div class="resp-card" onclick="escolherResp('juliana')">
+      <div class="resp-card" onclick="go('p-tipo-ju')">
         <div class="resp-avatar">J</div>
         <div class="resp-name">Solicitações a Convidado</div>
-        <div class="resp-desc">Comunicação, reservas e atendimento a convidados</div>
+        <div class="resp-desc">Juliana · Comunicação e reservas</div>
       </div>
     </div>
   </div>
 
-  <!-- TELA 2a: Escolha o tipo (só Rapha) -->
-  <div class="page" id="page-tipo-rapha">
-    <button class="form-back" onclick="showPage('page-responsavel')">← Voltar</button>
-    <div class="escolha-title" style="font-size:24px;text-align:left;margin-bottom:6px">Solicitações de Extras de Viagem</div>
-    <div class="escolha-sub" style="text-align:left;margin-bottom:24px">Qual o tipo de solicitação?</div>
-    <div class="tipo-cards">
-      <div class="tipo-card" onclick="showPage('page-form-convidado')">
-        <div class="tipo-icon">👥</div>
-        <div class="tipo-title">Atendimento a Convidado</div>
-        <div class="tipo-desc">Ajuda com viagem ou logística de um convidado</div>
-      </div>
-      <div class="tipo-card" onclick="showPage('page-form-passeio')">
-        <div class="tipo-icon">🗺️</div>
-        <div class="tipo-title">Solicitação de Passeio</div>
-        <div class="tipo-desc">Organizar um passeio ou atividade</div>
-      </div>
+  <!-- TELA 2: Tipos Rapha -->
+  <div class="page" id="p-tipo-rapha">
+    <button class="back" onclick="go('p-resp')">← Voltar</button>
+    <div class="title" style="font-size:22px;text-align:left">Solicitações de Extras de Viagem</div>
+    <div class="sub" style="text-align:left;margin-bottom:20px">Qual o tipo de solicitação?</div>
+    <div class="tipo-list">
+      <div class="tipo-card" onclick="go('p-form-convidado')"><div class="tipo-icon">👥</div><div class="tipo-title">Atendimento a Convidado</div></div>
+      <div class="tipo-card" onclick="go('p-form-passeio')"><div class="tipo-icon">🗺️</div><div class="tipo-title">Solicitação de Passeio</div></div>
     </div>
   </div>
 
-  <!-- TELA 3a: Formulário Convidado (Rapha) -->
-  <div class="page" id="page-form-convidado">
-    <button class="form-back" onclick="showPage('page-tipo-rapha')">← Voltar</button>
+  <!-- TELA 3: Form Convidado (Rapha) -->
+  <div class="page" id="p-form-convidado">
+    <button class="back" onclick="go('p-tipo-rapha')">← Voltar</button>
     <div class="form-header">
       <div class="form-icon" style="background:#e3f2fd">👥</div>
-      <div>
-        <div class="form-title">Atendimento a Convidado</div>
-        <div class="form-sub">Rapha · Preencha os dados para solicitar o atendimento</div>
-      </div>
+      <div><div class="form-title">Atendimento a Convidado</div><div class="form-sub">Rapha</div></div>
     </div>
-    <div class="f"><label>Casamento</label>
-      <select id="cong-casamento"><option value="">Selecionar casamento...</option></select>
-    </div>
-    <div class="f"><label>Nome do Convidado</label>
-      <input id="cong-nome" placeholder="Nome completo do convidado">
-    </div>
-    <div class="f"><label>Telefone / WhatsApp</label>
-      <input id="cong-tel" placeholder="+55 (00) 00000-0000" type="tel">
-    </div>
-    <div class="f"><label>Solicitação</label>
-      <textarea id="cong-sol" placeholder="Descreva o que o convidado precisa..."></textarea>
-    </div>
-    <button class="btn-enviar" id="btn-cong" onclick="enviarConvidado()">Enviar Solicitação</button>
+    <div class="f"><label>Casamento</label><select id="rc-cas"><option value="">Selecionar...</option></select></div>
+    <div class="f"><label>Nome do Convidado</label><input id="rc-nome" placeholder="Nome completo"></div>
+    <div class="f"><label>Telefone</label><input id="rc-tel" placeholder="+55 (00) 00000-0000" type="tel"></div>
+    <div class="f"><label>Solicitação</label><textarea id="rc-sol" placeholder="Descreva o que o convidado precisa..."></textarea></div>
+    <button class="btn-send" onclick="enviar('rapha-convidado')">Enviar Solicitação</button>
   </div>
 
-  <!-- TELA 3b: Formulário Passeio (Rapha) -->
-  <div class="page" id="page-form-passeio">
-    <button class="form-back" onclick="showPage('page-tipo-rapha')">← Voltar</button>
+  <!-- TELA 4: Form Passeio (Rapha) -->
+  <div class="page" id="p-form-passeio">
+    <button class="back" onclick="go('p-tipo-rapha')">← Voltar</button>
     <div class="form-header">
       <div class="form-icon" style="background:#e8f5e9">🗺️</div>
-      <div>
-        <div class="form-title">Solicitação de Passeio</div>
-        <div class="form-sub">Rapha · Preencha os dados para organizar o passeio</div>
-      </div>
+      <div><div class="form-title">Solicitação de Passeio</div><div class="form-sub">Rapha</div></div>
     </div>
-    <div class="f"><label>Casamento</label>
-      <select id="pass-casamento"><option value="">Selecionar casamento...</option></select>
-    </div>
-    <div class="f"><label>Solicitação</label>
-      <textarea id="pass-sol" placeholder="Descreva o passeio ou atividade que deseja..."></textarea>
-    </div>
-    <button class="btn-enviar" id="btn-pass" onclick="enviarPasseio()">Enviar Solicitação</button>
+    <div class="f"><label>Casamento</label><select id="rp-cas"><option value="">Selecionar...</option></select></div>
+    <div class="f"><label>Solicitação</label><textarea id="rp-sol" placeholder="Descreva o passeio ou atividade..."></textarea></div>
+    <button class="btn-send" onclick="enviar('rapha-passeio')">Enviar Solicitação</button>
   </div>
 
-  <!-- TELA 4: Formulário Mari -->
-  <div class="page" id="page-form-mari">
-    <button class="form-back" onclick="showPage('page-responsavel')">← Voltar</button>
+  <!-- TELA 5: Form Mari -->
+  <div class="page" id="p-form-mari">
+    <button class="back" onclick="go('p-resp')">← Voltar</button>
     <div class="form-header">
       <div class="form-icon" style="background:#fdf3e0">📋</div>
-      <div>
-        <div class="form-title">Solicitação de Operacional</div>
-        <div class="form-sub">Mari · Preencha os dados e nossa equipe atenderá em breve</div>
+      <div><div class="form-title">Solicitação de Operacional</div><div class="form-sub">Mari</div></div>
+    </div>
+    <div class="f"><label>Casamento</label><select id="mc-cas"><option value="">Selecionar...</option></select></div>
+    <div class="f"><label>Nome do Convidado Solicitante</label><input id="mc-nome" placeholder="Nome completo"></div>
+    <div class="f"><label>Telefone</label><input id="mc-tel" placeholder="+55 (00) 00000-0000" type="tel"></div>
+    <div class="f"><label>Solicitação</label><textarea id="mc-sol" placeholder="Descreva o que precisa..."></textarea></div>
+    <div class="f"><label>Urgência</label>
+      <div class="urg-opts">
+        <div class="urg-opt" id="urg-alta" onclick="selUrg('alta')"><div class="ui">🔴</div><div class="ul">Alta</div></div>
+        <div class="urg-opt" id="urg-media" onclick="selUrg('media')"><div class="ui">🟡</div><div class="ul">Média</div></div>
+        <div class="urg-opt" id="urg-baixa" onclick="selUrg('baixa')"><div class="ui">🟢</div><div class="ul">Baixa</div></div>
       </div>
     </div>
-    <div class="f"><label>Casamento</label>
-      <select id="mari-casamento"><option value="">Selecionar casamento...</option></select>
-    </div>
-    <div class="f"><label>Nome do Convidado Solicitante</label>
-      <input id="mari-nome" placeholder="Nome completo">
-    </div>
-    <div class="f"><label>Telefone / WhatsApp</label>
-      <input id="mari-tel" placeholder="+55 (00) 00000-0000" type="tel">
-    </div>
-    <div class="f"><label>Solicitação</label>
-      <textarea id="mari-sol" placeholder="Descreva o que precisa..."></textarea>
-    </div>
-    <div class="f">
-      <label>Urgência</label>
-      <div class="urgencia-opts">
-        <div class="urg-opt" id="urg-alta" onclick="selUrgencia('alta')">
-          <div class="urg-icon">🔴</div>
-          <div class="urg-label">Alta</div>
-        </div>
-        <div class="urg-opt" id="urg-media" onclick="selUrgencia('media')">
-          <div class="urg-icon">🟡</div>
-          <div class="urg-label">Média</div>
-        </div>
-        <div class="urg-opt" id="urg-baixa" onclick="selUrgencia('baixa')">
-          <div class="urg-icon">🟢</div>
-          <div class="urg-label">Baixa</div>
-        </div>
-      </div>
-    </div>
-    <button class="btn-enviar" id="btn-mari" onclick="enviarMari()">Enviar Solicitação</button>
+    <button class="btn-send" onclick="enviar('mari')">Enviar Solicitação</button>
   </div>
 
-
-  <!-- TELA: Escolha tipo Juliana -->
-  <div class="page" id="page-tipo-juliana">
-    <button class="form-back" onclick="showPage('page-responsavel')">← Voltar</button>
-    <div class="escolha-title" style="font-size:24px;text-align:left;margin-bottom:6px">Solicitações a Convidado</div>
-    <div class="escolha-sub" style="text-align:left;margin-bottom:24px">Qual o tipo de solicitação?</div>
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <div class="tipo-card" style="text-align:left;display:flex;align-items:center;gap:14px;padding:16px 18px" onclick="showPage('page-ju-comunicacao')">
-        <div style="font-size:28px;flex-shrink:0">📢</div>
-        <div><div class="tipo-title" style="text-align:left">Adicionar convidado na comunicação</div></div>
-      </div>
-      <div class="tipo-card" style="text-align:left;display:flex;align-items:center;gap:14px;padding:16px 18px" onclick="showPage('page-ju-reserva')">
-        <div style="font-size:28px;flex-shrink:0">🏨</div>
-        <div><div class="tipo-title" style="text-align:left">Reenviar confirmação de reserva</div></div>
-      </div>
-      <div class="tipo-card" style="text-align:left;display:flex;align-items:center;gap:14px;padding:16px 18px" onclick="showPage('page-ju-diaria')">
-        <div style="font-size:28px;flex-shrink:0">📞</div>
-        <div><div class="tipo-title" style="text-align:left">Entrar em contato para diária extra</div></div>
-      </div>
-      <div class="tipo-card" style="text-align:left;display:flex;align-items:center;gap:14px;padding:16px 18px" onclick="showPage('page-ju-atendimento')">
-        <div style="font-size:28px;flex-shrink:0">👥</div>
-        <div><div class="tipo-title" style="text-align:left">Atendimento a convidado</div></div>
-      </div>
+  <!-- TELA 6: Tipos Juliana -->
+  <div class="page" id="p-tipo-ju">
+    <button class="back" onclick="go('p-resp')">← Voltar</button>
+    <div class="title" style="font-size:22px;text-align:left">Solicitações a Convidado</div>
+    <div class="sub" style="text-align:left;margin-bottom:20px">Qual o tipo de solicitação?</div>
+    <div class="tipo-list">
+      <div class="tipo-card" onclick="go('p-ju-com')"><div class="tipo-icon">📢</div><div class="tipo-title">Adicionar convidado na comunicação</div></div>
+      <div class="tipo-card" onclick="go('p-ju-res')"><div class="tipo-icon">🏨</div><div class="tipo-title">Reenviar confirmação de reserva</div></div>
+      <div class="tipo-card" onclick="go('p-ju-dia')"><div class="tipo-icon">📞</div><div class="tipo-title">Entrar em contato para diária extra</div></div>
+      <div class="tipo-card" onclick="go('p-ju-ate')"><div class="tipo-icon">👥</div><div class="tipo-title">Atendimento a convidado</div></div>
     </div>
   </div>
 
-  <!-- Formulário Juliana: Adicionar na comunicação -->
-  <div class="page" id="page-ju-comunicacao">
-    <button class="form-back" onclick="showPage('page-tipo-juliana')">← Voltar</button>
-    <div class="form-header">
-      <div class="form-icon" style="background:#fff3e0">📢</div>
-      <div><div class="form-title">Adicionar na comunicação</div><div class="form-sub">Preencha os dados do convidado</div></div>
-    </div>
-    <div class="f"><label>Casamento</label><select id="ju-com-cas"><option value="">Selecionar casamento...</option></select></div>
-    <div class="f"><label>Nome do Convidado</label><input id="ju-com-nome" placeholder="Nome completo"></div>
-    <div class="f"><label>Número do Convidado</label><input id="ju-com-tel" placeholder="+55 (00) 00000-0000" type="tel"></div>
-    <button class="btn-enviar" id="btn-ju-com" onclick="enviarJuliana('comunicacao')">Enviar Solicitação</button>
+  <!-- Juliana: Comunicação -->
+  <div class="page" id="p-ju-com">
+    <button class="back" onclick="go('p-tipo-ju')">← Voltar</button>
+    <div class="form-header"><div class="form-icon" style="background:#fff3e0">📢</div><div><div class="form-title">Adicionar na comunicação</div><div class="form-sub">Juliana</div></div></div>
+    <div class="f"><label>Casamento</label><select id="jc-cas"><option value="">Selecionar...</option></select></div>
+    <div class="f"><label>Nome do Convidado</label><input id="jc-nome" placeholder="Nome completo"></div>
+    <div class="f"><label>Número do Convidado</label><input id="jc-tel" placeholder="+55 (00) 00000-0000" type="tel"></div>
+    <button class="btn-send" onclick="enviar('ju-comunicacao')">Enviar Solicitação</button>
   </div>
 
-  <!-- Formulário Juliana: Reenviar confirmação -->
-  <div class="page" id="page-ju-reserva">
-    <button class="form-back" onclick="showPage('page-tipo-juliana')">← Voltar</button>
-    <div class="form-header">
-      <div class="form-icon" style="background:#e8f5e9">🏨</div>
-      <div><div class="form-title">Reenviar confirmação de reserva</div><div class="form-sub">Preencha os dados do convidado</div></div>
-    </div>
-    <div class="f"><label>Casamento</label><select id="ju-res-cas"><option value="">Selecionar casamento...</option></select></div>
-    <div class="f"><label>Nome do Convidado</label><input id="ju-res-nome" placeholder="Nome completo"></div>
-    <div class="f"><label>Número do Convidado</label><input id="ju-res-tel" placeholder="+55 (00) 00000-0000" type="tel"></div>
-    <div class="f"><label>Observações</label><textarea id="ju-res-obs" placeholder="Informações adicionais..."></textarea></div>
-    <button class="btn-enviar" id="btn-ju-res" onclick="enviarJuliana('reserva')">Enviar Solicitação</button>
+  <!-- Juliana: Reserva -->
+  <div class="page" id="p-ju-res">
+    <button class="back" onclick="go('p-tipo-ju')">← Voltar</button>
+    <div class="form-header"><div class="form-icon" style="background:#e8f5e9">🏨</div><div><div class="form-title">Reenviar confirmação de reserva</div><div class="form-sub">Juliana</div></div></div>
+    <div class="f"><label>Casamento</label><select id="jr-cas"><option value="">Selecionar...</option></select></div>
+    <div class="f"><label>Nome do Convidado</label><input id="jr-nome" placeholder="Nome completo"></div>
+    <div class="f"><label>Número do Convidado</label><input id="jr-tel" placeholder="+55 (00) 00000-0000" type="tel"></div>
+    <div class="f"><label>Observações</label><textarea id="jr-obs" placeholder="Informações adicionais..."></textarea></div>
+    <button class="btn-send" onclick="enviar('ju-reserva')">Enviar Solicitação</button>
   </div>
 
-  <!-- Formulário Juliana: Diária extra -->
-  <div class="page" id="page-ju-diaria">
-    <button class="form-back" onclick="showPage('page-tipo-juliana')">← Voltar</button>
-    <div class="form-header">
-      <div class="form-icon" style="background:#e3f2fd">📞</div>
-      <div><div class="form-title">Contato para diária extra</div><div class="form-sub">Preencha os dados do convidado</div></div>
-    </div>
-    <div class="f"><label>Casamento</label><select id="ju-dia-cas"><option value="">Selecionar casamento...</option></select></div>
-    <div class="f"><label>Nome do Convidado</label><input id="ju-dia-nome" placeholder="Nome completo"></div>
-    <div class="f"><label>Número do Convidado</label><input id="ju-dia-tel" placeholder="+55 (00) 00000-0000" type="tel"></div>
-    <div class="f"><label>Observações</label><textarea id="ju-dia-obs" placeholder="Informações adicionais..."></textarea></div>
-    <button class="btn-enviar" id="btn-ju-dia" onclick="enviarJuliana('diaria')">Enviar Solicitação</button>
+  <!-- Juliana: Diária -->
+  <div class="page" id="p-ju-dia">
+    <button class="back" onclick="go('p-tipo-ju')">← Voltar</button>
+    <div class="form-header"><div class="form-icon" style="background:#e3f2fd">📞</div><div><div class="form-title">Contato para diária extra</div><div class="form-sub">Juliana</div></div></div>
+    <div class="f"><label>Casamento</label><select id="jd-cas"><option value="">Selecionar...</option></select></div>
+    <div class="f"><label>Nome do Convidado</label><input id="jd-nome" placeholder="Nome completo"></div>
+    <div class="f"><label>Número do Convidado</label><input id="jd-tel" placeholder="+55 (00) 00000-0000" type="tel"></div>
+    <div class="f"><label>Observações</label><textarea id="jd-obs" placeholder="Informações adicionais..."></textarea></div>
+    <button class="btn-send" onclick="enviar('ju-diaria')">Enviar Solicitação</button>
   </div>
 
-  <!-- Formulário Juliana: Atendimento convidado -->
-  <div class="page" id="page-ju-atendimento">
-    <button class="form-back" onclick="showPage('page-tipo-juliana')">← Voltar</button>
-    <div class="form-header">
-      <div class="form-icon" style="background:#fdecea">👥</div>
-      <div><div class="form-title">Atendimento a convidado</div><div class="form-sub">Preencha os dados do convidado</div></div>
-    </div>
-    <div class="f"><label>Casamento</label><select id="ju-ate-cas"><option value="">Selecionar casamento...</option></select></div>
-    <div class="f"><label>Nome do Convidado</label><input id="ju-ate-nome" placeholder="Nome completo"></div>
-    <div class="f"><label>Número do Convidado</label><input id="ju-ate-tel" placeholder="+55 (00) 00000-0000" type="tel"></div>
-    <div class="f"><label>Observações</label><textarea id="ju-ate-obs" placeholder="Informações adicionais..."></textarea></div>
-    <button class="btn-enviar" id="btn-ju-ate" onclick="enviarJuliana('atendimento')">Enviar Solicitação</button>
+  <!-- Juliana: Atendimento -->
+  <div class="page" id="p-ju-ate">
+    <button class="back" onclick="go('p-tipo-ju')">← Voltar</button>
+    <div class="form-header"><div class="form-icon" style="background:#fdecea">👥</div><div><div class="form-title">Atendimento a convidado</div><div class="form-sub">Juliana</div></div></div>
+    <div class="f"><label>Casamento</label><select id="ja-cas"><option value="">Selecionar...</option></select></div>
+    <div class="f"><label>Nome do Convidado</label><input id="ja-nome" placeholder="Nome completo"></div>
+    <div class="f"><label>Número do Convidado</label><input id="ja-tel" placeholder="+55 (00) 00000-0000" type="tel"></div>
+    <div class="f"><label>Observações</label><textarea id="ja-obs" placeholder="Informações adicionais..."></textarea></div>
+    <button class="btn-send" onclick="enviar('ju-atendimento')">Enviar Solicitação</button>
   </div>
-  <!-- TELA SUCESSO -->
-  <div class="page" id="page-sucesso">
+
+  <!-- SUCESSO -->
+  <div class="page" id="p-sucesso">
     <div class="sucesso">
       <div class="sucesso-icon">✅</div>
       <div class="sucesso-title">Solicitação enviada!</div>
       <div class="sucesso-sub">Recebemos sua solicitação e nossa equipe<br>entrará em contato em breve.</div>
-      <button class="btn-nova" onclick="showPage('page-responsavel')">Fazer outra solicitação</button>
+      <button class="btn-nova" onclick="go('p-resp')">Fazer outra solicitação</button>
     </div>
   </div>
 
 </div>
-
 <script>
 const{createClient}=supabase
 const sb=createClient('https://yrnlfarricrhtfomwynd.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlybmxmYXJyaWNyaHRmb213eW5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczOTIxODksImV4cCI6MjA5Mjk2ODE4OX0.Ad4awFjQ9vcDqNyBbWycgv0rvpc3DOz4pPTi41nSp8w')
 
-let urgenciaSel=''
+let urgSel=''
 
-function showPage(id){
+function go(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'))
   document.getElementById(id).classList.add('active')
   window.scrollTo(0,0)
 }
 
-function escolherResp(resp){
-  if(resp==='rapha')showPage('page-tipo-rapha')
-  else if(resp==='mari')showPage('page-form-mari')
-  else if(resp==='juliana')showPage('page-tipo-juliana')
-}
-
-function selUrgencia(v){
-  urgenciaSel=v
+function selUrg(v){
+  urgSel=v
   ;['alta','media','baixa'].forEach(u=>{document.getElementById('urg-'+u).className='urg-opt'+(v===u?' sel-'+u:'')})
 }
 
-const JU_TIPOS={
-  comunicacao:{label:'📢 Adicionar na comunicação',cas:'ju-com-cas',nome:'ju-com-nome',tel:'ju-com-tel',obs:null},
-  reserva:{label:'🏨 Reenviar confirmação de reserva',cas:'ju-res-cas',nome:'ju-res-nome',tel:'ju-res-tel',obs:'ju-res-obs'},
-  diaria:{label:'📞 Diária extra',cas:'ju-dia-cas',nome:'ju-dia-nome',tel:'ju-dia-tel',obs:'ju-dia-obs'},
-  atendimento:{label:'👥 Atendimento a convidado',cas:'ju-ate-cas',nome:'ju-ate-nome',tel:'ju-ate-tel',obs:'ju-ate-obs'}
-}
+function v(id){return document.getElementById(id)?.value?.trim()||''}
+function cas(id){const el=document.getElementById(id);return{id:el?.value,nome:el?.options[el.selectedIndex]?.dataset.nome||''}}
 
-async function enviarJuliana(tipo){
-  const t=JU_TIPOS[tipo]
-  const btnId='btn-ju-'+{comunicacao:'com',reserva:'res',diaria:'dia',atendimento:'ate'}[tipo]
-  const btn=document.getElementById(btnId)
-  const casEl=document.getElementById(t.cas)
-  const casId=casEl?.value
-  const casNome=casEl?.options[casEl.selectedIndex]?.dataset.nome||''
-  const nome=document.getElementById(t.nome).value.trim()
-  const tel=document.getElementById(t.tel).value.trim()
-  const obs=t.obs?document.getElementById(t.obs).value.trim():''
-  if(!casId){alert('Selecione o casamento!');return}
-  if(!nome){alert('Preencha o nome do convidado!');return}
-  if(btn){btn.textContent='Enviando...';btn.disabled=true}
-  await sb.from('solicitacoes_kanban').insert({tipo:'ju_'+tipo,coluna:'nova',responsavel:'juliana',casamento_id:casId,casamento_nome:casNome,convidado_nome:nome,convidado_telefone:tel||null,solicitacao:obs||t.label,servicos:t.label})
-  if(btn){btn.textContent='Enviar Solicitação';btn.disabled=false}
-  showPage('page-sucesso')
-}
+async function enviar(tipo){
+  const btns=document.querySelectorAll('.btn-send')
+  btns.forEach(b=>{b.disabled=true;b.textContent='Enviando...'})
 
-async function enviarConvidado(){
-  const btn=document.getElementById('btn-cong')
-  const casEl=document.getElementById('cong-casamento')
-  const casId=casEl?.value
-  const casNome=casEl?.options[casEl.selectedIndex]?.dataset.nome||''
-  const nome=document.getElementById('cong-nome').value.trim()
-  const sol=document.getElementById('cong-sol').value.trim()
-  if(!casId){alert('Selecione o casamento!');return}
-  if(!nome){alert('Preencha o nome do convidado!');return}
-  if(!sol){alert('Descreva a solicitação!');return}
-  btn.textContent='Enviando...';btn.disabled=true
-  await sb.from('solicitacoes_kanban').insert({tipo:'atendimento_convidado',coluna:'nova',responsavel:'rapha',casamento_id:casId,casamento_nome:casNome,convidado_nome:nome,convidado_telefone:document.getElementById('cong-tel').value.trim()||null,solicitacao:sol})
-  btn.textContent='Enviar Solicitação';btn.disabled=false
-  showPage('page-sucesso')
-}
+  let row={}
 
-async function enviarPasseio(){
-  const btn=document.getElementById('btn-pass')
-  const casEl=document.getElementById('pass-casamento')
-  const casId=casEl?.value
-  const casNome=casEl?.options[casEl.selectedIndex]?.dataset.nome||''
-  const sol=document.getElementById('pass-sol').value.trim()
-  if(!casId){alert('Selecione o casamento!');return}
-  if(!sol){alert('Descreva a solicitação!');return}
-  btn.textContent='Enviando...';btn.disabled=true
-  await sb.from('solicitacoes_kanban').insert({tipo:'passeio',coluna:'nova',responsavel:'rapha',casamento_id:casId,casamento_nome:casNome,solicitacao:sol})
-  btn.textContent='Enviar Solicitação';btn.disabled=false
-  showPage('page-sucesso')
-}
+  if(tipo==='rapha-convidado'){
+    const c=cas('rc-cas')
+    if(!c.id){alert('Selecione o casamento!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
+    if(!v('rc-nome')){alert('Preencha o nome!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
+    if(!v('rc-sol')){alert('Descreva a solicitação!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
+    row={tipo:'atendimento_convidado',responsavel:'rapha',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('rc-nome'),convidado_telefone:v('rc-tel')||null,solicitacao:v('rc-sol')}
 
-async function enviarMari(){
-  const btn=document.getElementById('btn-mari')
-  const casEl=document.getElementById('mari-casamento')
-  const casId=casEl?.value
-  const casNome=casEl?.options[casEl.selectedIndex]?.dataset.nome||''
-  const nome=document.getElementById('mari-nome').value.trim()
-  const sol=document.getElementById('mari-sol').value.trim()
-  if(!casId){alert('Selecione o casamento!');return}
-  if(!nome){alert('Preencha o nome do convidado!');return}
-  if(!sol){alert('Descreva a solicitação!');return}
-  if(!urgenciaSel){alert('Selecione a urgência!');return}
-  btn.textContent='Enviando...';btn.disabled=true
-  const urgLabel={alta:'🔴 Alta',media:'🟡 Média',baixa:'🟢 Baixa'}[urgenciaSel]
-  await sb.from('solicitacoes_kanban').insert({tipo:'operacional',coluna:'nova',responsavel:'mari',casamento_id:casId,casamento_nome:casNome,convidado_nome:nome,convidado_telefone:document.getElementById('mari-tel').value.trim()||null,solicitacao:sol,servicos:urgLabel})
-  btn.textContent='Enviar Solicitação';btn.disabled=false
-  showPage('page-sucesso')
+  }else if(tipo==='rapha-passeio'){
+    const c=cas('rp-cas')
+    if(!c.id){alert('Selecione o casamento!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
+    if(!v('rp-sol')){alert('Descreva a solicitação!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
+    row={tipo:'passeio',responsavel:'rapha',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,solicitacao:v('rp-sol')}
+
+  }else if(tipo==='mari'){
+    const c=cas('mc-cas')
+    if(!c.id){alert('Selecione o casamento!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
+    if(!v('mc-nome')){alert('Preencha o nome!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
+    if(!v('mc-sol')){alert('Descreva a solicitação!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
+    if(!urgSel){alert('Selecione a urgência!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
+    const urgLabel={alta:'🔴 Alta',media:'🟡 Média',baixa:'🟢 Baixa'}[urgSel]
+    row={tipo:'operacional',responsavel:'mari',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('mc-nome'),convidado_telefone:v('mc-tel')||null,solicitacao:v('mc-sol'),servicos:urgLabel}
+
+  }else if(tipo==='ju-comunicacao'){
+    const c=cas('jc-cas')
+    if(!c.id){alert('Selecione o casamento!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
+    if(!v('jc-nome')){alert('Preencha o nome!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
+    row={tipo:'ju_comunicacao',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('jc-nome'),convidado_telefone:v('jc-tel')||null,servicos:'📢 Adicionar na comunicação'}
+
+  }else if(tipo==='ju-reserva'){
+    const c=cas('jr-cas')
+    if(!c.id){alert('Selecione o casamento!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
+    if(!v('jr-nome')){alert('Preencha o nome!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
+    row={tipo:'ju_reserva',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('jr-nome'),convidado_telefone:v('jr-tel')||null,solicitacao:v('jr-obs'),servicos:'🏨 Reenviar confirmação de reserva'}
+
+  }else if(tipo==='ju-diaria'){
+    const c=cas('jd-cas')
+    if(!c.id){alert('Selecione o casamento!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
+    if(!v('jd-nome')){alert('Preencha o nome!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
+    row={tipo:'ju_diaria',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('jd-nome'),convidado_telefone:v('jd-tel')||null,solicitacao:v('jd-obs'),servicos:'📞 Diária extra'}
+
+  }else if(tipo==='ju-atendimento'){
+    const c=cas('ja-cas')
+    if(!c.id){alert('Selecione o casamento!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
+    if(!v('ja-nome')){alert('Preencha o nome!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
+    row={tipo:'ju_atendimento',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('ja-nome'),convidado_telefone:v('ja-tel')||null,solicitacao:v('ja-obs'),servicos:'👥 Atendimento a convidado'}
+  }
+
+  await sb.from('solicitacoes_kanban').insert(row)
+  btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'})
+  go('p-sucesso')
 }
 
 async function carregarCasamentos(){
   const hoje=new Date().toISOString().split('T')[0]
   const{data}=await sb.from('casamentos').select('id,nome,plan_data').gte('plan_data',hoje).neq('status','Cancelado').order('plan_data',{ascending:true})
   const opts=(data||[]).map(c=>`<option value="${c.id}" data-nome="${c.nome}">${c.nome}</option>`).join('')
-  ;['cong-casamento','pass-casamento','mari-casamento','ju-com-cas','ju-res-cas','ju-dia-cas','ju-ate-cas'].forEach(id=>{
-    const sel=document.getElementById(id)
-    if(sel)sel.innerHTML='<option value="">Selecionar casamento...</option>'+opts
+  ;['rc-cas','rp-cas','mc-cas','jc-cas','jr-cas','jd-cas','ja-cas'].forEach(id=>{
+    const el=document.getElementById(id)
+    if(el)el.innerHTML='<option value="">Selecionar casamento...</option>'+opts
   })
-}
-
-carregarCasamentos()
-</script>
-</body>
-</html>
-  comunicacao:{label:'📢 Adicionar na comunicação',pag:'page-ju-comunicacao',cas:'ju-com-cas',nome:'ju-com-nome',tel:'ju-com-tel',obs:null},
-  reserva:{label:'🏨 Reenviar confirmação de reserva',pag:'page-ju-reserva',cas:'ju-res-cas',nome:'ju-res-nome',tel:'ju-res-tel',obs:'ju-res-obs'},
-  diaria:{label:'📞 Diária extra',pag:'page-ju-diaria',cas:'ju-dia-cas',nome:'ju-dia-nome',tel:'ju-dia-tel',obs:'ju-dia-obs'},
-  atendimento:{label:'👥 Atendimento a convidado',pag:'page-ju-atendimento',cas:'ju-ate-cas',nome:'ju-ate-nome',tel:'ju-ate-tel',obs:'ju-ate-obs'}
-}
-
-async function enviarJuliana(tipo){
-  const t=JU_TIPOS[tipo]
-  const btn=document.getElementById('btn-ju-'+tipo.slice(0,3))
-  const casEl=document.getElementById(t.cas)
-  const casId=casEl?.value
-  const casNome=casEl?.options[casEl.selectedIndex]?.dataset.nome||''
-  const nome=document.getElementById(t.nome).value.trim()
-  const tel=document.getElementById(t.tel).value.trim()
-  const obs=t.obs?document.getElementById(t.obs).value.trim():''
-  if(!casId){alert('Selecione o casamento!');return}
-  if(!nome){alert('Preencha o nome do convidado!');return}
-  if(btn){btn.textContent='Enviando...';btn.disabled=true}
-  await sb.from('solicitacoes_kanban').insert({
-    tipo:'ju_'+tipo,coluna:'nova',responsavel:'juliana',
-    casamento_id:casId,casamento_nome:casNome,
-    convidado_nome:nome,convidado_telefone:tel||null,
-    solicitacao:obs||(t.label),
-    servicos:t.label
-  })
-  if(btn){btn.textContent='Enviar Solicitação';btn.disabled=false}
-  showPage('page-sucesso')
-}
-
-carregarCasamentos(){
-  const hoje=new Date().toISOString().split('T')[0]
-  const{data}=await sb.from('casamentos').select('id,nome,plan_data').gte('plan_data',hoje).neq('status','Cancelado').order('plan_data',{ascending:true})
-  const opts=(data||[]).map(c=>`<option value="${c.id}" data-nome="${c.nome}">${c.nome}</option>`).join('')
-  ;['cong-casamento','pass-casamento','mari-casamento','ju-com-cas','ju-res-cas','ju-dia-cas','ju-ate-cas'].forEach(id=>{
-    const sel=document.getElementById(id)
-    if(sel)sel.innerHTML='<option value="">Selecionar casamento...</option>'+opts
-  })
-}
-
-async function enviarConvidado(){
-  const btn=document.getElementById('btn-cong')
-  const casEl=document.getElementById('cong-casamento')
-  const casId=casEl?.value
-  const casNome=casEl?.options[casEl.selectedIndex]?.dataset.nome||''
-  const nome=document.getElementById('cong-nome').value.trim()
-  const sol=document.getElementById('cong-sol').value.trim()
-  if(!casId){alert('Selecione o casamento!');return}
-  if(!nome){alert('Preencha o nome do convidado!');return}
-  if(!sol){alert('Descreva a solicitação!');return}
-  btn.textContent='Enviando...';btn.disabled=true
-  await sb.from('solicitacoes_kanban').insert({tipo:'atendimento_convidado',coluna:'nova',responsavel:'rapha',casamento_id:casId,casamento_nome:casNome,convidado_nome:nome,convidado_telefone:document.getElementById('cong-tel').value.trim()||null,solicitacao:sol})
-  btn.textContent='Enviar Solicitação';btn.disabled=false
-  showPage('page-sucesso')
-}
-
-async function enviarPasseio(){
-  const btn=document.getElementById('btn-pass')
-  const casEl=document.getElementById('pass-casamento')
-  const casId=casEl?.value
-  const casNome=casEl?.options[casEl.selectedIndex]?.dataset.nome||''
-  const sol=document.getElementById('pass-sol').value.trim()
-  if(!casId){alert('Selecione o casamento!');return}
-  if(!sol){alert('Descreva a solicitação!');return}
-  btn.textContent='Enviando...';btn.disabled=true
-  await sb.from('solicitacoes_kanban').insert({tipo:'passeio',coluna:'nova',responsavel:'rapha',casamento_id:casId,casamento_nome:casNome,solicitacao:sol})
-  btn.textContent='Enviar Solicitação';btn.disabled=false
-  showPage('page-sucesso')
-}
-
-async function enviarMari(){
-  const btn=document.getElementById('btn-mari')
-  const casEl=document.getElementById('mari-casamento')
-  const casId=casEl?.value
-  const casNome=casEl?.options[casEl.selectedIndex]?.dataset.nome||''
-  const nome=document.getElementById('mari-nome').value.trim()
-  const sol=document.getElementById('mari-sol').value.trim()
-  if(!casId){alert('Selecione o casamento!');return}
-  if(!nome){alert('Preencha o nome do convidado!');return}
-  if(!sol){alert('Descreva a solicitação!');return}
-  if(!urgenciaSel){alert('Selecione a urgência!');return}
-  btn.textContent='Enviando...';btn.disabled=true
-  const urgLabel={alta:'🔴 Alta',media:'🟡 Média',baixa:'🟢 Baixa'}[urgenciaSel]
-  await sb.from('solicitacoes_kanban').insert({tipo:'operacional',coluna:'nova',responsavel:'mari',casamento_id:casId,casamento_nome:casNome,convidado_nome:nome,convidado_telefone:document.getElementById('mari-tel').value.trim()||null,solicitacao:sol,servicos:urgLabel})
-  btn.textContent='Enviar Solicitação';btn.disabled=false
-  showPage('page-sucesso')
-}
-
-
-const JU_TIPOS={
-  comunicacao:{label:'📢 Adicionar na comunicação',pag:'page-ju-comunicacao',cas:'ju-com-cas',nome:'ju-com-nome',tel:'ju-com-tel',obs:null},
-  reserva:{label:'🏨 Reenviar confirmação de reserva',pag:'page-ju-reserva',cas:'ju-res-cas',nome:'ju-res-nome',tel:'ju-res-tel',obs:'ju-res-obs'},
-  diaria:{label:'📞 Diária extra',pag:'page-ju-diaria',cas:'ju-dia-cas',nome:'ju-dia-nome',tel:'ju-dia-tel',obs:'ju-dia-obs'},
-  atendimento:{label:'👥 Atendimento a convidado',pag:'page-ju-atendimento',cas:'ju-ate-cas',nome:'ju-ate-nome',tel:'ju-ate-tel',obs:'ju-ate-obs'}
 }
 
 carregarCasamentos()
