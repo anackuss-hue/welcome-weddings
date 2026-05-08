@@ -145,6 +145,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .tipo-convidado{background:#e3f2fd;color:#1565c0;border:1px solid #bbdefb}
 .tipo-passeio{background:#e8f5e9;color:#2e7d32;border:1px solid #c8e6c9}
 .tipo-operacional{background:#f3e5f5;color:#6a1b9a;border:1px solid #e1bee7}
+.tipo-juliana{background:#e8eaf6;color:#283593;border:1px solid #c5cae9}
 .kb-add-btn{width:100%;padding:8px;font-size:12px;font-weight:600;color:var(--gold);background:var(--gold-pale);border:1.5px dashed var(--gold-border);border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:8px;transition:all .15s}
 .kb-add-btn:hover{border-color:var(--gold);background:#fdf3e0}
 .kb-tabs{display:flex;gap:6px;margin-bottom:22px;border-bottom:2px solid var(--border)}
@@ -2377,13 +2378,30 @@ async function deletarAnexo(id,url,containerId,tipo,referenciaId){
 // ══ KANBAN DE VIAGENS ══
 let kanbanData=[], kanbanTabAtual='rapha'
 
-const KB_COLUNAS=[
-  {id:'nova',label:'Nova solicitação'},
-  {id:'andamento',label:'Em andamento / Contato'},
-  {id:'orcamento',label:'Orçamento / Aguardando'},
-  {id:'ganho',label:'Ganho'},
-  {id:'perdido',label:'Perdido'}
-]
+const KB_COLUNAS={
+  rapha:[
+    {id:'nova',label:'Nova solicitação'},
+    {id:'andamento',label:'Em andamento / Contato'},
+    {id:'orcamento',label:'Orçamento / Aguardando'},
+    {id:'ganho',label:'Ganho'},
+    {id:'perdido',label:'Perdido'}
+  ],
+  mari:[
+    {id:'nova',label:'Solicitações'},
+    {id:'solicitado_hotel',label:'Solicitado ao hotel'},
+    {id:'enviado_consultoras',label:'Enviado para consultoras'},
+    {id:'enviado_cliente',label:'Enviado para o cliente'},
+    {id:'finalizado',label:'Finalizado'},
+    {id:'desistiu',label:'Desistiu'},
+    {id:'aguardar',label:'Convidado pediu para aguardar'}
+  ],
+  juliana:[
+    {id:'nova',label:'Nova solicitação'},
+    {id:'andamento',label:'Em andamento'},
+    {id:'finalizado',label:'Finalizado'},
+    {id:'perdido',label:'Cancelado'}
+  ]
+}
 
 async function loadKanban(){
   const{data}=await sb.from('solicitacoes_kanban').select('*').order('created_at',{ascending:false})
@@ -2419,7 +2437,8 @@ function showKanbanTab(tab,btn){
 function renderKanban(){
   const board=document.getElementById('kb-board');if(!board)return
   const filtered=kanbanData.filter(k=>k.responsavel===kanbanTabAtual)
-  board.innerHTML=KB_COLUNAS.map(col=>{
+  const colunas=KB_COLUNAS[kanbanTabAtual]||KB_COLUNAS.rapha
+  board.innerHTML=colunas.map(col=>{
     const cards=filtered.filter(k=>k.coluna===col.id)
     return`<div class="kb-col">
       <div class="kb-col-header">
@@ -2437,7 +2456,11 @@ function renderKanbanCard(k){
     viagem_assessora:`<span class="tipo-tag tipo-viagem">🧳 Viagem assessora</span>`,
     atendimento_convidado:`<span class="tipo-tag tipo-convidado">👥 Atend. convidado</span>`,
     passeio:`<span class="tipo-tag tipo-passeio">🗺️ Passeio</span>`,
-    operacional:`<span class="tipo-tag tipo-operacional">📋 Operacional</span>`
+    operacional:`<span class="tipo-tag tipo-operacional">📋 Operacional</span>`,
+    ju_comunicacao:`<span class="tipo-tag tipo-juliana">📢 Comunicação</span>`,
+    ju_reserva:`<span class="tipo-tag tipo-juliana">🏨 Confirmação reserva</span>`,
+    ju_diaria:`<span class="tipo-tag tipo-juliana">📞 Diária extra</span>`,
+    ju_atendimento:`<span class="tipo-tag tipo-juliana">👥 Atend. convidado</span>`
   }[k.tipo]||''
 
   const nome=k.tipo==='viagem_assessora'
@@ -2481,8 +2504,11 @@ function openKanbanCard(id){
   if(k.convidado_nome)html+=`<div style="margin-bottom:8px"><span style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.5px;text-transform:uppercase">Convidado</span><div style="font-size:13px;margin-top:3px">${k.convidado_nome}${k.convidado_telefone?' · '+k.convidado_telefone:''}</div></div>`
   if(k.solicitacao)html+=`<div style="margin-bottom:8px"><span style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.5px;text-transform:uppercase">Solicitação</span><div style="font-size:13px;margin-top:3px;padding:10px;background:var(--gold-pale);border-radius:8px;border:1px solid var(--gold-border)">${k.solicitacao}</div></div>`
   det.innerHTML=html||'<div style="color:var(--muted);font-size:13px">Sem detalhes adicionais</div>'
-  // Coluna atual
-  document.getElementById('kc-coluna').value=k.coluna
+  // Popula select de colunas da aba atual
+  const selCol=document.getElementById('kc-coluna')
+  const colunas=KB_COLUNAS[k.responsavel]||KB_COLUNAS.rapha
+  selCol.innerHTML=colunas.map(c=>`<option value="${c.id}">${c.label}</option>`).join('')
+  selCol.value=k.coluna
   document.getElementById('modal-kanban-card').classList.add('open')
 }
 
@@ -2500,10 +2526,13 @@ async function deletarKanbanCard(){
 }
 
 function openNovaKanban(coluna){
-  // Abre modal simples para criar card manual
-  document.getElementById('kn-coluna').value=coluna||'nova'
+  const colunas=KB_COLUNAS[kanbanTabAtual]||KB_COLUNAS.rapha
+  const selCol=document.getElementById('kn-coluna')
+  selCol.innerHTML=colunas.map(c=>`<option value="${c.id}">${c.label}</option>`).join('')
+  selCol.value=coluna||'nova'
+  // Define responsável pela aba atual
+  document.getElementById('kn-resp').value=kanbanTabAtual
   document.getElementById('modal-kanban-novo').classList.add('open')
-  // Popula select de casamentos
   const sel=document.getElementById('kn-casamento')
   if(sel){
     const hoje=new Date().toISOString().split('T')[0]
