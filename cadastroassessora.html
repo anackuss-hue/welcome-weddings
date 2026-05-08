@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -64,6 +63,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .tr-thumb{width:16px;height:16px;border-radius:8px;background:#fff;position:absolute;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
 .tr-track.on .tr-thumb{left:18px}
 .tr-label{font-size:13px;color:#555}
+
+.upload-area{border:2px dashed var(--gold-border);border-radius:10px;padding:16px;text-align:center;cursor:pointer;background:var(--gold-pale);transition:all .15s}
+.upload-area:hover{border-color:var(--gold);background:#fdf3e0}
+.upload-preview{font-size:13px;color:var(--muted)}
+.upload-preview.done{color:var(--gold);font-weight:600}
 
 /* Nav buttons */
 .nav-btns{display:flex;gap:10px;margin-top:32px;padding-top:20px;border-top:1px solid var(--border)}
@@ -144,9 +148,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       </div>
       <div id="pass-fields">
         <div class="g2">
-          <div class="f"><label>Número</label><input id="a-pass-num" placeholder="Ex: AA123456"></div>
-          <div class="f"><label>Validade</label><input id="a-pass-val" type="date"></div>
-          <div class="f" style="grid-column:1/-1"><label>País Emissor</label><input id="a-pass-pais" placeholder="Ex: Brasil"></div>
+          <div class="f"><label>Número <span class="req">*</span></label><input id="a-pass-num" placeholder="Ex: AA123456"></div>
+          <div class="f"><label>Validade <span class="req">*</span></label><input id="a-pass-val" type="date"></div>
+          <div class="f" style="grid-column:1/-1"><label>País Emissor <span class="req">*</span></label><input id="a-pass-pais" placeholder="Ex: Brasil"></div>
+          <div class="f" style="grid-column:1/-1"><label>Anexo do Passaporte <span class="req">*</span></label>
+            <div class="upload-area" onclick="document.getElementById('file-pass').click()">
+              <input type="file" id="file-pass" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="handleUpload(this,'pass-preview')">
+              <div id="pass-preview" class="upload-preview">📎 Clique para anexar (PDF ou imagem)</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -159,9 +169,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       </div>
       <div id="visto-fields">
         <div class="g2">
-          <div class="f"><label>Número</label><input id="a-visto-num" placeholder="Ex: V123456"></div>
-          <div class="f"><label>Validade</label><input id="a-visto-val" type="date"></div>
-          <div class="f" style="grid-column:1/-1"><label>País</label><input id="a-visto-pais" placeholder="Ex: Estados Unidos"></div>
+          <div class="f"><label>Número <span class="req">*</span></label><input id="a-visto-num" placeholder="Ex: V123456"></div>
+          <div class="f"><label>Validade <span class="req">*</span></label><input id="a-visto-val" type="date"></div>
+          <div class="f" style="grid-column:1/-1"><label>País <span class="req">*</span></label><input id="a-visto-pais" placeholder="Ex: Estados Unidos"></div>
+          <div class="f" style="grid-column:1/-1"><label>Anexo do Visto <span class="req">*</span></label>
+            <div class="upload-area" onclick="document.getElementById('file-visto').click()">
+              <input type="file" id="file-visto" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="handleUpload(this,'visto-preview')">
+              <div id="visto-preview" class="upload-preview">📎 Clique para anexar (PDF ou imagem)</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -246,8 +262,18 @@ let etapaAtual=1
 let febreAmarela=false
 let temPassaporte=true, temVisto=true
 let idiomas={ingles:false,espanhol:false,frances:false,italiano:false}
+let arquivos={pass:null,visto:null}
 
 function v(id){return(document.getElementById(id)?.value||'').trim()}
+
+function handleUpload(input,previewId){
+  const file=input.files[0]
+  if(!file)return
+  const key=previewId.replace('-preview','')
+  arquivos[key]=file
+  const preview=document.getElementById(previewId)
+  if(preview){preview.textContent='✅ '+file.name;preview.className='upload-preview done'}
+}
 
 function irPara(n){
   // Valida etapa atual antes de avançar
@@ -282,8 +308,14 @@ function validarEtapa(n){
   }
   if(n===2){
     if(!v('a-rg')||!v('a-rg-val')){alert('Preencha os dados do RG!');return false}
-    if(temPassaporte&&(!v('a-pass-num')||!v('a-pass-val')||!v('a-pass-pais'))){alert('Preencha os dados do passaporte ou marque "Não tenho"!');return false}
-    if(temVisto&&(!v('a-visto-num')||!v('a-visto-val')||!v('a-visto-pais'))){alert('Preencha os dados do visto ou marque "Não tenho"!');return false}
+    if(temPassaporte){
+      if(!v('a-pass-num')||!v('a-pass-val')||!v('a-pass-pais')){alert('Preencha todos os dados do passaporte!');return false}
+      if(!arquivos.pass){alert('Anexe uma foto ou PDF do passaporte!');return false}
+    }
+    if(temVisto){
+      if(!v('a-visto-num')||!v('a-visto-val')||!v('a-visto-pais')){alert('Preencha todos os dados do visto!');return false}
+      if(!arquivos.visto){alert('Anexe uma foto ou PDF do visto!');return false}
+    }
   }
   if(n===4){
     const campos=['a-blusa','a-calca','a-macacao','a-vestido','a-sapato']
@@ -327,6 +359,19 @@ async function enviarCadastro(){
   const btn=document.getElementById('btn-enviar')
   btn.textContent='Enviando...';btn.disabled=true
 
+  // Upload dos documentos
+  let passUrl=null, vistoUrl=null
+  const uploadFile=async(file,nome)=>{
+    if(!file)return null
+    const ext=file.name.split('.').pop()
+    const path=`assessoras/${Date.now()}-${nome}.${ext}`
+    const{error}=await sb.storage.from('anexos').upload(path,file,{upsert:false})
+    if(error)return null
+    return sb.storage.from('anexos').getPublicUrl(path).data.publicUrl
+  }
+  if(temPassaporte&&arquivos.pass)passUrl=await uploadFile(arquivos.pass,'passaporte')
+  if(temVisto&&arquivos.visto)vistoUrl=await uploadFile(arquivos.visto,'visto')
+
   const dados={
     nome:v('a-nome'),
     nascimento:v('a-nasc'),
@@ -340,9 +385,11 @@ async function enviarCadastro(){
     passaporte_numero:temPassaporte?v('a-pass-num'):null,
     passaporte_validade:temPassaporte?v('a-pass-val')||null:null,
     passaporte_pais:temPassaporte?v('a-pass-pais'):null,
+    passaporte_anexo:passUrl||null,
     visto_numero:temVisto?v('a-visto-num'):null,
     visto_validade:temVisto?v('a-visto-val')||null:null,
     visto_pais:temVisto?v('a-visto-pais'):null,
+    visto_anexo:vistoUrl||null,
     febre_amarela:febreAmarela,
     ingles:idiomas.ingles,
     espanhol:idiomas.espanhol,
