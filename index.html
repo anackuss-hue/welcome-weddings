@@ -72,6 +72,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .upload-area input[type=file]{display:none}
 .anexo-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#fff;border:1px solid var(--border);border-radius:8px;margin-bottom:8px}
 .anexo-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.quad-opts{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.quad-opt{padding:6px 12px;border-radius:20px;border:1.5px solid var(--border);cursor:pointer;font-size:12px;font-weight:500;color:#888;transition:all .15s;background:#fff}
+.quad-opt.sel-sim{border-color:#2e7d32;background:#e8f5e9;color:#2e7d32;font-weight:600}
+.quad-opt.sel-nao{border-color:#c0392b;background:#fdecea;color:#c0392b;font-weight:600}
+.quad-opt.sel-nv{border-color:#888;background:#f0f0f0;color:#666;font-weight:600}
+.quad-opt.sel-na{border-color:#b8965a;background:var(--gold-pale);color:var(--gold);font-weight:600}
+.quad-item{margin-bottom:14px}
+.quad-item label{display:block;font-size:11px;font-weight:700;color:#666;margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase}
 .doc-alert-red{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:12px;font-size:11px;font-weight:700;background:#fdecea;color:#c0392b;border:1px solid #f5c6c6}
 .doc-alert-yellow{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:12px;font-size:11px;font-weight:700;background:#fff8e1;color:#e65100;border:1px solid #ffe082}
 .ro{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
@@ -776,6 +784,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <button class="atab" onclick="showHTab('hcomissao',this)"><span class="atab-long">05 · Comissão</span><span class="atab-short">Comissão</span></button>
       <button class="atab" onclick="showHTab('hhistorico',this)"><span class="atab-long">06 · Histórico</span><span class="atab-short">Histórico</span></button>
       <button class="atab" onclick="showHTab('hanexos',this)"><span class="atab-long">07 · Anexos</span><span class="atab-short">Anexos</span></button>
+      <button class="atab" onclick="showHTab('hpoliticas',this)"><span class="atab-long">08 · Políticas</span><span class="atab-short">Políticas</span></button>
     </div>
     <div class="atc active" id="atab-hgeral">
       <div class="g2">
@@ -823,19 +832,114 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div class="f"><label>Capacidade Máx. de Hóspedes</label><input id="h-cap-hospedes" placeholder="Ex: 500"></div>
         <div class="f"><label>Capacidade Máx. para Eventos</label><input id="h-cap-eventos" placeholder="Ex: 300"></div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:8px">
-        <div class="tr-row" onclick="tg('h-frigobar')"><div class="tr-track" id="track-h-frigobar"><div class="tr-thumb"></div></div><span class="tr-label">Frigobar com Bebidas</span></div>
-        <div class="tr-row" onclick="tg('h-room-service')"><div class="tr-track" id="track-h-room-service"><div class="tr-thumb"></div></div><span class="tr-label">Room Service</span></div>
-        <div class="tr-row" onclick="tg('h-bar-pago')"><div class="tr-track" id="track-h-bar-pago"><div class="tr-thumb"></div></div><span class="tr-label">Bar Pago</span></div>
-        <div class="tr-row" onclick="tg('h-rest-pago')"><div class="tr-track" id="track-h-rest-pago"><div class="tr-thumb"></div></div><span class="tr-label">Restaurante Pago</span></div>
-        <div class="tr-row" onclick="tg('h-kids')"><div class="tr-track" id="track-h-kids"><div class="tr-thumb"></div></div><span class="tr-label">Área Kids</span></div>
-        <div class="tr-row" onclick="tg('h-parque')"><div class="tr-track" id="track-h-parque"><div class="tr-thumb"></div></div><span class="tr-label">Parque Aquático</span></div>
-        <div class="tr-row" onclick="tg('h-pub')"><div class="tr-track" id="track-h-pub"><div class="tr-thumb"></div></div><span class="tr-label">Pub ou Disco</span></div>
-        <div class="tr-row" onclick="tg('h-cassino')"><div class="tr-track" id="track-h-cassino"><div class="tr-thumb"></div></div><span class="tr-label">Cassino</span></div>
-        <div class="tr-row" onclick="tg('h-spa')"><div class="tr-track" id="track-h-spa"><div class="tr-thumb"></div></div><span class="tr-label">Spa no Resort</span></div>
-        <div class="tr-row" onclick="tg('h-wifi')"><div class="tr-track" id="track-h-wifi"><div class="tr-thumb"></div></div><span class="tr-label">Wi-Fi</span></div>
-        <div class="tr-row" onclick="tg('h-criancas')"><div class="tr-track" id="track-h-criancas"><div class="tr-thumb"></div></div><span class="tr-label">Aceita Crianças</span></div>
-        <div class="tr-row" onclick="tg('h-pets')"><div class="tr-track" id="track-h-pets"><div class="tr-thumb"></div></div><span class="tr-label">Aceita Pets</span></div>
+
+      <div class="quad-item">
+        <label>Frigobar com Bebidas</label>
+        <div class="quad-opts" id="quad-frigobar">
+          <div class="quad-opt" onclick="selQuad('frigobar','sim')">✅ Sim</div>
+          <div class="quad-opt" onclick="selQuad('frigobar','nao')">❌ Não</div>
+          <div class="quad-opt" onclick="selQuad('frigobar','nv')">❓ Não verificado</div>
+          <div class="quad-opt" onclick="selQuad('frigobar','na')">— Não aplicável</div>
+        </div>
+      </div>
+      <div class="quad-item">
+        <label>Room Service</label>
+        <div class="quad-opts" id="quad-room-service">
+          <div class="quad-opt" onclick="selQuad('room-service','sim')">✅ Sim</div>
+          <div class="quad-opt" onclick="selQuad('room-service','nao')">❌ Não</div>
+          <div class="quad-opt" onclick="selQuad('room-service','nv')">❓ Não verificado</div>
+          <div class="quad-opt" onclick="selQuad('room-service','na')">— Não aplicável</div>
+        </div>
+      </div>
+      <div class="quad-item">
+        <label>Bar Pago</label>
+        <div class="quad-opts" id="quad-bar-pago">
+          <div class="quad-opt" onclick="selQuad('bar-pago','sim')">✅ Sim</div>
+          <div class="quad-opt" onclick="selQuad('bar-pago','nao')">❌ Não</div>
+          <div class="quad-opt" onclick="selQuad('bar-pago','nv')">❓ Não verificado</div>
+          <div class="quad-opt" onclick="selQuad('bar-pago','na')">— Não aplicável</div>
+        </div>
+      </div>
+      <div class="quad-item">
+        <label>Restaurante Pago</label>
+        <div class="quad-opts" id="quad-rest-pago">
+          <div class="quad-opt" onclick="selQuad('rest-pago','sim')">✅ Sim</div>
+          <div class="quad-opt" onclick="selQuad('rest-pago','nao')">❌ Não</div>
+          <div class="quad-opt" onclick="selQuad('rest-pago','nv')">❓ Não verificado</div>
+          <div class="quad-opt" onclick="selQuad('rest-pago','na')">— Não aplicável</div>
+        </div>
+      </div>
+      <div class="quad-item">
+        <label>Área Kids</label>
+        <div class="quad-opts" id="quad-kids">
+          <div class="quad-opt" onclick="selQuad('kids','sim')">✅ Sim</div>
+          <div class="quad-opt" onclick="selQuad('kids','nao')">❌ Não</div>
+          <div class="quad-opt" onclick="selQuad('kids','nv')">❓ Não verificado</div>
+          <div class="quad-opt" onclick="selQuad('kids','na')">— Não aplicável</div>
+        </div>
+      </div>
+      <div class="quad-item">
+        <label>Parque Aquático</label>
+        <div class="quad-opts" id="quad-parque">
+          <div class="quad-opt" onclick="selQuad('parque','sim')">✅ Sim</div>
+          <div class="quad-opt" onclick="selQuad('parque','nao')">❌ Não</div>
+          <div class="quad-opt" onclick="selQuad('parque','nv')">❓ Não verificado</div>
+          <div class="quad-opt" onclick="selQuad('parque','na')">— Não aplicável</div>
+        </div>
+      </div>
+      <div class="quad-item">
+        <label>Pub ou Disco</label>
+        <div class="quad-opts" id="quad-pub">
+          <div class="quad-opt" onclick="selQuad('pub','sim')">✅ Sim</div>
+          <div class="quad-opt" onclick="selQuad('pub','nao')">❌ Não</div>
+          <div class="quad-opt" onclick="selQuad('pub','nv')">❓ Não verificado</div>
+          <div class="quad-opt" onclick="selQuad('pub','na')">— Não aplicável</div>
+        </div>
+      </div>
+      <div class="quad-item">
+        <label>Cassino</label>
+        <div class="quad-opts" id="quad-cassino">
+          <div class="quad-opt" onclick="selQuad('cassino','sim')">✅ Sim</div>
+          <div class="quad-opt" onclick="selQuad('cassino','nao')">❌ Não</div>
+          <div class="quad-opt" onclick="selQuad('cassino','nv')">❓ Não verificado</div>
+          <div class="quad-opt" onclick="selQuad('cassino','na')">— Não aplicável</div>
+        </div>
+      </div>
+      <div class="quad-item">
+        <label>Spa no Resort</label>
+        <div class="quad-opts" id="quad-spa">
+          <div class="quad-opt" onclick="selQuad('spa','sim')">✅ Sim</div>
+          <div class="quad-opt" onclick="selQuad('spa','nao')">❌ Não</div>
+          <div class="quad-opt" onclick="selQuad('spa','nv')">❓ Não verificado</div>
+          <div class="quad-opt" onclick="selQuad('spa','na')">— Não aplicável</div>
+        </div>
+      </div>
+      <div class="quad-item">
+        <label>Wi-Fi</label>
+        <div class="quad-opts" id="quad-wifi">
+          <div class="quad-opt" onclick="selQuad('wifi','sim')">✅ Sim</div>
+          <div class="quad-opt" onclick="selQuad('wifi','nao')">❌ Não</div>
+          <div class="quad-opt" onclick="selQuad('wifi','nv')">❓ Não verificado</div>
+          <div class="quad-opt" onclick="selQuad('wifi','na')">— Não aplicável</div>
+        </div>
+      </div>
+      <div class="quad-item">
+        <label>Aceita Crianças</label>
+        <div class="quad-opts" id="quad-criancas">
+          <div class="quad-opt" onclick="selQuad('criancas','sim')">✅ Sim</div>
+          <div class="quad-opt" onclick="selQuad('criancas','nao')">❌ Não</div>
+          <div class="quad-opt" onclick="selQuad('criancas','nv')">❓ Não verificado</div>
+          <div class="quad-opt" onclick="selQuad('criancas','na')">— Não aplicável</div>
+        </div>
+      </div>
+      <div class="quad-item">
+        <label>Aceita Pets</label>
+        <div class="quad-opts" id="quad-pets">
+          <div class="quad-opt" onclick="selQuad('pets','sim')">✅ Sim</div>
+          <div class="quad-opt" onclick="selQuad('pets','nao')">❌ Não</div>
+          <div class="quad-opt" onclick="selQuad('pets','nv')">❓ Não verificado</div>
+          <div class="quad-opt" onclick="selQuad('pets','na')">— Não aplicável</div>
+        </div>
       </div>
       <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--gold-border)">
         <div class="f"><label>Ambiente</label>
@@ -903,6 +1007,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     </div>
     <div class="atc" id="atab-hhistorico"><div id="hotel-historico-content"><div class="ld">Carregando...</div></div></div>
     <div class="atc" id="atab-hanexos"><div id="anexos-h-content"></div></div>
+    <div class="atc" id="atab-hpoliticas">
+      <div style="text-align:center;padding:60px 20px">
+        <div style="font-size:48px;margin-bottom:16px">🚧</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold);margin-bottom:8px">Em Construção</div>
+        <div style="font-size:14px;color:var(--muted)">Esta seção está sendo desenvolvida</div>
+      </div>
+    </div>
     <div class="mf">
       <button class="btn bo" onclick="closeModal('modal-hotel')">Cancelar</button>
       <button class="btn bg" id="btn-sh" onclick="salvarHotel()">Salvar</button>
@@ -1281,6 +1392,37 @@ function closeFilterDrawer(tipo){
 function tg(id){tgStates[id]=!tgStates[id];const t=document.getElementById('track-'+id);if(t)t.classList.toggle('on',tgStates[id])}
 function setTg(id,val){tgStates[id]=!!val;const t=document.getElementById('track-'+id);if(t)t.classList.toggle('on',!!val)}
 function getTg(id){return!!tgStates[id]}
+
+// ── QUAD OPTS (Sim/Não/Não verificado/Não aplicável)
+let quadStates={}
+function selQuad(fid,val){
+  quadStates[fid]=val
+  const container=document.getElementById('quad-'+fid);if(!container)return
+  container.querySelectorAll('.quad-opt').forEach(el=>{
+    el.className='quad-opt'
+    const v=el.onclick?.toString().match(/'(\w+)'\)$/)?.[1]||el.getAttribute('onclick')?.match(/'([^']+)'\)$/)?.[1]
+    // match pelo texto
+  })
+  const opts=container.querySelectorAll('.quad-opt')
+  const map={sim:0,nao:1,nv:2,na:3}
+  opts.forEach((el,i)=>{
+    el.className='quad-opt'
+    if(i===map[val])el.className='quad-opt sel-'+val
+  })
+}
+function getQuad(fid){return quadStates[fid]||null}
+function setQuad(fid,val){
+  if(!val)return
+  quadStates[fid]=val
+  const container=document.getElementById('quad-'+fid);if(!container)return
+  const opts=container.querySelectorAll('.quad-opt')
+  const map={sim:0,nao:1,nv:2,na:3}
+  opts.forEach((el,i)=>{
+    el.className='quad-opt'
+    if(i===map[val])el.className='quad-opt sel-'+val
+  })
+}
+const QUAD_CAMPOS=['frigobar','room-service','bar-pago','rest-pago','kids','parque','pub','cassino','spa','wifi','criancas','pets']
 
 // ── IDIOMAS
 function togIdioma(l){tgStates['a-'+l]=!tgStates['a-'+l];document.getElementById('card-'+l).classList.toggle('on',tgStates['a-'+l])}
@@ -1837,7 +1979,7 @@ function renderHoteis(){
     const mDist=!distMax||!h.distancia_aeroporto||(parseInt(h.distancia_aeroporto)<=parseInt(distMax))
     const mJaFiz=!fI('fh-ja-fizemos')||(h._num_casamentos>0||h.ja_fizemos_casamento)
     const mNaoFiz=!fI('fh-nao-fizemos')||(!h._num_casamentos&&!h.ja_fizemos_casamento)
-    return ms&&mp&&mr&&mt&&ma&&mAcom&&mdiaria&&mReg&&mDist&&mJaFiz&&mNaoFiz&&(!fI('fh-favorito')||h.favorito)&&(!fI('fh-indicamos')||['ja_indicamos','nao_indicamos'].includes(h.status_indicacao))&&(!fI('fh-blacklist')||h.blacklist_local)&&(!fI('fh-kids')||h.aceita_criancas)&&(!fI('fh-pets')||h.aceita_pets)&&(!fI('fh-spa')||h.spa)&&(!fI('fh-cassino')||h.cassino)&&(!fI('fh-parque')||h.parque_aquatico)&&(!fI('fh-voo-direto')||h.voo_direto)&&(!fI('fh-hosp-local')||h.tem_hospedagem)&&(!fI('fh-visto')||h.visto_necessario)
+    return ms&&mp&&mr&&mt&&ma&&mAcom&&mdiaria&&mReg&&mDist&&mJaFiz&&mNaoFiz&&(!fI('fh-favorito')||h.favorito)&&(!fI('fh-indicamos')||['ja_indicamos','nao_indicamos'].includes(h.status_indicacao))&&(!fI('fh-blacklist')||h.blacklist_local)&&(!fI('fh-kids')||h.q_criancas==='sim')&&(!fI('fh-pets')||h.q_pets==='sim')&&(!fI('fh-spa')||h.q_spa==='sim')&&(!fI('fh-cassino')||h.q_cassino==='sim')&&(!fI('fh-parque')||h.q_parque==='sim')&&(!fI('fh-voo-direto')||h.voo_direto)&&(!fI('fh-hosp-local')||h.tem_hospedagem)&&(!fI('fh-visto')||h.visto_necessario)
   })
   document.getElementById('hoteis-count').textContent=hoteis.length+' local(is) cadastrado(s)'
   if(!filtered.length){grid.innerHTML='<div class="em"><div class="em-i">🏨</div><div class="em-t">Nenhum hotel encontrado</div></div>';return}
@@ -1846,7 +1988,7 @@ function renderHoteis(){
       <div style="min-width:0;flex:1;margin-right:8px"><div style="font-weight:600;font-size:15px;font-family:'Cormorant Garamond',serif;margin-bottom:2px">${h.favorito?'⭐ ':' '}${h.nome}</div><div style="font-size:12px;color:#888">📍 ${[h.cidade,h.pais,h.regiao].filter(Boolean).join(' · ')}</div></div>
       ${h._num_casamentos?`<span style="font-size:11px;font-weight:600;color:var(--gold);background:var(--gold-pale);padding:3px 8px;border-radius:20px;border:1px solid var(--gold-border);white-space:nowrap;flex-shrink:0">💍 ${h._num_casamentos} casam.</span>`:''}
     </div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">${h.blacklist_local?'<span class="tag tr">🚫 Blacklist</span>':''}${h.status_indicacao==='ja_indicamos'?'<span class="tag tgr">✅ Indicamos</span>':h.status_indicacao==='nao_indicamos'?'<span class="tag tgr">⭐ Nunca trab. — Indicamos</span>':h.status_indicacao==='ja_nao_indicamos'?'<span class="tag tr">⚠️ Não indicamos</span>':h.status_indicacao==='nao_nao_indicamos'?'<span class="tag tr">🚫 Não indicamos</span>':''}${h.ambiente?`<span class="tag tb">${h.ambiente}</span>`:''}${h.tipo?`<span class="tag tg">${h.tipo}</span>`:''}${h.regime_select?`<span class="tag tgy">${h.regime_select}</span>`:''}${h.spa?'<span class="tag tgr">💆 Spa</span>':''}${h.aceita_criancas?'<span class="tag tgr">👶 Kids</span>':''}${h.parque_aquatico?'<span class="tag tb">🌊 Aquapark</span>':''}${h.cassino?'<span class="tag tgy">🎰 Cassino</span>':''}${h.visto_necessario?'<span class="tag tr">🛂 Visto</span>':''}${h.distancia_aeroporto?`<span class="tag tgy">✈️ até ${h.distancia_aeroporto}km</span>`:''}</div>${h.valor_casamento?`<div style="font-size:12px;color:#888;margin-bottom:10px">💍 ${h.valor_casamento}</div>`:''}<div style="display:flex;gap:8px"><button class="btn bo" style="flex:1" onclick="openHotel('${h.id}')">${window._podeEditarLocais?"Ver / Editar":"👁️ Visualizar"}</button><button class="btn bd" onclick="deleteHotel('${h.id}')">✕</button></div></div>`).join('')
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">${h.blacklist_local?'<span class="tag tr">🚫 Blacklist</span>':''}${h.status_indicacao==='ja_indicamos'?'<span class="tag tgr">✅ Indicamos</span>':h.status_indicacao==='nao_indicamos'?'<span class="tag tgr">⭐ Nunca trab. — Indicamos</span>':h.status_indicacao==='ja_nao_indicamos'?'<span class="tag tr">⚠️ Não indicamos</span>':h.status_indicacao==='nao_nao_indicamos'?'<span class="tag tr">🚫 Não indicamos</span>':''}${h.ambiente?`<span class="tag tb">${h.ambiente}</span>`:''}${h.tipo?`<span class="tag tg">${h.tipo}</span>`:''}${h.regime_select?`<span class="tag tgy">${h.regime_select}</span>`:''}${h.q_spa==='sim'?'<span class="tag tgr">💆 Spa</span>':''}${h.q_criancas==='sim'?'<span class="tag tgr">👶 Kids</span>':''}${h.q_parque==='sim'?'<span class="tag tb">🌊 Aquapark</span>':''}${h.q_cassino==='sim'?'<span class="tag tgy">🎰 Cassino</span>':''}${h.visto_necessario?'<span class="tag tr">🛂 Visto</span>':''}${h.distancia_aeroporto?`<span class="tag tgy">✈️ até ${h.distancia_aeroporto}km</span>`:''}</div>${h.valor_casamento?`<div style="font-size:12px;color:#888;margin-bottom:10px">💍 ${h.valor_casamento}</div>`:''}<div style="display:flex;gap:8px"><button class="btn bo" style="flex:1" onclick="openHotel('${h.id}')">${window._podeEditarLocais?"Ver / Editar":"👁️ Visualizar"}</button><button class="btn bd" onclick="deleteHotel('${h.id}')">✕</button></div></div>`).join('')
 }
 function openNovoHotel(){
   if(!window._podeEditarLocais){alert('Você não tem permissão para cadastrar locais.');return}
@@ -1881,6 +2023,7 @@ function clearHForm(){
   document.getElementById('h-regiao').value='';document.getElementById('h-tipo').value='';const hrs=document.getElementById('h-regime-select');if(hrs)hrs.value='';const hda=document.getElementById('h-distancia-aero');if(hda)hda.value=''
   const si=document.getElementById('h-status-indicacao');if(si)si.value=''
   ;['h-frigobar','h-room-service','h-bar-pago','h-rest-pago','h-kids','h-parque','h-pub','h-cassino','h-spa','h-wifi','h-criancas','h-pets','h-paga-com','h-blacklist-local','h-voo-direto','h-visto','h-favorito','h-ja-fizemos'].forEach(id=>setTg(id,false))
+  QUAD_CAMPOS.forEach(fid=>{quadStates[fid]=null;const c=document.getElementById('quad-'+fid);if(c)c.querySelectorAll('.quad-opt').forEach(el=>el.className='quad-opt')})
   setTg('h-hospedagem',true);document.getElementById('h-hospedagem-section').style.display='none'
   const ha=document.getElementById('h-ambiente');if(ha)ha.value=''
 }
@@ -1897,7 +2040,7 @@ function fillHForm(h){
   if(h.regiao)document.getElementById('h-regiao').value=h.regiao
   if(h.tipo)document.getElementById('h-tipo').value=h.tipo
   const si=document.getElementById('h-status-indicacao');if(si&&h.status_indicacao)si.value=h.status_indicacao
-  setTg('h-frigobar',h.frigobar);setTg('h-room-service',h.room_service);setTg('h-bar-pago',h.bar_pago);setTg('h-rest-pago',h.restaurante_pago);setTg('h-kids',h.area_kids);setTg('h-parque',h.parque_aquatico);setTg('h-pub',h.pub_disco);setTg('h-cassino',h.cassino);setTg('h-spa',h.spa);setTg('h-wifi',h.wifi);setTg('h-criancas',h.aceita_criancas);setTg('h-pets',h.aceita_pets);setTg('h-paga-com',h.paga_comissao);setTg('h-blacklist-local',h.blacklist_local);setTg('h-voo-direto',h.voo_direto);setTg('h-visto',h.visto_necessario);setTg('h-favorito',h.favorito);setTg('h-ja-fizemos',h.ja_fizemos_casamento||(h._num_casamentos>0));const _hrsf=document.getElementById('h-regime-select');if(_hrsf&&h.regime_select)_hrsf.value=h.regime_select;const _hdaf=document.getElementById('h-distancia-aero');if(_hdaf&&h.distancia_aeroporto)_hdaf.value=h.distancia_aeroporto
+  setTg('h-paga-com',h.paga_comissao);const qmap={frigobar:h.q_frigobar,'room-service':h.q_room_service,'bar-pago':h.q_bar_pago,'rest-pago':h.q_rest_pago,kids:h.q_kids,parque:h.q_parque,pub:h.q_pub,cassino:h.q_cassino,spa:h.q_spa,wifi:h.q_wifi,criancas:h.q_criancas,pets:h.q_pets};Object.entries(qmap).forEach(([fid,val])=>{if(val)setQuad(fid,val)});setTg('h-blacklist-local',h.blacklist_local);setTg('h-voo-direto',h.voo_direto);setTg('h-visto',h.visto_necessario);setTg('h-favorito',h.favorito);setTg('h-ja-fizemos',h.ja_fizemos_casamento||(h._num_casamentos>0));const _hrsf=document.getElementById('h-regime-select');if(_hrsf&&h.regime_select)_hrsf.value=h.regime_select;const _hdaf=document.getElementById('h-distancia-aero');if(_hdaf&&h.distancia_aeroporto)_hdaf.value=h.distancia_aeroporto
   const ha=document.getElementById('h-ambiente');if(ha&&h.ambiente)ha.value=h.ambiente
   const temHosp=h.tem_hospedagem!==false;setTg('h-hospedagem',temHosp);document.getElementById('h-hospedagem-section').style.display=temHosp?'none':'block'
   if(h.ultima_atualizacao){['hgeral','hespec','hvalores','hcasamento','hcomissao'].forEach(t=>{const el=document.getElementById('h-atualizacao-'+t);if(el)el.value=h.ultima_atualizacao})}
@@ -1905,7 +2048,7 @@ function fillHForm(h){
 function getHData(){
   const v=id=>document.getElementById(id)?.value||''
   const _atu=['hgeral','hespec','hvalores','hcasamento','hcomissao'].map(t=>v('h-atualizacao-'+t)).filter(Boolean);const _atuDate=_atu[0]||null
-  return{nome:v('h-nome'),representante_nome:v('h-rep-nome'),representante_telefone:v('h-rep-tel'),email_representante:v('h-email-rep'),regiao:v('h-regiao'),pais:v('h-pais'),cidade:v('h-cidade'),site:v('h-site'),email:v('h-email'),instagram:v('h-instagram'),tipo:v('h-tipo'),num_acomodacoes:v('h-acomodacoes'),ano_construcao:v('h-ano'),capacidade_hospedes:v('h-cap-hospedes')||null,capacidade_eventos:v('h-cap-eventos')||null,restaurantes_total:v('h-rest-total'),bares_total:v('h-bares-total'),restaurantes_buffet:v('h-rest-buffet'),restaurantes_carte:v('h-rest-carte'),valor_diaria:v('h-diaria'),valor_sinal:v('h-sinal'),valor_bloqueio:v('h-bloqueio'),valor_casamento:v('h-val-casamento'),valor_luau:v('h-luau'),factsheet:v('h-factsheet'),tour_virtual:v('h-tour'),espacos:v('h-espacos'),mapa:v('h-mapa'),percentual:v('h-percentual'),comissao_a_pagar:v('h-a-pagar'),email_cobranca:v('h-email-cobr'),paga_comissao_valor:v('h-comissao-valor'),status_indicacao:v('h-status-indicacao')||null,motivo_nao_indicacao:v('h-motivo-ind'),hoteis_regiao:v('h-hoteis-regiao'),ultima_atualizacao:_atuDate,tem_hospedagem:getTg('h-hospedagem'),frigobar:getTg('h-frigobar'),room_service:getTg('h-room-service'),bar_pago:getTg('h-bar-pago'),restaurante_pago:getTg('h-rest-pago'),area_kids:getTg('h-kids'),parque_aquatico:getTg('h-parque'),pub_disco:getTg('h-pub'),cassino:getTg('h-cassino'),spa:getTg('h-spa'),wifi:getTg('h-wifi'),aceita_criancas:getTg('h-criancas'),aceita_pets:getTg('h-pets'),paga_comissao:getTg('h-paga-com'),blacklist_local:getTg('h-blacklist-local'),ambiente:document.getElementById('h-ambiente')?.value||null,voo_direto:getTg('h-voo-direto'),visto_necessario:getTg('h-visto'),favorito:getTg('h-favorito'),ja_fizemos_casamento:getTg('h-ja-fizemos'),regime_select:document.getElementById('h-regime-select')?.value||null,distancia_aeroporto:document.getElementById('h-distancia-aero')?.value||null}
+  return{nome:v('h-nome'),representante_nome:v('h-rep-nome'),representante_telefone:v('h-rep-tel'),email_representante:v('h-email-rep'),regiao:v('h-regiao'),pais:v('h-pais'),cidade:v('h-cidade'),site:v('h-site'),email:v('h-email'),instagram:v('h-instagram'),tipo:v('h-tipo'),num_acomodacoes:v('h-acomodacoes'),ano_construcao:v('h-ano'),capacidade_hospedes:v('h-cap-hospedes')||null,capacidade_eventos:v('h-cap-eventos')||null,restaurantes_total:v('h-rest-total'),bares_total:v('h-bares-total'),restaurantes_buffet:v('h-rest-buffet'),restaurantes_carte:v('h-rest-carte'),valor_diaria:v('h-diaria'),valor_sinal:v('h-sinal'),valor_bloqueio:v('h-bloqueio'),valor_casamento:v('h-val-casamento'),valor_luau:v('h-luau'),factsheet:v('h-factsheet'),tour_virtual:v('h-tour'),espacos:v('h-espacos'),mapa:v('h-mapa'),percentual:v('h-percentual'),comissao_a_pagar:v('h-a-pagar'),email_cobranca:v('h-email-cobr'),paga_comissao_valor:v('h-comissao-valor'),status_indicacao:v('h-status-indicacao')||null,motivo_nao_indicacao:v('h-motivo-ind'),hoteis_regiao:v('h-hoteis-regiao'),ultima_atualizacao:_atuDate,tem_hospedagem:getTg('h-hospedagem'),q_frigobar:getQuad('frigobar'),q_room_service:getQuad('room-service'),q_bar_pago:getQuad('bar-pago'),q_rest_pago:getQuad('rest-pago'),q_kids:getQuad('kids'),q_parque:getQuad('parque'),q_pub:getQuad('pub'),q_cassino:getQuad('cassino'),q_spa:getQuad('spa'),q_wifi:getQuad('wifi'),q_criancas:getQuad('criancas'),q_pets:getQuad('pets'),paga_comissao:getTg('h-paga-com'),blacklist_local:getTg('h-blacklist-local'),ambiente:document.getElementById('h-ambiente')?.value||null,voo_direto:getTg('h-voo-direto'),visto_necessario:getTg('h-visto'),favorito:getTg('h-favorito'),ja_fizemos_casamento:getTg('h-ja-fizemos'),regime_select:document.getElementById('h-regime-select')?.value||null,distancia_aeroporto:document.getElementById('h-distancia-aero')?.value||null}
 }
 async function salvarHotel(){
   const btn=document.getElementById('btn-sh');btn.textContent='Salvando...';btn.disabled=true
