@@ -575,7 +575,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div class="f"><label>Destino</label><input id="c-destino"></div>
         <div class="f"><label>Data do Casamento</label><input id="c-data" type="date"></div>
         <div class="f"><label>Horário da Cerimônia</label><input id="c-horario" type="time"></div>
-        <div class="f"><label>Hotel</label><select id="c-hotel" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none"><option value="">Selecionar local...</option></select></div>
+        <div class="f"><label>Local</label><select id="c-hotel" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none"><option value="">Selecionar local...</option></select></div>
         <div class="f"><label>Pacote com o Hotel</label><input id="c-pacote"></div>
         <div class="f"><label>Status</label><select id="c-status"><option>Em andamento</option><option>Confirmado</option><option>Concluído</option><option>Cancelado</option></select></div>
         <div class="f"><label>Extra</label><input id="c-extra"></div>
@@ -1906,9 +1906,9 @@ async function renderHistorico(){
 async function loadHoteis(){
   const{data}=await sb.from('locais').select('*').order('nome')
   if(data){
-    const{data:chs}=await sb.from('casamento_hoteis').select('hotel_id')
+    const{data:chs}=await sb.from('casamentos').select('local_id').not('local_id','is',null)
     const contagem={}
-    ;(chs||[]).forEach(c=>{contagem[c.hotel_id]=(contagem[c.hotel_id]||0)+1})
+    ;(chs||[]).forEach(c=>{if(c.local_id)contagem[c.local_id]=(contagem[c.local_id]||0)+1})
     data.forEach(h=>{h._num_casamentos=contagem[h.id]||0})
   }
   hoteis=data||[];renderHoteis()
@@ -2077,23 +2077,22 @@ async function renderHotelHistorico(){
   const con=document.getElementById('hotel-historico-content');if(!con)return
   if(!hotelAtual?.id){con.innerHTML='<div class="em"><div class="em-t">Salve o local primeiro</div></div>';return}
   con.innerHTML='<div class="ld">Carregando...</div>'
-  const{data}=await sb.from('casamento_hoteis').select('*,casamento:casamentos(id,nome,destino,plan_data,status)').eq('hotel_id',hotelAtual.id).order('created_at',{ascending:false})
+  const{data}=await sb.from('casamentos').select('id,nome,destino,plan_data,status').eq('local_id',hotelAtual.id).order('plan_data',{ascending:false})
   if(!data||!data.length){con.innerHTML='<div class="em" style="padding:40px"><div class="em-i">💍</div><div class="em-t">Nenhum casamento registrado neste local ainda</div></div>';return}
-  const sc=s=>s==='Confirmado'?'tgr':s==='Cancelado'?'tr':s==='Concluído'?'tg':'tgy'
   con.innerHTML=`<div style="background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:10px;padding:14px;margin-bottom:18px;display:flex;align-items:center;gap:12px">
     <div style="font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:600;color:var(--gold)">${data.length}</div>
     <div><div style="font-size:13px;font-weight:600;color:var(--gold)">casamento(s) realizados</div><div style="font-size:12px;color:#888">neste local</div></div>
   </div>
-  ${data.map(e=>`<div class="hist" style="flex-direction:column;align-items:flex-start;gap:8px">
+  ${data.map(c=>`<div class="hist" style="flex-direction:column;align-items:flex-start;gap:8px">
     <div style="display:flex;justify-content:space-between;align-items:center;width:100%;flex-wrap:wrap;gap:8px">
       <div style="display:flex;align-items:center;gap:10px">
         <div class="hdot"></div>
         <div>
-          <div style="font-weight:600;font-size:14px;font-family:'Cormorant Garamond',serif">${e.casamento?.nome||'—'}</div>
-          <div style="font-size:12px;color:#888;margin-top:2px">${e.casamento?.plan_data?'📅 '+fmtDate(e.casamento.plan_data):''}</div>
+          <div style="font-weight:600;font-size:14px;font-family:'Cormorant Garamond',serif">${c.nome||'—'}</div>
+          <div style="font-size:12px;color:#888;margin-top:2px">${c.plan_data?'📅 '+fmtDate(c.plan_data):''}${c.destino?' · '+c.destino:''}</div>
         </div>
       </div>
-      <span class="tag ${sc(e.casamento?.status)}">${e.casamento?.status||'Em andamento'}</span>
+      <span class="tag ${c.status==='Confirmado'?'tgr':c.status==='Cancelado'?'tr':c.status==='Concluído'?'tg':'tgy'}">${c.status||'Em andamento'}</span>
     </div>
   </div>`).join('')}`
 }
