@@ -496,43 +496,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     </div>
     <!-- Board -->
     <div class="kb-board" id="kb-board"></div>
-    <!-- Formulários internos -->
-    <div class="form-section">
-      <div class="card">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--gold-border)">
-          <div style="width:34px;height:34px;border-radius:8px;background:#e3f2fd;display:flex;align-items:center;justify-content:center;font-size:18px">👥</div>
-          <div><div style="font-size:14px;font-weight:600">Atendimento a Convidado</div><div style="font-size:11px;color:var(--muted)">Solicitação interna</div></div>
-        </div>
-        <div class="f"><label>Casamento</label>
-          <select id="form-cong-casamento" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none"><option value="">Selecionar casamento...</option></select>
-        </div>
-        <div class="f"><label>Nome do Convidado</label><input id="form-cong-nome" placeholder="Ex: Carlos Mendes"></div>
-        <div class="f"><label>Telefone</label><input id="form-cong-tel" placeholder="+55 (00) 00000-0000"></div>
-        <div class="f"><label>Responsável</label>
-          <select id="form-cong-resp" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
-            <option value="rapha">Rapha</option><option value="mari">Mari</option><option value="juliana">Juliana</option>
-          </select>
-        </div>
-        <div class="f"><label>Solicitação</label><textarea id="form-cong-sol" placeholder="Descreva a solicitação do convidado..."></textarea></div>
-        <button class="btn bg" style="width:100%" onclick="criarSolicitacaoKanban('convidado')">Criar solicitação</button>
-      </div>
-      <div class="card">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--gold-border)">
-          <div style="width:34px;height:34px;border-radius:8px;background:#e8f5e9;display:flex;align-items:center;justify-content:center;font-size:18px">🗺️</div>
-          <div><div style="font-size:14px;font-weight:600">Solicitação de Passeio</div><div style="font-size:11px;color:var(--muted)">Solicitação interna</div></div>
-        </div>
-        <div class="f"><label>Casamento</label>
-          <select id="form-pass-casamento" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none"><option value="">Selecionar casamento...</option></select>
-        </div>
-        <div class="f"><label>Responsável</label>
-          <select id="form-pass-resp" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
-            <option value="rapha">Rapha</option><option value="mari">Mari</option><option value="juliana">Juliana</option>
-          </select>
-        </div>
-        <div class="f"><label>Solicitação</label><textarea id="form-pass-sol" style="min-height:120px" placeholder="Descreva o passeio solicitado..."></textarea></div>
-        <button class="btn bg" style="width:100%" onclick="criarSolicitacaoKanban('passeio')">Criar solicitação</button>
-      </div>
-    </div>
   </div>
 
   <!-- USUARIOS PAGE -->
