@@ -1909,9 +1909,22 @@ async function salvarHotel(){
   const btn=document.getElementById('btn-sh');btn.textContent='Salvando...';btn.disabled=true
   const data=getHData()
   if(!data.nome){alert('Preencha o nome do hotel!');btn.textContent='Salvar';btn.disabled=false;return}
-  if(hotelAtual){await sb.from('locais').update(data).eq('id',hotelAtual.id);await registrarLog('editou','locais',hotelAtual.id,data.nome,null,null)}
-  else{const{data:r}=await sb.from('locais').insert(data).select();await registrarLog('criou','locais',r?.[0]?.id,data.nome,null,null)}
-  btn.textContent='Salvar';btn.disabled=false;closeModal('modal-hotel');loadHoteis()
+  try{
+    if(hotelAtual){
+      const{error}=await sb.from('locais').update(data).eq('id',hotelAtual.id)
+      if(error)throw error
+      await registrarLog('editou','locais',hotelAtual.id,data.nome,null,null)
+    }else{
+      const{data:r,error}=await sb.from('locais').insert(data).select()
+      if(error)throw error
+      await registrarLog('criou','locais',r?.[0]?.id,data.nome,null,null)
+    }
+    btn.textContent='Salvar';btn.disabled=false;closeModal('modal-hotel');loadHoteis()
+  }catch(e){
+    console.error('Erro ao salvar local:',e)
+    alert('Erro ao salvar: '+( e.message||JSON.stringify(e)))
+    btn.textContent='Salvar';btn.disabled=false
+  }
 }
 async function deleteHotel(id){if(!confirm('Remover?'))return;await sb.from('locais').delete().eq('id',id);loadHoteis()}
 
