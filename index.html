@@ -1814,7 +1814,7 @@ function renderHoteis(){
   const regioes=[fI('fh-reg-caribe')&&'Caribe',fI('fh-reg-sul')&&'América do Sul',fI('fh-reg-europa')&&'Europa',fI('fh-reg-asia')&&'Ásia'].filter(Boolean)
   const tipos=[fI('fh-tipo-resort')&&'Resort',fI('fh-tipo-boutique')&&'Boutique',fI('fh-tipo-pousada')&&'Pousada',fI('fh-tipo-urbano')&&'Hotel Urbano',fI('fh-tipo-fazenda')&&'Fazenda/Vinhedo'].filter(Boolean)
   const ambientes=[fI('fh-amb-praia')&&'Praia',fI('fh-amb-montanha')&&'Montanha',fI('fh-amb-campo')&&'Campo / Fazenda',fI('fh-amb-cidade')&&'Cidade',fI('fh-amb-lago')&&'Lago / Rio',fI('fh-amb-vinhedo')&&'Vinhedo'].filter(Boolean)
-  const maxAcom=parseInt(document.getElementById('slider-acom')?.value||500)
+  const maxAcom=parseInt(document.getElementById('slider-acom')?.value||3000)
   const minDiaria=parseInt(document.getElementById('slider-diaria-min')?.value||100)
   const maxDiaria=parseInt(document.getElementById('slider-diaria-max')?.value||2000)
   const anyActive=[s,pais,cidade,moeda,regioes.length,tipos.length,ambientes.length,paisChips.length,fI('fh-kids'),fI('fh-pets'),fI('fh-spa'),fI('fh-cassino'),fI('fh-parque'),maxAcom<3000].some(Boolean)
