@@ -1,1 +1,320 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome Weddings — Solicitações de Viagem</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#b8965a;--gold-light:#d4af7a;--gold-pale:#fdf8f0;--gold-border:#f0e8d0;--white:#fff;--bg:#f7f4ef;--text:#1a1a1a;--muted:#888;--border:#e8e0d4;--red:#c0392b;--green:#2e7d32}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.header{background:var(--white);border-bottom:1px solid var(--border);padding:20px 40px;position:sticky;top:0;z-index:50}
+.logo .w1{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--gold);letter-spacing:3px;text-transform:uppercase}
+.logo .w2{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--text);letter-spacing:3px;text-transform:uppercase}
+.logo .ws{font-size:9px;letter-spacing:2px;color:var(--muted);margin-top:2px;text-transform:uppercase}
+.main{max-width:580px;margin:0 auto;padding:48px 24px}
+.page{display:none}.page.active{display:block}
 
+/* ESCOLHA RESPONSÁVEL */
+.escolha-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:var(--text);margin-bottom:8px;text-align:center}
+.escolha-sub{font-size:14px;color:var(--muted);text-align:center;margin-bottom:36px;line-height:1.6}
+.resp-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.resp-card{background:var(--white);border:1.5px solid var(--border);border-radius:16px;padding:28px 20px;cursor:pointer;text-align:center;transition:all .2s}
+.resp-card:hover{border-color:var(--gold);background:var(--gold-pale);transform:translateY(-2px);box-shadow:0 8px 24px rgba(184,150,90,.12)}
+.resp-avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:28px;color:#fff;font-weight:600;margin:0 auto 14px}
+.resp-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--text);margin-bottom:6px}
+.resp-desc{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* ESCOLHA TIPO (Rapha) */
+.tipo-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tipo-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:22px 16px;cursor:pointer;text-align:center;transition:all .2s}
+.tipo-card:hover{border-color:var(--gold);background:var(--gold-pale);transform:translateY(-2px)}
+.tipo-icon{font-size:36px;margin-bottom:10px}
+.tipo-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:5px}
+.tipo-desc{font-size:11px;color:var(--muted);line-height:1.5}
+
+/* FORMULÁRIO */
+.form-header{display:flex;align-items:center;gap:12px;margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--gold-border)}
+.form-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.form-title{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600}
+.form-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.form-back{background:none;border:none;cursor:pointer;font-size:13px;color:var(--gold);font-family:'DM Sans',sans-serif;font-weight:600;display:flex;align-items:center;gap:5px;padding:0;margin-bottom:18px}
+.f{margin-bottom:15px}
+.f label{display:block;font-size:11px;font-weight:700;color:#666;margin-bottom:5px;letter-spacing:.5px;text-transform:uppercase}
+.f input,.f select,.f textarea{width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border .15s;background:#fff;color:var(--text)}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--gold)}
+.f textarea{resize:vertical;min-height:90px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* Cards de serviços (Rapha) */
+.servicos-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:4px}
+.serv-card{padding:12px 8px;border-radius:10px;border:1.5px solid var(--border);cursor:pointer;text-align:center;transition:all .15s;background:#fff}
+.serv-card.sel{border-color:var(--gold);background:var(--gold-pale)}
+.serv-card .serv-icon{font-size:20px;margin-bottom:4px}
+.serv-card .serv-label{font-size:11px;font-weight:600;color:#888}
+.serv-card.sel .serv-label{color:var(--gold)}
+
+/* Urgência (Mari) */
+.urgencia-opts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:4px}
+.urg-opt{padding:12px 8px;border-radius:10px;border:1.5px solid var(--border);cursor:pointer;text-align:center;transition:all .15s;background:#fff}
+.urg-opt .urg-icon{font-size:22px;margin-bottom:5px}
+.urg-opt .urg-label{font-size:12px;font-weight:700;color:#888}
+.urg-opt.sel-alta{border-color:#c0392b;background:#fdecea}.urg-opt.sel-alta .urg-label{color:#c0392b}
+.urg-opt.sel-media{border-color:#e65100;background:#fff3e0}.urg-opt.sel-media .urg-label{color:#e65100}
+.urg-opt.sel-baixa{border-color:#2e7d32;background:#e8f5e9}.urg-opt.sel-baixa .urg-label{color:#2e7d32}
+
+.btn-enviar{width:100%;padding:15px;border-radius:10px;background:var(--gold);color:#fff;border:none;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;transition:background .15s}
+.btn-enviar:hover{background:var(--gold-light)}
+.btn-enviar:disabled{opacity:.6;cursor:not-allowed}
+
+/* Sucesso */
+.sucesso{text-align:center;padding:40px 20px}
+.sucesso-icon{font-size:56px;margin-bottom:20px}
+.sucesso-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:var(--gold);margin-bottom:10px}
+.sucesso-sub{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:28px}
+.btn-nova{background:none;border:1.5px solid var(--gold);color:var(--gold);padding:12px 28px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+.btn-nova:hover{background:var(--gold-pale)}
+
+@media(max-width:480px){
+  .header{padding:16px 20px}
+  .main{padding:28px 16px}
+  .resp-cards{grid-template-columns:1fr}
+  .tipo-cards{grid-template-columns:1fr}
+  .g2{grid-template-columns:1fr}
+  .servicos-grid{grid-template-columns:1fr 1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="w1">Welcome</div>
+    <div class="w2">Weddings</div>
+    <div class="ws">Solicitações de Viagem</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- TELA 1: Escolha o responsável -->
+  <div class="page active" id="page-responsavel">
+    <div class="escolha-title">Olá! Como podemos ajudar?</div>
+    <div class="escolha-sub">Selecione com quem você precisa falar</div>
+    <div class="resp-cards">
+      <div class="resp-card" onclick="escolherResp('rapha')">
+        <div class="resp-avatar">R</div>
+        <div class="resp-name">Rapha</div>
+        <div class="resp-desc">Viagens de assessoras, atendimento a convidados e passeios</div>
+      </div>
+      <div class="resp-card" onclick="escolherResp('mari')">
+        <div class="resp-avatar">M</div>
+        <div class="resp-name">Mari</div>
+        <div class="resp-desc">Solicitações de operacional</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TELA 2a: Escolha o tipo (só Rapha) -->
+  <div class="page" id="page-tipo-rapha">
+    <button class="form-back" onclick="showPage('page-responsavel')">← Voltar</button>
+    <div class="escolha-title" style="font-size:24px;text-align:left;margin-bottom:6px">Rapha</div>
+    <div class="escolha-sub" style="text-align:left;margin-bottom:24px">Qual o tipo de solicitação?</div>
+    <div class="tipo-cards">
+      <div class="tipo-card" onclick="showPage('page-form-convidado')">
+        <div class="tipo-icon">👥</div>
+        <div class="tipo-title">Atendimento a Convidado</div>
+        <div class="tipo-desc">Ajuda com viagem ou logística de um convidado</div>
+      </div>
+      <div class="tipo-card" onclick="showPage('page-form-passeio')">
+        <div class="tipo-icon">🗺️</div>
+        <div class="tipo-title">Solicitação de Passeio</div>
+        <div class="tipo-desc">Organizar um passeio ou atividade</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TELA 3a: Formulário Convidado (Rapha) -->
+  <div class="page" id="page-form-convidado">
+    <button class="form-back" onclick="showPage('page-tipo-rapha')">← Voltar</button>
+    <div class="form-header">
+      <div class="form-icon" style="background:#e3f2fd">👥</div>
+      <div>
+        <div class="form-title">Atendimento a Convidado</div>
+        <div class="form-sub">Rapha · Preencha os dados para solicitar o atendimento</div>
+      </div>
+    </div>
+    <div class="f"><label>Casamento</label>
+      <select id="cong-casamento"><option value="">Selecionar casamento...</option></select>
+    </div>
+    <div class="f"><label>Nome do Convidado</label>
+      <input id="cong-nome" placeholder="Nome completo do convidado">
+    </div>
+    <div class="f"><label>Telefone / WhatsApp</label>
+      <input id="cong-tel" placeholder="+55 (00) 00000-0000" type="tel">
+    </div>
+    <div class="f"><label>Solicitação</label>
+      <textarea id="cong-sol" placeholder="Descreva o que o convidado precisa..."></textarea>
+    </div>
+    <button class="btn-enviar" id="btn-cong" onclick="enviarConvidado()">Enviar Solicitação</button>
+  </div>
+
+  <!-- TELA 3b: Formulário Passeio (Rapha) -->
+  <div class="page" id="page-form-passeio">
+    <button class="form-back" onclick="showPage('page-tipo-rapha')">← Voltar</button>
+    <div class="form-header">
+      <div class="form-icon" style="background:#e8f5e9">🗺️</div>
+      <div>
+        <div class="form-title">Solicitação de Passeio</div>
+        <div class="form-sub">Rapha · Preencha os dados para organizar o passeio</div>
+      </div>
+    </div>
+    <div class="f"><label>Casamento</label>
+      <select id="pass-casamento"><option value="">Selecionar casamento...</option></select>
+    </div>
+    <div class="f"><label>Solicitação</label>
+      <textarea id="pass-sol" placeholder="Descreva o passeio ou atividade que deseja..."></textarea>
+    </div>
+    <button class="btn-enviar" id="btn-pass" onclick="enviarPasseio()">Enviar Solicitação</button>
+  </div>
+
+  <!-- TELA 4: Formulário Mari -->
+  <div class="page" id="page-form-mari">
+    <button class="form-back" onclick="showPage('page-responsavel')">← Voltar</button>
+    <div class="form-header">
+      <div class="form-icon" style="background:#fdf3e0">📋</div>
+      <div>
+        <div class="form-title">Solicitação de Operacional</div>
+        <div class="form-sub">Mari · Preencha os dados e nossa equipe atenderá em breve</div>
+      </div>
+    </div>
+    <div class="f"><label>Casamento</label>
+      <select id="mari-casamento"><option value="">Selecionar casamento...</option></select>
+    </div>
+    <div class="f"><label>Nome do Convidado Solicitante</label>
+      <input id="mari-nome" placeholder="Nome completo">
+    </div>
+    <div class="f"><label>Telefone / WhatsApp</label>
+      <input id="mari-tel" placeholder="+55 (00) 00000-0000" type="tel">
+    </div>
+    <div class="f"><label>Solicitação</label>
+      <textarea id="mari-sol" placeholder="Descreva o que precisa..."></textarea>
+    </div>
+    <div class="f">
+      <label>Urgência</label>
+      <div class="urgencia-opts">
+        <div class="urg-opt" id="urg-alta" onclick="selUrgencia('alta')">
+          <div class="urg-icon">🔴</div>
+          <div class="urg-label">Alta</div>
+        </div>
+        <div class="urg-opt" id="urg-media" onclick="selUrgencia('media')">
+          <div class="urg-icon">🟡</div>
+          <div class="urg-label">Média</div>
+        </div>
+        <div class="urg-opt" id="urg-baixa" onclick="selUrgencia('baixa')">
+          <div class="urg-icon">🟢</div>
+          <div class="urg-label">Baixa</div>
+        </div>
+      </div>
+    </div>
+    <button class="btn-enviar" id="btn-mari" onclick="enviarMari()">Enviar Solicitação</button>
+  </div>
+
+  <!-- TELA SUCESSO -->
+  <div class="page" id="page-sucesso">
+    <div class="sucesso">
+      <div class="sucesso-icon">✅</div>
+      <div class="sucesso-title">Solicitação enviada!</div>
+      <div class="sucesso-sub">Recebemos sua solicitação e nossa equipe<br>entrará em contato em breve.</div>
+      <button class="btn-nova" onclick="showPage('page-responsavel')">Fazer outra solicitação</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const{createClient}=supabase
+const sb=createClient('https://yrnlfarricrhtfomwynd.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlybmxmYXJyaWNyaHRmb213eW5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczOTIxODksImV4cCI6MjA5Mjk2ODE4OX0.Ad4awFjQ9vcDqNyBbWycgv0rvpc3DOz4pPTi41nSp8w')
+
+let urgenciaSel=''
+
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'))
+  document.getElementById(id).classList.add('active')
+  window.scrollTo(0,0)
+}
+
+function escolherResp(resp){
+  if(resp==='rapha')showPage('page-tipo-rapha')
+  else if(resp==='mari')showPage('page-form-mari')
+}
+
+function selUrgencia(v){
+  urgenciaSel=v
+  ;['alta','media','baixa'].forEach(u=>{document.getElementById('urg-'+u).className='urg-opt'+(v===u?' sel-'+u:'')})
+}
+
+async function carregarCasamentos(){
+  const hoje=new Date().toISOString().split('T')[0]
+  const{data}=await sb.from('casamentos').select('id,nome,plan_data').gte('plan_data',hoje).neq('status','Cancelado').order('plan_data',{ascending:true})
+  const opts=(data||[]).map(c=>`<option value="${c.id}" data-nome="${c.nome}">${c.nome}</option>`).join('')
+  ;['cong-casamento','pass-casamento','mari-casamento'].forEach(id=>{
+    const sel=document.getElementById(id)
+    if(sel)sel.innerHTML='<option value="">Selecionar casamento...</option>'+opts
+  })
+}
+
+async function enviarConvidado(){
+  const btn=document.getElementById('btn-cong')
+  const casEl=document.getElementById('cong-casamento')
+  const casId=casEl?.value
+  const casNome=casEl?.options[casEl.selectedIndex]?.dataset.nome||''
+  const nome=document.getElementById('cong-nome').value.trim()
+  const sol=document.getElementById('cong-sol').value.trim()
+  if(!casId){alert('Selecione o casamento!');return}
+  if(!nome){alert('Preencha o nome do convidado!');return}
+  if(!sol){alert('Descreva a solicitação!');return}
+  btn.textContent='Enviando...';btn.disabled=true
+  await sb.from('solicitacoes_kanban').insert({tipo:'atendimento_convidado',coluna:'nova',responsavel:'rapha',casamento_id:casId,casamento_nome:casNome,convidado_nome:nome,convidado_telefone:document.getElementById('cong-tel').value.trim()||null,solicitacao:sol})
+  btn.textContent='Enviar Solicitação';btn.disabled=false
+  showPage('page-sucesso')
+}
+
+async function enviarPasseio(){
+  const btn=document.getElementById('btn-pass')
+  const casEl=document.getElementById('pass-casamento')
+  const casId=casEl?.value
+  const casNome=casEl?.options[casEl.selectedIndex]?.dataset.nome||''
+  const sol=document.getElementById('pass-sol').value.trim()
+  if(!casId){alert('Selecione o casamento!');return}
+  if(!sol){alert('Descreva a solicitação!');return}
+  btn.textContent='Enviando...';btn.disabled=true
+  await sb.from('solicitacoes_kanban').insert({tipo:'passeio',coluna:'nova',responsavel:'rapha',casamento_id:casId,casamento_nome:casNome,solicitacao:sol})
+  btn.textContent='Enviar Solicitação';btn.disabled=false
+  showPage('page-sucesso')
+}
+
+async function enviarMari(){
+  const btn=document.getElementById('btn-mari')
+  const casEl=document.getElementById('mari-casamento')
+  const casId=casEl?.value
+  const casNome=casEl?.options[casEl.selectedIndex]?.dataset.nome||''
+  const nome=document.getElementById('mari-nome').value.trim()
+  const sol=document.getElementById('mari-sol').value.trim()
+  if(!casId){alert('Selecione o casamento!');return}
+  if(!nome){alert('Preencha o nome do convidado!');return}
+  if(!sol){alert('Descreva a solicitação!');return}
+  if(!urgenciaSel){alert('Selecione a urgência!');return}
+  btn.textContent='Enviando...';btn.disabled=true
+  const urgLabel={alta:'🔴 Alta',media:'🟡 Média',baixa:'🟢 Baixa'}[urgenciaSel]
+  await sb.from('solicitacoes_kanban').insert({tipo:'operacional',coluna:'nova',responsavel:'mari',casamento_id:casId,casamento_nome:casNome,convidado_nome:nome,convidado_telefone:document.getElementById('mari-tel').value.trim()||null,solicitacao:sol,servicos:urgLabel})
+  btn.textContent='Enviar Solicitação';btn.disabled=false
+  showPage('page-sucesso')
+}
+
+carregarCasamentos()
+</script>
+</body>
+</html>
