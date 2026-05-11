@@ -1581,6 +1581,7 @@ function renderCasamentos(){
   const fI=id=>document.getElementById(id)?.checked
   const statusAtivos=[fI('f-c-andamento')&&'Em andamento',fI('f-c-confirmado')&&'Confirmado',fI('f-c-concluido')&&'Concluído',fI('f-c-cancelado')&&'Cancelado'].filter(Boolean)
   const tabStatus={todos:null,andamento:'Em andamento',planejamento:'Planejamento',producao:'Produção+Viagem',realizado:'Realizado',cancelado:'Cancelado'}[window._cTabAtual||'todos']
+  const isRealizado=(st)=>st==='Realizado'||st==='Concluído'
   const grid=document.getElementById('casamentos-grid')
   const filtered=casamentos.filter(c=>{
     const ms=!s||c.nome?.toLowerCase().includes(s)||c.destino?.toLowerCase().includes(s)
@@ -1588,14 +1589,14 @@ function renderCasamentos(){
     const mm=!mes||c.plan_data?.split('-')[1]===mes.padStart(2,'0')
     const md=!destino||c.destino===destino
     const mh=!hotel||c.plan_hotel===hotel
-    const mst=!tabStatus||(c.status||'Em andamento')===tabStatus
+    const mst=!tabStatus||(tabStatus==='Realizado'?isRealizado(c.status||'Em andamento'):(c.status||'Em andamento')===tabStatus)
     return ms&&ma&&mm&&md&&mh&&mst
   })
   // Ordenação: futuros primeiro (mais próximo antes), sem data depois, concluídos/cancelados no fim
   const hoje2=new Date().toISOString().split('T')[0]
   filtered.sort((a,b)=>{
     const stA=a.status||'Em andamento', stB=b.status||'Em andamento'
-    const concA=['Concluído','Cancelado'].includes(stA), concB=['Concluído','Cancelado'].includes(stB)
+    const concA=['Realizado','Concluído','Cancelado'].includes(stA), concB=['Realizado','Concluído','Cancelado'].includes(stB)
     if(concA&&!concB)return 1
     if(!concA&&concB)return -1
     if(!a.plan_data&&!b.plan_data)return 0
@@ -1610,7 +1611,7 @@ function renderCasamentos(){
     if(st==='Em andamento')counts.andamento++
     else if(st==='Planejamento')counts.planejamento++
     else if(st==='Produção+Viagem')counts.producao++
-    else if(st==='Realizado')counts.realizado++
+    else if(st==='Realizado'||st==='Concluído')counts.realizado++
     else if(st==='Cancelado')counts.cancelado++
     else counts.andamento++ // fallback para status antigos
   })
@@ -2157,7 +2158,7 @@ async function renderHotelHistorico(){
           <div style="font-size:12px;color:#888;margin-top:2px">${c.plan_data?'📅 '+fmtDate(c.plan_data):''}${c.destino?' · '+c.destino:''}</div>
         </div>
       </div>
-      <span class="tag ${c.status==='Realizado'?'tg':c.status==='Cancelado'?'tr':c.status==='Planejamento'?'tgb':c.status==='Produção+Viagem'?'tgr':'tgy'}">${c.status||'Em andamento'}</span>${c.consultora_plan?`<span class="tag" style="background:#f0f0f0;color:#666">📋 ${c.consultora_plan}</span>`:''}${c.consultora_prod?`<span class="tag" style="background:#fdf3e0;color:var(--gold)">🎨 ${c.consultora_prod}</span>`:''}
+      <span class="tag ${c.status==='Realizado'||c.status==='Concluído'?'tg':c.status==='Cancelado'?'tr':c.status==='Planejamento'?'tgb':c.status==='Produção+Viagem'?'tgr':'tgy'}">${c.status||'Em andamento'}</span>${c.consultora_plan?`<span class="tag" style="background:#f0f0f0;color:#666">📋 ${c.consultora_plan}</span>`:''}${c.consultora_prod?`<span class="tag" style="background:#fdf3e0;color:var(--gold)">🎨 ${c.consultora_prod}</span>`:''}
     </div>
   </div>`).join('')}`
 }
