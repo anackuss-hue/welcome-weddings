@@ -585,7 +585,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div class="f"><label>Pacote com o Hotel</label><input id="c-pacote"></div>
         <div class="f"><label>Status</label>
           <select id="c-status" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
-            <option>Em andamento</option><option>Planejamento</option><option>Produção+Viagem</option><option>Realizado</option><option>Cancelado</option>
+            <option>Em andamento</option><option>Realizado</option><option>Cancelado</option>
+          </select>
+        </div>
+        <div class="f"><label>Setor</label>
+          <select id="c-setor" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+            <option value="">Selecionar setor...</option>
+            <option value="Planejamento">📋 Planejamento</option>
+            <option value="Produção+Viagem">🎨✈️ Produção + Viagem</option>
           </select>
         </div>
         <div class="f"><label>Consultora Planejamento</label>
@@ -1517,7 +1524,7 @@ async function loadCasamentos(){
   const hoje=new Date().toISOString().split('T')[0]
   const ultimaRodada=localStorage.getItem('_autoRealizado')
   if(ultimaRodada!==hoje){
-    await sb.from('casamentos').update({status:'Realizado'}).lt('plan_data',hoje).in('status',['Em andamento','Planejamento','Produção+Viagem'])
+    await sb.from('casamentos').update({status:'Realizado'}).lt('plan_data',hoje).not('status','in','("Realizado","Concluído","Cancelado")')
     localStorage.setItem('_autoRealizado',hoje)
   }
   const{data}=await sb.from('casamentos').select('*').order('plan_data',{ascending:true,nullsFirst:false})
@@ -1581,6 +1588,7 @@ function renderCasamentos(){
   const fI=id=>document.getElementById(id)?.checked
   const statusAtivos=[fI('f-c-andamento')&&'Em andamento',fI('f-c-confirmado')&&'Confirmado',fI('f-c-concluido')&&'Concluído',fI('f-c-cancelado')&&'Cancelado'].filter(Boolean)
   const tabStatus={todos:null,andamento:'Em andamento',planejamento:'Planejamento',producao:'Produção+Viagem',realizado:'Realizado',cancelado:'Cancelado'}[window._cTabAtual||'todos']
+  const tabSetor=['planejamento','producao'].includes(window._cTabAtual||'')
   const isRealizado=(st)=>st==='Realizado'||st==='Concluído'
   const grid=document.getElementById('casamentos-grid')
   const filtered=casamentos.filter(c=>{
@@ -1589,7 +1597,7 @@ function renderCasamentos(){
     const mm=!mes||c.plan_data?.split('-')[1]===mes.padStart(2,'0')
     const md=!destino||c.destino===destino
     const mh=!hotel||c.plan_hotel===hotel
-    const mst=!tabStatus||(tabStatus==='Realizado'?isRealizado(c.status||'Em andamento'):(c.status||'Em andamento')===tabStatus)
+    const mst=tabSetor?(c.setor===tabStatus):((!tabStatus||(tabStatus==='Realizado'?isRealizado(c.status||'Em andamento'):(c.status||'Em andamento')===tabStatus)))
     return ms&&ma&&mm&&md&&mh&&mst
   })
   // Ordenação: futuros primeiro (mais próximo antes), sem data depois, concluídos/cancelados no fim
@@ -1608,12 +1616,11 @@ function renderCasamentos(){
   const counts={todos:casamentos.length,andamento:0,planejamento:0,producao:0,realizado:0,cancelado:0}
   casamentos.forEach(c=>{
     const st=(c.status||'Em andamento')
-    if(st==='Em andamento')counts.andamento++
-    else if(st==='Planejamento')counts.planejamento++
-    else if(st==='Produção+Viagem')counts.producao++
-    else if(st==='Realizado'||st==='Concluído')counts.realizado++
+    if(st==='Realizado'||st==='Concluído')counts.realizado++
     else if(st==='Cancelado')counts.cancelado++
-    else counts.andamento++ // fallback para status antigos
+    else counts.andamento++
+    if(c.setor==='Planejamento')counts.planejamento++
+    else if(c.setor==='Produção+Viagem')counts.producao++
   })
   Object.entries(counts).forEach(([k,v])=>{const el=document.getElementById('ctab-n-'+k);if(el)el.textContent=v})
   document.getElementById('casamentos-count').textContent=filtered.length+' de '+casamentos.length+' casamento(s)'
@@ -1677,7 +1684,7 @@ async function openCasamento(id){
 function clearCasForm(){
   ['c-nome','c-destino','c-data','c-horario','c-hotel','c-pacote','c-extra','c-obs','c-produtora','c-num-assessores','c-datas','c-ultima-reuniao','c-servicos','c-programacao','c-fornecedores','c-prod-status','c-transfer','c-passeios-txt','c-hospedagem','c-viag-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
   document.getElementById('c-status').value='Em andamento'
-  ;['c-cons-plan','c-cons-prod'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
+  ;['c-cons-plan','c-cons-prod','c-setor'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
   ;['c-voos','c-transfers','c-passeios','c-vok'].forEach(id=>setTg(id,false))
 }
 function fillCasForm(c){
@@ -1687,7 +1694,7 @@ function fillCasForm(c){
   const selH=document.getElementById('c-hotel')
   if(selH){selH.innerHTML='<option value="">Selecionar local...</option>'+hoteis.map(h=>`<option value="${h.id}">${h.nome}${h.cidade?' — '+h.cidade:''}</option>`).join('');if(c.local_id)selH.value=c.local_id}
   s('c-pacote',c.plan_pacote);s('c-extra',c.plan_extra);s('c-obs',c.plan_obs)
-  s('c-status',c.status);s('c-produtora',c.prod_produtora);s('c-num-assessores',c.prod_num_assessores)
+  s('c-status',c.status);const _csetor=document.getElementById('c-setor');if(_csetor)_csetor.value=c.setor||'';s('c-produtora',c.prod_produtora);s('c-num-assessores',c.prod_num_assessores)
   s('c-cons-plan',c.consultora_plan||'');s('c-cons-prod',c.consultora_prod||'')
   s('c-datas',c.prod_datas);s('c-ultima-reuniao',c.prod_ultima_reuniao);s('c-servicos',c.prod_servicos)
   s('c-programacao',c.prod_programacao);s('c-fornecedores',c.prod_fornecedores);s('c-prod-status',c.prod_status)
@@ -1696,7 +1703,7 @@ function fillCasForm(c){
 }
 function getCasData(){
   const v=id=>document.getElementById(id)?.value||''
-  return{nome:v('c-nome'),destino:v('c-destino'),plan_data:v('c-data'),plan_horario:v('c-horario'),local_id:document.getElementById('c-hotel')?.value||null,plan_pacote:v('c-pacote'),plan_extra:v('c-extra'),plan_obs:v('c-obs'),status:v('c-status'),consultora_plan:v('c-cons-plan')||null,consultora_prod:v('c-cons-prod')||null,prod_produtora:v('c-produtora'),prod_num_assessores:v('c-num-assessores'),prod_datas:v('c-datas'),prod_ultima_reuniao:v('c-ultima-reuniao'),prod_servicos:v('c-servicos'),prod_programacao:v('c-programacao'),prod_fornecedores:v('c-fornecedores'),prod_status:v('c-prod-status'),viag_transfer:v('c-transfer'),viag_passeios:v('c-passeios-txt'),viag_hospedagem:v('c-hospedagem'),viag_obs:v('c-viag-obs'),checklist_voos:getTg('c-voos'),checklist_transfers:getTg('c-transfers'),checklist_passeios:getTg('c-passeios'),viagem_ok:getTg('c-vok')}
+  return{nome:v('c-nome'),destino:v('c-destino'),plan_data:v('c-data'),plan_horario:v('c-horario'),local_id:document.getElementById('c-hotel')?.value||null,plan_pacote:v('c-pacote'),plan_extra:v('c-extra'),plan_obs:v('c-obs'),status:v('c-status'),setor:document.getElementById('c-setor')?.value||null,consultora_plan:v('c-cons-plan')||null,consultora_prod:v('c-cons-prod')||null,prod_produtora:v('c-produtora'),prod_num_assessores:v('c-num-assessores'),prod_datas:v('c-datas'),prod_ultima_reuniao:v('c-ultima-reuniao'),prod_servicos:v('c-servicos'),prod_programacao:v('c-programacao'),prod_fornecedores:v('c-fornecedores'),prod_status:v('c-prod-status'),viag_transfer:v('c-transfer'),viag_passeios:v('c-passeios-txt'),viag_hospedagem:v('c-hospedagem'),viag_obs:v('c-viag-obs'),checklist_voos:getTg('c-voos'),checklist_transfers:getTg('c-transfers'),checklist_passeios:getTg('c-passeios'),viagem_ok:getTg('c-vok')}
 }
 async function salvarCasamento(){
   const btn=document.getElementById('btn-sc');btn.textContent='Salvando...';btn.disabled=true
@@ -2158,7 +2165,7 @@ async function renderHotelHistorico(){
           <div style="font-size:12px;color:#888;margin-top:2px">${c.plan_data?'📅 '+fmtDate(c.plan_data):''}${c.destino?' · '+c.destino:''}</div>
         </div>
       </div>
-      <span class="tag ${c.status==='Realizado'||c.status==='Concluído'?'tg':c.status==='Cancelado'?'tr':c.status==='Planejamento'?'tgb':c.status==='Produção+Viagem'?'tgr':'tgy'}">${c.status||'Em andamento'}</span>${c.consultora_plan?`<span class="tag" style="background:#f0f0f0;color:#666">📋 ${c.consultora_plan}</span>`:''}${c.consultora_prod?`<span class="tag" style="background:#fdf3e0;color:var(--gold)">🎨 ${c.consultora_prod}</span>`:''}
+      <span class="tag ${c.status==='Realizado'||c.status==='Concluído'?'tg':c.status==='Cancelado'?'tr':c.status==='Planejamento'?'tgb':c.status==='Produção+Viagem'?'tgr':'tgy'}">${c.status||'Em andamento'}</span>${c.setor?`<span class="tag" style="background:${c.setor==='Planejamento'?'#e3f2fd':'#fff3e0'};color:${c.setor==='Planejamento'?'#1565c0':'#e65100'}">${c.setor==='Planejamento'?'📋':'🎨✈️'} ${c.setor}</span>`:''}${c.consultora_plan?`<span class="tag" style="background:#f0f0f0;color:#666">📋 ${c.consultora_plan}</span>`:''}${c.consultora_prod?`<span class="tag" style="background:#fdf3e0;color:var(--gold)">🎨 ${c.consultora_prod}</span>`:''}
     </div>
   </div>`).join('')}`
 }
