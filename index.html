@@ -620,7 +620,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="tc" id="tab-assess">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
         <div id="assess-count" style="font-size:13px;color:#666"></div>
-        
+        <button class="btn bg bsm" onclick="togglePicker()">+ Escalar Assessora</button>
       </div>
       <div id="escaladas-list"></div>
       <div id="picker-container" style="display:none"></div>
@@ -2169,7 +2169,7 @@ async function adicionarLogItem(solId,tipo){
   loadSolicitacoes(casamentoAtual?.id)
 }
 async function loadSolicitacoes(casId){
-  const{data}=await sb.from('solicitacoes_viagem').select('*').eq('casamento_id',casId).order('created_at',{ascending:false})
+  const{data}=await sb.from('solicitacoes_viagem').select('*,assessora:assessoras(nome)').eq('casamento_id',casId).order('created_at',{ascending:false})
   const sec=document.getElementById('solicitacoes-section'),list=document.getElementById('solicitacoes-list')
   if(!sec||!list)return
   sec.style.display=data?.length?'block':'none'
@@ -2204,7 +2204,7 @@ async function loadSolicitacoes(casId){
     return`<div class="ai" style="margin-bottom:12px">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;flex-wrap:wrap;gap:8px">
         <div>
-          <div style="font-weight:600;font-size:14px">${s.assessora_nome}</div>
+          <div style="font-weight:600;font-size:14px">${s.assessora?.nome||s.assessora_nome||'Assessora'}</div>
           <div style="font-size:12px;color:#888;margin-top:2px">Solicitado por ${s.solicitado_por||'—'} · ${new Date(s.created_at).toLocaleDateString('pt-BR')}</div>
         </div>
         <button class="btn bd bsm" onclick="removerSolicitacao('${s.id}')">✕</button>
