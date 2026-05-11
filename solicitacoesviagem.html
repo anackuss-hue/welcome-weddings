@@ -49,6 +49,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .btn-send{width:100%;padding:15px;border-radius:10px;background:var(--gold);color:#fff;border:none;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;transition:background .15s}
 .btn-send:hover{background:var(--gold-light)}
 .btn-send:disabled{opacity:.6;cursor:not-allowed}
+.serv-card{border:1.5px solid var(--border);border-radius:12px;padding:14px 8px;cursor:pointer;text-align:center;transition:all .15s;background:#fff}
+.serv-card:hover{border-color:var(--gold);background:var(--gold-pale)}
+.serv-card.sel{border-color:var(--gold);background:var(--gold-pale)}
+.serv-label{font-size:12px;font-weight:600;color:#888}
+.serv-card.sel .serv-label{color:var(--gold)}
 .sucesso{text-align:center;padding:40px 20px}
 .sucesso-icon{font-size:56px;margin-bottom:20px}
 .sucesso-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:var(--gold);margin-bottom:10px}
@@ -100,9 +105,38 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="title" style="font-size:22px;text-align:left">Solicitações de Extras de Viagem</div>
     <div class="sub" style="text-align:left;margin-bottom:20px">Qual o tipo de solicitação?</div>
     <div class="tipo-list">
+      <div class="tipo-card" onclick="go('p-form-viagem')"><div class="tipo-icon">🧳</div><div class="tipo-title">Viagem de Assessora</div></div>
       <div class="tipo-card" onclick="go('p-form-convidado')"><div class="tipo-icon">👥</div><div class="tipo-title">Atendimento a Convidado</div></div>
       <div class="tipo-card" onclick="go('p-form-passeio')"><div class="tipo-icon">🗺️</div><div class="tipo-title">Solicitação de Passeio</div></div>
     </div>
+  </div>
+
+  <!-- TELA: Form Viagem Assessora -->
+  <div class="page" id="p-form-viagem">
+    <button class="back" onclick="go('p-tipo-rapha')">← Voltar</button>
+    <div class="form-header">
+      <div class="form-icon" style="background:var(--gold-pale)">🧳</div>
+      <div><div class="form-title">Viagem de Assessora</div><div class="form-sub">Rapha · Preencha os dados da viagem</div></div>
+    </div>
+    <div class="f"><label>Casamento <span style="color:#c0392b">*</span></label><select id="va-cas"><option value="">Selecionar...</option></select></div>
+    <div class="f"><label>Assessora <span style="color:#c0392b">*</span></label><select id="va-assessora"><option value="">Selecionar assessora...</option></select></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="f"><label>📅 Data de chegada <span style="color:#c0392b">*</span></label><input id="va-data-chegada" type="date"></div>
+      <div class="f"><label>⏰ Horário de chegada</label><input id="va-hora-chegada" type="time"></div>
+      <div class="f"><label>📅 Data de saída <span style="color:#c0392b">*</span></label><input id="va-data-saida" type="date"></div>
+      <div class="f"><label>⏰ Horário de saída</label><input id="va-hora-saida" type="time"></div>
+    </div>
+    <div class="f"><label>✈️ Cidade de saída <span style="font-weight:400;color:var(--muted)">(se diferente do perfil)</span></label><input id="va-cidade" placeholder="Ex: Rio de Janeiro"></div>
+    <div class="f">
+      <label>O que vai precisar</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:4px">
+        <div class="serv-card" id="sv-voo" onclick="togServ('voo')"><div style="font-size:24px;margin-bottom:4px">✈️</div><div class="serv-label">Voo</div></div>
+        <div class="serv-card" id="sv-transfer" onclick="togServ('transfer')"><div style="font-size:24px;margin-bottom:4px">🚌</div><div class="serv-label">Transfer</div></div>
+        <div class="serv-card" id="sv-hospedagem" onclick="togServ('hospedagem')"><div style="font-size:24px;margin-bottom:4px">🏨</div><div class="serv-label">Hospedagem</div></div>
+      </div>
+    </div>
+    <div class="f"><label>Observações</label><textarea id="va-obs" placeholder="Informações adicionais, preferências..."></textarea></div>
+    <button class="btn-send" onclick="enviar('rapha-viagem')">Enviar Solicitação</button>
   </div>
 
   <!-- TELA 3: Form Convidado (Rapha) -->
@@ -223,7 +257,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 const{createClient}=supabase
 const sb=createClient('https://yrnlfarricrhtfomwynd.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlybmxmYXJyaWNyaHRmb213eW5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczOTIxODksImV4cCI6MjA5Mjk2ODE4OX0.Ad4awFjQ9vcDqNyBbWycgv0rvpc3DOz4pPTi41nSp8w')
 
-let urgSel=''
+let urgSel='', servicos={voo:false,transfer:false,hospedagem:false}
+
+function togServ(s){
+  servicos[s]=!servicos[s]
+  document.getElementById('sv-'+s)?.classList.toggle('sel',servicos[s])
+}
 
 function go(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'))
@@ -242,10 +281,90 @@ function cas(id){const el=document.getElementById(id);return{id:el?.value,nome:e
 async function enviar(tipo){
   const btns=document.querySelectorAll('.btn-send')
   btns.forEach(b=>{b.disabled=true;b.textContent='Enviando...'})
-
+  const reset=()=>btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'})
   let row={}
 
-  if(tipo==='rapha-convidado'){
+  if(tipo==='rapha-viagem'){
+    const c=cas('va-cas')
+    const aEl=document.getElementById('va-assessora')
+    const aId=aEl?.value, aNome=aEl?.options[aEl.selectedIndex]?.text||''
+    if(!c.id){alert('Selecione o casamento!');reset();return}
+    if(!aId){alert('Selecione a assessora!');reset();return}
+    if(!v('va-data-chegada')||!v('va-data-saida')){alert('Preencha as datas!');reset();return}
+    const servStr=[servicos.voo&&'Voo',servicos.transfer&&'Transfer',servicos.hospedagem&&'Hospedagem'].filter(Boolean).join(' · ')||'Não especificado'
+    // Salva no kanban
+    const{error}=await sb.from('solicitacoes_kanban').insert({tipo:'viagem_assessora',coluna:'nova',responsavel:'rapha',casamento_id:c.id,casamento_nome:c.nome,assessora_id:aId,assessora_nome:aNome,periodo_de:v('va-data-chegada'),periodo_ate:v('va-data-saida'),servicos:servStr,solicitacao:v('va-obs')})
+    if(error){alert('Erro: '+error.message);reset();return}
+    // Escalada no casamento
+    await sb.from('casamento_assessoras').upsert({casamento_id:c.id,assessora_id:aId,periodo_inicio:v('va-data-chegada'),periodo_fim:v('va-data-saida')},{onConflict:'casamento_id,assessora_id'})
+    // Solicitação de viagem
+    await sb.from('solicitacoes_viagem').insert({casamento_id:c.id,assessora_id:aId,data_chegada:v('va-data-chegada'),hora_chegada:v('va-hora-chegada')||null,data_saida:v('va-data-saida'),hora_saida:v('va-hora-saida')||null,cidade_saida:v('va-cidade')||null,status_passagem:servicos.voo?'pendente':null,status_transfer:servicos.transfer?'pendente':null,status_hotel:servicos.hospedagem?'pendente':null,obs:v('va-obs')})
+    reset();go('p-sucesso');return
+
+  }else if(tipo==='rapha-convidado'){
+    const c=cas('rc-cas')
+    if(!c.id){alert('Selecione o casamento!');reset();return}
+    if(!v('rc-nome')){alert('Preencha o nome!');reset();return}
+    if(!v('rc-sol')){alert('Descreva a solicitação!');reset();return}
+    row={tipo:'atendimento_convidado',responsavel:'rapha',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('rc-nome'),convidado_telefone:v('rc-tel')||null,solicitacao:v('rc-sol')}
+
+  }else if(tipo==='rapha-passeio'){
+    const c=cas('rp-cas')
+    if(!c.id){alert('Selecione o casamento!');reset();return}
+    if(!v('rp-sol')){alert('Descreva a solicitação!');reset();return}
+    row={tipo:'passeio',responsavel:'rapha',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,solicitacao:v('rp-sol')}
+
+  }else if(tipo==='mari'){
+    const c=cas('mc-cas')
+    if(!c.id){alert('Selecione o casamento!');reset();return}
+    if(!v('mc-nome')){alert('Preencha o nome!');reset();return}
+    if(!v('mc-sol')){alert('Descreva a solicitação!');reset();return}
+    if(!urgSel){alert('Selecione a urgência!');reset();return}
+    const urgLabel={alta:'🔴 Alta',media:'🟡 Média',baixa:'🟢 Baixa'}[urgSel]
+    row={tipo:'operacional',responsavel:'mari',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('mc-nome'),convidado_telefone:v('mc-tel')||null,solicitacao:v('mc-sol'),servicos:urgLabel}
+
+  }else if(tipo==='ju-comunicacao'){
+    const c=cas('jc-cas')
+    if(!c.id||!v('jc-nome')){alert('Preencha os campos!');reset();return}
+    row={tipo:'ju_comunicacao',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('jc-nome'),convidado_telefone:v('jc-tel')||null,servicos:'📢 Adicionar na comunicação'}
+
+  }else if(tipo==='ju-reserva'){
+    const c=cas('jr-cas')
+    if(!c.id||!v('jr-nome')){alert('Preencha os campos!');reset();return}
+    row={tipo:'ju_reserva',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('jr-nome'),convidado_telefone:v('jr-tel')||null,solicitacao:v('jr-obs'),servicos:'🏨 Reenviar confirmação de reserva'}
+
+  }else if(tipo==='ju-diaria'){
+    const c=cas('jd-cas')
+    if(!c.id||!v('jd-nome')){alert('Preencha os campos!');reset();return}
+    row={tipo:'ju_diaria',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('jd-nome'),convidado_telefone:v('jd-tel')||null,solicitacao:v('jd-obs'),servicos:'📞 Diária extra'}
+
+  }else if(tipo==='ju-atendimento'){
+    const c=cas('ja-cas')
+    if(!c.id||!v('ja-nome')){alert('Preencha os campos!');reset();return}
+    row={tipo:'ju_atendimento',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('ja-nome'),convidado_telefone:v('ja-tel')||null,solicitacao:v('ja-obs'),servicos:'👥 Atendimento a convidado'}
+  }
+
+  await sb.from('solicitacoes_kanban').insert(row)
+  reset();go('p-sucesso')
+}
+
+async function carregarCasamentos(){
+  const{data}=await sb.from('casamentos').select('id,nome').neq('status','Cancelado').neq('status','Concluído').order('nome',{ascending:true})
+  const opts=(data||[]).map(c=>`<option value="${c.id}" data-nome="${c.nome}">${c.nome}</option>`).join('')
+  ;['rc-cas','rp-cas','mc-cas','jc-cas','jr-cas','jd-cas','ja-cas','va-cas'].forEach(id=>{
+    const el=document.getElementById(id)
+    if(el)el.innerHTML='<option value="">Selecionar casamento...</option>'+opts
+  })
+}
+
+async function carregarAssessoras(){
+  const{data}=await sb.from('assessoras').select('id,nome,cidade').order('nome',{ascending:true})
+  const sel=document.getElementById('va-assessora')
+  if(sel&&data)sel.innerHTML='<option value="">Selecionar assessora...</option>'+(data||[]).map(a=>`<option value="${a.id}">${a.nome}${a.cidade?' — '+a.cidade:''}</option>`).join('')
+}
+
+carregarCasamentos()
+carregarAssessoras()
     const c=cas('rc-cas')
     if(!c.id){alert('Selecione o casamento!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
     if(!v('rc-nome')){alert('Preencha o nome!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
