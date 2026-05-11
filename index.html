@@ -1744,6 +1744,11 @@ function renderPickerIfOpen(){
 async function escalarA(aid,cidade){
   if(!casamentoAtual?.id)return
   await sb.from('casamento_assessoras').insert({casamento_id:casamentoAtual.id,assessora_id:aid,periodo_inicio:casamentoAtual.plan_data||null,periodo_fim:casamentoAtual.plan_data||null,bilhete_emitido:false})
+  // Busca nome da assessora para o card
+  const assessora=assessoras.find(a=>a.id===aid)
+  const aNome=assessora?.nome||cidade||'Assessora'
+  // Cria card no Kanban da Rapha
+  await sb.from('solicitacoes_kanban').insert({tipo:'viagem_assessora',coluna:'nova',responsavel:'rapha',casamento_id:casamentoAtual.id,casamento_nome:casamentoAtual.nome,assessora_id:aid,assessora_nome:aNome,periodo_de:casamentoAtual.plan_data||null,periodo_ate:casamentoAtual.plan_data||null,criado_por:usuarioAtual?.nome})
   pickerOpen=false;renderEscaladas()
 }
 async function renderProdAssessoras(){
