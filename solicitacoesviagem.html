@@ -299,7 +299,7 @@ async function enviar(tipo){
 
 async function carregarCasamentos(){
   const hoje=new Date().toISOString().split('T')[0]
-  const{data}=await sb.from('casamentos').select('id,nome,plan_data').gte('plan_data',hoje).neq('status','Cancelado').order('plan_data',{ascending:true})
+  const{data}=await sb.from('casamentos').select('id,nome,plan_data').neq('status','Cancelado').neq('status','Concluído').order('nome',{ascending:true})
   const opts=(data||[]).map(c=>`<option value="${c.id}" data-nome="${c.nome}">${c.nome}</option>`).join('')
   ;['rc-cas','rp-cas','mc-cas','jc-cas','jr-cas','jd-cas','ja-cas'].forEach(id=>{
     const el=document.getElementById(id)
