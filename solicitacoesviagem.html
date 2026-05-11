@@ -113,38 +113,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="title" style="font-size:22px;text-align:left">Solicitações de Extras de Viagem</div>
     <div class="sub" style="text-align:left;margin-bottom:20px">Qual o tipo de solicitação?</div>
     <div class="tipo-list">
-      <div class="tipo-card" onclick="go('p-form-viagem')"><div class="tipo-icon">🧳</div><div class="tipo-title">Viagem de Assessora</div></div>
       <div class="tipo-card" onclick="go('p-form-convidado')"><div class="tipo-icon">👥</div><div class="tipo-title">Atendimento a Convidado</div></div>
       <div class="tipo-card" onclick="go('p-form-passeio')"><div class="tipo-icon">🗺️</div><div class="tipo-title">Solicitação de Passeio</div></div>
     </div>
-  </div>
-
-  <!-- TELA: Form Viagem Assessora -->
-  <div class="page" id="p-form-viagem">
-    <button class="back" onclick="go('p-tipo-rapha')">← Voltar</button>
-    <div class="form-header">
-      <div class="form-icon" style="background:var(--gold-pale)">🧳</div>
-      <div><div class="form-title">Viagem de Assessora</div><div class="form-sub">Rapha · Preencha os dados da viagem</div></div>
-    </div>
-    <div class="f"><label>Casamento <span style="color:#c0392b">*</span></label><div class="autocomplete-wrap"><input class="autocomplete-input" id="va-cas-txt" placeholder="Digite o nome do casamento..." oninput="filterCas('va-cas',this.value)" autocomplete="off"><input type="hidden" id="va-cas"><div class="autocomplete-drop" id="drop-va-cas"></div></div></div>
-    <div class="f"><label>Assessora <span style="color:#c0392b">*</span></label><select id="va-assessora"><option value="">Selecionar assessora...</option></select></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-      <div class="f"><label>📅 Data de chegada <span style="color:#c0392b">*</span></label><input id="va-data-chegada" type="date"></div>
-      <div class="f"><label>⏰ Horário de chegada</label><input id="va-hora-chegada" type="time"></div>
-      <div class="f"><label>📅 Data de saída <span style="color:#c0392b">*</span></label><input id="va-data-saida" type="date"></div>
-      <div class="f"><label>⏰ Horário de saída</label><input id="va-hora-saida" type="time"></div>
-    </div>
-    <div class="f"><label>✈️ Cidade de saída <span style="font-weight:400;color:var(--muted)">(se diferente do perfil)</span></label><input id="va-cidade" placeholder="Ex: Rio de Janeiro"></div>
-    <div class="f">
-      <label>O que vai precisar</label>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:4px">
-        <div class="serv-card" id="sv-voo" onclick="togServ('voo')"><div style="font-size:24px;margin-bottom:4px">✈️</div><div class="serv-label">Voo</div></div>
-        <div class="serv-card" id="sv-transfer" onclick="togServ('transfer')"><div style="font-size:24px;margin-bottom:4px">🚌</div><div class="serv-label">Transfer</div></div>
-        <div class="serv-card" id="sv-hospedagem" onclick="togServ('hospedagem')"><div style="font-size:24px;margin-bottom:4px">🏨</div><div class="serv-label">Hospedagem</div></div>
-      </div>
-    </div>
-    <div class="f"><label>Observações</label><textarea id="va-obs" placeholder="Informações adicionais, preferências..."></textarea></div>
-    <button class="btn-send" onclick="enviar('rapha-viagem')">Enviar Solicitação</button>
   </div>
 
   <!-- TELA 3: Form Convidado (Rapha) -->
