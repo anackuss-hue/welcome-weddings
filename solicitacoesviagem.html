@@ -259,21 +259,11 @@ const sb=createClient('https://yrnlfarricrhtfomwynd.supabase.co','eyJhbGciOiJIUz
 
 let urgSel='', servicos={voo:false,transfer:false,hospedagem:false}
 
-function togServ(s){
-  servicos[s]=!servicos[s]
-  document.getElementById('sv-'+s)?.classList.toggle('sel',servicos[s])
-}
+function togServ(s){servicos[s]=!servicos[s];document.getElementById('sv-'+s)?.classList.toggle('sel',servicos[s])}
 
-function go(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'))
-  document.getElementById(id).classList.add('active')
-  window.scrollTo(0,0)
-}
+function go(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
 
-function selUrg(v){
-  urgSel=v
-  ;['alta','media','baixa'].forEach(u=>{document.getElementById('urg-'+u).className='urg-opt'+(v===u?' sel-'+u:'')})
-}
+function selUrg(v){urgSel=v;['alta','media','baixa'].forEach(u=>{document.getElementById('urg-'+u).className='urg-opt'+(v===u?' sel-'+u:'')})}
 
 function v(id){return document.getElementById(id)?.value?.trim()||''}
 function cas(id){const el=document.getElementById(id);return{id:el?.value,nome:el?.options[el.selectedIndex]?.dataset.nome||''}}
@@ -282,38 +272,33 @@ async function enviar(tipo){
   const btns=document.querySelectorAll('.btn-send')
   btns.forEach(b=>{b.disabled=true;b.textContent='Enviando...'})
   const reset=()=>btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'})
-  let row={}
 
   if(tipo==='rapha-viagem'){
-    const c=cas('va-cas')
-    const aEl=document.getElementById('va-assessora')
-    const aId=aEl?.value, aNome=aEl?.options[aEl.selectedIndex]?.text||''
+    const c=cas('va-cas'),aEl=document.getElementById('va-assessora')
+    const aId=aEl?.value,aNome=aEl?.options[aEl.selectedIndex]?.text||''
     if(!c.id){alert('Selecione o casamento!');reset();return}
     if(!aId){alert('Selecione a assessora!');reset();return}
     if(!v('va-data-chegada')||!v('va-data-saida')){alert('Preencha as datas!');reset();return}
     const servStr=[servicos.voo&&'Voo',servicos.transfer&&'Transfer',servicos.hospedagem&&'Hospedagem'].filter(Boolean).join(' · ')||'Não especificado'
-    // Salva no kanban
     const{error}=await sb.from('solicitacoes_kanban').insert({tipo:'viagem_assessora',coluna:'nova',responsavel:'rapha',casamento_id:c.id,casamento_nome:c.nome,assessora_id:aId,assessora_nome:aNome,periodo_de:v('va-data-chegada'),periodo_ate:v('va-data-saida'),servicos:servStr,solicitacao:v('va-obs')})
     if(error){alert('Erro: '+error.message);reset();return}
-    // Escalada no casamento
     await sb.from('casamento_assessoras').upsert({casamento_id:c.id,assessora_id:aId,periodo_inicio:v('va-data-chegada'),periodo_fim:v('va-data-saida')},{onConflict:'casamento_id,assessora_id'})
-    // Solicitação de viagem
     await sb.from('solicitacoes_viagem').insert({casamento_id:c.id,assessora_id:aId,data_chegada:v('va-data-chegada'),hora_chegada:v('va-hora-chegada')||null,data_saida:v('va-data-saida'),hora_saida:v('va-hora-saida')||null,cidade_saida:v('va-cidade')||null,status_passagem:servicos.voo?'pendente':null,status_transfer:servicos.transfer?'pendente':null,status_hotel:servicos.hospedagem?'pendente':null,obs:v('va-obs')})
     reset();go('p-sucesso');return
+  }
 
-  }else if(tipo==='rapha-convidado'){
+  let row={}
+  if(tipo==='rapha-convidado'){
     const c=cas('rc-cas')
     if(!c.id){alert('Selecione o casamento!');reset();return}
     if(!v('rc-nome')){alert('Preencha o nome!');reset();return}
     if(!v('rc-sol')){alert('Descreva a solicitação!');reset();return}
     row={tipo:'atendimento_convidado',responsavel:'rapha',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('rc-nome'),convidado_telefone:v('rc-tel')||null,solicitacao:v('rc-sol')}
-
   }else if(tipo==='rapha-passeio'){
     const c=cas('rp-cas')
     if(!c.id){alert('Selecione o casamento!');reset();return}
     if(!v('rp-sol')){alert('Descreva a solicitação!');reset();return}
     row={tipo:'passeio',responsavel:'rapha',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,solicitacao:v('rp-sol')}
-
   }else if(tipo==='mari'){
     const c=cas('mc-cas')
     if(!c.id){alert('Selecione o casamento!');reset();return}
@@ -322,22 +307,18 @@ async function enviar(tipo){
     if(!urgSel){alert('Selecione a urgência!');reset();return}
     const urgLabel={alta:'🔴 Alta',media:'🟡 Média',baixa:'🟢 Baixa'}[urgSel]
     row={tipo:'operacional',responsavel:'mari',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('mc-nome'),convidado_telefone:v('mc-tel')||null,solicitacao:v('mc-sol'),servicos:urgLabel}
-
   }else if(tipo==='ju-comunicacao'){
     const c=cas('jc-cas')
     if(!c.id||!v('jc-nome')){alert('Preencha os campos!');reset();return}
     row={tipo:'ju_comunicacao',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('jc-nome'),convidado_telefone:v('jc-tel')||null,servicos:'📢 Adicionar na comunicação'}
-
   }else if(tipo==='ju-reserva'){
     const c=cas('jr-cas')
     if(!c.id||!v('jr-nome')){alert('Preencha os campos!');reset();return}
     row={tipo:'ju_reserva',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('jr-nome'),convidado_telefone:v('jr-tel')||null,solicitacao:v('jr-obs'),servicos:'🏨 Reenviar confirmação de reserva'}
-
   }else if(tipo==='ju-diaria'){
     const c=cas('jd-cas')
     if(!c.id||!v('jd-nome')){alert('Preencha os campos!');reset();return}
     row={tipo:'ju_diaria',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('jd-nome'),convidado_telefone:v('jd-tel')||null,solicitacao:v('jd-obs'),servicos:'📞 Diária extra'}
-
   }else if(tipo==='ju-atendimento'){
     const c=cas('ja-cas')
     if(!c.id||!v('ja-nome')){alert('Preencha os campos!');reset();return}
@@ -352,8 +333,7 @@ async function carregarCasamentos(){
   const{data}=await sb.from('casamentos').select('id,nome').neq('status','Cancelado').neq('status','Concluído').order('nome',{ascending:true})
   const opts=(data||[]).map(c=>`<option value="${c.id}" data-nome="${c.nome}">${c.nome}</option>`).join('')
   ;['rc-cas','rp-cas','mc-cas','jc-cas','jr-cas','jd-cas','ja-cas','va-cas'].forEach(id=>{
-    const el=document.getElementById(id)
-    if(el)el.innerHTML='<option value="">Selecionar casamento...</option>'+opts
+    const el=document.getElementById(id);if(el)el.innerHTML='<option value="">Selecionar casamento...</option>'+opts
   })
 }
 
@@ -365,68 +345,6 @@ async function carregarAssessoras(){
 
 carregarCasamentos()
 carregarAssessoras()
-    const c=cas('rc-cas')
-    if(!c.id){alert('Selecione o casamento!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
-    if(!v('rc-nome')){alert('Preencha o nome!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
-    if(!v('rc-sol')){alert('Descreva a solicitação!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
-    row={tipo:'atendimento_convidado',responsavel:'rapha',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('rc-nome'),convidado_telefone:v('rc-tel')||null,solicitacao:v('rc-sol')}
-
-  }else if(tipo==='rapha-passeio'){
-    const c=cas('rp-cas')
-    if(!c.id){alert('Selecione o casamento!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
-    if(!v('rp-sol')){alert('Descreva a solicitação!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
-    row={tipo:'passeio',responsavel:'rapha',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,solicitacao:v('rp-sol')}
-
-  }else if(tipo==='mari'){
-    const c=cas('mc-cas')
-    if(!c.id){alert('Selecione o casamento!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
-    if(!v('mc-nome')){alert('Preencha o nome!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
-    if(!v('mc-sol')){alert('Descreva a solicitação!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
-    if(!urgSel){alert('Selecione a urgência!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
-    const urgLabel={alta:'🔴 Alta',media:'🟡 Média',baixa:'🟢 Baixa'}[urgSel]
-    row={tipo:'operacional',responsavel:'mari',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('mc-nome'),convidado_telefone:v('mc-tel')||null,solicitacao:v('mc-sol'),servicos:urgLabel}
-
-  }else if(tipo==='ju-comunicacao'){
-    const c=cas('jc-cas')
-    if(!c.id){alert('Selecione o casamento!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
-    if(!v('jc-nome')){alert('Preencha o nome!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
-    row={tipo:'ju_comunicacao',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('jc-nome'),convidado_telefone:v('jc-tel')||null,servicos:'📢 Adicionar na comunicação'}
-
-  }else if(tipo==='ju-reserva'){
-    const c=cas('jr-cas')
-    if(!c.id){alert('Selecione o casamento!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
-    if(!v('jr-nome')){alert('Preencha o nome!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
-    row={tipo:'ju_reserva',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('jr-nome'),convidado_telefone:v('jr-tel')||null,solicitacao:v('jr-obs'),servicos:'🏨 Reenviar confirmação de reserva'}
-
-  }else if(tipo==='ju-diaria'){
-    const c=cas('jd-cas')
-    if(!c.id){alert('Selecione o casamento!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
-    if(!v('jd-nome')){alert('Preencha o nome!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
-    row={tipo:'ju_diaria',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('jd-nome'),convidado_telefone:v('jd-tel')||null,solicitacao:v('jd-obs'),servicos:'📞 Diária extra'}
-
-  }else if(tipo==='ju-atendimento'){
-    const c=cas('ja-cas')
-    if(!c.id){alert('Selecione o casamento!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
-    if(!v('ja-nome')){alert('Preencha o nome!');btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'});return}
-    row={tipo:'ju_atendimento',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('ja-nome'),convidado_telefone:v('ja-tel')||null,solicitacao:v('ja-obs'),servicos:'👥 Atendimento a convidado'}
-  }
-
-  await sb.from('solicitacoes_kanban').insert(row)
-  btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'})
-  go('p-sucesso')
-}
-
-async function carregarCasamentos(){
-  const hoje=new Date().toISOString().split('T')[0]
-  const{data}=await sb.from('casamentos').select('id,nome,plan_data').neq('status','Cancelado').neq('status','Concluído').order('nome',{ascending:true})
-  const opts=(data||[]).map(c=>`<option value="${c.id}" data-nome="${c.nome}">${c.nome}</option>`).join('')
-  ;['rc-cas','rp-cas','mc-cas','jc-cas','jr-cas','jd-cas','ja-cas'].forEach(id=>{
-    const el=document.getElementById(id)
-    if(el)el.innerHTML='<option value="">Selecionar casamento...</option>'+opts
-  })
-}
-
-carregarCasamentos()
 </script>
 </body>
 </html>
