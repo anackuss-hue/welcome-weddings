@@ -49,6 +49,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .btn-send{width:100%;padding:15px;border-radius:10px;background:var(--gold);color:#fff;border:none;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;transition:background .15s}
 .btn-send:hover{background:var(--gold-light)}
 .btn-send:disabled{opacity:.6;cursor:not-allowed}
+.autocomplete-wrap{position:relative}
+.autocomplete-input{width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border .15s;background:#fff;color:var(--text)}
+.autocomplete-input:focus{border-color:var(--gold)}
+.autocomplete-drop{position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid var(--gold-border);border-radius:10px;max-height:220px;overflow-y:auto;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,.08);display:none}
+.autocomplete-drop.open{display:block}
+.autocomplete-item{padding:10px 14px;cursor:pointer;font-size:14px;border-bottom:1px solid #f5f0e8}
+.autocomplete-item:last-child{border-bottom:none}
+.autocomplete-item:hover{background:var(--gold-pale);color:var(--gold)}
 .serv-card{border:1.5px solid var(--border);border-radius:12px;padding:14px 8px;cursor:pointer;text-align:center;transition:all .15s;background:#fff}
 .serv-card:hover{border-color:var(--gold);background:var(--gold-pale)}
 .serv-card.sel{border-color:var(--gold);background:var(--gold-pale)}
@@ -118,7 +126,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <div class="form-icon" style="background:var(--gold-pale)">🧳</div>
       <div><div class="form-title">Viagem de Assessora</div><div class="form-sub">Rapha · Preencha os dados da viagem</div></div>
     </div>
-    <div class="f"><label>Casamento <span style="color:#c0392b">*</span></label><select id="va-cas"><option value="">Selecionar...</option></select></div>
+    <div class="f"><label>Casamento <span style="color:#c0392b">*</span></label><div class="autocomplete-wrap"><input class="autocomplete-input" id="va-cas-txt" placeholder="Digite o nome do casamento..." oninput="filterCas('va-cas',this.value)" autocomplete="off"><input type="hidden" id="va-cas"><div class="autocomplete-drop" id="drop-va-cas"></div></div></div>
     <div class="f"><label>Assessora <span style="color:#c0392b">*</span></label><select id="va-assessora"><option value="">Selecionar assessora...</option></select></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
       <div class="f"><label>📅 Data de chegada <span style="color:#c0392b">*</span></label><input id="va-data-chegada" type="date"></div>
@@ -146,7 +154,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <div class="form-icon" style="background:#e3f2fd">👥</div>
       <div><div class="form-title">Atendimento a Convidado</div><div class="form-sub">Rapha</div></div>
     </div>
-    <div class="f"><label>Casamento</label><select id="rc-cas"><option value="">Selecionar...</option></select></div>
+    <div class="f"><label>Casamento</label><div class="autocomplete-wrap"><input class="autocomplete-input" id="rc-cas-txt" placeholder="Digite o nome do casamento..." oninput="filterCas('rc-cas',this.value)" autocomplete="off"><input type="hidden" id="rc-cas"><div class="autocomplete-drop" id="drop-rc-cas"></div></div></div>
     <div class="f"><label>Nome do Convidado</label><input id="rc-nome" placeholder="Nome completo"></div>
     <div class="f"><label>Telefone</label><input id="rc-tel" placeholder="+55 (00) 00000-0000" type="tel"></div>
     <div class="f"><label>Solicitação</label><textarea id="rc-sol" placeholder="Descreva o que o convidado precisa..."></textarea></div>
@@ -160,7 +168,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <div class="form-icon" style="background:#e8f5e9">🗺️</div>
       <div><div class="form-title">Solicitação de Passeio</div><div class="form-sub">Rapha</div></div>
     </div>
-    <div class="f"><label>Casamento</label><select id="rp-cas"><option value="">Selecionar...</option></select></div>
+    <div class="f"><label>Casamento</label><div class="autocomplete-wrap"><input class="autocomplete-input" id="rp-cas-txt" placeholder="Digite o nome do casamento..." oninput="filterCas('rp-cas',this.value)" autocomplete="off"><input type="hidden" id="rp-cas"><div class="autocomplete-drop" id="drop-rp-cas"></div></div></div>
     <div class="f"><label>Solicitação</label><textarea id="rp-sol" placeholder="Descreva o passeio ou atividade..."></textarea></div>
     <button class="btn-send" onclick="enviar('rapha-passeio')">Enviar Solicitação</button>
   </div>
@@ -172,7 +180,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <div class="form-icon" style="background:#fdf3e0">📋</div>
       <div><div class="form-title">Solicitação de Operacional</div><div class="form-sub">Mari</div></div>
     </div>
-    <div class="f"><label>Casamento</label><select id="mc-cas"><option value="">Selecionar...</option></select></div>
+    <div class="f"><label>Casamento</label><div class="autocomplete-wrap"><input class="autocomplete-input" id="mc-cas-txt" placeholder="Digite o nome do casamento..." oninput="filterCas('mc-cas',this.value)" autocomplete="off"><input type="hidden" id="mc-cas"><div class="autocomplete-drop" id="drop-mc-cas"></div></div></div>
     <div class="f"><label>Nome do Convidado Solicitante</label><input id="mc-nome" placeholder="Nome completo"></div>
     <div class="f"><label>Telefone</label><input id="mc-tel" placeholder="+55 (00) 00000-0000" type="tel"></div>
     <div class="f"><label>Solicitação</label><textarea id="mc-sol" placeholder="Descreva o que precisa..."></textarea></div>
@@ -203,7 +211,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="page" id="p-ju-com">
     <button class="back" onclick="go('p-tipo-ju')">← Voltar</button>
     <div class="form-header"><div class="form-icon" style="background:#fff3e0">📢</div><div><div class="form-title">Adicionar na comunicação</div><div class="form-sub">Juliana</div></div></div>
-    <div class="f"><label>Casamento</label><select id="jc-cas"><option value="">Selecionar...</option></select></div>
+    <div class="f"><label>Casamento</label><div class="autocomplete-wrap"><input class="autocomplete-input" id="jc-cas-txt" placeholder="Digite o nome do casamento..." oninput="filterCas('jc-cas',this.value)" autocomplete="off"><input type="hidden" id="jc-cas"><div class="autocomplete-drop" id="drop-jc-cas"></div></div></div>
     <div class="f"><label>Nome do Convidado</label><input id="jc-nome" placeholder="Nome completo"></div>
     <div class="f"><label>Número do Convidado</label><input id="jc-tel" placeholder="+55 (00) 00000-0000" type="tel"></div>
     <button class="btn-send" onclick="enviar('ju-comunicacao')">Enviar Solicitação</button>
@@ -213,7 +221,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="page" id="p-ju-res">
     <button class="back" onclick="go('p-tipo-ju')">← Voltar</button>
     <div class="form-header"><div class="form-icon" style="background:#e8f5e9">🏨</div><div><div class="form-title">Reenviar confirmação de reserva</div><div class="form-sub">Juliana</div></div></div>
-    <div class="f"><label>Casamento</label><select id="jr-cas"><option value="">Selecionar...</option></select></div>
+    <div class="f"><label>Casamento</label><div class="autocomplete-wrap"><input class="autocomplete-input" id="jr-cas-txt" placeholder="Digite o nome do casamento..." oninput="filterCas('jr-cas',this.value)" autocomplete="off"><input type="hidden" id="jr-cas"><div class="autocomplete-drop" id="drop-jr-cas"></div></div></div>
     <div class="f"><label>Nome do Convidado</label><input id="jr-nome" placeholder="Nome completo"></div>
     <div class="f"><label>Número do Convidado</label><input id="jr-tel" placeholder="+55 (00) 00000-0000" type="tel"></div>
     <div class="f"><label>Observações</label><textarea id="jr-obs" placeholder="Informações adicionais..."></textarea></div>
@@ -224,7 +232,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="page" id="p-ju-dia">
     <button class="back" onclick="go('p-tipo-ju')">← Voltar</button>
     <div class="form-header"><div class="form-icon" style="background:#e3f2fd">📞</div><div><div class="form-title">Contato para diária extra</div><div class="form-sub">Juliana</div></div></div>
-    <div class="f"><label>Casamento</label><select id="jd-cas"><option value="">Selecionar...</option></select></div>
+    <div class="f"><label>Casamento</label><div class="autocomplete-wrap"><input class="autocomplete-input" id="jd-cas-txt" placeholder="Digite o nome do casamento..." oninput="filterCas('jd-cas',this.value)" autocomplete="off"><input type="hidden" id="jd-cas"><div class="autocomplete-drop" id="drop-jd-cas"></div></div></div>
     <div class="f"><label>Nome do Convidado</label><input id="jd-nome" placeholder="Nome completo"></div>
     <div class="f"><label>Número do Convidado</label><input id="jd-tel" placeholder="+55 (00) 00000-0000" type="tel"></div>
     <div class="f"><label>Observações</label><textarea id="jd-obs" placeholder="Informações adicionais..."></textarea></div>
@@ -235,7 +243,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="page" id="p-ju-ate">
     <button class="back" onclick="go('p-tipo-ju')">← Voltar</button>
     <div class="form-header"><div class="form-icon" style="background:#fdecea">👥</div><div><div class="form-title">Atendimento a convidado</div><div class="form-sub">Juliana</div></div></div>
-    <div class="f"><label>Casamento</label><select id="ja-cas"><option value="">Selecionar...</option></select></div>
+    <div class="f"><label>Casamento</label><div class="autocomplete-wrap"><input class="autocomplete-input" id="ja-cas-txt" placeholder="Digite o nome do casamento..." oninput="filterCas('ja-cas',this.value)" autocomplete="off"><input type="hidden" id="ja-cas"><div class="autocomplete-drop" id="drop-ja-cas"></div></div></div>
     <div class="f"><label>Nome do Convidado</label><input id="ja-nome" placeholder="Nome completo"></div>
     <div class="f"><label>Número do Convidado</label><input id="ja-tel" placeholder="+55 (00) 00000-0000" type="tel"></div>
     <div class="f"><label>Observações</label><textarea id="ja-obs" placeholder="Informações adicionais..."></textarea></div>
@@ -266,7 +274,7 @@ function go(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove
 function selUrg(v){urgSel=v;['alta','media','baixa'].forEach(u=>{document.getElementById('urg-'+u).className='urg-opt'+(v===u?' sel-'+u:'')})}
 
 function v(id){return document.getElementById(id)?.value?.trim()||''}
-function cas(id){const el=document.getElementById(id);return{id:el?.value,nome:el?.options[el.selectedIndex]?.dataset.nome||''}}
+function cas(id){const el=document.getElementById(id);const txt=document.getElementById(id+'-txt');return{id:el?.value,nome:txt?.value||''}}
 
 async function enviar(tipo){
   const btns=document.querySelectorAll('.btn-send')
@@ -329,13 +337,31 @@ async function enviar(tipo){
   reset();go('p-sucesso')
 }
 
+let _casData=[]
 async function carregarCasamentos(){
   const{data}=await sb.from('casamentos').select('id,nome').neq('status','Cancelado').neq('status','Concluído').order('nome',{ascending:true})
-  const opts=(data||[]).map(c=>`<option value="${c.id}" data-nome="${c.nome}">${c.nome}</option>`).join('')
-  ;['rc-cas','rp-cas','mc-cas','jc-cas','jr-cas','jd-cas','ja-cas','va-cas'].forEach(id=>{
-    const el=document.getElementById(id);if(el)el.innerHTML='<option value="">Selecionar casamento...</option>'+opts
-  })
+  _casData=data||[]
 }
+
+function filterCas(prefix,q){
+  const drop=document.getElementById('drop-'+prefix)
+  if(!drop)return
+  const filtered=q.length<1?[]:_casData.filter(c=>c.nome.toLowerCase().includes(q.toLowerCase())).slice(0,15)
+  if(!filtered.length){drop.classList.remove('open');return}
+  drop.innerHTML=filtered.map(c=>`<div class="autocomplete-item" onclick="selCas('${prefix}','${c.id}','${c.nome.replace(/'/g,"\\'")}',this)">${c.nome}</div>`).join('')
+  drop.classList.add('open')
+}
+
+function selCas(prefix,id,nome,el){
+  document.getElementById(prefix).value=id
+  document.getElementById(prefix+'-txt').value=nome
+  document.getElementById('drop-'+prefix).classList.remove('open')
+}
+
+// Fechar dropdown ao clicar fora
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.autocomplete-wrap'))document.querySelectorAll('.autocomplete-drop').forEach(d=>d.classList.remove('open'))
+})
 
 async function carregarAssessoras(){
   const{data}=await sb.from('assessoras').select('id,nome,cidade').order('nome',{ascending:true})
