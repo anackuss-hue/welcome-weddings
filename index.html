@@ -620,7 +620,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="tc" id="tab-assess">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
         <div id="assess-count" style="font-size:13px;color:#666"></div>
-        <button class="btn bg bsm" onclick="togglePicker()">+ Escalar Assessora</button>
+        
       </div>
       <div id="escaladas-list"></div>
       <div id="picker-container" style="display:none"></div>
@@ -1687,7 +1687,7 @@ async function renderEscaladas(){
   const list=document.getElementById('escaladas-list')
   document.getElementById('assess-count').textContent=escaladas.length+' assessora(s) escalada(s)'
   if(!escaladas.length){list.innerHTML='<div class="em" style="padding:30px"><div class="em-t">Nenhuma assessora escalada</div></div>'}
-  else{list.innerHTML=escaladas.map(e=>`<div class="ai"><div class="aih"><div style="display:flex;align-items:center;gap:10px"><div class="av">${(e.assessora?.nome||'?')[0]}</div><div><div style="font-weight:600;font-size:14px">${e.assessora?.nome||'—'}</div><div style="font-size:12px;color:#888">${e.assessora?.cidade||''}</div></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn bg bsm" onclick="abrirSolicitacao('${e.id}')">✈️ Solicitar</button><button class="btn bd bsm" onclick="removeEscalada('${e.id}')">Remover</button></div></div>
+  else{list.innerHTML=escaladas.map(e=>`<div class="ai"><div class="aih"><div style="display:flex;align-items:center;gap:10px"><div class="av">${(e.assessora?.nome||'?')[0]}</div><div><div style="font-weight:600;font-size:14px">${e.assessora?.nome||'—'}</div></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn bg bsm" onclick="abrirSolicitacao('${e.id}')">✈️ Solicitar</button><button class="btn bd bsm" onclick="removeEscalada('${e.id}')">Remover</button></div></div>
     <div style="margin-top:12px;padding:10px 12px;background:#fff;border-radius:8px;border:1px solid var(--gold-border)">
       <div style="font-size:10px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">📅 Período de Ocupação</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
@@ -1743,7 +1743,7 @@ function renderPickerIfOpen(){
 }
 async function escalarA(aid,cidade){
   if(!casamentoAtual?.id)return
-  await sb.from('casamento_assessoras').insert({casamento_id:casamentoAtual.id,assessora_id:aid,cidade_saida:cidade,data_ida:'',data_volta:'',bilhete_emitido:false})
+  await sb.from('casamento_assessoras').insert({casamento_id:casamentoAtual.id,assessora_id:aid,periodo_inicio:casamentoAtual.plan_data||null,periodo_fim:casamentoAtual.plan_data||null,bilhete_emitido:false})
   pickerOpen=false;renderEscaladas()
 }
 async function renderProdAssessoras(){
