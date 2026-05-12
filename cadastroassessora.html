@@ -183,6 +183,34 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     </div>
 
     <div class="sec">
+      <div class="sec-title">Passaporte Europeu</div>
+      <div class="doc-toggle">
+        <div class="doc-opt" id="passeu-tem" onclick="toggleDoc('passeu','tem')">✅ Tenho</div>
+        <div class="doc-opt sel" id="passeu-nao" onclick="toggleDoc('passeu','nao')">❌ Não tenho</div>
+      </div>
+      <div id="passeu-fields" style="display:none">
+        <div class="g2">
+          <div class="f"><label>Número <span class="req">*</span></label><input id="a-passeu-num" placeholder="Ex: AA123456"></div>
+          <div class="f"><label>Validade <span class="req">*</span></label><input id="a-passeu-val" type="date"></div>
+          <div class="f" style="grid-column:1/-1"><label>País Emissor <span class="req">*</span></label><input id="a-passeu-pais" placeholder="Ex: Portugal, Itália, Espanha..."></div>
+          <div class="f" style="grid-column:1/-1"><label>Anexo do Passaporte Europeu <span class="req">*</span></label>
+            <div class="upload-area" onclick="document.getElementById('file-passeu').click()">
+              <input type="file" id="file-passeu" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="handleUpload(this,'passeu-preview')">
+              <div id="passeu-preview" class="upload-preview">📎 Clique para anexar (PDF ou imagem)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">Outras Documentações</div>
+      <div class="f">
+        <textarea id="a-outras-docs" placeholder="Ex: Visto mexicano (validade: 10/2026), Passaporte japonês..." style="min-height:80px"></textarea>
+      </div>
+    </div>
+
+    <div class="sec">
       <div class="sec-title">Saúde</div>
       <div class="tr-row" onclick="toggleFebre()">
         <div class="tr-track" id="track-febre"><div class="tr-thumb"></div></div>
@@ -260,9 +288,9 @@ const sb=createClient('https://yrnlfarricrhtfomwynd.supabase.co','eyJhbGciOiJIUz
 
 let etapaAtual=1
 let febreAmarela=false
-let temPassaporte=true, temVisto=true
+let temPassaporte=true, temVisto=true, temPassaporteEu=false
 let idiomas={ingles:false,espanhol:false,frances:false,italiano:false}
-let arquivos={pass:null,visto:null}
+let arquivos={pass:null,visto:null,passeu:null}
 
 function v(id){return(document.getElementById(id)?.value||'').trim()}
 
@@ -312,9 +340,9 @@ function validarEtapa(n){
       if(!v('a-pass-num')||!v('a-pass-val')||!v('a-pass-pais')){alert('Preencha todos os dados do passaporte!');return false}
       if(!arquivos.pass){alert('Anexe uma foto ou PDF do passaporte!');return false}
     }
-    if(temVisto){
-      if(!v('a-visto-num')||!v('a-visto-val')||!v('a-visto-pais')){alert('Preencha todos os dados do visto!');return false}
-      if(!arquivos.visto){alert('Anexe uma foto ou PDF do visto!');return false}
+    if(temPassaporteEu){
+      if(!v('a-passeu-num')||!v('a-passeu-val')||!v('a-passeu-pais')){alert('Preencha todos os dados do passaporte europeu!');return false}
+      if(!arquivos.passeu){alert('Anexe uma foto ou PDF do passaporte europeu!');return false}
     }
   }
   if(n===4){
@@ -336,11 +364,16 @@ function toggleDoc(doc,opcao){
     document.getElementById('pass-tem').classList.toggle('sel',temPassaporte)
     document.getElementById('pass-nao').classList.toggle('sel',!temPassaporte)
     document.getElementById('pass-fields').style.display=temPassaporte?'block':'none'
-  }else{
+  }else if(doc==='visto'){
     temVisto=opcao==='tem'
     document.getElementById('visto-tem').classList.toggle('sel',temVisto)
     document.getElementById('visto-nao').classList.toggle('sel',!temVisto)
     document.getElementById('visto-fields').style.display=temVisto?'block':'none'
+  }else if(doc==='passeu'){
+    temPassaporteEu=opcao==='tem'
+    document.getElementById('passeu-tem').classList.toggle('sel',temPassaporteEu)
+    document.getElementById('passeu-nao').classList.toggle('sel',!temPassaporteEu)
+    document.getElementById('passeu-fields').style.display=temPassaporteEu?'block':'none'
   }
 }
 
@@ -371,6 +404,8 @@ async function enviarCadastro(){
   }
   if(temPassaporte&&arquivos.pass)passUrl=await uploadFile(arquivos.pass,'passaporte')
   if(temVisto&&arquivos.visto)vistoUrl=await uploadFile(arquivos.visto,'visto')
+  let passeuUrl=null
+  if(temPassaporteEu&&arquivos.passeu)passeuUrl=await uploadFile(arquivos.passeu,'passaporte-europeu')
 
   const dados={
     nome:v('a-nome'),
@@ -390,6 +425,11 @@ async function enviarCadastro(){
     visto_validade:temVisto?v('a-visto-val')||null:null,
     visto_pais:temVisto?v('a-visto-pais'):null,
     visto_anexo:vistoUrl||null,
+    passaporte_eu_numero:temPassaporteEu?v('a-passeu-num'):null,
+    passaporte_eu_validade:temPassaporteEu?v('a-passeu-val')||null:null,
+    passaporte_eu_pais:temPassaporteEu?v('a-passeu-pais'):null,
+    passaporte_eu_anexo:passeuUrl||null,
+    outras_documentacoes:v('a-outras-docs')||null,
     febre_amarela:febreAmarela,
     ingles:idiomas.ingles,
     espanhol:idiomas.espanhol,
