@@ -67,7 +67,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .ic-flag{font-size:28px;line-height:1;font-family:apple color emoji,segoe ui emoji,noto color emoji,sans-serif}.ic-name{font-size:13px;font-weight:600;color:#666}
 .ic-card.on .ic-name{color:var(--gold)}
 /* ══ BADGES DOCUMENTO ══ */
-.upload-area{border:2px dashed var(--gold-border);border-radius:10px;padding:28px;text-align:center;cursor:pointer;background:var(--gold-pale);transition:all .15s}
+.kc-pri{background:none;border:1.5px solid var(--border);border-radius:8px;padding:4px 8px;cursor:pointer;font-size:16px;transition:all .15s}
+.kc-pri.ativo{border-color:var(--gold);background:var(--gold-pale);transform:scale(1.1)}
+.kc-nota-item{background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:8px;padding:10px 12px;margin-bottom:8px}
+.kc-nota-texto{font-size:13px;color:var(--text);margin-bottom:4px}
+.kc-nota-meta{font-size:11px;color:var(--muted)}
+.kc-check-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;border:1px solid var(--border);margin-bottom:6px;background:var(--white)}
+.kc-check-item.feito{background:#f9f9f9;opacity:.7}
+.kc-check-cb{width:16px;height:16px;cursor:pointer;accent-color:var(--gold);flex-shrink:0}
+.kc-check-txt{flex:1;font-size:13px}
+.kc-check-item.feito .kc-check-txt{text-decoration:line-through;color:var(--muted)}
+.kc-check-del{background:none;border:none;cursor:pointer;color:#ccc;font-size:14px;padding:0;line-height:1}
+.kc-check-del:hover{color:var(--red)}border-radius:10px;padding:28px;text-align:center;cursor:pointer;background:var(--gold-pale);transition:all .15s}
 .upload-area:hover,.upload-area.drag{border-color:var(--gold);background:#fdf3e0}
 .upload-area input[type=file]{display:none}
 .anexo-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#fff;border:1px solid var(--border);border-radius:8px;margin-bottom:8px}
@@ -1095,23 +1106,80 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 <!-- MODAL KANBAN CARD DETALHE -->
 <div class="mo" id="modal-kanban-card">
-  <div class="mb" style="max-width:480px">
-    <div class="mh"><div><div class="mt" id="kc-title">Solicitação</div><div class="ms" id="kc-criado"></div></div><button class="mcl" onclick="closeModal('modal-kanban-card')">✕</button></div>
-    <div style="font-size:15px;font-weight:600;margin-bottom:14px" id="kc-nome"></div>
-    <div id="kc-detalhes" style="margin-bottom:20px"></div>
-    <div class="f"><label>Mover para coluna</label>
-      <select id="kc-coluna" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
-        <option value="nova">Nova solicitação</option>
-        <option value="andamento">Em andamento / Contato</option>
-        <option value="orcamento">Orçamento / Aguardando</option>
-        <option value="ganho">Ganho</option>
-        <option value="perdido">Perdido</option>
-      </select>
+  <div class="mb" style="max-width:600px;max-height:90vh;overflow-y:auto">
+    <!-- Header -->
+    <div class="mh" style="position:sticky;top:0;background:var(--white);z-index:10;border-bottom:1px solid var(--border);padding-bottom:14px;margin-bottom:0">
+      <div style="flex:1">
+        <div class="mt" id="kc-title">Solicitação</div>
+        <div class="ms" id="kc-criado"></div>
+      </div>
+      <button class="mcl" onclick="closeModal('modal-kanban-card')">✕</button>
     </div>
-    <div class="mf">
+
+    <div style="padding-top:16px">
+      <!-- Nome + Prioridade -->
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+        <div style="font-size:16px;font-weight:600" id="kc-nome"></div>
+        <div style="display:flex;gap:6px">
+          <button class="kc-pri" id="kcp-alta" onclick="setPrioridade('alta')" title="Alta">🔴</button>
+          <button class="kc-pri" id="kcp-media" onclick="setPrioridade('media')" title="Média">🟡</button>
+          <button class="kc-pri" id="kcp-baixa" onclick="setPrioridade('baixa')" title="Baixa">🟢</button>
+        </div>
+      </div>
+
+      <!-- Detalhes originais editáveis -->
+      <div id="kc-detalhes" style="margin-bottom:20px;padding:14px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:10px"></div>
+
+      <!-- Editar solicitação -->
+      <div class="f" style="margin-bottom:16px">
+        <label>✏️ Solicitação / Descrição</label>
+        <textarea id="kc-sol-edit" placeholder="Edite a solicitação..." style="min-height:70px"></textarea>
+      </div>
+
+      <!-- Mover coluna -->
+      <div class="f" style="margin-bottom:20px">
+        <label>📂 Coluna</label>
+        <select id="kc-coluna" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none"></select>
+      </div>
+
+      <!-- Checklist -->
+      <div style="margin-bottom:20px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div style="font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.5px;text-transform:uppercase">✅ Checklist</div>
+          <div id="kc-check-progress" style="font-size:11px;color:var(--muted)"></div>
+        </div>
+        <div id="kc-checklist"></div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <input id="kc-check-input" placeholder="Nova tarefa..." style="flex:1;padding:8px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none" onkeydown="if(event.key==='Enter')adicionarCheck()">
+          <button class="btn bg bsm" onclick="adicionarCheck()">+ Adicionar</button>
+        </div>
+      </div>
+
+      <!-- Notas -->
+      <div style="margin-bottom:20px">
+        <div style="font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px">💬 Notas</div>
+        <div id="kc-notas" style="margin-bottom:10px"></div>
+        <div style="display:flex;gap:8px">
+          <input id="kc-nota-input" placeholder="Adicionar nota..." style="flex:1;padding:8px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none" onkeydown="if(event.key==='Enter')adicionarNota()">
+          <button class="btn bg bsm" onclick="adicionarNota()">Enviar</button>
+        </div>
+      </div>
+
+      <!-- Anexos -->
+      <div style="margin-bottom:20px">
+        <div style="font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px">📎 Anexos</div>
+        <div id="kc-anexos"></div>
+        <div class="upload-area" style="margin-top:8px" onclick="document.getElementById('kc-file-input').click()">
+          <input type="file" id="kc-file-input" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx" style="display:none" onchange="uploadAnexoKanban(this)">
+          <div style="font-size:12px;color:var(--muted)">📎 Clique para anexar arquivos</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mf" style="position:sticky;bottom:0;background:var(--white);border-top:1px solid var(--border);padding-top:12px;margin-top:0">
       <button class="btn bd" onclick="deletarKanbanCard()">Remover</button>
       <button class="btn bo" onclick="closeModal('modal-kanban-card')">Fechar</button>
-      <button class="btn bg" onclick="moverKanbanCard()">Salvar</button>
+      <button class="btn bg" onclick="salvarKanbanCard()">Salvar</button>
     </div>
   </div>
 </div>
@@ -2714,7 +2782,10 @@ function renderKanbanCard(k){
   const dt=new Date(k.created_at).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})
 
   return`<div class="kb-card" onclick="openKanbanCard('${k.id}')">
-    ${tipoTag}
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px">
+      ${tipoTag}
+      <span style="font-size:13px" title="${k.prioridade||'media'}">${k.prioridade==='alta'?'🔴':k.prioridade==='baixa'?'🟢':'🟡'}</span>
+    </div>
     <div class="kb-card-name">${nome}</div>
     ${tags.length?`<div class="kb-tags">${tags.map(t=>`<span class="kb-tag">${t}</span>`).join('')}</div>`:''}
     <div class="kb-card-meta">
@@ -2726,34 +2797,103 @@ function renderKanbanCard(k){
 
 // Modal de detalhe/edição do card
 let kanbanCardAtual=null
-function openKanbanCard(id){
+
+function setPrioridade(p){
+  kanbanCardAtual._priTemp=p
+  ;['alta','media','baixa'].forEach(x=>document.getElementById('kcp-'+x)?.classList.toggle('ativo',x===p))
+}
+
+async function openKanbanCard(id){
   kanbanCardAtual=kanbanData.find(k=>k.id===id);if(!kanbanCardAtual)return
   const k=kanbanCardAtual
-  const tipoLabel={viagem_assessora:'🧳 Viagem de Assessora',atendimento_convidado:'👥 Atendimento a Convidado',passeio:'🗺️ Passeio'}[k.tipo]||k.tipo
+  const tipoLabel={viagem_assessora:'🧳 Viagem de Assessora',atendimento_convidado:'👥 Atendimento a Convidado',passeio:'🗺️ Passeio',operacional:'📋 Operacional',ju_comunicacao:'📢 Comunicação',ju_reserva:'🏨 Confirmação de Reserva',ju_diaria:'📞 Diária Extra',ju_atendimento:'👥 Atend. Convidado'}[k.tipo]||k.tipo
   document.getElementById('kc-title').textContent=tipoLabel
   document.getElementById('kc-nome').textContent=k.tipo==='viagem_assessora'?`${k.assessora_nome||'?'} — ${k.casamento_nome||'?'}`:k.casamento_nome||'—'
-  document.getElementById('kc-criado').textContent='Criado por '+( k.criado_por||'—')+' em '+new Date(k.created_at).toLocaleDateString('pt-BR')
-  // Preenche detalhes
+  document.getElementById('kc-criado').textContent='Criado por '+(k.criado_por||'—')+' em '+new Date(k.created_at).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})
   const det=document.getElementById('kc-detalhes')
   let html=''
-  if(k.periodo_de)html+=`<div style="margin-bottom:8px"><span style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.5px;text-transform:uppercase">Período</span><div style="font-size:13px;margin-top:3px">${fmtDate(k.periodo_de)} → ${fmtDate(k.periodo_ate)}</div></div>`
-  if(k.servicos)html+=`<div style="margin-bottom:8px"><span style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.5px;text-transform:uppercase">Serviços</span><div style="font-size:13px;margin-top:3px">${k.servicos}</div></div>`
-  if(k.convidado_nome)html+=`<div style="margin-bottom:8px"><span style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.5px;text-transform:uppercase">Convidado</span><div style="font-size:13px;margin-top:3px">${k.convidado_nome}${k.convidado_telefone?' · '+k.convidado_telefone:''}</div></div>`
-  if(k.solicitacao)html+=`<div style="margin-bottom:8px"><span style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.5px;text-transform:uppercase">Solicitação</span><div style="font-size:13px;margin-top:3px;padding:10px;background:var(--gold-pale);border-radius:8px;border:1px solid var(--gold-border)">${k.solicitacao}</div></div>`
-  det.innerHTML=html||'<div style="color:var(--muted);font-size:13px">Sem detalhes adicionais</div>'
-  // Popula select de colunas da aba atual
+  if(k.periodo_de&&k.periodo_ate)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">Período</span><div style="font-size:13px;margin-top:2px">${fmtDate(k.periodo_de)} → ${fmtDate(k.periodo_ate)}</div></div>`
+  if(k.servicos)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">Serviços</span><div style="font-size:13px;margin-top:2px">${k.servicos}</div></div>`
+  if(k.convidado_nome)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">Convidado</span><div style="font-size:13px;margin-top:2px">${k.convidado_nome}${k.convidado_telefone?' · '+k.convidado_telefone:''}</div></div>`
+  det.innerHTML=html||'<div style="font-size:12px;color:var(--muted)">Sem detalhes adicionais</div>'
+  document.getElementById('kc-sol-edit').value=k.solicitacao||''
   const selCol=document.getElementById('kc-coluna')
   const colunas=KB_COLUNAS[k.responsavel]||KB_COLUNAS.rapha
   selCol.innerHTML=colunas.map(c=>`<option value="${c.id}">${c.label}</option>`).join('')
   selCol.value=k.coluna
+  kanbanCardAtual._priTemp=k.prioridade||'media'
+  ;['alta','media','baixa'].forEach(x=>document.getElementById('kcp-'+x)?.classList.toggle('ativo',x===(k.prioridade||'media')))
+  await Promise.all([carregarChecklist(k.id),carregarNotasKanban(k.id),carregarAnexosKanban(k.id)])
   document.getElementById('modal-kanban-card').classList.add('open')
 }
 
-async function moverKanbanCard(){
+async function salvarKanbanCard(){
   if(!kanbanCardAtual)return
   const novaColuna=document.getElementById('kc-coluna').value
-  await sb.from('solicitacoes_kanban').update({coluna:novaColuna}).eq('id',kanbanCardAtual.id)
+  const novaSol=document.getElementById('kc-sol-edit').value
+  const novaPri=kanbanCardAtual._priTemp||'media'
+  await sb.from('solicitacoes_kanban').update({coluna:novaColuna,solicitacao:novaSol,prioridade:novaPri}).eq('id',kanbanCardAtual.id)
   closeModal('modal-kanban-card');loadKanban()
+}
+
+async function moverKanbanCard(){await salvarKanbanCard()}
+
+// ── CHECKLIST ──
+async function carregarChecklist(cardId){
+  const{data}=await sb.from('kanban_checklist').select('*').eq('card_id',cardId).order('created_at',{ascending:true})
+  const con=document.getElementById('kc-checklist')
+  const total=(data||[]).length,feitos=(data||[]).filter(c=>c.feito).length
+  document.getElementById('kc-check-progress').textContent=total?`${feitos}/${total} concluídas`:''
+  con.innerHTML=(data||[]).map(c=>`<div class="kc-check-item${c.feito?' feito':''}" id="chi-${c.id}">
+    <input type="checkbox" class="kc-check-cb" ${c.feito?'checked':''} onchange="toggleCheck('${c.id}',this.checked)">
+    <span class="kc-check-txt">${c.texto}</span>
+    <button class="kc-check-del" onclick="deletarCheck('${c.id}')">✕</button>
+  </div>`).join('')||'<div style="font-size:12px;color:var(--muted);padding:8px 0">Nenhuma tarefa ainda</div>'
+}
+
+async function adicionarCheck(){
+  const inp=document.getElementById('kc-check-input')
+  const txt=inp.value.trim();if(!txt||!kanbanCardAtual)return
+  await sb.from('kanban_checklist').insert({card_id:kanbanCardAtual.id,texto:txt,feito:false,criado_por:usuarioAtual?.nome})
+  inp.value='';carregarChecklist(kanbanCardAtual.id)
+}
+
+async function toggleCheck(id,feito){
+  await sb.from('kanban_checklist').update({feito}).eq('id',id)
+  document.getElementById('chi-'+id)?.classList.toggle('feito',feito)
+  setTimeout(()=>carregarChecklist(kanbanCardAtual.id),300)
+}
+
+async function deletarCheck(id){
+  await sb.from('kanban_checklist').delete().eq('id',id)
+  carregarChecklist(kanbanCardAtual.id)
+}
+
+// ── NOTAS ──
+async function carregarNotasKanban(cardId){
+  const{data}=await sb.from('kanban_notas').select('*').eq('card_id',cardId).order('created_at',{ascending:false})
+  const con=document.getElementById('kc-notas')
+  con.innerHTML=(data||[]).map(n=>`<div class="kc-nota-item">
+    <div class="kc-nota-texto">${n.texto}</div>
+    <div class="kc-nota-meta">${n.criado_por||'—'} · ${new Date(n.created_at).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</div>
+  </div>`).join('')||'<div style="font-size:12px;color:var(--muted);padding:8px 0">Nenhuma nota ainda</div>'
+}
+
+async function adicionarNota(){
+  const inp=document.getElementById('kc-nota-input')
+  const txt=inp.value.trim();if(!txt||!kanbanCardAtual)return
+  await sb.from('kanban_notas').insert({card_id:kanbanCardAtual.id,texto:txt,criado_por:usuarioAtual?.nome})
+  inp.value='';carregarNotasKanban(kanbanCardAtual.id)
+}
+
+// ── ANEXOS KANBAN ──
+async function carregarAnexosKanban(cardId){
+  renderAnexosUI('kc-anexos','kanban_card',cardId)
+}
+
+async function uploadAnexoKanban(input){
+  if(!kanbanCardAtual)return
+  await handleAnexoUpload(input,'kc-anexos','kanban_card',kanbanCardAtual.id)
 }
 
 async function deletarKanbanCard(){
