@@ -166,6 +166,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .tipo-tag{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px}
 .tipo-viagem{background:var(--gold-pale);color:var(--gold);border:1px solid var(--gold-border)}
 .tipo-convidado{background:#e3f2fd;color:#1565c0;border:1px solid #bbdefb}
+.tipo-casal{background:#fce4ec;color:#880e4f;border:1px solid #f8bbd0}
 .tipo-passeio{background:#e8f5e9;color:#2e7d32;border:1px solid #c8e6c9}
 .tipo-operacional{background:#f3e5f5;color:#6a1b9a;border:1px solid #e1bee7}
 .tipo-juliana{background:#e8eaf6;color:#283593;border:1px solid #c5cae9}
@@ -2760,6 +2761,7 @@ function renderKanbanCard(k){
   const tipoTag={
     viagem_assessora:`<span class="tipo-tag tipo-viagem">🧳 Viagem assessora</span>`,
     atendimento_convidado:`<span class="tipo-tag tipo-convidado">👥 Atend. convidado</span>`,
+    atendimento_casal:`<span class="tipo-tag tipo-casal">💑 Atend. casal</span>`,
     passeio:`<span class="tipo-tag tipo-passeio">🗺️ Passeio</span>`,
     operacional:`<span class="tipo-tag tipo-operacional">📋 Operacional</span>`,
     ju_comunicacao:`<span class="tipo-tag tipo-juliana">📢 Comunicação</span>`,
