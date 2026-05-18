@@ -224,6 +224,29 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <button class="btn-send" onclick="enviar('ju-atendimento')">Enviar Solicitação</button>
   </div>
 
+  <!-- TELA: Form Atendimento ao Casal (Rapha) -->
+  <div class="page" id="p-form-casal">
+    <button class="back" onclick="go('p-tipo-rapha')">← Voltar</button>
+    <div class="form-header">
+      <div class="form-icon" style="background:#fdf3e0">💑</div>
+      <div><div class="form-title">Atendimento ao Casal</div><div class="form-sub">Rapha</div></div>
+    </div>
+    <div class="f"><label>Seu nome (Solicitante) <span style="color:#c0392b">*</span></label><input id="cas-sol-nome" placeholder="Seu nome completo"></div>
+    <div class="f"><label>Nome do Casal <span style="color:#c0392b">*</span></label><div class="autocomplete-wrap"><input class="autocomplete-input" id="cas-cas-txt" placeholder="Digite o nome do casamento..." oninput="filterCas('cas-cas',this.value)" autocomplete="off"><input type="hidden" id="cas-cas"><div class="autocomplete-drop" id="drop-cas-cas"></div></div></div>
+    <div class="f">
+      <label>Tipo de Solicitação <span style="color:#c0392b">*</span></label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px">
+        <div class="serv-card" id="cas-tipo-passeio" onclick="selTipoCasal('passeio')"><div style="font-size:22px;margin-bottom:4px">🗺️</div><div class="serv-label">Passeios</div></div>
+        <div class="serv-card" id="cas-tipo-transfer" onclick="selTipoCasal('transfer')"><div style="font-size:22px;margin-bottom:4px">🚌</div><div class="serv-label">Transfer</div></div>
+        <div class="serv-card" id="cas-tipo-passagem" onclick="selTipoCasal('passagem')"><div style="font-size:22px;margin-bottom:4px">✈️</div><div class="serv-label">Passagem aérea</div></div>
+        <div class="serv-card" id="cas-tipo-outros" onclick="selTipoCasal('outros')"><div style="font-size:22px;margin-bottom:4px">📝</div><div class="serv-label">Outros</div></div>
+      </div>
+    </div>
+    <div class="f" id="cas-outros-wrap" style="display:none"><label>Especifique <span style="color:#c0392b">*</span></label><input id="cas-outros-txt" placeholder="Descreva o tipo de solicitação..."></div>
+    <div class="f"><label>Solicitação</label><textarea id="cas-sol" placeholder="Descreva com mais detalhes..."></textarea></div>
+    <button class="btn-send" onclick="enviar('rapha-casal')">Enviar Solicitação</button>
+  </div>
+
   <!-- SUCESSO -->
   <div class="page" id="p-sucesso">
     <div class="sucesso">
