@@ -125,6 +125,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <div class="form-icon" style="background:#e3f2fd">👥</div>
       <div><div class="form-title">Atendimento a Convidado</div><div class="form-sub">Rapha</div></div>
     </div>
+    <div class="f"><label>Seu nome (Solicitante) <span style="color:#c0392b">*</span></label><input id="rc-sol-nome" placeholder="Seu nome completo"></div>
     <div class="f"><label>Casamento</label><div class="autocomplete-wrap"><input class="autocomplete-input" id="rc-cas-txt" placeholder="Digite o nome do casamento..." oninput="filterCas('rc-cas',this.value)" autocomplete="off"><input type="hidden" id="rc-cas"><div class="autocomplete-drop" id="drop-rc-cas"></div></div></div>
     <div class="f"><label>Nome do Convidado</label><input id="rc-nome" placeholder="Nome completo"></div>
     <div class="f"><label>Telefone</label><input id="rc-tel" placeholder="+55 (00) 00000-0000" type="tel"></div>
@@ -139,6 +140,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <div class="form-icon" style="background:#e8f5e9">🗺️</div>
       <div><div class="form-title">Solicitação de Passeio</div><div class="form-sub">Rapha</div></div>
     </div>
+    <div class="f"><label>Seu nome (Solicitante) <span style="color:#c0392b">*</span></label><input id="rp-sol-nome" placeholder="Seu nome completo"></div>
     <div class="f"><label>Casamento</label><div class="autocomplete-wrap"><input class="autocomplete-input" id="rp-cas-txt" placeholder="Digite o nome do casamento..." oninput="filterCas('rp-cas',this.value)" autocomplete="off"><input type="hidden" id="rp-cas"><div class="autocomplete-drop" id="drop-rp-cas"></div></div></div>
     <div class="f"><label>Solicitação</label><textarea id="rp-sol" placeholder="Descreva o passeio ou atividade..."></textarea></div>
     <button class="btn-send" onclick="enviar('rapha-passeio')">Enviar Solicitação</button>
@@ -151,6 +153,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <div class="form-icon" style="background:#fdf3e0">📋</div>
       <div><div class="form-title">Solicitação de Operacional</div><div class="form-sub">Mari</div></div>
     </div>
+    <div class="f"><label>Seu nome (Solicitante) <span style="color:#c0392b">*</span></label><input id="mc-sol-nome" placeholder="Seu nome completo"></div>
     <div class="f"><label>Casamento</label><div class="autocomplete-wrap"><input class="autocomplete-input" id="mc-cas-txt" placeholder="Digite o nome do casamento..." oninput="filterCas('mc-cas',this.value)" autocomplete="off"><input type="hidden" id="mc-cas"><div class="autocomplete-drop" id="drop-mc-cas"></div></div></div>
     <div class="f"><label>Nome do Convidado Solicitante</label><input id="mc-nome" placeholder="Nome completo"></div>
     <div class="f"><label>Telefone</label><input id="mc-tel" placeholder="+55 (00) 00000-0000" type="tel"></div>
@@ -255,6 +258,7 @@ async function enviar(tipo){
   if(tipo==='rapha-viagem'){
     const c=cas('va-cas'),aEl=document.getElementById('va-assessora')
     const aId=aEl?.value,aNome=aEl?.options[aEl.selectedIndex]?.text||''
+    if(!v('va-sol-nome')){alert('Preencha seu nome!');reset();return}
     if(!c.id){alert('Selecione o casamento!');reset();return}
     if(!aId){alert('Selecione a assessora!');reset();return}
     if(!v('va-data-chegada')||!v('va-data-saida')){alert('Preencha as datas!');reset();return}
@@ -269,39 +273,46 @@ async function enviar(tipo){
   let row={}
   if(tipo==='rapha-convidado'){
     const c=cas('rc-cas')
+    if(!v('rc-sol-nome')){alert('Preencha seu nome!');reset();return}
     if(!c.id){alert('Selecione o casamento!');reset();return}
     if(!v('rc-nome')){alert('Preencha o nome!');reset();return}
     if(!v('rc-sol')){alert('Descreva a solicitação!');reset();return}
-    row={tipo:'atendimento_convidado',responsavel:'rapha',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('rc-nome'),convidado_telefone:v('rc-tel')||null,solicitacao:v('rc-sol')}
+    row={tipo:'atendimento_convidado',responsavel:'rapha',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('rc-nome'),convidado_telefone:v('rc-tel')||null,solicitacao:v('rc-sol'),criado_por:v('rc-sol-nome')}
   }else if(tipo==='rapha-passeio'){
     const c=cas('rp-cas')
+    if(!v('rp-sol-nome')){alert('Preencha seu nome!');reset();return}
     if(!c.id){alert('Selecione o casamento!');reset();return}
     if(!v('rp-sol')){alert('Descreva a solicitação!');reset();return}
-    row={tipo:'passeio',responsavel:'rapha',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,solicitacao:v('rp-sol')}
+    row={tipo:'passeio',responsavel:'rapha',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,solicitacao:v('rp-sol'),criado_por:v('rp-sol-nome')}
   }else if(tipo==='mari'){
     const c=cas('mc-cas')
+    if(!v('mc-sol-nome')){alert('Preencha seu nome!');reset();return}
     if(!c.id){alert('Selecione o casamento!');reset();return}
     if(!v('mc-nome')){alert('Preencha o nome!');reset();return}
     if(!v('mc-sol')){alert('Descreva a solicitação!');reset();return}
     if(!urgSel){alert('Selecione a urgência!');reset();return}
     const urgLabel={alta:'🔴 Alta',media:'🟡 Média',baixa:'🟢 Baixa'}[urgSel]
-    row={tipo:'operacional',responsavel:'mari',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('mc-nome'),convidado_telefone:v('mc-tel')||null,solicitacao:v('mc-sol'),servicos:urgLabel}
+    row={tipo:'operacional',responsavel:'mari',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('mc-nome'),convidado_telefone:v('mc-tel')||null,solicitacao:v('mc-sol'),servicos:urgLabel,criado_por:v('mc-sol-nome')}
   }else if(tipo==='ju-comunicacao'){
     const c=cas('jc-cas')
+    if(!v('jc-sol-nome')){alert('Preencha seu nome!');reset();return}
     if(!c.id||!v('jc-nome')){alert('Preencha os campos!');reset();return}
-    row={tipo:'ju_comunicacao',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('jc-nome'),convidado_telefone:v('jc-tel')||null,servicos:'📢 Adicionar na comunicação'}
+    row={tipo:'ju_comunicacao',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('jc-nome'),convidado_telefone:v('jc-tel')||null,servicos:'📢 Adicionar na comunicação',criado_por:v('jc-sol-nome')}
   }else if(tipo==='ju-reserva'){
     const c=cas('jr-cas')
+    if(!v('jr-sol-nome')){alert('Preencha seu nome!');reset();return}
     if(!c.id||!v('jr-nome')){alert('Preencha os campos!');reset();return}
-    row={tipo:'ju_reserva',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('jr-nome'),convidado_telefone:v('jr-tel')||null,solicitacao:v('jr-obs'),servicos:'🏨 Reenviar confirmação de reserva'}
+    row={tipo:'ju_reserva',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('jr-nome'),convidado_telefone:v('jr-tel')||null,solicitacao:v('jr-obs'),servicos:'🏨 Reenviar confirmação de reserva',criado_por:v('jr-sol-nome')}
   }else if(tipo==='ju-diaria'){
     const c=cas('jd-cas')
+    if(!v('jd-sol-nome')){alert('Preencha seu nome!');reset();return}
     if(!c.id||!v('jd-nome')){alert('Preencha os campos!');reset();return}
-    row={tipo:'ju_diaria',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('jd-nome'),convidado_telefone:v('jd-tel')||null,solicitacao:v('jd-obs'),servicos:'📞 Diária extra'}
+    row={tipo:'ju_diaria',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('jd-nome'),convidado_telefone:v('jd-tel')||null,solicitacao:v('jd-obs'),servicos:'📞 Diária extra',criado_por:v('jd-sol-nome')}
   }else if(tipo==='ju-atendimento'){
     const c=cas('ja-cas')
+    if(!v('ja-sol-nome')){alert('Preencha seu nome!');reset();return}
     if(!c.id||!v('ja-nome')){alert('Preencha os campos!');reset();return}
-    row={tipo:'ju_atendimento',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('ja-nome'),convidado_telefone:v('ja-tel')||null,solicitacao:v('ja-obs'),servicos:'👥 Atendimento a convidado'}
+    row={tipo:'ju_atendimento',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('ja-nome'),convidado_telefone:v('ja-tel')||null,solicitacao:v('ja-obs'),servicos:'👥 Atendimento a convidado',criado_por:v('ja-sol-nome')}
   }
 
   await sb.from('solicitacoes_kanban').insert(row)
