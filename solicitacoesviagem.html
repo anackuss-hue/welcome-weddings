@@ -286,7 +286,7 @@ async function enviar(tipo){
 
   if(tipo==='rapha-casal'){
     const c=cas('cas-cas')
-    if(!document.getElementById('cas-sol-nome')?.value){alert('Selecione o solicitante!');reset();return}
+    const _casSolVal=(document.getElementById('cas-sol-nome')?.value==='__outro__'?document.getElementById('cas-outro-nome')?.value?.trim():document.getElementById('cas-sol-nome')?.value);if(!_casSolVal){alert('Preencha o solicitante!');reset();return}
     if(!c.id){alert('Selecione o casamento!');reset();return}
     if(!tipoCasal){alert('Selecione o tipo de solicitação!');reset();return}
     if(tipoCasal==='outros'&&!v('cas-outros-txt')){alert('Especifique o tipo de solicitação!');reset();return}
@@ -300,7 +300,7 @@ async function enviar(tipo){
   if(tipo==='rapha-viagem'){
     const c=cas('va-cas'),aEl=document.getElementById('va-assessora')
     const aId=aEl?.value,aNome=aEl?.options[aEl.selectedIndex]?.text||''
-    if(!document.getElementById('va-sol-nome')?.value){alert('Selecione o solicitante!');reset();return}
+    const _vaSolVal=(document.getElementById('va-sol-nome')?.value==='__outro__'?document.getElementById('va-outro-nome')?.value?.trim():document.getElementById('va-sol-nome')?.value);if(!_vaSolVal){alert('Preencha o solicitante!');reset();return}
     if(!c.id){alert('Selecione o casamento!');reset();return}
     if(!aId){alert('Selecione a assessora!');reset();return}
     if(!v('va-data-chegada')||!v('va-data-saida')){alert('Preencha as datas!');reset();return}
@@ -315,11 +315,11 @@ async function enviar(tipo){
   let row={}
   if(tipo==='rapha-convidado'){
     const c=cas('rc-cas')
-    if(!document.getElementById('rc-sol-nome')?.value){alert('Selecione o solicitante!');reset();return}
+    const _rcSolVal=(document.getElementById('rc-sol-nome')?.value==='__outro__'?document.getElementById('rc-outro-nome')?.value?.trim():document.getElementById('rc-sol-nome')?.value);if(!_rcSolVal){alert('Preencha o solicitante!');reset();return}
     if(!c.id){alert('Selecione o casamento!');reset();return}
     if(!v('rc-nome')){alert('Preencha o nome!');reset();return}
     if(!v('rc-sol')){alert('Descreva a solicitação!');reset();return}
-    row={tipo:'atendimento_convidado',responsavel:'rapha',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('rc-nome'),convidado_telefone:v('rc-tel')||null,solicitacao:v('rc-sol'),criado_por:v('rc-sol-nome')}
+    row={tipo:'atendimento_convidado',responsavel:'rapha',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('rc-nome'),convidado_telefone:v('rc-tel')||null,solicitacao:v('rc-sol'),criado_por:(document.getElementById('rc-sol-nome')?.value==='__outro__'?document.getElementById('rc-outro-nome')?.value?.trim():document.getElementById('rc-sol-nome')?.value)}
   }else if(tipo==='rapha-passeio'){
     const c=cas('rp-cas')
     if(!document.getElementById('rp-sol-nome')?.value){alert('Selecione o solicitante!');reset();return}
@@ -328,40 +328,76 @@ async function enviar(tipo){
     row={tipo:'passeio',responsavel:'rapha',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,solicitacao:v('rp-sol'),criado_por:v('rp-sol-nome')}
   }else if(tipo==='mari'){
     const c=cas('mc-cas')
-    if(!document.getElementById('mc-sol-nome')?.value){alert('Selecione o solicitante!');reset();return}
+    const _mcSolVal=(document.getElementById('mc-sol-nome')?.value==='__outro__'?document.getElementById('mc-outro-nome')?.value?.trim():document.getElementById('mc-sol-nome')?.value);if(!_mcSolVal){alert('Preencha o solicitante!');reset();return}
     if(!c.id){alert('Selecione o casamento!');reset();return}
     if(!v('mc-nome')){alert('Preencha o nome!');reset();return}
     if(!v('mc-sol')){alert('Descreva a solicitação!');reset();return}
     if(!urgSel){alert('Selecione a urgência!');reset();return}
     const urgLabel={alta:'🔴 Alta',media:'🟡 Média',baixa:'🟢 Baixa'}[urgSel]
-    row={tipo:'operacional',responsavel:'mari',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('mc-nome'),convidado_telefone:v('mc-tel')||null,solicitacao:v('mc-sol'),servicos:urgLabel,criado_por:v('mc-sol-nome')}
+    row={tipo:'operacional',responsavel:'mari',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('mc-nome'),convidado_telefone:v('mc-tel')||null,solicitacao:v('mc-sol'),servicos:urgLabel,criado_por:(document.getElementById('mc-sol-nome')?.value==='__outro__'?document.getElementById('mc-outro-nome')?.value?.trim():document.getElementById('mc-sol-nome')?.value)}
   }else if(tipo==='ju-comunicacao'){
     const c=cas('jc-cas')
-    if(!document.getElementById('jc-sol-nome')?.value){alert('Selecione o solicitante!');reset();return}
+    const _jcSolVal=(document.getElementById('jc-sol-nome')?.value==='__outro__'?document.getElementById('jc-outro-nome')?.value?.trim():document.getElementById('jc-sol-nome')?.value);if(!_jcSolVal){alert('Preencha o solicitante!');reset();return}
     if(!c.id||!v('jc-nome')){alert('Preencha os campos!');reset();return}
-    row={tipo:'ju_comunicacao',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('jc-nome'),convidado_telefone:v('jc-tel')||null,servicos:'📢 Adicionar na comunicação',criado_por:v('jc-sol-nome')}
+    row={tipo:'ju_comunicacao',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('jc-nome'),convidado_telefone:v('jc-tel')||null,servicos:'📢 Adicionar na comunicação',criado_por:(document.getElementById('jc-sol-nome')?.value==='__outro__'?document.getElementById('jc-outro-nome')?.value?.trim():document.getElementById('jc-sol-nome')?.value)}
   }else if(tipo==='ju-reserva'){
     const c=cas('jr-cas')
-    if(!document.getElementById('jr-sol-nome')?.value){alert('Selecione o solicitante!');reset();return}
+    const _jrSolVal=(document.getElementById('jr-sol-nome')?.value==='__outro__'?document.getElementById('jr-outro-nome')?.value?.trim():document.getElementById('jr-sol-nome')?.value);if(!_jrSolVal){alert('Preencha o solicitante!');reset();return}
     if(!c.id||!v('jr-nome')){alert('Preencha os campos!');reset();return}
-    row={tipo:'ju_reserva',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('jr-nome'),convidado_telefone:v('jr-tel')||null,solicitacao:v('jr-obs'),servicos:'🏨 Reenviar confirmação de reserva',criado_por:v('jr-sol-nome')}
+    row={tipo:'ju_reserva',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('jr-nome'),convidado_telefone:v('jr-tel')||null,solicitacao:v('jr-obs'),servicos:'🏨 Reenviar confirmação de reserva',criado_por:(document.getElementById('jr-sol-nome')?.value==='__outro__'?document.getElementById('jr-outro-nome')?.value?.trim():document.getElementById('jr-sol-nome')?.value)}
   }else if(tipo==='ju-diaria'){
     const c=cas('jd-cas')
-    if(!document.getElementById('jd-sol-nome')?.value){alert('Selecione o solicitante!');reset();return}
+    const _jdSolVal=(document.getElementById('jd-sol-nome')?.value==='__outro__'?document.getElementById('jd-outro-nome')?.value?.trim():document.getElementById('jd-sol-nome')?.value);if(!_jdSolVal){alert('Preencha o solicitante!');reset();return}
     if(!c.id||!v('jd-nome')){alert('Preencha os campos!');reset();return}
-    row={tipo:'ju_diaria',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('jd-nome'),convidado_telefone:v('jd-tel')||null,solicitacao:v('jd-obs'),servicos:'📞 Diária extra',criado_por:v('jd-sol-nome')}
+    row={tipo:'ju_diaria',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('jd-nome'),convidado_telefone:v('jd-tel')||null,solicitacao:v('jd-obs'),servicos:'📞 Diária extra',criado_por:(document.getElementById('jd-sol-nome')?.value==='__outro__'?document.getElementById('jd-outro-nome')?.value?.trim():document.getElementById('jd-sol-nome')?.value)}
   }else if(tipo==='ju-atendimento'){
     const c=cas('ja-cas')
-    if(!document.getElementById('ja-sol-nome')?.value){alert('Selecione o solicitante!');reset();return}
+    const _jaSolVal=(document.getElementById('ja-sol-nome')?.value==='__outro__'?document.getElementById('ja-outro-nome')?.value?.trim():document.getElementById('ja-sol-nome')?.value);if(!_jaSolVal){alert('Preencha o solicitante!');reset();return}
     if(!c.id||!v('ja-nome')){alert('Preencha os campos!');reset();return}
-    row={tipo:'ju_atendimento',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('ja-nome'),convidado_telefone:v('ja-tel')||null,solicitacao:v('ja-obs'),servicos:'👥 Atendimento a convidado',criado_por:v('ja-sol-nome')}
+    row={tipo:'ju_atendimento',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('ja-nome'),convidado_telefone:v('ja-tel')||null,solicitacao:v('ja-obs'),servicos:'👥 Atendimento a convidado',criado_por:(document.getElementById('ja-sol-nome')?.value==='__outro__'?document.getElementById('ja-outro-nome')?.value?.trim():document.getElementById('ja-sol-nome')?.value)}
   }
 
   await sb.from('solicitacoes_kanban').insert(row)
   reset();go('p-sucesso')
 }
 
-let _casData=[]
+let _casData=[], _usersData=[]
+async function carregarUsuariosSolicitante(){
+  const{data}=await sb.from('usuarios').select('id,nome').order('nome',{ascending:true})
+  _usersData=data||[]
+}
+
+function filterUser(prefix,q){
+  const drop=document.getElementById('drop-'+prefix+'-sol')
+  const hiddenInput=document.getElementById(prefix+'-sol-nome')
+  const outroWrap=document.getElementById(prefix+'-outro-wrap')
+  if(hiddenInput)hiddenInput.value=''
+  if(outroWrap)outroWrap.style.display='none'
+  if(!drop)return
+  if(q.length<1){drop.classList.remove('open');return}
+  const filtered=_usersData.filter(u=>u.nome.toLowerCase().includes(q.toLowerCase())).slice(0,10)
+  const items=filtered.map(u=>`<div class="autocomplete-item" onclick="selUser('${prefix}','${u.nome}')">${u.nome}</div>`).join('')
+  const outroItem=`<div class="autocomplete-item" style="color:var(--muted);font-style:italic" onclick="selUserOutro('${prefix}','${q}')">Outro: usar "${q}"</div>`
+  drop.innerHTML=items+outroItem
+  drop.classList.add('open')
+}
+
+function selUser(prefix,nome){
+  document.getElementById(prefix+'-sol-txt').value=nome
+  document.getElementById(prefix+'-sol-nome').value=nome
+  document.getElementById('drop-'+prefix+'-sol').classList.remove('open')
+  document.getElementById(prefix+'-outro-wrap').style.display='none'
+}
+
+function selUserOutro(prefix,nome){
+  document.getElementById(prefix+'-sol-txt').value=nome
+  document.getElementById(prefix+'-sol-nome').value='__outro__'
+  document.getElementById('drop-'+prefix+'-sol').classList.remove('open')
+  const wrap=document.getElementById(prefix+'-outro-wrap')
+  const input=document.getElementById(prefix+'-outro-nome')
+  if(wrap){wrap.style.display='block';if(input){input.value=nome;input.focus()}}
+}
+
 async function carregarCasamentos(){
   const{data}=await sb.from('casamentos').select('id,nome').neq('status','Cancelado').neq('status','Concluído').order('nome',{ascending:true})
   _casData=data||[]
@@ -403,11 +439,7 @@ async function notificarSolicitante(cardId,nomeUsuario,mensagem){
   if(data?.id)await sb.from('notificacoes').insert({usuario_id:data.id,card_id:cardId,mensagem})
 }
 
-async function carregarUsuariosSolicitante(){
-  const{data}=await sb.from('usuarios').select('id,nome').order('nome',{ascending:true})
-  const opts='<option value="">Selecionar...</option>'+(data||[]).map(u=>`<option value="${u.nome}">${u.nome}</option>`).join('')+'<option value="__outro__">Outro (sem notificação)</option>'
-  document.querySelectorAll('[id$="-sol-nome"]').forEach(sel=>{if(sel.tagName==='SELECT')sel.innerHTML=opts})
-}
+
 </script>
 </body>
 </html>
