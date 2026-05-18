@@ -2770,12 +2770,13 @@ function renderKanbanCard(k){
 
   const nome=k.tipo==='viagem_assessora'
     ?`${k.assessora_nome||'?'} — ${k.casamento_nome||'?'}`
-    :k.casamento_nome||'—'
+    :k.convidado_nome
+      ?`${k.convidado_nome} — ${k.casamento_nome||'?'}`
+      :k.casamento_nome||'—'
 
   const tags=[]
   if(k.periodo_de&&k.periodo_ate)tags.push(`${fmtDate(k.periodo_de)} → ${fmtDate(k.periodo_ate)}`)
   if(k.servicos)tags.push(k.servicos)
-  if(k.convidado_nome)tags.push(k.convidado_nome)
   if(k.solicitacao)tags.push(k.solicitacao.slice(0,30)+(k.solicitacao.length>30?'...':''))
 
   const avatar=(k.assessora_nome||k.casamento_nome||'?')[0].toUpperCase()
