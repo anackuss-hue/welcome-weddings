@@ -1131,9 +1131,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     </div>
 
     <div style="padding-top:16px">
-      <!-- Nome + Prioridade -->
+      <!-- Nome editável + Prioridade -->
       <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap">
-        <div style="font-size:16px;font-weight:600" id="kc-nome"></div>
+        <input id="kc-nome-edit" style="flex:1;font-size:15px;font-weight:600;border:none;border-bottom:1.5px solid var(--gold-border);padding:4px 0;background:transparent;font-family:'DM Sans',sans-serif;outline:none;color:var(--text)" placeholder="Nome do convidado...">
         <div style="display:flex;gap:6px">
           <button class="kc-pri" id="kcp-alta" onclick="setPrioridade('alta')" title="Alta">🔴</button>
           <button class="kc-pri" id="kcp-media" onclick="setPrioridade('media')" title="Média">🟡</button>
@@ -1141,8 +1141,24 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         </div>
       </div>
 
-      <!-- Detalhes originais editáveis -->
-      <div id="kc-detalhes" style="margin-bottom:20px;padding:14px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:10px"></div>
+      <!-- Tipo (apenas convidado/casal) -->
+      <div class="f" style="margin-bottom:16px">
+        <label>🏷️ Tipo</label>
+        <select id="kc-tipo" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+          <option value="atendimento_convidado">👥 Atendimento a Convidado</option>
+          <option value="atendimento_casal">💑 Atendimento ao Casal</option>
+          <option value="passeio">🗺️ Passeio</option>
+          <option value="viagem_assessora">🧳 Viagem de Assessora</option>
+          <option value="operacional">📋 Operacional</option>
+          <option value="ju_comunicacao">📢 Comunicação</option>
+          <option value="ju_reserva">🏨 Confirmação de Reserva</option>
+          <option value="ju_diaria">📞 Diária Extra</option>
+          <option value="ju_atendimento">👥 Atend. Convidado (Juliana)</option>
+        </select>
+      </div>
+
+      <!-- Detalhes originais -->
+      <div id="kc-detalhes" style="margin-bottom:16px;padding:14px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:10px"></div>
 
       <!-- Editar solicitação -->
       <div class="f" style="margin-bottom:16px">
@@ -2825,9 +2841,11 @@ async function openKanbanCard(id){
   kanbanCardAtual=kanbanData.find(k=>k.id===id);if(!kanbanCardAtual)return
   const k=kanbanCardAtual
   const tipoLabel={viagem_assessora:'🧳 Viagem de Assessora',atendimento_convidado:'👥 Atendimento a Convidado',passeio:'🗺️ Passeio',operacional:'📋 Operacional',ju_comunicacao:'📢 Comunicação',ju_reserva:'🏨 Confirmação de Reserva',ju_diaria:'📞 Diária Extra',ju_atendimento:'👥 Atend. Convidado'}[k.tipo]||k.tipo
+  document.getElementById('kc-nome-edit').value=k.tipo==='viagem_assessora'?`${k.assessora_nome||'?'} — ${k.casamento_nome||'?'}`:k.convidado_nome||k.casamento_nome||'—'
   document.getElementById('kc-title').textContent=tipoLabel
-  document.getElementById('kc-nome').textContent=k.tipo==='viagem_assessora'?`${k.assessora_nome||'?'} — ${k.casamento_nome||'?'}`:k.casamento_nome||'—'
   document.getElementById('kc-criado').textContent='Criado por '+(k.criado_por||'—')+' em '+new Date(k.created_at).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})
+  // Tipo
+  const selTipo=document.getElementById('kc-tipo');if(selTipo)selTipo.value=k.tipo||'atendimento_convidado'
   const det=document.getElementById('kc-detalhes')
   let html=''
   if(k.periodo_de&&k.periodo_ate)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">Período</span><div style="font-size:13px;margin-top:2px">${fmtDate(k.periodo_de)} → ${fmtDate(k.periodo_ate)}</div></div>`
@@ -2850,7 +2868,9 @@ async function salvarKanbanCard(){
   const novaColuna=document.getElementById('kc-coluna').value
   const novaSol=document.getElementById('kc-sol-edit').value
   const novaPri=kanbanCardAtual._priTemp||'media'
-  await sb.from('solicitacoes_kanban').update({coluna:novaColuna,solicitacao:novaSol,prioridade:novaPri}).eq('id',kanbanCardAtual.id)
+  const novoNome=document.getElementById('kc-nome-edit').value.trim()
+  const novoTipo=document.getElementById('kc-tipo').value
+  await sb.from('solicitacoes_kanban').update({coluna:novaColuna,solicitacao:novaSol,prioridade:novaPri,convidado_nome:novoNome||null,tipo:novoTipo}).eq('id',kanbanCardAtual.id)
   // Notifica o solicitante se a coluna mudou
   if(novaColuna!==kanbanCardAtual.coluna&&kanbanCardAtual.criado_por){
     const colLabel=KB_COLUNAS[kanbanCardAtual.responsavel]?.find(c=>c.id===novaColuna)?.label||novaColuna
