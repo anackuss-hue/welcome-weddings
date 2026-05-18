@@ -114,7 +114,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="sub" style="text-align:left;margin-bottom:20px">Qual o tipo de solicitação?</div>
     <div class="tipo-list">
       <div class="tipo-card" onclick="go('p-form-convidado')"><div class="tipo-icon">👥</div><div class="tipo-title">Atendimento a Convidado</div></div>
-      <div class="tipo-card" onclick="go('p-form-passeio')"><div class="tipo-icon">🗺️</div><div class="tipo-title">Solicitação de Passeio</div></div>
+      <div class="tipo-card" onclick="go('p-form-casal')"><div class="tipo-icon">💑</div><div class="tipo-title">Atendimento ao Casal</div></div>
     </div>
   </div>
 
@@ -239,7 +239,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 const{createClient}=supabase
 const sb=createClient('https://yrnlfarricrhtfomwynd.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlybmxmYXJyaWNyaHRmb213eW5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczOTIxODksImV4cCI6MjA5Mjk2ODE4OX0.Ad4awFjQ9vcDqNyBbWycgv0rvpc3DOz4pPTi41nSp8w')
 
-let urgSel='', servicos={voo:false,transfer:false,hospedagem:false}
+let urgSel='', servicos={voo:false,transfer:false,hospedagem:false}, tipoCasal=''
+
+function selTipoCasal(t){
+  tipoCasal=t
+  ;['passeio','transfer','passagem','outros'].forEach(x=>{document.getElementById('cas-tipo-'+x)?.classList.toggle('sel',x===t)})
+  document.getElementById('cas-outros-wrap').style.display=t==='outros'?'block':'none'
+}
 
 function togServ(s){servicos[s]=!servicos[s];document.getElementById('sv-'+s)?.classList.toggle('sel',servicos[s])}
 
@@ -254,6 +260,18 @@ async function enviar(tipo){
   const btns=document.querySelectorAll('.btn-send')
   btns.forEach(b=>{b.disabled=true;b.textContent='Enviando...'})
   const reset=()=>btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'})
+
+  if(tipo==='rapha-casal'){
+    const c=cas('cas-cas')
+    if(!v('cas-sol-nome')){alert('Preencha seu nome!');reset();return}
+    if(!c.id){alert('Selecione o casamento!');reset();return}
+    if(!tipoCasal){alert('Selecione o tipo de solicitação!');reset();return}
+    if(tipoCasal==='outros'&&!v('cas-outros-txt')){alert('Especifique o tipo de solicitação!');reset();return}
+    const tipoLabel={passeio:'🗺️ Passeios',transfer:'🚌 Transfer',passagem:'✈️ Passagem aérea',outros:'📝 '+v('cas-outros-txt')}[tipoCasal]
+    const{error}=await sb.from('solicitacoes_kanban').insert({tipo:'atendimento_casal',coluna:'nova',responsavel:'rapha',casamento_id:c.id,casamento_nome:c.nome,servicos:tipoLabel,solicitacao:v('cas-sol'),criado_por:v('cas-sol-nome')})
+    if(error){alert('Erro: '+error.message);reset();return}
+    reset();go('p-sucesso');return
+  }
 
   if(tipo==='rapha-viagem'){
     const c=cas('va-cas'),aEl=document.getElementById('va-assessora')
