@@ -176,7 +176,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="tipo-list">
       <div class="tipo-card" onclick="go('p-ju-com')"><div class="tipo-icon">📢</div><div class="tipo-title">Adicionar convidado na comunicação</div></div>
       <div class="tipo-card" onclick="go('p-ju-res')"><div class="tipo-icon">🏨</div><div class="tipo-title">Reenviar confirmação de reserva</div></div>
-      <div class="tipo-card" onclick="go('p-ju-dia')"><div class="tipo-icon">📞</div><div class="tipo-title">Entrar em contato para diária extra</div></div>
+      <div class="tipo-card" onclick="go('p-ju-outros')"><div class="tipo-icon">📝</div><div class="tipo-title">Outros</div></div>
       <div class="tipo-card" onclick="go('p-ju-ate')"><div class="tipo-icon">👥</div><div class="tipo-title">Atendimento a convidado</div></div>
     </div>
   </div>
@@ -204,16 +204,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <button class="btn-send" onclick="enviar('ju-reserva')">Enviar Solicitação</button>
   </div>
 
-  <!-- Juliana: Diária -->
-  <div class="page" id="p-ju-dia">
+  <!-- Juliana: Outros -->
+  <div class="page" id="p-ju-outros">
     <button class="back" onclick="go('p-tipo-ju')">← Voltar</button>
-    <div class="form-header"><div class="form-icon" style="background:#e3f2fd">📞</div><div><div class="form-title">Contato para diária extra</div><div class="form-sub">Juliana</div></div></div>
-    <div class="f"><label>Seu nome (Solicitante) <span style="color:#c0392b">*</span></label><div class="autocomplete-wrap"><input class="autocomplete-input" id="jd-sol-txt" placeholder="Digite seu nome..." oninput="filterUser('jd',this.value)" autocomplete="off"><input type="hidden" id="jd-sol-nome"><div class="autocomplete-drop" id="drop-jd-sol"></div></div><div id="jd-outro-wrap" style="display:none;margin-top:8px"><input class="autocomplete-input" id="jd-outro-nome" placeholder="Digite seu nome completo..."></div></div>
-    <div class="f"><label>Casamento</label><div class="autocomplete-wrap"><input class="autocomplete-input" id="jd-cas-txt" placeholder="Digite o nome do casamento..." oninput="filterCas('jd-cas',this.value)" autocomplete="off"><input type="hidden" id="jd-cas"><div class="autocomplete-drop" id="drop-jd-cas"></div></div></div>
-    <div class="f"><label>Nome do Convidado</label><input id="jd-nome" placeholder="Nome completo"></div>
-    <div class="f"><label>Número do Convidado</label><input id="jd-tel" placeholder="+55 (00) 00000-0000" type="tel"></div>
-    <div class="f"><label>Observações</label><textarea id="jd-obs" placeholder="Informações adicionais..."></textarea></div>
-    <button class="btn-send" onclick="enviar('ju-diaria')">Enviar Solicitação</button>
+    <div class="form-header"><div class="form-icon" style="background:#f3e5f5">📝</div><div><div class="form-title">Outros</div><div class="form-sub">Juliana</div></div></div>
+    <div class="f"><label>Seu nome (Solicitante) <span style="color:#c0392b">*</span></label><div class="autocomplete-wrap"><input class="autocomplete-input" id="jo-sol-txt" placeholder="Digite seu nome..." oninput="filterUser('jo',this.value)" autocomplete="off"><input type="hidden" id="jo-sol-nome"><div class="autocomplete-drop" id="drop-jo-sol"></div></div><div id="jo-outro-wrap" style="display:none;margin-top:8px"><input class="autocomplete-input" id="jo-outro-nome" placeholder="Digite seu nome completo..."></div></div>
+    <div class="f"><label>Casamento</label><div class="autocomplete-wrap"><input class="autocomplete-input" id="jo-cas-txt" placeholder="Digite o nome do casamento..." oninput="filterCas('jo-cas',this.value)" autocomplete="off"><input type="hidden" id="jo-cas"><div class="autocomplete-drop" id="drop-jo-cas"></div></div></div>
+    <div class="f"><label>Nome do Convidado</label><input id="jo-nome" placeholder="Nome completo"></div>
+    <div class="f"><label>Número do Convidado</label><input id="jo-tel" placeholder="+55 (00) 00000-0000" type="tel"></div>
+    <div class="f"><label>Observações</label><textarea id="jo-obs" placeholder="Informações adicionais..."></textarea></div>
+    <button class="btn-send" onclick="enviar('ju-outros')">Enviar Solicitação</button>
   </div>
 
   <!-- Juliana: Atendimento -->
@@ -349,7 +349,7 @@ async function enviar(tipo){
     const _jrSolVal=(document.getElementById('jr-sol-nome')?.value==='__outro__'?document.getElementById('jr-outro-nome')?.value?.trim():document.getElementById('jr-sol-nome')?.value);if(!_jrSolVal){alert('Preencha o solicitante!');reset();return}
     if(!c.id||!v('jr-nome')){alert('Preencha os campos!');reset();return}
     row={tipo:'ju_reserva',responsavel:'juliana',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,convidado_nome:v('jr-nome'),convidado_telefone:v('jr-tel')||null,solicitacao:v('jr-obs'),servicos:'🏨 Reenviar confirmação de reserva',criado_por:(document.getElementById('jr-sol-nome')?.value==='__outro__'?document.getElementById('jr-outro-nome')?.value?.trim():document.getElementById('jr-sol-nome')?.value)}
-  }else if(tipo==='ju-diaria'){
+  }else if(tipo==='ju-outros'){
     const c=cas('jd-cas')
     const _jdSolVal=(document.getElementById('jd-sol-nome')?.value==='__outro__'?document.getElementById('jd-outro-nome')?.value?.trim():document.getElementById('jd-sol-nome')?.value);if(!_jdSolVal){alert('Preencha o solicitante!');reset();return}
     if(!c.id||!v('jd-nome')){alert('Preencha os campos!');reset();return}
