@@ -832,7 +832,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <button class="atab" onclick="showHTab('hcomissao',this)"><span class="atab-long">05 · Comissão</span><span class="atab-short">Comissão</span></button>
       <button class="atab" onclick="showHTab('hhistorico',this)"><span class="atab-long">06 · Histórico</span><span class="atab-short">Histórico</span></button>
       <button class="atab" onclick="showHTab('hanexos',this)"><span class="atab-long">07 · Anexos</span><span class="atab-short">Anexos</span></button>
-      <button class="atab" onclick="showHTab('hpoliticas',this)"><span class="atab-long">08 · Políticas</span><span class="atab-short">Políticas</span></button>
+      <button class="atab" onclick="showHTab('hgeo',this)"><span class="atab-long">08 · Info. Geográficas</span><span class="atab-short">Geo</span></button>
+      <button class="atab" onclick="showHTab('hpoliticas',this)"><span class="atab-long">09 · Políticas</span><span class="atab-short">Políticas</span></button>
+      <button class="atab" onclick="showHTab('hpacotes',this)"><span class="atab-long">10 · Pacotes</span><span class="atab-short">Pacotes</span></button>
     </div>
     <div class="atc active" id="atab-hgeral">
       <div class="g2">
@@ -847,6 +849,23 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div class="f"><label>Representante no Brasil — Telefone</label><input id="h-rep-tel" placeholder="+55 (00) 00000-0000"></div>
       </div>
       <div class="f"><label>Instagram</label><input id="h-instagram" placeholder="https://www.instagram.com/..."></div>
+      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--gold-border)">
+        <div class="st" style="margin-bottom:12px">Contato de Bodas</div>
+        <div class="g2">
+          <div class="f"><label>Nome</label><input id="h-bodas-nome"></div>
+          <div class="f"><label>Telefone</label><input id="h-bodas-tel" placeholder="+1 (000) 000-0000"></div>
+          <div class="f" style="grid-column:1/-1"><label>E-mail</label><input id="h-bodas-email" type="email"></div>
+        </div>
+      </div>
+      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--gold-border)">
+        <div class="st" style="margin-bottom:12px">Contato de Hospedagem</div>
+        <div class="g2">
+          <div class="f"><label>Nome</label><input id="h-hosp-nome"></div>
+          <div class="f"><label>Telefone</label><input id="h-hosp-tel" placeholder="+1 (000) 000-0000"></div>
+          <div class="f" style="grid-column:1/-1"><label>E-mail</label><input id="h-hosp-email" type="email"></div>
+        </div>
+      </div>
+      <div class="f" style="margin-top:16px"><label>Observações</label><textarea id="h-obs-geral" placeholder="Observações gerais sobre o local..." style="min-height:80px"></textarea></div>
       <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--gold-border)">
         <div class="st" style="margin-bottom:12px">Indicação & Status</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:14px">
@@ -869,7 +888,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="atc" id="atab-hespec">
       <div class="f" style="margin-bottom:16px;padding:10px 14px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:8px;display:flex;align-items:center;gap:10px"><label style="margin-bottom:0;white-space:nowrap">📅 Última atualização</label><input id="h-atualizacao-hespec" type="date" style="margin-bottom:0;border:none;background:transparent;padding:0;font-size:13px;flex:1"></div>
 <div class="g2">
-        <div class="f"><label>Tipo de Local</label><select id="h-tipo"><option value="">Selecione</option><option>Resort</option><option>Boutique</option><option>Pousada</option><option>Hotel Urbano</option><option>Fazenda/Vinhedo</option></select></div>
+        <div class="f"><label>Tipo de Local</label><select id="h-tipo"><option value="">Selecione</option><option>Resort</option><option>Boutique</option><option>Pousada</option><option>Hotel Urbano</option><option>Fazenda/Vinhedo</option><option>Villa Privativa</option></select></div>
         <div class="f"><label>Regime de Alimentação</label><select id="h-regime-select" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none"><option value="">Selecione...</option><option value="All Inclusive">All Inclusive</option><option value="Pensão completa">Pensão completa</option><option value="Café da manhã">Café da manhã</option><option value="Meia pensão">Meia pensão</option><option value="Sem regime de alimentação">Sem regime de alimentação</option><option value="Airbnb">Airbnb</option></select></div>
         <div class="f"><label>Nº de Acomodações</label><input id="h-acomodacoes"></div>
         <div class="f"><label>Ano Construção/Remodelação</label><input id="h-ano" placeholder="Ex: 2015 / 2022"></div>
@@ -1032,6 +1051,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div class="f"><label>Valor Bloqueio de Quartos</label><input id="h-bloqueio" placeholder="Ex: USD 350–500"></div>
         <div class="f"><label>Valor Inicial Casamento (50p)</label><input id="h-val-casamento" placeholder="Ex: USD 6.000 – 9.000"></div>
         <div class="f"><label>Valor do Luau (médio)</label><input id="h-luau" placeholder="Ex: USD 2.000 – 3.000"></div>
+        <div class="f"><label>Valor do Buyout</label><input id="h-buyout" placeholder="Ex: USD 15.000"></div>
       </div>
     </div>
     <div class="atc" id="atab-hcasamento">
@@ -1045,7 +1065,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <div class="f" style="margin-bottom:16px;padding:10px 14px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:8px;display:flex;align-items:center;gap:10px"><label style="margin-bottom:0;white-space:nowrap">📅 Última atualização</label><input id="h-atualizacao-hcomissao" type="date" style="margin-bottom:0;border:none;background:transparent;padding:0;font-size:13px;flex:1"></div>
 <div class="sec" style="margin-top:0"><div class="st">Comissão</div>
         <div class="g2">
-          <div class="f"><label>Percentual</label><input id="h-percentual" placeholder="Ex: 10%"></div>
+          <div class="f"><label>Percentual Geral</label><input id="h-percentual" placeholder="Ex: 10%"></div>
+          <div class="f"><label>Percentual Bodas</label><input id="h-perc-bodas" placeholder="Ex: 10%"></div>
+          <div class="f"><label>Percentual Hospedagem</label><input id="h-perc-hosp" placeholder="Ex: 10%"></div>
+          <div class="f"><label>Percentual A&B</label><input id="h-perc-ab" placeholder="Ex: 10%"></div>
           <div class="f"><label>E-mail para Cobrança</label><input id="h-email-cobr" type="email"></div>
           <div class="f"><label>A ser Paga</label><input id="h-a-pagar" placeholder="Ex: USD 500"></div>
           <div class="f"><label>Valor Pago</label><input id="h-comissao-valor" placeholder="Ex: USD 450"></div>
@@ -1055,12 +1078,76 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     </div>
     <div class="atc" id="atab-hhistorico"><div id="hotel-historico-content"><div class="ld">Carregando...</div></div></div>
     <div class="atc" id="atab-hanexos"><div id="anexos-h-content"></div></div>
-    <div class="atc" id="atab-hpoliticas">
-      <div style="text-align:center;padding:60px 20px">
-        <div style="font-size:48px;margin-bottom:16px">🚧</div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold);margin-bottom:8px">Em Construção</div>
-        <div style="font-size:14px;color:var(--muted)">Esta seção está sendo desenvolvida</div>
+    <!-- ABA GEO -->
+    <div class="atc" id="atab-hgeo">
+      <div class="sec" style="margin-top:0">
+        <div class="st">Informações Geográficas</div>
+        <div class="g2">
+          <div class="f" style="grid-column:1/-1">
+            <label>Melhor Época do Ano</label>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px" id="meses-wrap">
+              <label class="fl" style="width:calc(25% - 8px)"><input type="checkbox" class="h-mes" value="Jan"> Janeiro</label>
+              <label class="fl" style="width:calc(25% - 8px)"><input type="checkbox" class="h-mes" value="Fev"> Fevereiro</label>
+              <label class="fl" style="width:calc(25% - 8px)"><input type="checkbox" class="h-mes" value="Mar"> Março</label>
+              <label class="fl" style="width:calc(25% - 8px)"><input type="checkbox" class="h-mes" value="Abr"> Abril</label>
+              <label class="fl" style="width:calc(25% - 8px)"><input type="checkbox" class="h-mes" value="Mai"> Maio</label>
+              <label class="fl" style="width:calc(25% - 8px)"><input type="checkbox" class="h-mes" value="Jun"> Junho</label>
+              <label class="fl" style="width:calc(25% - 8px)"><input type="checkbox" class="h-mes" value="Jul"> Julho</label>
+              <label class="fl" style="width:calc(25% - 8px)"><input type="checkbox" class="h-mes" value="Ago"> Agosto</label>
+              <label class="fl" style="width:calc(25% - 8px)"><input type="checkbox" class="h-mes" value="Set"> Setembro</label>
+              <label class="fl" style="width:calc(25% - 8px)"><input type="checkbox" class="h-mes" value="Out"> Outubro</label>
+              <label class="fl" style="width:calc(25% - 8px)"><input type="checkbox" class="h-mes" value="Nov"> Novembro</label>
+              <label class="fl" style="width:calc(25% - 8px)"><input type="checkbox" class="h-mes" value="Dez"> Dezembro</label>
+            </div>
+          </div>
+          <div class="f"><label>Próximo a Aeroportos</label><input id="h-dist-aero2" placeholder="Ex: 45 min do aeroporto"></div>
+          <div class="f"><label>Voo Direto</label>
+            <select id="h-voo-direto2" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+              <option value="">Não verificado</option><option value="sim">✅ Sim</option><option value="nao">❌ Não</option>
+            </select>
+          </div>
+          <div class="f"><label>Visto Necessário</label>
+            <select id="h-visto2" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+              <option value="">Não verificado</option><option value="sim">✅ Sim</option><option value="nao">❌ Não</option>
+            </select>
+          </div>
+          <div class="f"><label>Passaporte Necessário</label>
+            <select id="h-passaporte" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+              <option value="">Não verificado</option><option value="sim">✅ Sim</option><option value="nao">❌ Não</option>
+            </select>
+          </div>
+          <div class="f"><label>Transporte Marítimo Necessário</label>
+            <select id="h-maritimo" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+              <option value="">Não verificado</option><option value="sim">✅ Sim</option><option value="nao">❌ Não</option>
+            </select>
+          </div>
+        </div>
       </div>
+    </div>
+
+    <!-- ABA POLÍTICAS -->
+    <div class="atc" id="atab-hpoliticas">
+      <div class="g2">
+        <div class="f"><label>Mínimo de Quartos</label><input id="h-pol-quartos" placeholder="Ex: 20"></div>
+        <div class="f"><label>Mínimo de Convidados</label><input id="h-pol-convidados" placeholder="Ex: 50"></div>
+        <div class="f"><label>Mínimo de Noites</label><input id="h-pol-noites" placeholder="Ex: 3"></div>
+        <div class="f" style="grid-column:1/-1">
+          <label>Buyout</label>
+          <select id="h-pol-buyout" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+            <option value="">Não verificado</option><option value="sim">✅ Precisa fazer buyout</option><option value="nao">❌ Não precisa</option>
+          </select>
+        </div>
+        <div class="f" style="grid-column:1/-1"><label>Observações</label><textarea id="h-pol-obs" placeholder="Políticas adicionais, regras importantes..." style="min-height:80px"></textarea></div>
+      </div>
+    </div>
+
+    <!-- ABA PACOTES -->
+    <div class="atc" id="atab-hpacotes">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div class="st" style="margin-bottom:0">Pacotes</div>
+        <button class="btn bg bsm" onclick="abrirNovoPacote()">+ Adicionar Pacote</button>
+      </div>
+      <div id="pacotes-list"><div class="em"><div class="em-t">Nenhum pacote cadastrado</div></div></div>
     </div>
     <div class="mf">
       <button class="btn bo" onclick="closeModal('modal-hotel')">Cancelar</button>
@@ -1246,6 +1333,26 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="mf">
       <button class="btn bo" onclick="closeModal('modal-kanban-novo')">Cancelar</button>
       <button class="btn bg" id="btn-kn" onclick="salvarNovoKanban()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PACOTE -->
+<div class="mo" id="modal-pacote">
+  <div class="mb" style="max-width:480px">
+    <div class="mh"><div class="mt">Novo Pacote</div><button class="mcl" onclick="closeModal('modal-pacote')">✕</button></div>
+    <div class="g2">
+      <div class="f" style="grid-column:1/-1"><label>Nome do Pacote</label><input id="pac-nome" placeholder="Ex: Pacote Romântico"></div>
+      <div class="f"><label>Período</label><input id="pac-periodo" placeholder="Ex: Jan–Mar 2026"></div>
+      <div class="f"><label>Qtd. de Pessoas</label><input id="pac-qtd" placeholder="Ex: 50 a 100"></div>
+      <div class="f"><label>Valor do Pacote</label><input id="pac-valor" placeholder="Ex: USD 8.000"></div>
+      <div class="f"><label>Valor Sinal de Reserva</label><input id="pac-sinal" placeholder="Ex: USD 2.000"></div>
+      <div class="f" style="grid-column:1/-1"><label>Catering</label><input id="pac-catering" placeholder="Ex: Buffet completo incluído"></div>
+      <div class="f" style="grid-column:1/-1"><label>Observações</label><textarea id="pac-obs" placeholder="Informações adicionais..."></textarea></div>
+    </div>
+    <div class="mf">
+      <button class="btn bo" onclick="closeModal('modal-pacote')">Cancelar</button>
+      <button class="btn bg" id="btn-pac" onclick="salvarPacote()">Salvar</button>
     </div>
   </div>
 </div>
@@ -1615,6 +1722,7 @@ function showHTab(tab,btn){
   document.getElementById('atab-'+tab).classList.add('active');if(btn)btn.classList.add('active')
   if(tab==='hhistorico')renderHotelHistorico()
   if(tab==='hanexos')renderAnexosUI('anexos-h-content','local',hotelAtual?.id)
+  if(tab==='hpacotes')carregarPacotes(hotelAtual?.id)
 }
 
 // ══ CASAMENTOS ══
@@ -2221,7 +2329,7 @@ function fillHForm(h){
 function getHData(){
   const v=id=>document.getElementById(id)?.value||''
   const _atu=['hgeral','hespec','hvalores','hcasamento','hcomissao'].map(t=>v('h-atualizacao-'+t)).filter(Boolean);const _atuDate=_atu[0]||null
-  return{nome:v('h-nome'),representante_nome:v('h-rep-nome'),representante_telefone:v('h-rep-tel'),email_representante:v('h-email-rep'),regiao:v('h-regiao'),pais:v('h-pais'),cidade:v('h-cidade'),site:v('h-site'),email:v('h-email'),instagram:v('h-instagram'),tipo:v('h-tipo'),num_acomodacoes:v('h-acomodacoes'),ano_construcao:v('h-ano'),capacidade_hospedes:v('h-cap-hospedes')||null,capacidade_eventos:v('h-cap-eventos')||null,restaurantes_total:v('h-rest-total'),bares_total:v('h-bares-total'),restaurantes_buffet:v('h-rest-buffet'),restaurantes_carte:v('h-rest-carte'),valor_diaria:v('h-diaria'),valor_sinal:v('h-sinal'),valor_bloqueio:v('h-bloqueio'),valor_casamento:v('h-val-casamento'),valor_luau:v('h-luau'),factsheet:v('h-factsheet'),tour_virtual:v('h-tour'),espacos:v('h-espacos'),mapa:v('h-mapa'),percentual:v('h-percentual'),comissao_a_pagar:v('h-a-pagar'),email_cobranca:v('h-email-cobr'),paga_comissao_valor:v('h-comissao-valor'),status_indicacao:v('h-status-indicacao')||null,motivo_nao_indicacao:v('h-motivo-ind'),hoteis_regiao:v('h-hoteis-regiao'),ultima_atualizacao:_atuDate,tem_hospedagem:getTg('h-hospedagem'),q_frigobar:getQuad('frigobar'),q_room_service:getQuad('room-service'),q_bar_pago:getQuad('bar-pago'),q_rest_pago:getQuad('rest-pago'),q_kids:getQuad('kids'),q_parque:getQuad('parque'),q_pub:getQuad('pub'),q_cassino:getQuad('cassino'),q_spa:getQuad('spa'),q_wifi:getQuad('wifi'),q_criancas:getQuad('criancas'),q_pets:getQuad('pets'),paga_comissao:getTg('h-paga-com'),blacklist_local:getTg('h-blacklist-local'),ambiente:document.getElementById('h-ambiente')?.value||null,voo_direto:getTg('h-voo-direto'),visto_necessario:getTg('h-visto'),favorito:getTg('h-favorito'),ja_fizemos_casamento:getTg('h-ja-fizemos'),regime_select:document.getElementById('h-regime-select')?.value||null,distancia_aeroporto:document.getElementById('h-distancia-aero')?.value||null}
+  return{nome:v('h-nome'),representante_nome:v('h-rep-nome'),representante_telefone:v('h-rep-tel'),email_representante:v('h-email-rep'),regiao:v('h-regiao'),pais:v('h-pais'),cidade:v('h-cidade'),site:v('h-site'),email:v('h-email'),instagram:v('h-instagram'),tipo:v('h-tipo'),num_acomodacoes:v('h-acomodacoes'),ano_construcao:v('h-ano'),capacidade_hospedes:v('h-cap-hospedes')||null,capacidade_eventos:v('h-cap-eventos')||null,restaurantes_total:v('h-rest-total'),bares_total:v('h-bares-total'),restaurantes_buffet:v('h-rest-buffet'),restaurantes_carte:v('h-rest-carte'),valor_diaria:v('h-diaria'),valor_sinal:v('h-sinal'),valor_bloqueio:v('h-bloqueio'),valor_casamento:v('h-val-casamento'),valor_luau:v('h-luau'),valor_buyout:v('h-buyout')||null,factsheet:v('h-factsheet'),tour_virtual:v('h-tour'),espacos:v('h-espacos'),mapa:v('h-mapa'),percentual:v('h-percentual'),perc_bodas:v('h-perc-bodas')||null,perc_hospedagem:v('h-perc-hosp')||null,perc_ab:v('h-perc-ab')||null,comissao_a_pagar:v('h-a-pagar'),email_cobranca:v('h-email-cobr'),paga_comissao_valor:v('h-comissao-valor'),status_indicacao:v('h-status-indicacao')||null,motivo_nao_indicacao:v('h-motivo-ind'),hoteis_regiao:v('h-hoteis-regiao'),ultima_atualizacao:_atuDate,contato_bodas_nome:v('h-bodas-nome')||null,contato_bodas_tel:v('h-bodas-tel')||null,contato_bodas_email:v('h-bodas-email')||null,contato_hosp_nome:v('h-hosp-nome')||null,contato_hosp_tel:v('h-hosp-tel')||null,contato_hosp_email:v('h-hosp-email')||null,observacoes:v('h-obs-geral')||null,melhor_epoca:getMeses()||null,pol_min_quartos:v('h-pol-quartos')||null,pol_min_convidados:v('h-pol-convidados')||null,pol_min_noites:v('h-pol-noites')||null,pol_buyout:document.getElementById('h-pol-buyout')?.value||null,pol_observacoes:v('h-pol-obs')||null,tem_hospedagem:getTg('h-hospedagem'),q_frigobar:getQuad('frigobar'),q_room_service:getQuad('room-service'),q_bar_pago:getQuad('bar-pago'),q_rest_pago:getQuad('rest-pago'),q_kids:getQuad('kids'),q_parque:getQuad('parque'),q_pub:getQuad('pub'),q_cassino:getQuad('cassino'),q_spa:getQuad('spa'),q_wifi:getQuad('wifi'),q_criancas:getQuad('criancas'),q_pets:getQuad('pets'),paga_comissao:getTg('h-paga-com'),blacklist_local:getTg('h-blacklist-local'),ambiente:document.getElementById('h-ambiente')?.value||null,voo_direto:getTg('h-voo-direto'),visto_necessario:getTg('h-visto'),favorito:getTg('h-favorito'),ja_fizemos_casamento:getTg('h-ja-fizemos'),regime_select:document.getElementById('h-regime-select')?.value||null,distancia_aeroporto:document.getElementById('h-distancia-aero')?.value||null}
 }
 async function salvarHotel(){
   const btn=document.getElementById('btn-sh');btn.textContent='Salvando...';btn.disabled=true
@@ -3085,6 +3193,64 @@ async function criarNotificacao(cardId,mensagem,solicitanteNome){
 
 // Polling de notificações a cada 30 segundos
 setInterval(()=>{if(usuarioAtual?.id)carregarNotificacoes()},30000)
+
+// ══ PACOTES DE LOCAIS ══
+async function carregarPacotes(localId){
+  const con=document.getElementById('pacotes-list');if(!con||!localId)return
+  const{data}=await sb.from('local_pacotes').select('*').eq('local_id',localId).order('created_at',{ascending:true})
+  if(!data||!data.length){con.innerHTML='<div class="em"><div class="em-t">Nenhum pacote cadastrado</div></div>';return}
+  con.innerHTML=data.map(p=>`<div class="card" style="margin-bottom:12px;padding:14px 16px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+      <div style="font-size:14px;font-weight:600">${p.nome||'Pacote sem nome'}</div>
+      <button class="btn bd bsm" onclick="deletarPacote('${p.id}')">✕</button>
+    </div>
+    <div class="g2" style="gap:8px">
+      ${p.periodo?`<div style="font-size:12px"><span style="color:var(--muted)">Período:</span> ${p.periodo}</div>`:''}
+      ${p.qtd_pessoas?`<div style="font-size:12px"><span style="color:var(--muted)">Pessoas:</span> ${p.qtd_pessoas}</div>`:''}
+      ${p.valor?`<div style="font-size:12px"><span style="color:var(--muted)">Valor:</span> ${p.valor}</div>`:''}
+      ${p.valor_sinal?`<div style="font-size:12px"><span style="color:var(--muted)">Sinal:</span> ${p.valor_sinal}</div>`:''}
+      ${p.catering?`<div style="font-size:12px;grid-column:1/-1"><span style="color:var(--muted)">Catering:</span> ${p.catering}</div>`:''}
+      ${p.observacoes?`<div style="font-size:12px;grid-column:1/-1"><span style="color:var(--muted)">Obs:</span> ${p.observacoes}</div>`:''}
+    </div>
+  </div>`).join('')
+}
+
+function abrirNovoPacote(){
+  document.getElementById('modal-pacote').classList.add('open')
+  ;['pac-nome','pac-periodo','pac-qtd','pac-valor','pac-sinal','pac-catering','pac-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
+}
+
+async function salvarPacote(){
+  if(!hotelAtual?.id)return
+  const btn=document.getElementById('btn-pac');btn.textContent='Salvando...';btn.disabled=true
+  await sb.from('local_pacotes').insert({
+    local_id:hotelAtual.id,
+    nome:document.getElementById('pac-nome')?.value,
+    periodo:document.getElementById('pac-periodo')?.value,
+    qtd_pessoas:document.getElementById('pac-qtd')?.value,
+    valor:document.getElementById('pac-valor')?.value,
+    valor_sinal:document.getElementById('pac-sinal')?.value,
+    catering:document.getElementById('pac-catering')?.value,
+    observacoes:document.getElementById('pac-obs')?.value
+  })
+  btn.textContent='Salvar';btn.disabled=false
+  closeModal('modal-pacote')
+  carregarPacotes(hotelAtual.id)
+}
+
+async function deletarPacote(id){
+  if(!confirm('Remover este pacote?'))return
+  await sb.from('local_pacotes').delete().eq('id',id)
+  carregarPacotes(hotelAtual?.id)
+}
+
+// Meses — helper
+function getMeses(){return Array.from(document.querySelectorAll('.h-mes:checked')).map(c=>c.value).join(',')}
+function setMeses(val){
+  document.querySelectorAll('.h-mes').forEach(c=>c.checked=false)
+  if(!val)return
+  val.split(',').forEach(m=>{const el=document.querySelector(`.h-mes[value="${m}"]`);if(el)el.checked=true})
+}
 
 function fmtDate(d){if(!d)return'—';const[y,m,day]=d.split('-');return`${day}/${m}/${y}`}
 </script>
