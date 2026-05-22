@@ -530,10 +530,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <div><div class="pt">Solicitações de Viagem</div><div class="ps" id="viagens-count">Carregando...</div></div>
     </div>
     <!-- Tabs por responsável -->
-    <div class="kb-tabs">
-      <button class="kb-tab active" onclick="showKanbanTab('rapha',this)">Rapha <span class="kb-new-badge" id="badge-rapha" style="display:none">0</span></button>
-      <button class="kb-tab" onclick="showKanbanTab('mari',this)">Mari <span class="kb-new-badge" id="badge-mari" style="display:none">0</span></button>
-      <button class="kb-tab" onclick="showKanbanTab('juliana',this)">Juliana <span class="kb-new-badge" id="badge-juliana" style="display:none">0</span></button>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;border-bottom:2px solid var(--border);margin-bottom:22px">
+      <div style="display:flex;gap:6px">
+        <button class="kb-tab active" onclick="showKanbanTab('rapha',this)">Rapha <span class="kb-new-badge" id="badge-rapha" style="display:none">0</span></button>
+        <button class="kb-tab" onclick="showKanbanTab('mari',this)">Mari <span class="kb-new-badge" id="badge-mari" style="display:none">0</span></button>
+        <button class="kb-tab" onclick="showKanbanTab('juliana',this)">Juliana <span class="kb-new-badge" id="badge-juliana" style="display:none">0</span></button>
+        <button class="kb-tab" onclick="showKanbanTab('estela',this)">Estela <span class="kb-new-badge" id="badge-estela" style="display:none">0</span></button>
+      </div>
+      <button onclick="abrirConfigColunas()" title="Configurar colunas" style="padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--white);cursor:pointer;font-size:15px;margin-bottom:4px;color:var(--muted);transition:all .15s" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">⚙️ Colunas</button>
     </div>
     <!-- Board -->
     <div class="kb-board" id="kb-board"></div>
@@ -1357,6 +1361,26 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div>
 </div>
 
+
+<!-- MODAL CONFIG COLUNAS -->
+<div class="mo" id="modal-config-colunas">
+  <div class="mb" style="max-width:500px">
+    <div class="mh">
+      <div><div class="mt" id="config-col-title">Configurar Colunas</div><div class="ms" id="config-col-sub"></div></div>
+      <button class="mcl" onclick="closeModal('modal-config-colunas')">✕</button>
+    </div>
+    <div id="config-col-list" style="margin-bottom:16px"></div>
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      <input id="nova-col-label" placeholder="Nome da nova coluna..." style="flex:1;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none" onkeydown="if(event.key==='Enter')adicionarColuna()">
+      <button class="btn bg bsm" onclick="adicionarColuna()">+ Adicionar</button>
+    </div>
+    <div class="mf">
+      <button class="btn bo" onclick="closeModal('modal-config-colunas')">Fechar</button>
+      <button class="btn bg" onclick="salvarColunas()">Salvar</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL REDEFINIR SENHA -->
 <div class="mo" id="modal-senha">
   <div class="mb" style="max-width:400px">
@@ -1574,7 +1598,7 @@ function showPage(p){
   closeSidebar()
   if(p==='logs')loadLogs()
   if(p==='usuarios')loadUsuarios()
-  if(p==='viagens')loadKanban()
+  if(p==='viagens'){await carregarColunasCustom();loadKanban()}
   syncFabs()
 }
 function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow=''}
@@ -1991,12 +2015,6 @@ function renderPickerIfOpen(){
 async function escalarA(aid,cidade){
   if(!casamentoAtual?.id)return
   await sb.from('casamento_assessoras').insert({casamento_id:casamentoAtual.id,assessora_id:aid,periodo_inicio:casamentoAtual.plan_data||null,periodo_fim:casamentoAtual.plan_data||null,bilhete_emitido:false})
-  // Busca nome da assessora para o card
-  const assessora=assessoras.find(a=>a.id===aid)
-  const aNome=assessora?.nome||cidade||'Assessora'
-  // Cria card no Kanban da Rapha
-  await sb.from('solicitacoes_kanban').insert({tipo:'viagem_assessora',coluna:'nova',responsavel:'rapha',casamento_id:casamentoAtual.id,casamento_nome:casamentoAtual.nome,assessora_id:aid,assessora_nome:aNome,periodo_de:casamentoAtual.plan_data||null,periodo_ate:casamentoAtual.plan_data||null,criado_por:usuarioAtual?.nome})
-  // Notifica quem criou que o card foi recebido (ela mesma neste caso — mas mantemos o padrão)
   pickerOpen=false;renderEscaladas()
 }
 async function renderProdAssessoras(){
@@ -2882,7 +2900,7 @@ function showKanbanTab(tab,btn){
 function renderKanban(){
   const board=document.getElementById('kb-board');if(!board)return
   const filtered=kanbanData.filter(k=>k.responsavel===kanbanTabAtual)
-  const colunas=KB_COLUNAS[kanbanTabAtual]||KB_COLUNAS.rapha
+  const colunas=getColunasAtivas(kanbanTabAtual)
   board.innerHTML=colunas.map(col=>{
     const cards=filtered.filter(k=>k.coluna===col.id)
     return`<div class="kb-col">
@@ -2963,7 +2981,7 @@ async function openKanbanCard(id){
   det.innerHTML=html||'<div style="font-size:12px;color:var(--muted)">Sem detalhes adicionais</div>'
   document.getElementById('kc-sol-edit').value=k.solicitacao||''
   const selCol=document.getElementById('kc-coluna')
-  const colunas=KB_COLUNAS[k.responsavel]||KB_COLUNAS.rapha
+  const colunas=getColunasAtivas(k.responsavel)
   selCol.innerHTML=colunas.map(c=>`<option value="${c.id}">${c.label}</option>`).join('')
   selCol.value=k.coluna
   kanbanCardAtual._priTemp=k.prioridade||'media'
@@ -2982,7 +3000,7 @@ async function salvarKanbanCard(){
   await sb.from('solicitacoes_kanban').update({coluna:novaColuna,solicitacao:novaSol,prioridade:novaPri,convidado_nome:novoNome||null,tipo:novoTipo}).eq('id',kanbanCardAtual.id)
   // Notifica o solicitante se a coluna mudou
   if(novaColuna!==kanbanCardAtual.coluna&&kanbanCardAtual.criado_por){
-    const colLabel=KB_COLUNAS[kanbanCardAtual.responsavel]?.find(c=>c.id===novaColuna)?.label||novaColuna
+    const colLabel=getColunasAtivas(kanbanCardAtual.responsavel).find(c=>c.id===novaColuna)?.label||novaColuna
     const cardNome=kanbanCardAtual.convidado_nome?`${kanbanCardAtual.convidado_nome} — ${kanbanCardAtual.casamento_nome}`:kanbanCardAtual.casamento_nome
     await criarNotificacao(kanbanCardAtual.id,`${usuarioAtual?.nome||'Alguém'} moveu seu card "${cardNome}" para "${colLabel}"`,kanbanCardAtual.criado_por)
   }
@@ -3061,7 +3079,7 @@ async function deletarKanbanCard(){
 }
 
 function openNovaKanban(coluna){
-  const colunas=KB_COLUNAS[kanbanTabAtual]||KB_COLUNAS.rapha
+  const colunas=getColunasAtivas(kanbanTabAtual)
   const selCol=document.getElementById('kn-coluna')
   selCol.innerHTML=colunas.map(c=>`<option value="${c.id}">${c.label}</option>`).join('')
   selCol.value=coluna||'nova'
@@ -3117,7 +3135,89 @@ function setCTab(tab){
   document.getElementById('ctab-'+tab)?.classList.add('active')
   renderCasamentos()
 }
-// ══ SISTEMA DE NOTIFICAÇÕES ══
+// ══ COLUNAS CUSTOMIZADAS ══
+let KB_COLUNAS_CUSTOM={} // Sobrescreve KB_COLUNAS quando carregado do banco
+
+async function carregarColunasCustom(){
+  const{data}=await sb.from('kanban_colunas').select('*').order('ordem',{ascending:true})
+  if(!data||!data.length)return
+  // Agrupa por responsável
+  const grupos={}
+  data.forEach(c=>{
+    if(!grupos[c.responsavel])grupos[c.responsavel]=[]
+    grupos[c.responsavel].push({id:c.coluna_id,label:c.label,dbId:c.id})
+  })
+  // Só sobrescreve os responsáveis que têm colunas customizadas
+  Object.keys(grupos).forEach(r=>{KB_COLUNAS_CUSTOM[r]=grupos[r]})
+}
+
+function getColunasAtivas(responsavel){
+  return KB_COLUNAS_CUSTOM[responsavel]||KB_COLUNAS[responsavel]||KB_COLUNAS.rapha
+}
+
+// ── Config de colunas ──
+let colunasEditando=[]
+
+function abrirConfigColunas(){
+  const tab=kanbanTabAtual==='estela'?'rapha':kanbanTabAtual
+  const nomes={rapha:'Rapha',mari:'Mari',juliana:'Juliana'}
+  document.getElementById('config-col-title').textContent=`Colunas — ${nomes[tab]||tab}`
+  document.getElementById('config-col-sub').textContent='Renomeie, reordene ou adicione colunas'
+  // Copia atual para edição
+  colunasEditando=getColunasAtivas(tab).map(c=>({...c}))
+  renderConfigColunas()
+  document.getElementById('modal-config-colunas').classList.add('open')
+}
+
+function renderConfigColunas(){
+  const list=document.getElementById('config-col-list')
+  list.innerHTML=colunasEditando.map((c,i)=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:8px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;background:var(--white)" id="col-row-${i}">
+      <span style="cursor:grab;color:#ccc;font-size:16px" title="Arrastar">⠿</span>
+      <input value="${c.label}" onchange="colunasEditando[${i}].label=this.value" style="flex:1;padding:7px 10px;border-radius:7px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+      <button onclick="removerColuna(${i})" style="padding:5px 8px;border-radius:7px;background:var(--red);color:#fff;border:none;cursor:pointer;font-size:12px" title="Remover">✕</button>
+      ${i>0?`<button onclick="moverColuna(${i},-1)" style="padding:5px 7px;border-radius:7px;background:#f0f0f0;border:none;cursor:pointer;font-size:12px">↑</button>`:''}
+      ${i<colunasEditando.length-1?`<button onclick="moverColuna(${i},1)" style="padding:5px 7px;border-radius:7px;background:#f0f0f0;border:none;cursor:pointer;font-size:12px">↓</button>`:''}
+    </div>`).join('')
+}
+
+function removerColuna(i){
+  if(colunasEditando.length<=1){alert('Precisa ter pelo menos 1 coluna!');return}
+  colunasEditando.splice(i,1)
+  renderConfigColunas()
+}
+
+function moverColuna(i,dir){
+  const tmp=colunasEditando[i]
+  colunasEditando[i]=colunasEditando[i+dir]
+  colunasEditando[i+dir]=tmp
+  renderConfigColunas()
+}
+
+function adicionarColuna(){
+  const inp=document.getElementById('nova-col-label')
+  const label=inp.value.trim();if(!label)return
+  // Gera ID único
+  const id='col_'+Date.now()
+  colunasEditando.push({id,label})
+  inp.value=''
+  renderConfigColunas()
+}
+
+async function salvarColunas(){
+  const tab=kanbanTabAtual==='estela'?'rapha':kanbanTabAtual
+  const btn=document.querySelector('#modal-config-colunas .btn.bg')
+  if(btn){btn.textContent='Salvando...';btn.disabled=true}
+  // Deleta antigas e insere novas
+  await sb.from('kanban_colunas').delete().eq('responsavel',tab)
+  const rows=colunasEditando.map((c,i)=>({responsavel:tab,coluna_id:c.id,label:c.label,ordem:i}))
+  await sb.from('kanban_colunas').insert(rows)
+  // Atualiza local
+  KB_COLUNAS_CUSTOM[tab]=colunasEditando.map(c=>({...c}))
+  if(btn){btn.textContent='Salvar';btn.disabled=false}
+  closeModal('modal-config-colunas')
+  renderKanban()
+}
 let notifPanelOpen=false
 
 function toggleNotifPanel(){
