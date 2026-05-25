@@ -1598,7 +1598,7 @@ function showPage(p){
   closeSidebar()
   if(p==='logs')loadLogs()
   if(p==='usuarios')loadUsuarios()
-  if(p==='viagens'){await carregarColunasCustom();loadKanban()}
+  if(p==='viagens'){carregarColunasCustom().then(()=>loadKanban())}
   syncFabs()
 }
 function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow=''}
