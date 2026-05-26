@@ -695,7 +695,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="tc" id="tab-assess">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
         <div id="assess-count" style="font-size:13px;color:#666"></div>
-        <button class="btn bg bsm" onclick="togglePicker()">+ Escalar Assessora</button>
+        
       </div>
       <div id="escaladas-list"></div>
       <div id="picker-container" style="display:none"></div>
@@ -2022,19 +2022,39 @@ async function loadFornecedoresCasamento(casId){
   if(!data||!data.length){sec.style.display='none';return}
   sec.style.display='block'
   const ti={Assessora:'👩',Celebrante:'🎤','Fotógrafo':'📷',Videomaker:'🎬',DJ:'🎧','Cabelo e Maquiagem':'💄'}
-  list.innerHTML=data.map(cf=>`<div class="hist" style="margin-bottom:12px;padding:12px 14px;background:var(--white);border:1px solid var(--border);border-radius:10px">
-    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+  list.innerHTML=data.map(cf=>`<div style="margin-bottom:14px;padding:14px 16px;background:var(--white);border:1px solid var(--border);border-radius:12px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px">
       <div>
         <div style="font-weight:600;font-size:14px">${ti[cf.fornecedor?.tipo]||'🏢'} ${cf.fornecedor?.nome||'—'}</div>
         <div style="font-size:12px;color:var(--muted)">${cf.fornecedor?.tipo||''}${cf.periodo_inicio?' · '+fmtDate(cf.periodo_inicio)+' → '+fmtDate(cf.periodo_fim):''}</div>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
-        ${cf.status_voo?`<span class="tag ${cf.status_voo==='emitido'?'tg':cf.status_voo==='nao_necessario'?'tgy':'tr'}">✈️ ${cf.status_voo==='emitido'?'Voo emitido':cf.status_voo==='nao_necessario'?'Voo n/a':'Voo pendente'}</span>`:''}
-        ${cf.status_hotel?`<span class="tag ${cf.status_hotel==='emitido'?'tg':cf.status_hotel==='nao_necessario'?'tgy':'tr'}">🏨 ${cf.status_hotel==='emitido'?'Hotel emitido':cf.status_hotel==='nao_necessario'?'Hotel n/a':'Hotel pendente'}</span>`:''}
-        ${cf.status_transfer?`<span class="tag ${cf.status_transfer==='emitido'?'tg':cf.status_transfer==='nao_necessario'?'tgy':'tr'}">🚌 ${cf.status_transfer==='emitido'?'Transfer emitido':cf.status_transfer==='nao_necessario'?'Transfer n/a':'Transfer pendente'}</span>`:''}
+        ${cf.status_voo?`<span class="tag ${cf.status_voo==='emitido'?'tg':'tr'}">✈️ ${cf.status_voo==='emitido'?'Emitido':'Pendente'}</span>`:''}
+        ${cf.status_hotel?`<span class="tag ${cf.status_hotel==='emitido'?'tg':'tr'}">🏨 ${cf.status_hotel==='emitido'?'Emitido':'Pendente'}</span>`:''}
+        ${cf.status_transfer?`<span class="tag ${cf.status_transfer==='emitido'?'tg':'tr'}">🚌 ${cf.status_transfer==='emitido'?'Emitido':'Pendente'}</span>`:''}
       </div>
     </div>
+    <!-- Nota em estrelas -->
+    <div style="border-top:1px solid var(--gold-border);padding-top:10px;margin-top:4px">
+      <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px">Avaliação</div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <div style="display:flex;gap:2px">
+          ${[1,2,3,4,5].map(n=>`<span onclick="setNotaForn('${cf.id}',${n})" style="font-size:22px;cursor:pointer;opacity:${(cf.nota||0)>=n?1:.3};transition:opacity .15s" title="${n} estrela${n>1?'s':''}">⭐</span>`).join('')}
+        </div>
+        ${cf.nota?`<span style="font-size:12px;color:var(--muted)">${cf.nota}/5</span>`:'<span style="font-size:12px;color:var(--muted)">Sem avaliação</span>'}
+      </div>
+      <textarea placeholder="Comentário sobre a atuação..." style="width:100%;margin-top:8px;padding:8px 10px;border-radius:8px;border:1px solid var(--border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;resize:vertical;min-height:60px" onblur="setComentarioForn('${cf.id}',this.value)">${cf.comentario||''}</textarea>
+    </div>
   </div>`).join('')
+}
+
+async function setNotaForn(id,nota){
+  await sb.from('casamento_fornecedores').update({nota}).eq('id',id)
+  if(casamentoAtual?.id)loadFornecedoresCasamento(casamentoAtual.id)
+}
+
+async function setComentarioForn(id,comentario){
+  await sb.from('casamento_fornecedores').update({comentario}).eq('id',id)
 }
 
 async function renderEscaladas(){
