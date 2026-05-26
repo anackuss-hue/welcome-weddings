@@ -272,6 +272,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div>
   <div class="nav active" onclick="showPage('casamentos')" id="nav-casamentos">💍 Casamentos</div>
   <div class="nav" onclick="showPage('assessoras')" id="nav-assessoras">👩 Assessoras</div>
+  <div class="nav" onclick="showPage('fornecedores')" id="nav-fornecedores">🏢 Fornecedores</div>
   <div class="nav" onclick="showPage('hoteis')" id="nav-hoteis">🏨 Locais</div>
   <div class="nav" onclick="showPage('viagens')" id="nav-viagens">✈️ Viagens</div>
   <div class="nav" onclick="showPage('logs')" id="nav-logs" style="display:none">📋 Logs</div>
@@ -417,6 +418,33 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div>
 
   <!-- ══ HOTÉIS ══ -->
+  <!-- ══ FORNECEDORES ══ -->
+  <div class="page" id="page-fornecedores">
+    <div class="ph">
+      <div><div class="pt">Banco de Fornecedores</div><div class="ps" id="fornecedores-count">Carregando...</div></div>
+      <button class="btn bg" onclick="openNovoFornecedor()">+ Novo Fornecedor</button>
+    </div>
+    <div style="display:flex;gap:20px;align-items:flex-start">
+      <div class="fpanel" style="width:200px;max-height:calc(100vh - 80px);overflow-y:auto;position:sticky;top:24px">
+        <div class="fp-title">Filtros</div>
+        <input id="search-forn" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none" placeholder="Buscar fornecedor..." oninput="renderFornecedores()">
+        <div class="fp-sec">
+          <div class="fp-sec-t">Tipo</div>
+          <select id="f-forn-tipo" onchange="renderFornecedores()" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none">
+            <option value="">Todos</option>
+            <option>Assessora</option>
+            <option>Celebrante</option>
+            <option>Fotógrafo</option>
+            <option>Videomaker</option>
+            <option>DJ</option>
+            <option>Cabelo e Maquiagem</option>
+          </select>
+        </div>
+      </div>
+      <div style="flex:1"><div class="cg" id="fornecedores-grid"><div class="ld">Carregando...</div></div></div>
+    </div>
+  </div>
+
   <div class="page" id="page-hoteis">
     <div class="ph">
       <div><div class="pt">Banco de Locais</div><div class="ps" id="hoteis-count">Carregando...</div></div>
@@ -601,7 +629,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <button class="tab active" onclick="showCTab('plan',this)">📅 Planejamento</button>
       <button class="tab" onclick="showCTab('prod',this)">🎨 Produção</button>
       <button class="tab" onclick="showCTab('viag',this)">✈️ Viagem</button>
-      <button class="tab" onclick="showCTab('assess',this)">👩 Assessoras</button>
+      <button class="tab" onclick="showCTab('assess',this)">🏢 Fornecedores</button>
       <button class="tab" onclick="showCTab('anexos-c',this)">📎 Anexos</button>
     </div>
     <div class="tc active" id="tab-plan">
@@ -671,6 +699,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       </div>
       <div id="escaladas-list"></div>
       <div id="picker-container" style="display:none"></div>
+      <!-- Fornecedores vinculados -->
+      <div id="forn-cas-section" style="margin-top:20px;padding-top:16px;border-top:1px solid var(--gold-border);display:none">
+        <div class="st" style="margin-bottom:12px">🏢 Fornecedores Vinculados</div>
+        <div id="forn-cas-list"></div>
+      </div>
       <div id="solicitacoes-section" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--gold-border);display:none">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
           <div class="st" style="margin-bottom:0">✈️ Solicitações de Viagem</div>
@@ -1381,6 +1414,33 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div>
 </div>
 
+<!-- MODAL FORNECEDOR -->
+<div class="mo" id="modal-fornecedor">
+  <div class="mb" style="max-width:500px">
+    <div class="mh"><div><div class="mt" id="mf-title">Novo Fornecedor</div></div><button class="mcl" onclick="closeModal('modal-fornecedor')">✕</button></div>
+    <div class="g2">
+      <div class="f" style="grid-column:1/-1"><label>Nome <span style="color:var(--red)">*</span></label><input id="forn-nome"></div>
+      <div class="f"><label>Tipo <span style="color:var(--red)">*</span></label>
+        <select id="forn-tipo" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+          <option value="">Selecionar...</option>
+          <option>Assessora</option><option>Celebrante</option><option>Fotógrafo</option>
+          <option>Videomaker</option><option>DJ</option><option>Cabelo e Maquiagem</option>
+        </select>
+      </div>
+      <div class="f"><label>Cidade</label><input id="forn-cidade"></div>
+      <div class="f"><label>Telefone</label><input id="forn-tel" type="tel"></div>
+      <div class="f"><label>E-mail</label><input id="forn-email" type="email"></div>
+      <div class="f"><label>Instagram</label><input id="forn-instagram" placeholder="@"></div>
+      <div class="f"><label>Site</label><input id="forn-site" placeholder="https://"></div>
+      <div class="f" style="grid-column:1/-1"><label>Observações</label><textarea id="forn-obs"></textarea></div>
+    </div>
+    <div class="mf">
+      <button class="btn bo" onclick="closeModal('modal-fornecedor')">Cancelar</button>
+      <button class="btn bg" id="btn-sforn" onclick="salvarFornecedor()">Salvar</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL REDEFINIR SENHA -->
 <div class="mo" id="modal-senha">
   <div class="mb" style="max-width:400px">
@@ -1596,6 +1656,7 @@ function showPage(p){
   document.getElementById('page-'+p).classList.add('active')
   document.getElementById('nav-'+p).classList.add('active')
   closeSidebar()
+  if(p==='fornecedores')loadFornecedores()
   if(p==='logs')loadLogs()
   if(p==='usuarios')loadUsuarios()
   if(p==='viagens'){carregarColunasCustom().then(()=>loadKanban())}
@@ -1716,7 +1777,7 @@ function showCTab(tab,btn){
   document.querySelectorAll('.tc').forEach(t=>t.classList.remove('active'))
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'))
   document.getElementById('tab-'+tab).classList.add('active');if(btn)btn.classList.add('active')
-  if(tab==='assess'){renderEscaladas();if(casamentoAtual?.id)loadSolicitacoes(casamentoAtual.id)}
+  if(tab==='assess'){renderEscaladas();if(casamentoAtual?.id){loadSolicitacoes(casamentoAtual.id);loadFornecedoresCasamento(casamentoAtual.id)}}
   if(tab==='prod')renderProdAssessoras()
   if(tab==='anexos-c')renderAnexosUI('anexos-c-content','casamento',casamentoAtual?.id)
   aplicarReadonlyAba(tab)
@@ -1953,6 +2014,29 @@ async function deleteCasamento(id){if(!confirm('Remover?'))return;await sb.from(
 
 // ── ESCALADAS
 async function loadEscaladas(cid){const id=cid||casamentoAtual?.id;if(!id)return;const{data}=await sb.from('casamento_assessoras').select('*,assessora:assessoras(*)').eq('casamento_id',id);escaladas=data||[]}
+async function loadFornecedoresCasamento(casId){
+  const sec=document.getElementById('forn-cas-section')
+  const list=document.getElementById('forn-cas-list')
+  if(!sec||!list)return
+  const{data}=await sb.from('casamento_fornecedores').select('*,fornecedor:fornecedores(id,nome,tipo,telefone)').eq('casamento_id',casId).order('created_at',{ascending:false})
+  if(!data||!data.length){sec.style.display='none';return}
+  sec.style.display='block'
+  const ti={Assessora:'👩',Celebrante:'🎤','Fotógrafo':'📷',Videomaker:'🎬',DJ:'🎧','Cabelo e Maquiagem':'💄'}
+  list.innerHTML=data.map(cf=>`<div class="hist" style="margin-bottom:12px;padding:12px 14px;background:var(--white);border:1px solid var(--border);border-radius:10px">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+      <div>
+        <div style="font-weight:600;font-size:14px">${ti[cf.fornecedor?.tipo]||'🏢'} ${cf.fornecedor?.nome||'—'}</div>
+        <div style="font-size:12px;color:var(--muted)">${cf.fornecedor?.tipo||''}${cf.periodo_inicio?' · '+fmtDate(cf.periodo_inicio)+' → '+fmtDate(cf.periodo_fim):''}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        ${cf.status_voo?`<span class="tag ${cf.status_voo==='emitido'?'tg':cf.status_voo==='nao_necessario'?'tgy':'tr'}">✈️ ${cf.status_voo==='emitido'?'Voo emitido':cf.status_voo==='nao_necessario'?'Voo n/a':'Voo pendente'}</span>`:''}
+        ${cf.status_hotel?`<span class="tag ${cf.status_hotel==='emitido'?'tg':cf.status_hotel==='nao_necessario'?'tgy':'tr'}">🏨 ${cf.status_hotel==='emitido'?'Hotel emitido':cf.status_hotel==='nao_necessario'?'Hotel n/a':'Hotel pendente'}</span>`:''}
+        ${cf.status_transfer?`<span class="tag ${cf.status_transfer==='emitido'?'tg':cf.status_transfer==='nao_necessario'?'tgy':'tr'}">🚌 ${cf.status_transfer==='emitido'?'Transfer emitido':cf.status_transfer==='nao_necessario'?'Transfer n/a':'Transfer pendente'}</span>`:''}
+      </div>
+    </div>
+  </div>`).join('')
+}
+
 async function renderEscaladas(){
   if(casamentoAtual)await loadEscaladas(casamentoAtual.id)
   const list=document.getElementById('escaladas-list')
@@ -2838,6 +2922,72 @@ async function deletarAnexo(id,url,containerId,tipo,referenciaId){
   carregarAnexos(containerId,tipo,referenciaId)
 }
 
+// ══ FORNECEDORES ══
+let fornecedores=[], fornecedorAtual=null
+
+async function loadFornecedores(){
+  const{data}=await sb.from('fornecedores').select('*').order('nome')
+  fornecedores=data||[]
+  renderFornecedores()
+  const el=document.getElementById('fornecedores-count');if(el)el.textContent=fornecedores.length+' fornecedor(es)'
+}
+
+function renderFornecedores(){
+  const grid=document.getElementById('fornecedores-grid');if(!grid)return
+  const s=(document.getElementById('search-forn')?.value||'').toLowerCase()
+  const tipo=document.getElementById('f-forn-tipo')?.value||''
+  const filtered=fornecedores.filter(f=>(!s||f.nome?.toLowerCase().includes(s))&&(!tipo||f.tipo===tipo))
+  const el=document.getElementById('fornecedores-count');if(el)el.textContent=filtered.length+' de '+fornecedores.length+' fornecedor(es)'
+  if(!filtered.length){grid.innerHTML='<div class="em"><div class="em-i">🏢</div><div class="em-t">Nenhum fornecedor encontrado</div></div>';return}
+  const ti={Assessora:'👩',Celebrante:'🎤','Fotógrafo':'📷',Videomaker:'🎬',DJ:'🎧','Cabelo e Maquiagem':'💄'}
+  grid.innerHTML=filtered.map(f=>`<div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+      <div><div style="font-size:16px;font-weight:600;font-family:'Cormorant Garamond',serif">${f.nome}</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:3px">${ti[f.tipo]||'🏢'} ${f.tipo}${f.cidade?' · '+f.cidade:''}</div></div>
+      <button class="btn bd bsm" onclick="deletarFornecedor('${f.id}')">✕</button>
+    </div>
+    ${f.telefone?`<div style="font-size:12px;color:var(--muted)">📞 ${f.telefone}</div>`:''}
+    ${f.email?`<div style="font-size:12px;color:var(--muted)">✉️ ${f.email}</div>`:''}
+    <button class="btn bo" style="width:100%;margin-top:12px" onclick="openFornecedor('${f.id}')">Ver / Editar</button>
+  </div>`).join('')
+}
+
+function openNovoFornecedor(){
+  fornecedorAtual=null
+  document.getElementById('mf-title').textContent='Novo Fornecedor'
+  ;['forn-nome','forn-cidade','forn-tel','forn-email','forn-instagram','forn-site','forn-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
+  document.getElementById('forn-tipo').value=''
+  document.getElementById('modal-fornecedor').classList.add('open')
+}
+
+function openFornecedor(id){
+  fornecedorAtual=fornecedores.find(f=>f.id===id);if(!fornecedorAtual)return
+  document.getElementById('mf-title').textContent='Editar Fornecedor'
+  const f=fornecedorAtual
+  ;['nome','tipo','cidade','telefone','email','instagram','site','obs'].forEach(campo=>{
+    const el=document.getElementById('forn-'+campo);if(el)el.value=f[campo]||''
+  })
+  document.getElementById('modal-fornecedor').classList.add('open')
+}
+
+async function salvarFornecedor(){
+  const btn=document.getElementById('btn-sforn');btn.textContent='Salvando...';btn.disabled=true
+  const nome=document.getElementById('forn-nome').value.trim()
+  const tipo=document.getElementById('forn-tipo').value
+  if(!nome||!tipo){alert('Preencha nome e tipo!');btn.textContent='Salvar';btn.disabled=false;return}
+  const data={nome,tipo,cidade:document.getElementById('forn-cidade').value||null,telefone:document.getElementById('forn-tel').value||null,email:document.getElementById('forn-email').value||null,instagram:document.getElementById('forn-instagram').value||null,site:document.getElementById('forn-site').value||null,obs:document.getElementById('forn-obs').value||null}
+  if(fornecedorAtual)await sb.from('fornecedores').update(data).eq('id',fornecedorAtual.id)
+  else await sb.from('fornecedores').insert(data)
+  btn.textContent='Salvar';btn.disabled=false
+  closeModal('modal-fornecedor');loadFornecedores()
+}
+
+async function deletarFornecedor(id){
+  if(!confirm('Remover este fornecedor?'))return
+  await sb.from('fornecedores').delete().eq('id',id)
+  loadFornecedores()
+}
+
 // ══ KANBAN DE VIAGENS ══
 let kanbanData=[], kanbanTabAtual='rapha'
 
@@ -2917,6 +3067,7 @@ function renderKanban(){
 function renderKanbanCard(k){
   const tipoTag={
     viagem_assessora:`<span class="tipo-tag tipo-viagem">🧳 Viagem assessora</span>`,
+    viagem_fornecedor:`<span class="tipo-tag tipo-viagem">🏢 Viagem fornecedor</span>`,
     atendimento_convidado:`<span class="tipo-tag tipo-convidado">👥 Atend. convidado</span>`,
     atendimento_casal:`<span class="tipo-tag tipo-casal">💑 Atend. casal</span>`,
     passeio:`<span class="tipo-tag tipo-passeio">🗺️ Passeio</span>`,
