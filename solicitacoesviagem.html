@@ -518,8 +518,14 @@ carregarUsuarios()
 carregarFornecedores()
 
 async function carregarFornecedores(){
-  const{data}=await sb.from('fornecedores').select('id,nome,tipo').order('nome',{ascending:true})
-  _fornData=data||[]
+  const[{data:f},{data:a}]=await Promise.all([
+    sb.from('fornecedores').select('id,nome,tipo').order('nome',{ascending:true}),
+    sb.from('assessoras').select('id,nome').order('nome',{ascending:true})
+  ])
+  _fornData=[
+    ...(f||[]),
+    ...(a||[]).map(x=>({...x,tipo:'Assessora'}))
+  ].sort((a,b)=>a.nome.localeCompare(b.nome))
 }
 </script>
 </body>
