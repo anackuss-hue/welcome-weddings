@@ -1284,6 +1284,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <!-- Detalhes originais -->
       <div id="kc-detalhes" style="margin-bottom:16px;padding:14px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:10px"></div>
 
+      <!-- Logística (viagem fornecedor/assessora) -->
+      <div id="kc-logistica-sec" style="display:none;margin-bottom:20px">
+        <div style="font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px">✈️ Logística — clique para alterar status</div>
+        <div id="kc-logistica-list"></div>
+        <div id="kc-logistica-add" style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap"></div>
+      </div>
+
       <!-- Editar solicitação -->
       <div class="f" style="margin-bottom:16px">
         <label>✏️ Solicitação / Descrição</label>
@@ -3151,6 +3158,16 @@ async function openKanbanCard(id){
   if(k.convidado_nome)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">Convidado</span><div style="font-size:13px;margin-top:2px">${k.convidado_nome}${k.convidado_telefone?' · '+k.convidado_telefone:''}</div></div>`
   det.innerHTML=html||'<div style="font-size:12px;color:var(--muted)">Sem detalhes adicionais</div>'
   document.getElementById('kc-sol-edit').value=k.solicitacao||''
+  // Logística para viagem
+  const logSec=document.getElementById('kc-logistica-sec')
+  if(logSec){
+    if(k.tipo==='viagem_fornecedor'||k.tipo==='viagem_assessora'){
+      logSec.style.display='block'
+      renderLogisticaKanban(k)
+    }else{
+      logSec.style.display='none'
+    }
+  }
   const selCol=document.getElementById('kc-coluna')
   const colunas=getColunasAtivas(k.responsavel)
   selCol.innerHTML=colunas.map(c=>`<option value="${c.id}">${c.label}</option>`).join('')
@@ -3180,7 +3197,53 @@ async function salvarKanbanCard(){
 
 async function moverKanbanCard(){await salvarKanbanCard()}
 
-// ── CHECKLIST ──
+// ── LOGÍSTICA NO MODAL KANBAN ──
+function renderLogisticaKanban(k){
+  const list=document.getElementById('kc-logistica-list')
+  const addBtns=document.getElementById('kc-logistica-add')
+  if(!list)return
+  const estados={pendente:{bg:'#fff8e1',border:'#ffe082',color:'#f57f17',label:'⏳ Pendente'},emitido:{bg:'#e8f5e9',border:'#a5d6a7',color:'#2e7d32',label:'✅ Emitido'},nao_necessario:{bg:'#f5f5f5',border:'#e0e0e0',color:'#9e9e9e',label:'— N/A'}}
+  const itens=[]
+  if(k.status_passagem!=null||k.servicos?.includes('Voo'))itens.push({campo:'status_passagem',emoji:'✈️',label:'Passagem',val:k.status_passagem||'pendente'})
+  if(k.status_hotel!=null||k.servicos?.includes('Hospedagem'))itens.push({campo:'status_hotel',emoji:'🏨',label:'Hotel',val:k.status_hotel||'pendente'})
+  if(k.status_transfer!=null||k.servicos?.includes('Transfer'))itens.push({campo:'status_transfer',emoji:'🚌',label:'Transfer',val:k.status_transfer||'pendente'})
+  if(k.status_seguro!=null)itens.push({campo:'status_seguro',emoji:'🛡️',label:'Seguro',val:k.status_seguro})
+  if(k.status_trem!=null)itens.push({campo:'status_trem',emoji:'🚂',label:'Trem',val:k.status_trem})
+
+  list.innerHTML=itens.map(it=>{
+    const st=estados[it.val]||estados.pendente
+    return`<div onclick="ciclarLogKanban('${it.campo}','${it.val}')" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:${st.bg};border:1px solid ${st.border};border-radius:8px;cursor:pointer;margin-bottom:6px;transition:all .15s">
+      <div style="display:flex;align-items:center;gap:8px"><span>${it.emoji}</span><span style="font-size:13px;font-weight:500;color:${st.color}">${it.label}</span></div>
+      <span style="font-size:11px;font-weight:600;color:${st.color};background:#fff;padding:3px 10px;border-radius:20px;border:1px solid ${st.border}">${st.label}</span>
+    </div>`
+  }).join('')||'<div style="font-size:12px;color:var(--muted)">Nenhum serviço definido</div>'
+
+  // Botões para adicionar extras
+  const temSeguro=k.status_seguro!=null, temTrem=k.status_trem!=null
+  addBtns.innerHTML=`${!temSeguro?`<button class="btn bo bsm" onclick="adicionarLogKanban('status_seguro')">+ Seguro viagem</button>`:''}${!temTrem?`<button class="btn bo bsm" onclick="adicionarLogKanban('status_trem')">+ Trem</button>`:''}`
+}
+
+async function ciclarLogKanban(campo,estadoAtual){
+  if(!kanbanCardAtual)return
+  const ciclo=['pendente','emitido','nao_necessario']
+  const idx=ciclo.indexOf(estadoAtual)
+  const novoEstado=ciclo[(idx+1)%ciclo.length]
+  await sb.from('solicitacoes_kanban').update({[campo]:novoEstado}).eq('id',kanbanCardAtual.id)
+  kanbanCardAtual[campo]=novoEstado
+  // Atualiza casamento_fornecedores se for viagem_fornecedor
+  if(kanbanCardAtual.tipo==='viagem_fornecedor'&&kanbanCardAtual.assessora_id){
+    const campoForn={status_passagem:'status_voo',status_hotel:'status_hotel',status_transfer:'status_transfer'}[campo]
+    if(campoForn)await sb.from('casamento_fornecedores').update({[campoForn]:novoEstado==='emitido'?'emitido':'pendente'}).eq('casamento_id',kanbanCardAtual.casamento_id).eq('fornecedor_id',kanbanCardAtual.assessora_id)
+  }
+  renderLogisticaKanban(kanbanCardAtual)
+}
+
+async function adicionarLogKanban(campo){
+  if(!kanbanCardAtual)return
+  await sb.from('solicitacoes_kanban').update({[campo]:'pendente'}).eq('id',kanbanCardAtual.id)
+  kanbanCardAtual[campo]='pendente'
+  renderLogisticaKanban(kanbanCardAtual)
+}
 async function carregarChecklist(cardId){
   const{data}=await sb.from('kanban_checklist').select('*').eq('card_id',cardId).order('created_at',{ascending:true})
   const con=document.getElementById('kc-checklist')
