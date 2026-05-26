@@ -442,7 +442,15 @@ async function enviar(tipo){
     const{data:r,error}=await sb.from('solicitacoes_kanban').insert({tipo:'viagem_fornecedor',responsavel:'rapha',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,assessora_id:fornId,assessora_nome:fornNome,periodo_de:document.getElementById('rf-data-chegada').value,periodo_ate:document.getElementById('rf-data-saida').value,servicos:servStr,solicitacao:document.getElementById('rf-obs')?.value||null,criado_por:sol}).select().single()
     if(error){alert('Erro: '+error.message);reset();return}
     // Vincula fornecedor ao casamento
-    await sb.from('casamento_fornecedores').upsert({casamento_id:c.id,fornecedor_id:fornId,periodo_inicio:document.getElementById('rf-data-chegada').value,periodo_fim:document.getElementById('rf-data-saida').value},{onConflict:'casamento_id,fornecedor_id'})
+    await sb.from('casamento_fornecedores').upsert({
+      casamento_id:c.id,
+      fornecedor_id:fornId,
+      periodo_inicio:document.getElementById('rf-data-chegada').value,
+      periodo_fim:document.getElementById('rf-data-saida').value,
+      status_voo:_servRF['rfv-voo']?'pendente':null,
+      status_hotel:_servRF['rfv-hospedagem']?'pendente':null,
+      status_transfer:_servRF['rfv-transfer']?'pendente':null
+    },{onConflict:'casamento_id,fornecedor_id'})
     await notificarSolicitante(r?.id,sol,`Sua solicitação de viagem para ${fornNome} em ${c.nome} foi recebida`)
     reset();go('p-sucesso');return
   }
