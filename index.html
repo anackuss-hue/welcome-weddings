@@ -1273,11 +1273,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
           <option value="atendimento_casal">💑 Atendimento ao Casal</option>
           <option value="passeio">🗺️ Passeio</option>
           <option value="viagem_assessora">🧳 Viagem de Assessora</option>
+          <option value="viagem_fornecedor">🏢 Viagem de Fornecedor</option>
           <option value="operacional">📋 Operacional</option>
           <option value="ju_comunicacao">📢 Comunicação</option>
           <option value="ju_reserva">🏨 Confirmação de Reserva</option>
           <option value="ju_diaria">📞 Diária Extra</option>
           <option value="ju_atendimento">👥 Atend. Convidado (Juliana)</option>
+          <option value="ju_outros">📝 Outros</option>
         </select>
       </div>
 
@@ -3186,7 +3188,7 @@ async function salvarKanbanCard(){
   const novaSol=document.getElementById('kc-sol-edit').value
   const novaPri=kanbanCardAtual._priTemp||'media'
   const novoNome=document.getElementById('kc-nome-edit').value.trim()
-  const novoTipo=document.getElementById('kc-tipo').value
+  const novoTipo=document.getElementById('kc-tipo').value||kanbanCardAtual.tipo
   await sb.from('solicitacoes_kanban').update({coluna:novaColuna,solicitacao:novaSol,prioridade:novaPri,convidado_nome:novoNome||null,tipo:novoTipo}).eq('id',kanbanCardAtual.id)
   // Notifica o solicitante se a coluna mudou
   if(novaColuna!==kanbanCardAtual.coluna&&kanbanCardAtual.criado_por){
