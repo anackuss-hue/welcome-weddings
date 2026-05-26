@@ -113,6 +113,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="title" style="font-size:22px;text-align:left">Solicitações de Extras de Viagem</div>
     <div class="sub" style="text-align:left;margin-bottom:20px">Qual o tipo de solicitação?</div>
     <div class="tipo-list">
+      <div class="tipo-card" onclick="go('p-form-fornecedor')"><div class="tipo-icon">🏢</div><div class="tipo-title">Viagem de Fornecedor</div></div>
       <div class="tipo-card" onclick="go('p-form-convidado')"><div class="tipo-icon">👥</div><div class="tipo-title">Atendimento a Convidado</div></div>
       <div class="tipo-card" onclick="go('p-form-casal')"><div class="tipo-icon">💑</div><div class="tipo-title">Atendimento ao Casal</div></div>
     </div>
@@ -273,6 +274,42 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <button class="btn-send" onclick="enviar('ju-outros')">Enviar Solicitação</button>
   </div>
 
+  <!-- TELA: Form Viagem Fornecedor (Rapha) -->
+  <div class="page" id="p-form-fornecedor">
+    <button class="back" onclick="go('p-tipo-rapha')">← Voltar</button>
+    <div class="form-header">
+      <div class="form-icon" style="background:#e8f5e9">🏢</div>
+      <div><div class="form-title">Viagem de Fornecedor</div><div class="form-sub">Rapha</div></div>
+    </div>
+    <div class="f"><label>Seu nome (Solicitante) <span style="color:var(--red)">*</span></label>
+      <div class="autocomplete-wrap"><input class="autocomplete-input" id="rf-sol-txt" placeholder="Digite seu nome..." oninput="filterUser('rf',this.value)" autocomplete="off"><input type="hidden" id="rf-sol-nome"><div class="autocomplete-drop" id="drop-rf-sol"></div></div>
+      <div id="rf-outro-wrap" style="display:none;margin-top:8px"><input class="autocomplete-input" id="rf-outro-nome" placeholder="Digite seu nome completo..."></div>
+    </div>
+    <div class="f"><label>Nome do Casamento <span style="color:var(--red)">*</span></label>
+      <div class="autocomplete-wrap"><input class="autocomplete-input" id="rf-cas-txt" placeholder="Digite o nome do casamento..." oninput="filterCas('rf-cas',this.value)" autocomplete="off"><input type="hidden" id="rf-cas"><div class="autocomplete-drop" id="drop-rf-cas"></div></div>
+    </div>
+    <div class="f"><label>Assessor / Fornecedor <span style="color:var(--red)">*</span></label>
+      <div class="autocomplete-wrap"><input class="autocomplete-input" id="rf-forn-txt" placeholder="Digite o nome do fornecedor..." oninput="filterForn(this.value)" autocomplete="off"><input type="hidden" id="rf-forn-id"><div class="autocomplete-drop" id="drop-rf-forn"></div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="f"><label>📅 Data de chegada <span style="color:var(--red)">*</span></label><input id="rf-data-chegada" type="date"></div>
+      <div class="f"><label>⏰ Horário de chegada</label><input id="rf-hora-chegada" type="time"></div>
+      <div class="f"><label>📅 Data de saída <span style="color:var(--red)">*</span></label><input id="rf-data-saida" type="date"></div>
+      <div class="f"><label>⏰ Horário de saída</label><input id="rf-hora-saida" type="time"></div>
+    </div>
+    <div class="f"><label>✈️ Cidade de saída <span style="font-weight:400;color:var(--muted)">(se diferente do perfil)</span></label><input id="rf-cidade" placeholder="Ex: Rio de Janeiro"></div>
+    <div class="f">
+      <label>O que vai precisar</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:4px">
+        <div class="serv-card" id="rfv-voo" onclick="togServ('rfv-voo')"><div style="font-size:22px;margin-bottom:4px">✈️</div><div class="serv-label">Voo</div></div>
+        <div class="serv-card" id="rfv-transfer" onclick="togServ('rfv-transfer')"><div style="font-size:22px;margin-bottom:4px">🚌</div><div class="serv-label">Transfer</div></div>
+        <div class="serv-card" id="rfv-hospedagem" onclick="togServ('rfv-hospedagem')"><div style="font-size:22px;margin-bottom:4px">🏨</div><div class="serv-label">Hospedagem</div></div>
+      </div>
+    </div>
+    <div class="f"><label>Observações</label><textarea id="rf-obs" placeholder="Informações adicionais..."></textarea></div>
+    <button class="btn-send" onclick="enviar('rapha-fornecedor')">Enviar Solicitação</button>
+  </div>
+
   <!-- SUCESSO -->
   <div class="page" id="p-sucesso">
     <div class="sucesso">
@@ -288,7 +325,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 const{createClient}=supabase
 const sb=createClient('https://yrnlfarricrhtfomwynd.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlybmxmYXJyaWNyaHRmb213eW5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczOTIxODksImV4cCI6MjA5Mjk2ODE4OX0.Ad4awFjQ9vcDqNyBbWycgv0rvpc3DOz4pPTi41nSp8w')
 
-let urgSel='', tipoCasal='', _casData=[], _usersData=[]
+let urgSel='', tipoCasal='', _casData=[], _usersData=[], _fornData=[], _servRF={}
 
 function go(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id)?.classList.add('active');window.scrollTo(0,0)}
 
@@ -368,6 +405,23 @@ async function enviar(tipo){
   btns.forEach(b=>{b.disabled=true;b.textContent='Enviando...'})
   const reset=()=>btns.forEach(b=>{b.disabled=false;b.textContent='Enviar Solicitação'})
 
+  if(tipo==='rapha-fornecedor'){
+    const c=cas('rf-cas'),sol=getSol('rf')
+    const fornId=document.getElementById('rf-forn-id')?.value
+    const fornNome=document.getElementById('rf-forn-txt')?.value
+    if(!sol){alert('Selecione o solicitante!');reset();return}
+    if(!c.id){alert('Selecione o casamento!');reset();return}
+    if(!fornId){alert('Selecione o fornecedor!');reset();return}
+    if(!document.getElementById('rf-data-chegada')?.value||!document.getElementById('rf-data-saida')?.value){alert('Preencha as datas!');reset();return}
+    const servStr=[_servRF['rfv-voo']&&'Voo',_servRF['rfv-transfer']&&'Transfer',_servRF['rfv-hospedagem']&&'Hospedagem'].filter(Boolean).join(' · ')||'Não especificado'
+    const{data:r,error}=await sb.from('solicitacoes_kanban').insert({tipo:'viagem_fornecedor',responsavel:'rapha',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,assessora_id:fornId,assessora_nome:fornNome,periodo_de:document.getElementById('rf-data-chegada').value,periodo_ate:document.getElementById('rf-data-saida').value,servicos:servStr,solicitacao:document.getElementById('rf-obs')?.value||null,criado_por:sol}).select().single()
+    if(error){alert('Erro: '+error.message);reset();return}
+    // Vincula fornecedor ao casamento
+    await sb.from('casamento_fornecedores').upsert({casamento_id:c.id,fornecedor_id:fornId,periodo_inicio:document.getElementById('rf-data-chegada').value,periodo_fim:document.getElementById('rf-data-saida').value},{onConflict:'casamento_id,fornecedor_id'})
+    await notificarSolicitante(r?.id,sol,`Sua solicitação de viagem para ${fornNome} em ${c.nome} foi recebida`)
+    reset();go('p-sucesso');return
+  }
+
   if(tipo==='rapha-convidado'){
     const c=cas('rc-cas'),sol=getSol('rc')
     if(!sol){alert('Selecione o solicitante!');reset();return}
@@ -436,6 +490,12 @@ async function carregarUsuarios(){
 
 carregarCasamentos()
 carregarUsuarios()
+carregarFornecedores()
+
+async function carregarFornecedores(){
+  const{data}=await sb.from('fornecedores').select('id,nome,tipo').order('nome',{ascending:true})
+  _fornData=data||[]
+}
 </script>
 </body>
 </html>
