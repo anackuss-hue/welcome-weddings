@@ -3154,7 +3154,8 @@ async function openKanbanCard(id){
   const selTipo=document.getElementById('kc-tipo');if(selTipo)selTipo.value=k.tipo||'atendimento_convidado'
   const det=document.getElementById('kc-detalhes')
   let html=''
-  if(k.periodo_de&&k.periodo_ate)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">Período</span><div style="font-size:13px;margin-top:2px">${fmtDate(k.periodo_de)} → ${fmtDate(k.periodo_ate)}</div></div>`
+  if(k.periodo_de&&k.periodo_ate)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">Período</span><div style="font-size:13px;margin-top:2px;display:grid;grid-template-columns:1fr 1fr;gap:4px"><span>📅 Chegada: <strong>${fmtDate(k.periodo_de)}${k.hora_chegada?' às '+k.hora_chegada.slice(0,5):''}</strong></span><span>📅 Saída: <strong>${fmtDate(k.periodo_ate)}${k.hora_saida?' às '+k.hora_saida.slice(0,5):''}</strong></span></div></div>`
+  if(k.cidade_saida)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">Cidade de Saída</span><div style="font-size:13px;margin-top:2px">✈️ ${k.cidade_saida}</div></div>`
   if(k.servicos)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">Serviços</span><div style="font-size:13px;margin-top:2px">${k.servicos}</div></div>`
   if(k.convidado_nome)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">Convidado</span><div style="font-size:13px;margin-top:2px">${k.convidado_nome}${k.convidado_telefone?' · '+k.convidado_telefone:''}</div></div>`
   det.innerHTML=html||'<div style="font-size:12px;color:var(--muted)">Sem detalhes adicionais</div>'
