@@ -440,6 +440,17 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
             <option>Cabelo e Maquiagem</option>
           </select>
         </div>
+        <div class="fp-sec">
+          <div class="fp-sec-t">Histórico</div>
+          <label class="fl"><input type="checkbox" id="ff-ja-fizemos" onchange="renderFornecedores()"> ✅ Já fizemos casamento</label>
+          <label class="fl" style="margin-top:6px"><input type="checkbox" id="ff-nao-fizemos" onchange="renderFornecedores()"> 🆕 Não fizemos casamento</label>
+        </div>
+        <div class="fp-sec">
+          <div class="fp-sec-t">Indicação</div>
+          <label class="fl"><input type="checkbox" id="ff-favorito" onchange="renderFornecedores()"> ⭐ Favorito Welcome</label>
+          <label class="fl" style="margin-top:6px"><input type="checkbox" id="ff-indicamos" onchange="renderFornecedores()"> 👍 Indicamos</label>
+          <label class="fl" style="margin-top:6px"><input type="checkbox" id="ff-blacklist" onchange="renderFornecedores()"> 🚫 Blacklist</label>
+        </div>
       </div>
       <div style="flex:1"><div class="cg" id="fornecedores-grid"><div class="ld">Carregando...</div></div></div>
     </div>
@@ -3048,7 +3059,22 @@ function renderFornecedores(){
   const grid=document.getElementById('fornecedores-grid');if(!grid)return
   const s=(document.getElementById('search-forn')?.value||'').toLowerCase()
   const tipo=document.getElementById('f-forn-tipo')?.value||''
-  const filtered=fornecedores.filter(f=>(!s||f.nome?.toLowerCase().includes(s))&&(!tipo||f.tipo===tipo))
+  const ffJaFizemos=document.getElementById('ff-ja-fizemos')?.checked
+  const ffNaoFizemos=document.getElementById('ff-nao-fizemos')?.checked
+  const ffFavorito=document.getElementById('ff-favorito')?.checked
+  const ffIndicamos=document.getElementById('ff-indicamos')?.checked
+  const ffBlacklist=document.getElementById('ff-blacklist')?.checked
+
+  const filtered=fornecedores.filter(f=>{
+    if(s&&!f.nome?.toLowerCase().includes(s))return false
+    if(tipo&&f.tipo!==tipo)return false
+    if(ffJaFizemos&&!f.ja_trabalhamos)return false
+    if(ffNaoFizemos&&f.ja_trabalhamos)return false
+    if(ffFavorito&&!f.favorito)return false
+    if(ffIndicamos&&!(f.status_indicacao?.includes('Indicamos')))return false
+    if(ffBlacklist&&!f.blacklist)return false
+    return true
+  })
   const el=document.getElementById('fornecedores-count');if(el)el.textContent=filtered.length+' de '+fornecedores.length+' fornecedor(es)'
   if(!filtered.length){grid.innerHTML='<div class="em"><div class="em-i">🏢</div><div class="em-t">Nenhum fornecedor encontrado</div></div>';return}
   const ti={Assessora:'👩',Celebrante:'🎤','Fotógrafo':'📷',Videomaker:'🎬',DJ:'🎧','Cabelo e Maquiagem':'💄'}
