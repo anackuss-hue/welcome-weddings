@@ -442,39 +442,30 @@ async function enviar(tipo){
     const{data:r,error}=await sb.from('solicitacoes_kanban').insert({tipo:'viagem_fornecedor',responsavel:'rapha',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,assessora_id:fornId,assessora_nome:fornNome,periodo_de:document.getElementById('rf-data-chegada').value,periodo_ate:document.getElementById('rf-data-saida').value,hora_chegada:document.getElementById('rf-hora-chegada')?.value||null,hora_saida:document.getElementById('rf-hora-saida')?.value||null,cidade_saida:document.getElementById('rf-cidade')?.value||null,servicos:servStr,solicitacao:document.getElementById('rf-obs')?.value||null,criado_por:sol}).select().single()
     if(error){alert('Erro: '+error.message);reset();return}
     // Vincula fornecedor ao casamento
-    // Se for assessora, busca/cria na tabela fornecedores primeiro
     const fonte=document.getElementById('rf-forn-fonte')?.value||'fornecedores'
     let fornIdFinal=fornId
     if(fonte==='assessoras'){
-      // Verifica se já existe como fornecedor
-      const{data:fExist}=await sb.from('fornecedores').select('id').eq('nome',fornNome).eq('tipo','Assessora').single()
-      if(fExist){fornIdFinal=fExist.id}
-      else{
-        const{data:fNew}=await sb.from('fornecedores').insert({nome:fornNome,tipo:'Assessora'}).select().single()
-        fornIdFinal=fNew?.id||fornId
+      // Busca ou cria o fornecedor correspondente
+      const{data:fExist}=await sb.from('fornecedores').select('id').eq('nome',fornNome).eq('tipo','Assessora').maybeSingle()
+      if(fExist?.id){
+        fornIdFinal=fExist.id
+      }else{
+        const{data:fNew,error:fErr}=await sb.from('fornecedores').insert({nome:fornNome,tipo:'Assessora'}).select('id').single()
+        if(fErr){console.error('Erro ao criar fornecedor:',fErr)}
+        else{fornIdFinal=fNew.id}
       }
     }
-    // Insere ou atualiza casamento_fornecedores
-    const{data:cfExist}=await sb.from('casamento_fornecedores').select('id').eq('casamento_id',c.id).eq('fornecedor_id',fornIdFinal).single().catch(()=>({data:null}))
-    if(cfExist){
-      await sb.from('casamento_fornecedores').update({
-        periodo_inicio:document.getElementById('rf-data-chegada').value,
-        periodo_fim:document.getElementById('rf-data-saida').value,
-        status_voo:_servRF['rfv-voo']?'pendente':null,
-        status_hotel:_servRF['rfv-hospedagem']?'pendente':null,
-        status_transfer:_servRF['rfv-transfer']?'pendente':null
-      }).eq('id',cfExist.id)
-    }else{
-      await sb.from('casamento_fornecedores').insert({
-        casamento_id:c.id,
-        fornecedor_id:fornIdFinal,
-        periodo_inicio:document.getElementById('rf-data-chegada').value,
-        periodo_fim:document.getElementById('rf-data-saida').value,
-        status_voo:_servRF['rfv-voo']?'pendente':null,
-        status_hotel:_servRF['rfv-hospedagem']?'pendente':null,
-        status_transfer:_servRF['rfv-transfer']?'pendente':null
-      })
-    }
+    // Insere em casamento_fornecedores
+    const{error:cfErr}=await sb.from('casamento_fornecedores').insert({
+      casamento_id:c.id,
+      fornecedor_id:fornIdFinal,
+      periodo_inicio:document.getElementById('rf-data-chegada').value,
+      periodo_fim:document.getElementById('rf-data-saida').value,
+      status_voo:_servRF['rfv-voo']?'pendente':null,
+      status_hotel:_servRF['rfv-hospedagem']?'pendente':null,
+      status_transfer:_servRF['rfv-transfer']?'pendente':null
+    })
+    if(cfErr)console.error('Erro ao vincular fornecedor:',cfErr)
     await notificarSolicitante(r?.id,sol,`Sua solicitação de viagem para ${fornNome} em ${c.nome} foi recebida`)
     reset();go('p-sucesso');return
   }
