@@ -470,7 +470,12 @@ async function enviarCadastro(){
     tam_sapato:v('a-sapato')
   }
 
-  const{error}=await sb.from('assessoras').insert(dados)
+  const{data:assData,error}=await sb.from('assessoras').insert(dados).select('id').single()
+  if(!error&&assData?.id&&indispList.length){
+    await sb.from('assessora_indisponibilidades').insert(
+      indispList.map(d=>({assessora_id:assData.id,data_inicio:d.de,data_fim:d.ate}))
+    )
+  }
   btn.textContent='✅ Finalizar Cadastro';btn.disabled=false
 
   if(error){
