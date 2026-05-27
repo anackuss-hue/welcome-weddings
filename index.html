@@ -693,17 +693,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       </div>
     </div>
     <div class="tc" id="tab-assess">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
-        <div id="assess-count" style="font-size:13px;color:#666"></div>
-        
+      <div id="forn-cas-section">
+        <div id="forn-cas-list"><div class="ld">Carregando...</div></div>
       </div>
-      <div id="escaladas-list"></div>
+      <div id="escaladas-list" style="display:none"></div>
       <div id="picker-container" style="display:none"></div>
-      <!-- Fornecedores vinculados -->
-      <div id="forn-cas-section" style="margin-top:20px;padding-top:16px;border-top:1px solid var(--gold-border);display:none">
-        <div class="st" style="margin-bottom:12px">🏢 Fornecedores Vinculados</div>
-        <div id="forn-cas-list"></div>
-      </div>
       <div id="solicitacoes-section" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--gold-border);display:none">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
           <div class="st" style="margin-bottom:0">✈️ Solicitações de Viagem</div>
@@ -1973,6 +1967,7 @@ async function openCasamento(id){
   document.getElementById('tab-plan').classList.add('active')
   document.querySelector('.tab').classList.add('active')
   fillCasForm(c);await loadEscaladas(id)
+  loadFornecedoresCasamento(id)
   populateConsultorasSelect().then(()=>{
     document.getElementById('c-cons-plan').value=c.consultora_plan||''
     document.getElementById('c-cons-prod').value=c.consultora_prod||''
@@ -2024,11 +2019,10 @@ async function deleteCasamento(id){if(!confirm('Remover?'))return;await sb.from(
 // ── ESCALADAS
 async function loadEscaladas(cid){const id=cid||casamentoAtual?.id;if(!id)return;const{data}=await sb.from('casamento_assessoras').select('*,assessora:assessoras(*)').eq('casamento_id',id);escaladas=data||[]}
 async function loadFornecedoresCasamento(casId){
-  const sec=document.getElementById('forn-cas-section')
   const list=document.getElementById('forn-cas-list')
-  if(!sec||!list)return
+  if(!list)return
   const{data}=await sb.from('casamento_fornecedores').select('*,fornecedor:fornecedores(id,nome,tipo,telefone)').eq('casamento_id',casId).order('created_at',{ascending:false})
-  if(!data||!data.length){sec.style.display='none';return}
+  if(!data||!data.length){list.innerHTML='<div class="em"><div class="em-t">Nenhum fornecedor vinculado</div></div>';return}
   sec.style.display='block'
   const ti={Assessora:'👩',Celebrante:'🎤','Fotógrafo':'📷',Videomaker:'🎬',DJ:'🎧','Cabelo e Maquiagem':'💄'}
   const stTag=(st,emoji,label)=>st?`<span class="tag ${st==='emitido'?'tg':st==='pendente'?'tr':'tgy'}">${emoji} ${st==='emitido'?label+' ✓':st==='pendente'?label+' pendente':label+' n/a'}</span>`:''
