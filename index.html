@@ -2021,37 +2021,52 @@ async function loadEscaladas(cid){const id=cid||casamentoAtual?.id;if(!id)return
 async function loadFornecedoresCasamento(casId){
   const list=document.getElementById('forn-cas-list')
   if(!list)return
-  const{data}=await sb.from('casamento_fornecedores').select('*,fornecedor:fornecedores(id,nome,tipo,telefone)').eq('casamento_id',casId).order('created_at',{ascending:false})
-  if(!data||!data.length){list.innerHTML='<div class="em"><div class="em-t">Nenhum fornecedor vinculado</div></div>';return}
-  sec.style.display='block'
+  // Busca fornecedores vinculados via formulário
+  const{data:fornData}=await sb.from('casamento_fornecedores').select('*,fornecedor:fornecedores(id,nome,tipo,telefone)').eq('casamento_id',casId).order('created_at',{ascending:false})
+  // Busca assessoras escaladas
+  const{data:assessData}=await sb.from('casamento_assessoras').select('*,assessora:assessoras(id,nome,cidade)').eq('casamento_id',casId).order('created_at',{ascending:false})
   const ti={Assessora:'👩',Celebrante:'🎤','Fotógrafo':'📷',Videomaker:'🎬',DJ:'🎧','Cabelo e Maquiagem':'💄'}
   const stTag=(st,emoji,label)=>st?`<span class="tag ${st==='emitido'?'tg':st==='pendente'?'tr':'tgy'}">${emoji} ${st==='emitido'?label+' ✓':st==='pendente'?label+' pendente':label+' n/a'}</span>`:''
-  list.innerHTML=data.map(cf=>`<div style="margin-bottom:14px;padding:14px 16px;background:var(--white);border:1px solid var(--border);border-radius:12px">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px">
-      <div>
-        <div style="font-weight:600;font-size:14px">${ti[cf.fornecedor?.tipo]||'🏢'} ${cf.fornecedor?.nome||'—'}</div>
-        <div style="font-size:12px;color:var(--muted)">${cf.fornecedor?.tipo||''}${cf.periodo_inicio?' · '+fmtDate(cf.periodo_inicio)+' → '+fmtDate(cf.periodo_fim):''}</div>
-      </div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">
-        ${stTag(cf.status_voo,'✈️','Voo')}
-        ${stTag(cf.status_hotel,'🏨','Hotel')}
-        ${stTag(cf.status_transfer,'🚌','Transfer')}
-      </div>
-    </div>
-    <!-- Nota em estrelas -->
-    <div style="border-top:1px solid var(--gold-border);padding-top:10px">
-      <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px">Avaliação</div>
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-        <div style="display:flex;gap:2px">
-          ${[1,2,3,4,5].map(n=>`<span onclick="setNotaForn('${cf.id}',${n})" style="font-size:22px;cursor:pointer;opacity:${(cf.nota||0)>=n?1:.25};transition:opacity .15s" title="${n} estrela${n>1?'s':''}">⭐</span>`).join('')}
-        </div>
-        ${cf.nota?`<span style="font-size:12px;color:var(--muted)">${cf.nota}/5</span>`:'<span style="font-size:12px;color:var(--muted)">Sem avaliação</span>'}
-      </div>
-      <textarea placeholder="Comentário sobre a atuação..." style="width:100%;margin-top:8px;padding:8px 10px;border-radius:8px;border:1px solid var(--border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;resize:vertical;min-height:60px" onblur="setComentarioForn('${cf.id}',this.value)">${cf.comentario||''}</textarea>
-    </div>
-  </div>`).join('')
-}
 
+  let html=''
+
+  // Fornecedores
+  if(fornData?.length){
+    html+=fornData.map(cf=>`<div style="margin-bottom:14px;padding:14px 16px;background:var(--white);border:1px solid var(--border);border-radius:12px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+        <div>
+          <div style="font-weight:600;font-size:14px">${ti[cf.fornecedor?.tipo]||'🏢'} ${cf.fornecedor?.nome||'—'}</div>
+          <div style="font-size:12px;color:var(--muted)">${cf.fornecedor?.tipo||''}${cf.periodo_inicio?' · '+fmtDate(cf.periodo_inicio)+' → '+fmtDate(cf.periodo_fim):''}</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          ${stTag(cf.status_voo,'✈️','Voo')}
+          ${stTag(cf.status_hotel,'🏨','Hotel')}
+          ${stTag(cf.status_transfer,'🚌','Transfer')}
+        </div>
+      </div>
+      <div style="border-top:1px solid var(--gold-border);padding-top:10px">
+        <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px">Avaliação</div>
+        <div style="display:flex;gap:2px;margin-bottom:6px">
+          ${[1,2,3,4,5].map(n=>`<span onclick="setNotaForn('${cf.id}',${n})" style="font-size:22px;cursor:pointer;opacity:${(cf.nota||0)>=n?1:.25};transition:opacity .15s">⭐</span>`).join('')}
+          ${cf.nota?`<span style="font-size:12px;color:var(--muted);margin-left:6px;align-self:center">${cf.nota}/5</span>`:''}
+        </div>
+        <textarea placeholder="Comentário..." style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;resize:vertical;min-height:56px" onblur="setComentarioForn('${cf.id}',this.value)">${cf.comentario||''}</textarea>
+      </div>
+    </div>`).join('')
+  }
+
+  // Assessoras escaladas
+  if(assessData?.length){
+    if(fornData?.length)html+=`<div style="margin:16px 0 12px;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase">👩 Assessoras Escaladas</div>`
+    html+=assessData.map(ca=>`<div style="margin-bottom:10px;padding:12px 14px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:10px">
+      <div style="font-weight:600;font-size:14px">👩 ${ca.assessora?.nome||'—'}</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:3px">${ca.assessora?.cidade||''}${ca.periodo_inicio?' · '+fmtDate(ca.periodo_inicio)+' → '+fmtDate(ca.periodo_fim):''}</div>
+    </div>`).join('')
+  }
+
+  if(!html)html='<div class="em"><div class="em-t">Nenhum fornecedor vinculado</div></div>'
+  list.innerHTML=html
+}
 async function setNotaForn(id,nota){
   await sb.from('casamento_fornecedores').update({nota}).eq('id',id)
   if(casamentoAtual?.id)loadFornecedoresCasamento(casamentoAtual.id)
