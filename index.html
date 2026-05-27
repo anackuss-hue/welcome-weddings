@@ -1443,7 +1443,28 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div class="f"><label>E-mail</label><input id="forn-email" type="email"></div>
         <div class="f"><label>Instagram</label><input id="forn-instagram" placeholder="@"></div>
         <div class="f"><label>Site</label><input id="forn-site" placeholder="https://"></div>
+        <div class="f"><label>Data de Nascimento</label><input id="forn-nasc" type="date"></div>
         <div class="f" style="grid-column:1/-1"><label>Observações</label><textarea id="forn-obs"></textarea></div>
+      </div>
+      <!-- Indicação & Status -->
+      <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--gold-border)">
+        <div class="st" style="margin-bottom:14px">Indicação & Status</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+          <div class="tr-row" onclick="tgForn('favorito')"><div class="tr-track" id="track-forn-favorito"><div class="tr-thumb"></div></div><span class="tr-label">⭐ Favorito Welcome</span></div>
+          <div class="tr-row" onclick="tgForn('blacklist')"><div class="tr-track" id="track-forn-blacklist"><div class="tr-thumb"></div></div><span class="tr-label" style="color:var(--red)">🚫 Blacklist</span></div>
+          <div class="tr-row" onclick="tgForn('ja_trabalhamos')"><div class="tr-track" id="track-forn-ja_trabalhamos"><div class="tr-thumb"></div></div><span class="tr-label">✅ Já trabalhamos juntos</span></div>
+        </div>
+        <div class="f"><label>Status de Indicação</label>
+          <select id="forn-status-indicacao" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+            <option value="">Selecionar...</option>
+            <option>✅ Já trabalhamos — Indicamos muito</option>
+            <option>👍 Já trabalhamos — Indicamos</option>
+            <option>⚠️ Já trabalhamos — Não indicamos</option>
+            <option>🔍 Nunca trabalhamos — Queremos conhecer</option>
+            <option>❌ Não indicamos</option>
+          </select>
+        </div>
+        <div class="f"><label>Motivo (se não indicamos)</label><textarea id="forn-motivo" placeholder="Ex: Problemas com organização, atrasos..." style="min-height:70px"></textarea></div>
       </div>
       <div class="mf" style="padding-top:16px;margin-top:8px;border-top:1px solid var(--border)">
         <button class="btn bo" onclick="closeModal('modal-fornecedor')">Cancelar</button>
@@ -3046,8 +3067,10 @@ function renderFornecedores(){
 function openNovoFornecedor(){
   fornecedorAtual=null
   document.getElementById('mf-title').textContent='Novo Fornecedor'
-  ;['forn-nome','forn-cidade','forn-tel','forn-email','forn-instagram','forn-site','forn-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
+  ;['forn-nome','forn-cidade','forn-tel','forn-email','forn-instagram','forn-site','forn-obs','forn-nasc','forn-motivo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
   document.getElementById('forn-tipo').value=''
+  document.getElementById('forn-status-indicacao').value=''
+  setFornToggles({favorito:false,blacklist:false,ja_trabalhamos:false})
   document.getElementById('modal-fornecedor').classList.add('open')
 }
 
@@ -3058,6 +3081,10 @@ function openFornecedor(id){
   ;['nome','tipo','cidade','telefone','email','instagram','site','obs'].forEach(campo=>{
     const el=document.getElementById('forn-'+campo);if(el)el.value=f[campo]||''
   })
+  document.getElementById('forn-nasc').value=f.data_nascimento||''
+  document.getElementById('forn-status-indicacao').value=f.status_indicacao||''
+  document.getElementById('forn-motivo').value=f.motivo_nao_indicacao||''
+  setFornToggles(f)
   // Resetar para aba dados
   document.querySelectorAll('#modal-fornecedor .ftc').forEach(t=>t.style.display='none')
   document.getElementById('forn-dados').style.display='block'
@@ -3066,12 +3093,24 @@ function openFornecedor(id){
   document.getElementById('modal-fornecedor').classList.add('open')
 }
 
+let _fornToggles={favorito:false,blacklist:false,ja_trabalhamos:false}
+function tgForn(campo){
+  _fornToggles[campo]=!_fornToggles[campo]
+  document.getElementById('track-forn-'+campo)?.classList.toggle('on',_fornToggles[campo])
+}
+function setFornToggles(f){
+  ;['favorito','blacklist','ja_trabalhamos'].forEach(c=>{
+    _fornToggles[c]=!!f[c]
+    document.getElementById('track-forn-'+c)?.classList.toggle('on',!!f[c])
+  })
+}
+
 async function salvarFornecedor(){
   const btn=document.getElementById('btn-sforn');btn.textContent='Salvando...';btn.disabled=true
   const nome=document.getElementById('forn-nome').value.trim()
   const tipo=document.getElementById('forn-tipo').value
   if(!nome||!tipo){alert('Preencha nome e tipo!');btn.textContent='Salvar';btn.disabled=false;return}
-  const data={nome,tipo,cidade:document.getElementById('forn-cidade').value||null,telefone:document.getElementById('forn-tel').value||null,email:document.getElementById('forn-email').value||null,instagram:document.getElementById('forn-instagram').value||null,site:document.getElementById('forn-site').value||null,obs:document.getElementById('forn-obs').value||null}
+  const data={nome,tipo,cidade:document.getElementById('forn-cidade').value||null,telefone:document.getElementById('forn-tel').value||null,email:document.getElementById('forn-email').value||null,instagram:document.getElementById('forn-instagram').value||null,site:document.getElementById('forn-site').value||null,obs:document.getElementById('forn-obs').value||null,data_nascimento:document.getElementById('forn-nasc').value||null,favorito:_fornToggles.favorito,blacklist:_fornToggles.blacklist,ja_trabalhamos:_fornToggles.ja_trabalhamos,status_indicacao:document.getElementById('forn-status-indicacao').value||null,motivo_nao_indicacao:document.getElementById('forn-motivo').value||null}
   if(fornecedorAtual)await sb.from('fornecedores').update(data).eq('id',fornecedorAtual.id)
   else await sb.from('fornecedores').insert(data)
   btn.textContent='Salvar';btn.disabled=false
