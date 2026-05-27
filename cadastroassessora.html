@@ -135,7 +135,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="sec">
       <div class="sec-title">RG</div>
       <div class="g2">
-        <div class="f"><label>Número do RG <span class="req">*</span></label><input id="a-rg" placeholder="000.000.000-0"></div>
+        <div class="f"><label>Número do RG <span class="req">*</span></label><input id="a-rg" placeholder="Digite seu RG"></div>
         <div class="f"><label>Validade <span class="req">*</span></label><input id="a-rg-val" type="date"></div>
       </div>
     </div>
@@ -288,6 +288,33 @@ const sb=createClient('https://yrnlfarricrhtfomwynd.supabase.co','eyJhbGciOiJIUz
 
 let etapaAtual=1
 let febreAmarela=false
+let indispList=[]
+
+function addIndisp(){
+  const de=document.getElementById('indisp-de').value
+  const ate=document.getElementById('indisp-ate').value
+  if(!de||!ate){alert('Preencha as duas datas!');return}
+  if(de>ate){alert('A data inicial deve ser antes da final!');return}
+  indispList.push({de,ate})
+  document.getElementById('indisp-de').value=''
+  document.getElementById('indisp-ate').value=''
+  renderIndispList()
+}
+
+function removeIndisp(i){
+  indispList.splice(i,1)
+  renderIndispList()
+}
+
+function renderIndispList(){
+  const con=document.getElementById('indisp-list')
+  if(!con)return
+  if(!indispList.length){con.innerHTML='';return}
+  con.innerHTML=indispList.map((d,i)=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#fdf8f0;border:1px solid #f0e8d0;border-radius:8px;margin-bottom:6px;font-size:13px">
+    <span>📅 ${d.de.split('-').reverse().join('/')} → ${d.ate.split('-').reverse().join('/')}</span>
+    <button type="button" onclick="removeIndisp(${i})" style="background:none;border:none;cursor:pointer;color:#c0392b;font-size:14px;padding:0;line-height:1">✕</button>
+  </div>`).join('')
+}
 let temPassaporte=true, temVisto=true, temPassaporteEu=false
 let idiomas={ingles:false,espanhol:false,frances:false,italiano:false}
 let arquivos={pass:null,visto:null,passeu:null}
@@ -431,6 +458,7 @@ async function enviarCadastro(){
     passaporte_eu_anexo:passeuUrl||null,
     outras_documentacoes:v('a-outras-docs')||null,
     febre_amarela:febreAmarela,
+    indisponibilidades:indispList.length?JSON.stringify(indispList):null,
     ingles:idiomas.ingles,
     espanhol:idiomas.espanhol,
     frances:idiomas.frances,
