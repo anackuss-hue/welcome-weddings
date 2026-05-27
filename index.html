@@ -2042,6 +2042,8 @@ async function loadFornecedoresCasamento(casId){
           ${stTag(cf.status_voo,'✈️','Voo')}
           ${stTag(cf.status_hotel,'🏨','Hotel')}
           ${stTag(cf.status_transfer,'🚌','Transfer')}
+          ${stTag(cf.status_seguro,'🛡️','Seguro')}
+          ${stTag(cf.status_trem,'🚂','Trem')}
         </div>
       </div>
       <div style="border-top:1px solid var(--gold-border);padding-top:10px">
@@ -3253,10 +3255,19 @@ async function ciclarLogKanban(campo,estadoAtual){
   const novoEstado=ciclo[(idx+1)%ciclo.length]
   await sb.from('solicitacoes_kanban').update({[campo]:novoEstado}).eq('id',kanbanCardAtual.id)
   kanbanCardAtual[campo]=novoEstado
-  // Atualiza casamento_fornecedores se for viagem_fornecedor
-  if(kanbanCardAtual.tipo==='viagem_fornecedor'&&kanbanCardAtual.assessora_id){
-    const campoForn={status_passagem:'status_voo',status_hotel:'status_hotel',status_transfer:'status_transfer'}[campo]
-    if(campoForn)await sb.from('casamento_fornecedores').update({[campoForn]:novoEstado==='emitido'?'emitido':'pendente'}).eq('casamento_id',kanbanCardAtual.casamento_id).eq('fornecedor_id',kanbanCardAtual.assessora_id)
+  // Atualiza casamento_fornecedores
+  if(kanbanCardAtual.assessora_id){
+    const campoForn={
+      status_passagem:'status_voo',
+      status_hotel:'status_hotel',
+      status_transfer:'status_transfer',
+      status_seguro:'status_seguro',
+      status_trem:'status_trem'
+    }[campo]
+    if(campoForn){
+      // Garante que a coluna existe — adiciona se necessário
+      await sb.from('casamento_fornecedores').update({[campoForn]:novoEstado}).eq('casamento_id',kanbanCardAtual.casamento_id).eq('fornecedor_id',kanbanCardAtual.assessora_id)
+    }
   }
   renderLogisticaKanban(kanbanCardAtual)
 }
