@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roadmap — Extras · Welcome Weddings</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:#FAF7F2; --cream-dark:#F2EDE4; --brown:#7B5E3A; --brown-light:#C8A882;
+  --brown-dark:#3E2D1A; --red:#A30000; --red-light:#FDF0F0; --amber:#854F0B;
+  --amber-light:#FAEEDA; --gray:#5F5E5A; --gray-light:#F1EFE8; --green:#085041;
+  --green-light:#E1F5EE; --purple:#3C3489; --purple-light:#EEEDFE;
+  --white:#FFFFFF; --text:#2C2C2A; --text-muted:#888780; --border:#E5E3DC;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh}
+
+/* HEADER */
+header{background:var(--brown-dark);padding:24px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.15)}
+.header-left h1{font-family:'Playfair Display',serif;font-size:21px;color:var(--brown-light);letter-spacing:.02em}
+.header-left p{font-size:11px;color:rgba(200,168,130,.55);margin-top:2px;font-weight:300}
+.header-stats{display:flex;gap:22px}
+.stat{text-align:center}
+.stat-num{font-size:22px;font-weight:600;font-family:'Playfair Display',serif;line-height:1}
+.stat-label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:rgba(200,168,130,.55);margin-top:2px}
+.stat-total .stat-num{color:var(--brown-light)}
+.stat-doing .stat-num{color:#F5A623}
+.stat-done .stat-num{color:#4CAF7D}
+.stat-todo .stat-num{color:rgba(200,168,130,.4)}
+
+/* PROGRESS */
+.progress-wrap{background:var(--cream-dark);padding:14px 40px;border-bottom:1px solid var(--border)}
+.progress-bar-bg{background:var(--border);border-radius:99px;height:5px;overflow:hidden}
+.progress-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--brown-light),#4CAF7D);transition:width .5s cubic-bezier(.4,0,.2,1);width:0%}
+.progress-labels{display:flex;justify-content:space-between;margin-top:5px;font-size:11px;color:var(--text-muted)}
+
+/* FILTERS */
+.filters{padding:14px 40px;display:flex;gap:8px;flex-wrap:wrap;background:var(--cream);border-bottom:1px solid var(--border);align-items:center}
+.filters-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-right:4px}
+.filter-btn{border:1px solid var(--border);background:var(--white);border-radius:99px;padding:5px 14px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .15s;color:var(--text-muted)}
+.filter-btn:hover{border-color:var(--brown-light);color:var(--brown)}
+.filter-btn.active{background:var(--brown-dark);border-color:var(--brown-dark);color:var(--brown-light)}
+
+/* MAIN */
+main{padding:28px 40px;max-width:1200px;margin:0 auto}
+
+/* FASE */
+.fase{margin-bottom:26px}
+.fase-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;cursor:pointer;user-select:none}
+.fase-number{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:13px;font-weight:700;flex-shrink:0}
+.fase-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;flex:1}
+.fase-meta{display:flex;align-items:center;gap:10px}
+.fase-count-badge{font-size:11px;padding:3px 10px;border-radius:99px;font-weight:500}
+.fase-progress{font-size:11px;color:var(--text-muted)}
+.fase-toggle{font-size:16px;color:var(--text-muted);transition:transform .2s}
+.fase-toggle.open{transform:rotate(180deg)}
+.fase-body{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:10px}
+.fase-body.collapsed{display:none}
+
+/* CARD */
+.card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:0;transition:all .2s;position:relative;overflow:hidden}
+.card:hover{box-shadow:0 4px 18px rgba(0,0,0,.08);transform:translateY(-1px)}
+.card-accent{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:10px 0 0 10px}
+.card.status-doing{background:#FFFDF7;border-color:#F5A623}
+.card.status-doing .card-accent{background:#F5A623}
+.card.status-done{background:#F6FBF8;border-color:#4CAF7D}
+.card.status-done .card-accent{background:#4CAF7D}
+.card.status-done .card-text{text-decoration:line-through;color:var(--text-muted)}
+
+/* CARD HEADER (sempre visível) */
+.card-head{padding:13px 14px 10px 18px;cursor:pointer}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
+.card-text{font-size:13px;line-height:1.55;font-weight:400;flex:1;transition:all .2s}
+.card-urgency{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.card-text-input{font-size:13px;line-height:1.55;font-weight:400;flex:1;border:none;background:transparent;font-family:'DM Sans',sans-serif;color:var(--text);resize:none;outline:none;min-height:40px;width:100%;padding:0;cursor:text;transition:all .2s}
+.card-text-input:focus{background:rgba(250,247,242,.7);border-radius:4px;padding:3px 5px;margin:-3px -5px;width:calc(100% + 10px)}
+.card.status-done .card-text-input{text-decoration:line-through;color:var(--text-muted)}
+.card-quick{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}
+.card-tags{display:flex;gap:5px;flex-wrap:wrap}
+.tag{font-size:10px;padding:2px 7px;border-radius:99px;font-weight:500;white-space:nowrap}
+
+/* STATUS SELECT */
+.status-select{border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:11px;font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);cursor:pointer;outline:none;transition:border-color .15s}
+.status-select:hover{border-color:var(--brown-light)}
+
+/* EXPAND TOGGLE */
+.card-expand-btn{width:100%;background:none;border:none;border-top:1px solid var(--border);padding:7px 14px 7px 18px;font-size:11px;color:var(--text-muted);cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:5px;transition:background .15s}
+.card-expand-btn:hover{background:var(--cream)}
+.card-expand-btn .arrow{transition:transform .2s;display:inline-block}
+.card-expand-btn.open .arrow{transform:rotate(180deg)}
+
+/* CARD DETAIL (colapsável) */
+.card-detail{display:none;padding:12px 14px 14px 18px;border-top:1px solid var(--border);background:rgba(250,247,242,.6)}
+.card-detail.open{display:block}
+.detail-row{margin-bottom:10px}
+.detail-row:last-child{margin-bottom:0}
+.detail-label{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);margin-bottom:4px;font-weight:600}
+.detail-input{width:100%;border:1px solid var(--border);border-radius:6px;padding:6px 9px;font-size:12px;font-family:'DM Sans',sans-serif;background:var(--white);color:var(--text);outline:none;transition:border-color .15s}
+.detail-input:focus{border-color:var(--brown-light)}
+.detail-input::placeholder{color:var(--text-muted)}
+textarea.detail-input{resize:vertical;min-height:70px;line-height:1.5}
+input[type="date"].detail-input{cursor:pointer}
+
+/* SOLUCOES */
+.solucoes-wrap{display:flex;flex-direction:column;gap:6px}
+.solucao-row{display:flex;gap:6px;align-items:flex-start}
+.solucao-input{flex:1;border:1px solid var(--border);border-radius:6px;padding:6px 9px;font-size:12px;font-family:'DM Sans',sans-serif;background:var(--white);color:var(--text);outline:none;transition:border-color .15s;resize:none;min-height:34px;line-height:1.4}
+.solucao-input:focus{border-color:var(--brown-light)}
+.solucao-input::placeholder{color:var(--text-muted)}
+.btn-remove-sol{border:1px solid var(--border);background:none;border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:14px;color:var(--text-muted);flex-shrink:0;transition:all .15s;display:flex;align-items:center;justify-content:center;margin-top:3px}
+.btn-remove-sol:hover{background:#FDF0F0;border-color:#A30000;color:#A30000}
+.btn-add-sol{border:1px dashed var(--border);background:none;border-radius:6px;padding:5px 10px;font-size:11px;font-family:'DM Sans',sans-serif;color:var(--text-muted);cursor:pointer;transition:all .15s;margin-top:2px;width:100%}
+.btn-add-sol:hover{border-color:var(--brown-light);color:var(--brown)}
+
+/* URGENCY LEGEND */
+.urgency-legend{display:flex;gap:16px;padding:0 40px 14px;flex-wrap:wrap}
+.leg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted)}
+.leg-dot{width:9px;height:9px;border-radius:50%}
+
+/* EMPTY */
+.empty{text-align:center;padding:60px 20px;color:var(--text-muted);font-size:14px;display:none}
+
+/* FOOTER */
+footer{text-align:center;padding:28px;font-size:11px;color:var(--text-muted);border-top:1px solid var(--border);margin-top:32px}
+
+@media(max-width:640px){
+  header{padding:18px;flex-direction:column;gap:14px;align-items:flex-start}
+  main,.filters,.progress-wrap,.urgency-legend{padding-left:16px;padding-right:16px}
+  .fase-body{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>Roadmap · Extras</h1>
+    <p>Welcome Weddings — Problema 1 · Processo de Extras</p>
+  </div>
+  <div class="header-stats">
+    <div class="stat stat-total"><div class="stat-num" id="stat-total">25</div><div class="stat-label">Total</div></div>
+    <div class="stat stat-todo"><div class="stat-num" id="stat-todo">25</div><div class="stat-label">A fazer</div></div>
+    <div class="stat stat-doing"><div class="stat-num" id="stat-doing">0</div><div class="stat-label">Andamento</div></div>
+    <div class="stat stat-done"><div class="stat-num" id="stat-done">0</div><div class="stat-label">Concluído</div></div>
+  </div>
+</header>
+
+<div class="progress-wrap">
+  <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill"></div></div>
+  <div class="progress-labels"><span id="progress-label">0 de 25 concluídos</span><span id="progress-pct">0%</span></div>
+</div>
+
+<div class="urgency-legend">
+  <span class="leg"><span class="leg-dot" style="background:#A30000"></span>Alta urgência</span>
+  <span class="leg"><span class="leg-dot" style="background:#854F0B"></span>Média urgência</span>
+  <span class="leg"><span class="leg-dot" style="background:#888780"></span>Baixa urgência</span>
+</div>
+
+<div class="filters">
+  <span class="filters-label">Filtrar</span>
+  <button class="filter-btn active" onclick="filterStatus('all',this)">Todos</button>
+  <button class="filter-btn" onclick="filterStatus('todo',this)">A fazer</button>
+  <button class="filter-btn" onclick="filterStatus('doing',this)">Em andamento</button>
+  <button class="filter-btn" onclick="filterStatus('done',this)">Concluído</button>
+</div>
+
+<main id="main-content"></main>
+
+<div class="empty" id="empty-state">Nenhum item encontrado para este filtro.</div>
+
+<footer>Welcome Weddings · Roadmap de Extras · Maio 2026 — Dados salvos automaticamente no navegador</footer>
+
+<script>
+const STORAGE_KEY = 'ww_roadmap_extras_v2';
+
+const FASES = [
+  {
+    id:1, color:'#A30000', bg:'#FDF0F0', badgeBg:'#FAECE7',
+    title:'Antes da hospedagem ser comprada',
+    items:[
+      {text:'Não há oferta ativa de extras — ninguém aborda o convidado proativamente', urgency:'#A30000', tags:[{t:'Raphaela',s:'#FAEEDA',c:'#633806'},{t:'Processo',s:'#EEEDFE',c:'#3C3489'}]},
+      {text:'Não existe comunicação que conecte "você vai ao casamento, já pensou na passagem?"', urgency:'#A30000', tags:[{t:'Raphaela',s:'#FAEEDA',c:'#633806'},{t:'Mensagem',s:'#EEEDFE',c:'#3C3489'}]},
+      {text:'Raphaela não sabe quem está no funil ainda sem hospedagem confirmada', urgency:'#A30000', tags:[{t:'Raphaela',s:'#FAEEDA',c:'#633806'},{t:'Ana · WedMe',s:'#E1F5EE',c:'#085041'}]},
+    ]
+  },
+  {
+    id:2, color:'#A30000', bg:'#FDF0F0', badgeBg:'#FAECE7',
+    title:'No momento da compra de hospedagem',
+    items:[
+      {text:'Disparo automático de extras não verifica se o site está ativo — timing errado', urgency:'#A30000', tags:[{t:'Ana · WedMe',s:'#E1F5EE',c:'#085041'},{t:'Rápido',s:'#E1F5EE',c:'#085041'}]},
+      {text:'Mensagem chega antes do convidado conseguir comprar qualquer coisa', urgency:'#A30000', tags:[{t:'Ana · WedMe',s:'#E1F5EE',c:'#085041'},{t:'Mensagem',s:'#EEEDFE',c:'#3C3489'}]},
+      {text:'Não há personalização por destino, tipo de quarto ou perfil do convidado', urgency:'#854F0B', tags:[{t:'Ana · WedMe',s:'#E1F5EE',c:'#085041'},{t:'Médio prazo',s:'#EEEDFE',c:'#3C3489'}]},
+    ]
+  },
+  {
+    id:3, color:'#633806', bg:'#FAEEDA', badgeBg:'#F5EDDA',
+    title:'Depois da compra de hospedagem',
+    items:[
+      {text:'Raphaela não tem lista organizada de quem comprou e precisa ser contatada', urgency:'#A30000', tags:[{t:'Ana · WedMe',s:'#E1F5EE',c:'#085041'},{t:'Rápido',s:'#E1F5EE',c:'#085041'}]},
+      {text:'Depende do Monde para buscar contatos — ferramenta ruim para essa finalidade', urgency:'#A30000', tags:[{t:'Ana · WedMe',s:'#E1F5EE',c:'#085041'},{t:'Processo',s:'#EEEDFE',c:'#3C3489'}]},
+      {text:'Não há critério claro de priorização — quem abordar primeiro?', urgency:'#854F0B', tags:[{t:'Raphaela',s:'#FAEEDA',c:'#633806'},{t:'Processo',s:'#EEEDFE',c:'#3C3489'}]},
+      {text:'Não há script ou roteiro definido de abordagem', urgency:'#A30000', tags:[{t:'Raphaela',s:'#FAEEDA',c:'#633806'},{t:'Mensagem',s:'#EEEDFE',c:'#3C3489'}]},
+      {text:'Não há SLA — em quanto tempo a Raphaela precisa entrar em contato?', urgency:'#854F0B', tags:[{t:'Raphaela',s:'#FAEEDA',c:'#633806'},{t:'Processo',s:'#EEEDFE',c:'#3C3489'}]},
+    ]
+  },
+  {
+    id:4, color:'#633806', bg:'#FAEEDA', badgeBg:'#F5EDDA',
+    title:'Durante o atendimento',
+    items:[
+      {text:'Mensagens de follow-up em aberto no playbook ("...")', urgency:'#A30000', tags:[{t:'Raphaela',s:'#FAEEDA',c:'#633806'},{t:'Mensagem',s:'#EEEDFE',c:'#3C3489'}]},
+      {text:'Mensagem de encerramento está vazia no playbook ("...")', urgency:'#A30000', tags:[{t:'Raphaela',s:'#FAEEDA',c:'#633806'},{t:'Mensagem',s:'#EEEDFE',c:'#3C3489'}]},
+      {text:'Não está definido quantas tentativas fazer antes de desistir', urgency:'#854F0B', tags:[{t:'Raphaela',s:'#FAEEDA',c:'#633806'},{t:'Processo',s:'#EEEDFE',c:'#3C3489'}]},
+      {text:'Não há critério para mover o card entre etapas no CRM — Raphaela decide na intuição', urgency:'#854F0B', tags:[{t:'Raphaela',s:'#FAEEDA',c:'#633806'},{t:'Processo',s:'#EEEDFE',c:'#3C3489'}]},
+    ]
+  },
+  {
+    id:5, color:'#444441', bg:'#F1EFE8', badgeBg:'#E8E6DE',
+    title:'Após a venda de extras',
+    items:[
+      {text:'Não há processo documentado para "Compra efetuada" — slide do playbook vazio', urgency:'#854F0B', tags:[{t:'Raphaela',s:'#FAEEDA',c:'#633806'},{t:'Documentação',s:'#EEEDFE',c:'#3C3489'}]},
+      {text:'Não há lançamento padronizado da venda de extras no Monde', urgency:'#854F0B', tags:[{t:'Raphaela',s:'#FAEEDA',c:'#633806'},{t:'Mari',s:'#FAECE7',c:'#712B13'},{t:'Processo',s:'#EEEDFE',c:'#3C3489'}]},
+    ]
+  },
+  {
+    id:6, color:'#444441', bg:'#F1EFE8', badgeBg:'#E8E6DE',
+    title:'Visibilidade e controle',
+    items:[
+      {text:'Ninguém sabe quantos convidados estão sendo abordados para extras', urgency:'#888780', tags:[{t:'Ana · indicadores',s:'#E1F5EE',c:'#085041'}]},
+      {text:'Ninguém sabe a taxa de conversão — quantos que recebem oferta realmente compram', urgency:'#888780', tags:[{t:'Ana · indicadores',s:'#E1F5EE',c:'#085041'}]},
+      {text:'Ninguém sabe qual extra mais vende (passagem, transfer, passeio)', urgency:'#888780', tags:[{t:'Ana · indicadores',s:'#E1F5EE',c:'#085041'}]},
+      {text:'Não há meta de conversão definida para a Raphaela', urgency:'#888780', tags:[{t:'Gestão',s:'#FAEEDA',c:'#633806'},{t:'Processo',s:'#EEEDFE',c:'#3C3489'}]},
+      {text:'Sem indicadores, não tem como saber se o processo está melhorando', urgency:'#888780', tags:[{t:'Ana · indicadores',s:'#E1F5EE',c:'#085041'}]},
+    ]
+  },
+  {
+    id:7, color:'#444441', bg:'#F1EFE8', badgeBg:'#E8E6DE',
+    title:'Documentação',
+    items:[
+      {text:'Playbook com campos em aberto — processo nunca foi finalizado', urgency:'#854F0B', tags:[{t:'Time completo',s:'#FAEEDA',c:'#633806'},{t:'Documentação',s:'#EEEDFE',c:'#3C3489'}]},
+      {text:'Equipe opera por memória, não por referência documentada', urgency:'#854F0B', tags:[{t:'Time completo',s:'#FAEEDA',c:'#633806'},{t:'Documentação',s:'#EEEDFE',c:'#3C3489'}]},
+      {text:'Não há checklist de onboarding de extras para um novo casamento', urgency:'#888780', tags:[{t:'Time completo',s:'#FAEEDA',c:'#633806'},{t:'Documentação',s:'#EEEDFE',c:'#3C3489'}]},
+    ]
+  }
+];
+
+// ── STATE ──
+let state = {};
+let cardIndex = 0;
+const cardMap = {}; // index → {faseId, itemIdx}
+
+function defaultCardState() {
+  return { status:'todo', responsavel:'', prazo:'', solucoes:[''], texto:'' };
+}
+
+function loadState() {
+  try {
+    const s = localStorage.getItem(STORAGE_KEY);
+    if (s) state = JSON.parse(s);
+  } catch(e) { state = {}; }
+}
+
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+}
+
+function getCardState(idx) {
+  if (!state[idx]) state[idx] = defaultCardState();
+  return state[idx];
+}
+
+// ── RENDER ──
+function render() {
+  cardIndex = 0;
+  const main = document.getElementById('main-content');
+  main.innerHTML = '';
+
+  FASES.forEach(fase => {
+    const faseEl = document.createElement('div');
+    faseEl.className = 'fase';
+    faseEl.id = 'fase-' + fase.id;
+
+    const total = fase.items.length;
+    faseEl.innerHTML = `
+      <div class="fase-header" onclick="toggleFase('fase-${fase.id}')">
+        <div class="fase-number" style="background:${fase.bg};color:${fase.color}">${fase.id}</div>
+        <div class="fase-title" style="color:${fase.color}">${fase.title}</div>
+        <div class="fase-meta">
+          <span class="fase-count-badge" style="background:${fase.badgeBg};color:${fase.color}">${total} ${total===1?'problema':'problemas'}</span>
+          <span class="fase-progress" id="prog-fase-${fase.id}">0/${total}</span>
+          <span class="fase-toggle open" id="tog-fase-${fase.id}">▾</span>
+        </div>
+      </div>
+      <div class="fase-body" id="body-fase-${fase.id}"></div>
+    `;
+
+    const bodyEl = faseEl.querySelector('.fase-body');
+
+    fase.items.forEach((item, itemIdx) => {
+      const idx = cardIndex++;
+      cardMap[idx] = { faseId: fase.id, itemIdx };
+      const cs = getCardState(idx);
+      bodyEl.appendChild(buildCard(idx, item, cs));
+    });
+
+    main.appendChild(faseEl);
+  });
+
+  updateStats();
+  updateAllFaseProgress();
+}
+
+function buildCard(idx, item, cs) {
+  const wrap = document.createElement('div');
+  wrap.className = 'card status-' + cs.status;
+  wrap.dataset.status = cs.status;
+  wrap.dataset.idx = idx;
+
+  const tagsHtml = item.tags.map(t =>
+    `<span class="tag" style="background:${t.s};color:${t.c}">${t.t}</span>`
+  ).join('');
+
+  const solucoesHtml = buildSolucoesHtml(idx, cs.solucoes);
+
+  wrap.innerHTML = `
+    <div class="card-accent"></div>
+    <div class="card-head">
+      <div class="card-top">
+        <textarea class="card-text-input" rows="2" placeholder="Descreva o problema..."
+          oninput="updateField(${idx},'texto',this.value);autoResize(this)"
+          onfocus="autoResize(this)">${escHtml(cs.texto !== undefined ? cs.texto : item.text)}</textarea>
+        <div class="card-urgency" style="background:${item.urgency}"></div>
+      </div>
+      <div class="card-quick">
+        <div class="card-tags">${tagsHtml}</div>
+        <select class="status-select" onchange="changeStatus(${idx},this.value)">
+          <option value="todo"${cs.status==='todo'?' selected':''}>A fazer</option>
+          <option value="doing"${cs.status==='doing'?' selected':''}>Em andamento</option>
+          <option value="done"${cs.status==='done'?' selected':''}>Concluído</option>
+        </select>
+      </div>
+    </div>
+    <button class="card-expand-btn" id="expbtn-${idx}" onclick="toggleDetail(${idx})">
+      <span class="arrow">▾</span> Responsável · Prazo · Soluções
+    </button>
+    <div class="card-detail" id="detail-${idx}">
+      <div class="detail-row">
+        <div class="detail-label">Responsável</div>
+        <input class="detail-input" type="text" placeholder="Ex: Ana, Raphaela..." value="${escHtml(cs.responsavel)}"
+          oninput="updateField(${idx},'responsavel',this.value)">
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">Prazo</div>
+        <input class="detail-input" type="date" value="${escHtml(cs.prazo)}"
+          onchange="updateField(${idx},'prazo',this.value)">
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">Possíveis soluções</div>
+        <div class="solucoes-wrap" id="sols-${idx}">${solucoesHtml}</div>
+        <button class="btn-add-sol" onclick="addSolucao(${idx})">+ Adicionar solução</button>
+      </div>
+    </div>
+  `;
+
+  return wrap;
+}
+
+function buildSolucoesHtml(idx, solucoes) {
+  return solucoes.map((s, si) => `
+    <div class="solucao-row" id="sol-row-${idx}-${si}">
+      <textarea class="solucao-input" rows="1" placeholder="Descreva uma possível solução..."
+        oninput="updateSolucao(${idx},${si},this.value)">${escHtml(s)}</textarea>
+      <button class="btn-remove-sol" onclick="removeSolucao(${idx},${si})" title="Remover">×</button>
+    </div>
+  `).join('');
+}
+
+function escHtml(str) {
+  return (str||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── INTERACTIONS ──
+function toggleDetail(idx) {
+  const det = document.getElementById('detail-' + idx);
+  const btn = document.getElementById('expbtn-' + idx);
+  const open = det.classList.toggle('open');
+  btn.classList.toggle('open', open);
+}
+
+function changeStatus(idx, value) {
+  const cs = getCardState(idx);
+  cs.status = value;
+  saveState();
+  // update card class
+  const card = document.querySelector(`[data-idx="${idx}"]`);
+  card.classList.remove('status-todo','status-doing','status-done');
+  card.classList.add('status-' + value);
+  card.dataset.status = value;
+  updateStats();
+  updateAllFaseProgress();
+}
+
+function updateField(idx, field, value) {
+  const cs = getCardState(idx);
+  cs[field] = value;
+  saveState();
+}
+
+function updateSolucao(idx, si, value) {
+  const cs = getCardState(idx);
+  cs.solucoes[si] = value;
+  saveState();
+}
+
+function addSolucao(idx) {
+  const cs = getCardState(idx);
+  cs.solucoes.push('');
+  saveState();
+  const si = cs.solucoes.length - 1;
+  const wrap = document.getElementById('sols-' + idx);
+  const div = document.createElement('div');
+  div.id = `sol-row-${idx}-${si}`;
+  div.className = 'solucao-row';
+  div.innerHTML = `
+    <textarea class="solucao-input" rows="1" placeholder="Descreva uma possível solução..."
+      oninput="updateSolucao(${idx},${si},this.value)"></textarea>
+    <button class="btn-remove-sol" onclick="removeSolucao(${idx},${si})" title="Remover">×</button>
+  `;
+  wrap.appendChild(div);
+  div.querySelector('textarea').focus();
+}
+
+function removeSolucao(idx, si) {
+  const cs = getCardState(idx);
+  if (cs.solucoes.length <= 1) { cs.solucoes[0] = ''; saveState(); const ta = document.querySelector(`#sol-row-${idx}-${si} textarea`); if(ta) ta.value=''; return; }
+  cs.solucoes.splice(si, 1);
+  saveState();
+  // re-render only solucoes section
+  const wrap = document.getElementById('sols-' + idx);
+  wrap.innerHTML = buildSolucoesHtml(idx, cs.solucoes);
+}
+
+function toggleFase(id) {
+  const body = document.getElementById('body-' + id);
+  const tog = document.getElementById('tog-' + id);
+  const collapsed = body.classList.toggle('collapsed');
+  tog.classList.toggle('open', !collapsed);
+}
+
+function filterStatus(status, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const cards = document.querySelectorAll('.card');
+  let visible = 0;
+  cards.forEach(card => {
+    const show = status === 'all' || card.dataset.status === status;
+    card.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+  document.getElementById('empty-state').style.display = visible === 0 ? 'block' : 'none';
+}
+
+function updateStats() {
+  const cards = document.querySelectorAll('.card');
+  let todo=0, doing=0, done=0;
+  cards.forEach(c => {
+    if(c.dataset.status==='todo') todo++;
+    else if(c.dataset.status==='doing') doing++;
+    else if(c.dataset.status==='done') done++;
+  });
+  const total = cards.length;
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-todo').textContent = todo;
+  document.getElementById('stat-doing').textContent = doing;
+  document.getElementById('stat-done').textContent = done;
+  const pct = Math.round((done/total)*100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = done + ' de ' + total + ' concluídos';
+  document.getElementById('progress-pct').textContent = pct + '%';
+}
+
+function updateAllFaseProgress() {
+  FASES.forEach(f => {
+    const cards = document.querySelectorAll(`[data-idx]`);
+    let done=0, total=0;
+    cards.forEach(c => {
+      if(cardMap[c.dataset.idx]?.faseId === f.id) {
+        total++;
+        if(c.dataset.status==='done') done++;
+      }
+    });
+    const el = document.getElementById('prog-fase-' + f.id);
+    if(el) el.textContent = done + '/' + total;
+  });
+}
+
+function autoResize(ta) {
+  ta.style.height = 'auto';
+  ta.style.height = ta.scrollHeight + 'px';
+}
+
+// ── INIT ──
+loadState();
+render();
+setTimeout(() => {
+  document.querySelectorAll('textarea.card-text-input').forEach(ta => autoResize(ta));
+}, 60);
+</script>
+</body>
+</html>
