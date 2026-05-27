@@ -2079,7 +2079,7 @@ async function setComentarioForn(id,comentario){
 async function renderEscaladas(){
   if(casamentoAtual)await loadEscaladas(casamentoAtual.id)
   const list=document.getElementById('escaladas-list')
-  document.getElementById('assess-count').textContent=escaladas.length+' assessora(s) escalada(s)'
+  const assessCount=document.getElementById('assess-count');if(assessCount)assessCount.textContent=escaladas.length+' assessora(s) escalada(s)'
   if(!escaladas.length){list.innerHTML='<div class="em" style="padding:30px"><div class="em-t">Nenhuma assessora escalada</div></div>'}
   else{list.innerHTML=escaladas.map(e=>`<div class="ai"><div class="aih"><div style="display:flex;align-items:center;gap:10px"><div class="av">${(e.assessora?.nome||'?')[0]}</div><div><div style="font-weight:600;font-size:14px">${e.assessora?.nome||'—'}</div></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn bg bsm" onclick="abrirSolicitacao('${e.id}')">✈️ Solicitar</button><button class="btn bd bsm" onclick="removeEscalada('${e.id}')">Remover</button></div></div>
     <div style="margin-top:12px;padding:10px 12px;background:#fff;border-radius:8px;border:1px solid var(--gold-border)">
