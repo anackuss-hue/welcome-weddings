@@ -289,7 +289,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <div class="autocomplete-wrap"><input class="autocomplete-input" id="rf-cas-txt" placeholder="Digite o nome do casamento..." oninput="filterCas('rf-cas',this.value)" autocomplete="off"><input type="hidden" id="rf-cas"><div class="autocomplete-drop" id="drop-rf-cas"></div></div>
     </div>
     <div class="f"><label>Assessor / Fornecedor <span style="color:var(--red)">*</span></label>
-      <div class="autocomplete-wrap"><input class="autocomplete-input" id="rf-forn-txt" placeholder="Digite o nome do fornecedor..." oninput="filterForn(this.value)" autocomplete="off"><input type="hidden" id="rf-forn-id"><div class="autocomplete-drop" id="drop-rf-forn"></div></div>
+      <div class="autocomplete-wrap"><input class="autocomplete-input" id="rf-forn-txt" placeholder="Digite o nome do fornecedor..." oninput="filterForn(this.value)" autocomplete="off"><input type="hidden" id="rf-forn-id"><input type="hidden" id="rf-forn-fonte"><div class="autocomplete-drop" id="drop-rf-forn"></div></div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
       <div class="f"><label>📅 Data de chegada <span style="color:var(--red)">*</span></label><input id="rf-data-chegada" type="date"></div>
@@ -442,15 +442,39 @@ async function enviar(tipo){
     const{data:r,error}=await sb.from('solicitacoes_kanban').insert({tipo:'viagem_fornecedor',responsavel:'rapha',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,assessora_id:fornId,assessora_nome:fornNome,periodo_de:document.getElementById('rf-data-chegada').value,periodo_ate:document.getElementById('rf-data-saida').value,hora_chegada:document.getElementById('rf-hora-chegada')?.value||null,hora_saida:document.getElementById('rf-hora-saida')?.value||null,cidade_saida:document.getElementById('rf-cidade')?.value||null,servicos:servStr,solicitacao:document.getElementById('rf-obs')?.value||null,criado_por:sol}).select().single()
     if(error){alert('Erro: '+error.message);reset();return}
     // Vincula fornecedor ao casamento
-    await sb.from('casamento_fornecedores').upsert({
-      casamento_id:c.id,
-      fornecedor_id:fornId,
-      periodo_inicio:document.getElementById('rf-data-chegada').value,
-      periodo_fim:document.getElementById('rf-data-saida').value,
-      status_voo:_servRF['rfv-voo']?'pendente':null,
-      status_hotel:_servRF['rfv-hospedagem']?'pendente':null,
-      status_transfer:_servRF['rfv-transfer']?'pendente':null
-    },{onConflict:'casamento_id,fornecedor_id'})
+    // Se for assessora, busca/cria na tabela fornecedores primeiro
+    const fonte=document.getElementById('rf-forn-fonte')?.value||'fornecedores'
+    let fornIdFinal=fornId
+    if(fonte==='assessoras'){
+      // Verifica se já existe como fornecedor
+      const{data:fExist}=await sb.from('fornecedores').select('id').eq('nome',fornNome).eq('tipo','Assessora').single()
+      if(fExist){fornIdFinal=fExist.id}
+      else{
+        const{data:fNew}=await sb.from('fornecedores').insert({nome:fornNome,tipo:'Assessora'}).select().single()
+        fornIdFinal=fNew?.id||fornId
+      }
+    }
+    // Insere ou atualiza casamento_fornecedores
+    const{data:cfExist}=await sb.from('casamento_fornecedores').select('id').eq('casamento_id',c.id).eq('fornecedor_id',fornIdFinal).single().catch(()=>({data:null}))
+    if(cfExist){
+      await sb.from('casamento_fornecedores').update({
+        periodo_inicio:document.getElementById('rf-data-chegada').value,
+        periodo_fim:document.getElementById('rf-data-saida').value,
+        status_voo:_servRF['rfv-voo']?'pendente':null,
+        status_hotel:_servRF['rfv-hospedagem']?'pendente':null,
+        status_transfer:_servRF['rfv-transfer']?'pendente':null
+      }).eq('id',cfExist.id)
+    }else{
+      await sb.from('casamento_fornecedores').insert({
+        casamento_id:c.id,
+        fornecedor_id:fornIdFinal,
+        periodo_inicio:document.getElementById('rf-data-chegada').value,
+        periodo_fim:document.getElementById('rf-data-saida').value,
+        status_voo:_servRF['rfv-voo']?'pendente':null,
+        status_hotel:_servRF['rfv-hospedagem']?'pendente':null,
+        status_transfer:_servRF['rfv-transfer']?'pendente':null
+      })
+    }
     await notificarSolicitante(r?.id,sol,`Sua solicitação de viagem para ${fornNome} em ${c.nome} foi recebida`)
     reset();go('p-sucesso');return
   }
@@ -531,8 +555,8 @@ async function carregarFornecedores(){
     sb.from('assessoras').select('id,nome').order('nome',{ascending:true})
   ])
   _fornData=[
-    ...(f||[]),
-    ...(a||[]).map(x=>({...x,tipo:'Assessora'}))
+    ...(f||[]).map(x=>({...x,fonte:'fornecedores'})),
+    ...(a||[]).map(x=>({...x,tipo:'Assessora',fonte:'assessoras'}))
   ].sort((a,b)=>a.nome.localeCompare(b.nome))
 }
 </script>
