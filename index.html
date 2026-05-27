@@ -67,6 +67,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .ic-flag{font-size:28px;line-height:1;font-family:apple color emoji,segoe ui emoji,noto color emoji,sans-serif}.ic-name{font-size:13px;font-weight:600;color:#666}
 .ic-card.on .ic-name{color:var(--gold)}
 /* ══ BADGES DOCUMENTO ══ */
+.ftc{display:none}
 .kc-pri{background:none;border:1.5px solid var(--border);border-radius:8px;padding:4px 8px;cursor:pointer;font-size:16px;transition:all .15s}
 .kc-pri.ativo{border-color:var(--gold);background:var(--gold-pale);transform:scale(1.1)}
 .kc-nota-item{background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:8px;padding:10px 12px;margin-bottom:8px}
@@ -432,7 +433,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
           <div class="fp-sec-t">Tipo</div>
           <select id="f-forn-tipo" onchange="renderFornecedores()" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none">
             <option value="">Todos</option>
-            <option>Assessora</option>
             <option>Celebrante</option>
             <option>Fotógrafo</option>
             <option>Videomaker</option>
@@ -1419,27 +1419,39 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 <!-- MODAL FORNECEDOR -->
 <div class="mo" id="modal-fornecedor">
-  <div class="mb" style="max-width:500px">
-    <div class="mh"><div><div class="mt" id="mf-title">Novo Fornecedor</div></div><button class="mcl" onclick="closeModal('modal-fornecedor')">✕</button></div>
-    <div class="g2">
-      <div class="f" style="grid-column:1/-1"><label>Nome <span style="color:var(--red)">*</span></label><input id="forn-nome"></div>
-      <div class="f"><label>Tipo <span style="color:var(--red)">*</span></label>
-        <select id="forn-tipo" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
-          <option value="">Selecionar...</option>
-          <option>Assessora</option><option>Celebrante</option><option>Fotógrafo</option>
-          <option>Videomaker</option><option>DJ</option><option>Cabelo e Maquiagem</option>
-        </select>
-      </div>
-      <div class="f"><label>Cidade</label><input id="forn-cidade"></div>
-      <div class="f"><label>Telefone</label><input id="forn-tel" type="tel"></div>
-      <div class="f"><label>E-mail</label><input id="forn-email" type="email"></div>
-      <div class="f"><label>Instagram</label><input id="forn-instagram" placeholder="@"></div>
-      <div class="f"><label>Site</label><input id="forn-site" placeholder="https://"></div>
-      <div class="f" style="grid-column:1/-1"><label>Observações</label><textarea id="forn-obs"></textarea></div>
+  <div class="mb" style="max-width:560px;max-height:90vh;overflow-y:auto">
+    <div class="mh" style="position:sticky;top:0;background:var(--white);z-index:10;border-bottom:1px solid var(--border);padding-bottom:12px">
+      <div><div class="mt" id="mf-title">Novo Fornecedor</div></div>
+      <button class="mcl" onclick="closeModal('modal-fornecedor')">✕</button>
     </div>
-    <div class="mf">
-      <button class="btn bo" onclick="closeModal('modal-fornecedor')">Cancelar</button>
-      <button class="btn bg" id="btn-sforn" onclick="salvarFornecedor()">Salvar</button>
+    <div style="display:flex;gap:8px;margin:14px 0 18px;border-bottom:2px solid var(--border)">
+      <button class="tab active" onclick="showFornTab('forn-dados',this)">📋 Dados</button>
+      <button class="tab" onclick="showFornTab('forn-hist',this)">📅 Histórico</button>
+    </div>
+    <div id="forn-dados" class="ftc active">
+      <div class="g2">
+        <div class="f" style="grid-column:1/-1"><label>Nome <span style="color:var(--red)">*</span></label><input id="forn-nome"></div>
+        <div class="f"><label>Tipo <span style="color:var(--red)">*</span></label>
+          <select id="forn-tipo" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+            <option value="">Selecionar...</option>
+            <option>Celebrante</option><option>Fotógrafo</option>
+            <option>Videomaker</option><option>DJ</option><option>Cabelo e Maquiagem</option>
+          </select>
+        </div>
+        <div class="f"><label>Cidade</label><input id="forn-cidade"></div>
+        <div class="f"><label>Telefone</label><input id="forn-tel" type="tel"></div>
+        <div class="f"><label>E-mail</label><input id="forn-email" type="email"></div>
+        <div class="f"><label>Instagram</label><input id="forn-instagram" placeholder="@"></div>
+        <div class="f"><label>Site</label><input id="forn-site" placeholder="https://"></div>
+        <div class="f" style="grid-column:1/-1"><label>Observações</label><textarea id="forn-obs"></textarea></div>
+      </div>
+      <div class="mf" style="padding-top:16px;margin-top:8px;border-top:1px solid var(--border)">
+        <button class="btn bo" onclick="closeModal('modal-fornecedor')">Cancelar</button>
+        <button class="btn bg" id="btn-sforn" onclick="salvarFornecedor()">Salvar</button>
+      </div>
+    </div>
+    <div id="forn-hist" class="ftc" style="display:none">
+      <div id="forn-hist-content"><div class="ld">Carregando...</div></div>
     </div>
   </div>
 </div>
@@ -2966,8 +2978,46 @@ async function deletarAnexo(id,url,containerId,tipo,referenciaId){
 // ══ FORNECEDORES ══
 let fornecedores=[], fornecedorAtual=null
 
+function showFornTab(tab,btn){
+  document.querySelectorAll('#modal-fornecedor .ftc').forEach(t=>t.style.display='none')
+  document.querySelectorAll('#modal-fornecedor .tab').forEach(t=>t.classList.remove('active'))
+  document.getElementById(tab).style.display='block'
+  btn.classList.add('active')
+  if(tab==='forn-hist'&&fornecedorAtual)carregarHistoricoForn(fornecedorAtual.id)
+}
+
+async function carregarHistoricoForn(fornId){
+  const con=document.getElementById('forn-hist-content');if(!con)return
+  const{data}=await sb.from('casamento_fornecedores').select('*,casamento:casamentos(id,nome,plan_data,destino)').eq('fornecedor_id',fornId).order('created_at',{ascending:false})
+  if(!data||!data.length){con.innerHTML='<div class="em"><div class="em-t">Nenhum casamento registrado</div></div>';return}
+  const mediaNotas=data.filter(d=>d.nota).length?
+    (data.filter(d=>d.nota).reduce((s,d)=>s+d.nota,0)/data.filter(d=>d.nota).length).toFixed(1):null
+  con.innerHTML=`
+    <div style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap">
+      <div style="background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:10px;padding:12px 16px;text-align:center;flex:1">
+        <div style="font-size:22px;font-weight:700;color:var(--gold)">${data.length}</div>
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Casamentos</div>
+      </div>
+      ${mediaNotas?`<div style="background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:10px;padding:12px 16px;text-align:center;flex:1">
+        <div style="font-size:22px;font-weight:700;color:var(--gold)">${mediaNotas} ⭐</div>
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Nota média</div>
+      </div>`:''}
+    </div>
+    ${data.map(cf=>`<div style="padding:12px 14px;background:var(--white);border:1px solid var(--border);border-radius:10px;margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px">
+        <div>
+          <div style="font-weight:600;font-size:14px">${cf.casamento?.nome||'—'}</div>
+          <div style="font-size:12px;color:var(--muted)">${cf.casamento?.destino||''}${cf.periodo_inicio?' · '+fmtDate(cf.periodo_inicio)+' → '+fmtDate(cf.periodo_fim):''}</div>
+        </div>
+        ${cf.nota?`<div style="display:flex;gap:1px">${[1,2,3,4,5].map(n=>`<span style="font-size:16px;opacity:${cf.nota>=n?1:.25}">⭐</span>`).join('')}</div>`:'<span style="font-size:12px;color:var(--muted)">Sem avaliação</span>'}
+      </div>
+      ${cf.comentario?`<div style="font-size:12px;color:var(--muted);margin-top:6px;padding-top:6px;border-top:1px solid var(--border);font-style:italic">"${cf.comentario}"</div>`:''}
+    </div>`).join('')}
+  `
+}
+
 async function loadFornecedores(){
-  const{data}=await sb.from('fornecedores').select('*').order('nome')
+  const{data}=await sb.from('fornecedores').select('*').neq('tipo','Assessora').order('nome')
   fornecedores=data||[]
   renderFornecedores()
   const el=document.getElementById('fornecedores-count');if(el)el.textContent=fornecedores.length+' fornecedor(es)'
@@ -3008,6 +3058,11 @@ function openFornecedor(id){
   ;['nome','tipo','cidade','telefone','email','instagram','site','obs'].forEach(campo=>{
     const el=document.getElementById('forn-'+campo);if(el)el.value=f[campo]||''
   })
+  // Resetar para aba dados
+  document.querySelectorAll('#modal-fornecedor .ftc').forEach(t=>t.style.display='none')
+  document.getElementById('forn-dados').style.display='block'
+  document.querySelectorAll('#modal-fornecedor .tab').forEach(t=>t.classList.remove('active'))
+  document.querySelector('#modal-fornecedor .tab').classList.add('active')
   document.getElementById('modal-fornecedor').classList.add('open')
 }
 
