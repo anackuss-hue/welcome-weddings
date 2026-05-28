@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jornadas · Welcome Weddings</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F8F7F5;--surface:#FFFFFF;--surface2:#FAFAF8;
+  --border:#ECEAE4;--border2:#E0DDD5;
+  --text:#1A1916;--text2:#5C5A55;--text3:#9A9890;
+  --accent:#8B6A3E;--accent-light:#F0E8DB;--accent-mid:#C9A87C;
+  --red:#C0392B;--red-bg:#FDF3F2;--red-border:#F5C6C2;
+  --orange:#D4700A;--orange-bg:#FEF6EE;--orange-border:#F9D4A3;
+  --green:#2E7D52;--green-bg:#F0F8F3;--green-border:#A8D9BC;
+  --blue:#2563A8;--blue-bg:#EFF5FD;--blue-border:#BFCFE8;
+  --purple:#5B3FA6;--purple-bg:#F3F0FB;--purple-border:#C9BDE8;
+  --gray-bg:#F4F3F0;--gray-border:#DDDBD4;
+  --radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
+
+/* ── HEADER ── */
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 40px;position:sticky;top:0;z-index:100;display:flex;align-items:stretch;gap:0}
+.header-brand{display:flex;align-items:center;gap:12px;padding:16px 0;margin-right:32px;border-right:1px solid var(--border)}
+.header-logo{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:14px;color:#fff;font-weight:600;margin-right:4px}
+.header-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:var(--text)}
+.header-sub{font-size:11px;color:var(--text3);margin-top:1px}
+.header-tabs{display:flex;align-items:stretch;gap:0}
+.tab-btn{padding:0 20px;font-size:13px;font-family:'Inter',sans-serif;font-weight:500;color:var(--text2);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:24px;padding:16px 0}
+.stat-group{display:flex;gap:20px}
+.stat{text-align:center}
+.stat-num{font-size:18px;font-weight:600;line-height:1;font-family:'Playfair Display',serif}
+.stat-label{font-size:10px;color:var(--text3);margin-top:1px;letter-spacing:.04em;text-transform:uppercase}
+
+/* ── PROGRESS ── */
+.progress-bar-wrap{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 40px;display:flex;align-items:center;gap:14px}
+.progress-bar-bg{flex:1;background:var(--border);border-radius:99px;height:4px;overflow:hidden}
+.progress-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent-mid),var(--green));transition:width .5s ease;width:0%}
+.progress-txt{font-size:11px;color:var(--text3);white-space:nowrap}
+
+/* ── FILTERS ── */
+.filters{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 40px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.filters-lbl{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-right:4px}
+.fbtn{border:1px solid var(--border2);background:var(--surface);border-radius:99px;padding:4px 12px;font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;color:var(--text2);transition:all .15s}
+.fbtn:hover{border-color:var(--accent-mid);color:var(--accent)}
+.fbtn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* ── MAIN ── */
+main{padding:24px 40px;max-width:1200px;margin:0 auto}
+
+/* ── FASE ── */
+.fase{margin-bottom:24px}
+.fase-hd{display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer;user-select:none;padding:8px 0}
+.fase-line{flex:1;height:1px;background:var(--border)}
+.fase-chip{font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;letter-spacing:.02em;white-space:nowrap}
+.fase-prog{font-size:11px;color:var(--text3)}
+.fase-tog{font-size:12px;color:var(--text3);transition:transform .2s}
+.fase-tog.open{transform:rotate(180deg)}
+.fase-body{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:8px}
+.fase-body.collapsed{display:none}
+
+/* ── CARD ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:box-shadow .18s,transform .18s;cursor:default;position:relative}
+.card:hover{box-shadow:0 2px 16px rgba(0,0,0,.07);transform:translateY(-1px)}
+.card-stripe{position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:var(--radius) 0 0 var(--radius)}
+.card.todo .card-stripe{background:var(--border2)}
+.card.doing{background:var(--orange-bg);border-color:var(--orange-border)}
+.card.doing .card-stripe{background:var(--orange)}
+.card.done{background:var(--green-bg);border-color:var(--green-border)}
+.card.done .card-stripe{background:var(--green)}
+
+/* CARD HEAD */
+.card-head{padding:12px 12px 10px 16px}
+.card-top{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px}
+.card-title-ta{font-size:13px;font-weight:500;flex:1;border:none;background:transparent;font-family:'Inter',sans-serif;color:var(--text);resize:none;outline:none;min-height:18px;line-height:1.45;padding:0;cursor:text}
+.card-title-ta:focus{background:rgba(0,0,0,.03);border-radius:4px;padding:2px 4px;margin:-2px -4px}
+.card.done .card-title-ta{text-decoration:line-through;color:var(--text3)}
+.card-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;background:var(--border2)}
+.card.doing .card-dot{background:var(--orange)}
+.card.done .card-dot{background:var(--green)}
+.card-foot{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap}
+.tags{display:flex;gap:4px;flex-wrap:wrap}
+.tag{font-size:10px;padding:2px 7px;border-radius:99px;font-weight:500;white-space:nowrap;line-height:1.4}
+.status-sel{border:1px solid var(--border2);border-radius:var(--radius-sm);padding:3px 7px;font-size:11px;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text2);cursor:pointer;outline:none}
+.status-sel:hover{border-color:var(--accent-mid)}
+
+/* EXPAND BTN */
+.card-expbtn{width:100%;background:none;border:none;border-top:1px solid var(--border);padding:6px 12px 6px 16px;font-size:11px;color:var(--text3);cursor:pointer;text-align:left;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:4px;transition:background .12s}
+.card-expbtn:hover{background:var(--bg)}
+.card-expbtn .arr{transition:transform .18s;display:inline-block;font-size:10px}
+.card-expbtn.open .arr{transform:rotate(180deg)}
+
+/* CARD DETAIL */
+.card-det{display:none;padding:12px 12px 14px 16px;border-top:1px solid var(--border);background:var(--surface2)}
+.card-det.open{display:block}
+.det-sec{margin-bottom:11px}
+.det-sec:last-child{margin-bottom:0}
+.det-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:4px;font-weight:600}
+.det-input{width:100%;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:6px 8px;font-size:12px;font-family:'Inter',sans-serif;background:var(--surface);color:var(--text);outline:none;transition:border-color .15s;line-height:1.5}
+.det-input:focus{border-color:var(--accent-mid);box-shadow:0 0 0 2px var(--accent-light)}
+.det-input::placeholder{color:var(--text3)}
+textarea.det-input{resize:vertical;min-height:56px}
+.det-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+/* LISTAS COLORIDAS */
+.list-wrap{display:flex;flex-direction:column;gap:4px}
+.list-row{display:flex;gap:5px;align-items:flex-start}
+.list-ta{flex:1;border-radius:var(--radius-sm);padding:5px 8px;font-size:12px;font-family:'Inter',sans-serif;outline:none;resize:none;min-height:30px;line-height:1.4;transition:border-color .15s}
+.list-ta:focus{box-shadow:0 0 0 2px rgba(0,0,0,.06)}
+
+/* problema = vermelho suave */
+.prob-ta{background:#FEF9F9;border:1px solid var(--red-border);color:#7A1515}
+.prob-ta:focus{border-color:#E07070}
+.prob-ta::placeholder{color:#C08080;opacity:.7}
+
+/* solucao = verde suave */
+.sol-ta{background:#F5FAF7;border:1px solid var(--green-border);color:#1A4D32}
+.sol-ta:focus{border-color:#6DBD90}
+.sol-ta::placeholder{color:#5A9A72;opacity:.7}
+
+.btn-rm{border:1px solid var(--border2);background:none;border-radius:var(--radius-sm);width:26px;height:26px;cursor:pointer;font-size:13px;color:var(--text3);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:2px}
+.btn-rm:hover{background:var(--red-bg);border-color:var(--red-border);color:var(--red)}
+.btn-add{border:1px dashed var(--border2);background:none;border-radius:var(--radius-sm);padding:4px 10px;font-size:11px;font-family:'Inter',sans-serif;color:var(--text3);cursor:pointer;transition:all .15s;margin-top:3px;width:100%;text-align:left}
+.btn-add:hover{border-color:var(--accent-mid);color:var(--accent)}
+
+/* PANELS */
+.panel{display:none}
+.panel.active{display:block}
+
+/* EMPTY */
+.empty{text-align:center;padding:48px;color:var(--text3);font-size:14px;display:none}
+footer{text-align:center;padding:24px;font-size:11px;color:var(--text3);border-top:1px solid var(--border);margin-top:32px}
+
+@media(max-width:640px){
+  header{padding:0 16px;flex-wrap:wrap}
+  main,.filters,.progress-bar-wrap{padding-left:16px;padding-right:16px}
+  .fase-body{grid-template-columns:1fr}
+  .header-right{display:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-brand">
+    <div class="header-logo">W</div>
+    <div><div class="header-title">Welcome Weddings</div><div class="header-sub">Mapeamento de Jornadas</div></div>
+  </div>
+  <div class="header-tabs">
+    <button class="tab-btn active" onclick="switchTab('casal',this)">Jornada do Casal</button>
+    <button class="tab-btn" onclick="switchTab('convidado',this)">Jornada do Convidado</button>
+  </div>
+  <div class="header-right">
+    <div class="stat-group">
+      <div class="stat"><div class="stat-num" id="stat-total">0</div><div class="stat-label">Etapas</div></div>
+      <div class="stat"><div class="stat-num" style="color:var(--orange)" id="stat-doing">0</div><div class="stat-label">Andamento</div></div>
+      <div class="stat"><div class="stat-num" style="color:var(--green)" id="stat-done">0</div><div class="stat-label">Resolvido</div></div>
+    </div>
+  </div>
+</header>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar-bg"><div class="progress-bar-fill" id="prog-fill"></div></div>
+  <span class="progress-txt" id="prog-txt">0 de 0 etapas resolvidas · 0%</span>
+</div>
+
+<div class="filters">
+  <span class="filters-lbl">Filtrar</span>
+  <button class="fbtn active" onclick="filterCards('all',this)">Todas</button>
+  <button class="fbtn" onclick="filterCards('todo',this)">A resolver</button>
+  <button class="fbtn" onclick="filterCards('doing',this)">Em andamento</button>
+  <button class="fbtn" onclick="filterCards('done',this)">Resolvido</button>
+</div>
+
+<main>
+  <div id="panel-casal" class="panel active"></div>
+  <div id="panel-convidado" class="panel"></div>
+  <div class="empty" id="empty-state">Nenhuma etapa encontrada.</div>
+</main>
+
+<footer>Welcome Weddings · Jornadas do Casal e do Convidado · Maio 2026 — Tudo salvo automaticamente</footer>
+
+<script>
+const SK = 'ww_jornadas_v1';
+let state = {};
+let currentTab = 'casal';
+let cardIdx = 0;
+const cardMeta = {}; // idx → {tab, faseId}
+
+// ─────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────
+const DATA = {
+  casal: [
+    {
+      id:'c1', color:'#6B4F9E', chipBg:'#F0ECF9', chipColor:'#4A2F8A',
+      title:'Planejamento passa o bastão',
+      cards:[
+        {
+          titulo:'Planejamento envia e-mail ao casal',
+          tags:[{t:'Planejamento',s:'#F0ECF9',c:'#4A2F8A'},{t:'Início',s:'#EEF5FF',c:'#2563A8'}],
+          processo:'O setor de Planejamento envia um e-mail ao casal informando que o Atendimento à Viagem entrará em contato em até 3 dias. É o ponto de passagem de bastão entre os dois setores.',
+          problemas:['Não há confirmação de que o e-mail foi lido pelo casal antes do atendimento entrar em contato','Não existe checklist de informações que o Planejamento precisa passar para o Atendimento nesse momento'],
+          responsavel:'Planejamento',prazo:'',solucoes:[]
+        }
+      ]
+    },
+    {
+      id:'c2', color:'#6B4F9E', chipBg:'#F0ECF9', chipColor:'#4A2F8A',
+      title:'Preparação interna — 3 dias',
+      cards:[
+        {
+          titulo:'Criar apresentação no Canva',
+          tags:[{t:'Estela',s:'#FEF6EE',c:'#924800'},{t:'Manual',s:'#FDF3F2',c:'#C0392B'}],
+          processo:'A Estela cria manualmente a apresentação no Canva com as informações personalizadas do casamento para usar na primeira reunião com o casal.',
+          problemas:['Processo 100% manual — sem template padronizado reutilizável','Criada do zero a cada novo casamento','Tempo de preparo variável — pode atrasar se a Estela estiver sobrecarregada'],
+          responsavel:'Estela',prazo:'3 dias após e-mail do Planejamento',solucoes:[]
+        },
+        {
+          titulo:'Criar Rooming List na planilha',
+          tags:[{t:'Juliana',s:'#F0ECF9',c:'#4A2F8A'},{t:'Manual',s:'#FDF3F2',c:'#C0392B'}],
+          processo:'A Juliana cria uma nova aba na planilha de casamentos (DDMMMAA – NOIVA E NOIVO), copia a tabela BASE GRUPO e preenche todos os campos: noivos, local, data, horário, apartamentos bloqueados, tarifas, prazos, link do WedMe.',
+          problemas:['Criado do zero a cada casamento — sem automação','Os prazos críticos ficam apenas no rooming list, sem alertas automáticos','Risco de inconsistência entre rooming list e WedMe pois são alimentados separadamente'],
+          responsavel:'Juliana',prazo:'3 dias após e-mail do Planejamento',solucoes:[]
+        },
+        {
+          titulo:'Criar o WedMe do casal',
+          tags:[{t:'Juliana',s:'#F0ECF9',c:'#4A2F8A'},{t:'Manual',s:'#FDF3F2',c:'#C0392B'}],
+          processo:'A Juliana acessa o painel admin do WedMe e cria o ambiente do casal: nome, destino, datas, tema, domínio, foto de capa, textos automáticos, informações importantes por país, precificação offline (hotel, quartos, tarifas por data).',
+          problemas:['Processo com muitos passos — criado do zero a cada casamento','Tarifas inseridas manualmente no painel (tarifa base + tarifa net por data de check-in)','Câmbio precisa ser atualizado manualmente todos os dias','Se o hotel for novo, precisa cadastrar hotel + quartos + comodidades antes de criar a precificação'],
+          responsavel:'Juliana / Mari',prazo:'3 dias após e-mail do Planejamento',solucoes:[]
+        }
+      ]
+    },
+    {
+      id:'c3', color:'#2E6FA8', chipBg:'#EEF5FF', chipColor:'#1A4F8A',
+      title:'Contato inicial com o casal',
+      cards:[
+        {
+          titulo:'Criar grupo no WhatsApp e agendar reunião',
+          tags:[{t:'Estela',s:'#FEF6EE',c:'#924800'},{t:'WhatsApp',s:'#EEF5FF',c:'#2563A8'}],
+          processo:'A Estela cria o grupo no WhatsApp com o casal + número Weddings Principal. Nome do grupo: "WT - Noiva e Noivo ❤". Envia mensagem de apresentação e propõe datas para a reunião inicial por vídeo.',
+          problemas:['A reunião só pode ser agendada se o casal já tiver a lista de convidados pronta — muitas vezes isso trava o início do atendimento'],
+          responsavel:'Estela',prazo:'',solucoes:[]
+        },
+        {
+          titulo:'Lista de convidados não está pronta — solicitar ao casal',
+          tags:[{t:'Estela',s:'#FEF6EE',c:'#924800'},{t:'⚠ Bloqueio',s:'#FDF3F2',c:'#C0392B'}],
+          processo:'Se o casal ainda não preencheu a lista de convidados na Assessoria VIP, o atendimento fica bloqueado. A Estela precisa solicitar o preenchimento antes de agendar qualquer reunião.',
+          problemas:['Não há prazo definido para o casal entregar a lista — pode travar o início indefinidamente','Não existe comunicação automática cobrando o preenchimento','O setor fica em espera sem poder avançar com nenhuma das preparações'],
+          responsavel:'Estela',prazo:'',solucoes:[]
+        }
+      ]
+    },
+    {
+      id:'c4', color:'#2E6FA8', chipBg:'#EEF5FF', chipColor:'#1A4F8A',
+      title:'Primeira reunião',
+      cards:[
+        {
+          titulo:'Primeira reunião com o casal',
+          tags:[{t:'Estela',s:'#FEF6EE',c:'#924800'},{t:'Vídeo',s:'#EEF5FF',c:'#2563A8'}],
+          processo:'Reunião por vídeo. Pauta: apresentação do setor, demonstração do WedMe ao vivo, lista de presentes, comunicação com convidados (Amélia), serviços da Welcome Trips, bloqueio de hospedagem e suas regras, ação promocional, linha do tempo.',
+          problemas:['Reunião inteiramente roteirizada mas sem registro estruturado das decisões tomadas','Não há follow-up automático pós-reunião com resumo para o casal'],
+          responsavel:'Estela',prazo:'',solucoes:[]
+        },
+        {
+          titulo:'Pós-reunião — casal envia o Save the Date',
+          tags:[{t:'Casal',s:'#F4F3F0',c:'#444441'},{t:'Ação do casal',s:'#F0ECF9',c:'#4A2F8A'}],
+          processo:'Após a reunião, o casal envia o Save the Date para todos os convidados da lista. 2 dias depois desse envio, a Welcome inicia a comunicação automática com os convidados.',
+          problemas:['Não há confirmação de quando o casal enviou o Save the Date — a Welcome depende do casal informar','Se o casal atrasar o envio, toda a cadência de comunicação com os convidados atrasa junto'],
+          responsavel:'Casal',prazo:'',solucoes:[]
+        }
+      ]
+    },
+    {
+      id:'c5', color:'#2A7A52', chipBg:'#EEF9F3', chipColor:'#1A5238',
+      title:'Ação promocional e cadência de reuniões',
+      cards:[
+        {
+          titulo:'Cadência de reuniões — com ação promocional ≤ 45 dias',
+          tags:[{t:'Estela',s:'#FEF6EE',c:'#924800'},{t:'Ação ≤ 45d',s:'#EEF9F3',c:'#1A5238'}],
+          processo:'Quando a ação promocional tem até 45 dias, marca-se uma única reunião de acompanhamento para o final da ação.',
+          problemas:['Sem acompanhamento no meio da ação — se o bloqueio estiver vendendo mal, só descobre no final'],
+          responsavel:'Estela',prazo:'Final da ação promocional',solucoes:[]
+        },
+        {
+          titulo:'Cadência de reuniões — com ação promocional > 45 dias',
+          tags:[{t:'Estela',s:'#FEF6EE',c:'#924800'},{t:'Ação > 45d',s:'#EEF9F3',c:'#1A5238'}],
+          processo:'Quando a ação tem mais de 45 dias, marcam-se duas reuniões: uma no meio da ação e outra no final.',
+          problemas:['A definição de "meio da ação" é subjetiva — não há critério fixo de quando agendar'],
+          responsavel:'Estela',prazo:'',solucoes:[]
+        },
+        {
+          titulo:'Cadência de reuniões — sem ação promocional',
+          tags:[{t:'Estela',s:'#FEF6EE',c:'#924800'},{t:'Sem ação',s:'#F4F3F0',c:'#444441'}],
+          processo:'Quando não há ação promocional, a próxima reunião é agendada para 1 mês após a primeira reunião.',
+          problemas:['Sem gatilho baseado em vendas — o agendamento é por tempo, não por performance do bloqueio'],
+          responsavel:'Estela',prazo:'1 mês após primeira reunião',solucoes:[]
+        },
+        {
+          titulo:'Fim da ação — comunicação com convidados vira mensal',
+          tags:[{t:'Juliana',s:'#F0ECF9',c:'#4A2F8A'},{t:'Active Campaign',s:'#EEF9F3',c:'#1A5238'}],
+          processo:'Após o encerramento da ação promocional, a comunicação com os convidados que ainda não compraram hospedagem passa a ser mensal, continuando até o período do casamento.',
+          problemas:['Transição de "ação promocional" para "padrão" é feita manualmente no Active Campaign pela Juliana','Sem automação de gatilho para a mudança de etapa'],
+          responsavel:'Juliana',prazo:'',solucoes:[]
+        }
+      ]
+    },
+    {
+      id:'c6', color:'#C0392B', chipBg:'#FDF3F2', chipColor:'#9A1F14',
+      title:'Prazos críticos — todos gerenciados no rooming list',
+      cards:[
+        {
+          titulo:'Viagem da assessora — 6 meses antes do check-in',
+          tags:[{t:'Estela',s:'#FEF6EE',c:'#924800'},{t:'⚠ 3 problemas',s:'#FDF3F2',c:'#C0392B'}],
+          processo:'6 meses antes do check-in, o casal precisa definir e confirmar a viagem da assessora (consultora de viagens que acompanha o casamento no destino).',
+          problemas:['Muitas vezes a assessora não está definida ainda quando o prazo chega','Quando está definida, as informações chegam erradas — gera retrabalho','Não foi explicado claramente para o casal a importância da assessoria local','Sem alerta automático — o controle é feito de cabeça ou olhando o rooming list'],
+          responsavel:'Estela',prazo:'6 meses antes do check-in',solucoes:[]
+        },
+        {
+          titulo:'Prazo de pagamento do quarto do casal',
+          tags:[{t:'Estela',s:'#FEF6EE',c:'#924800'},{t:'⚠ Manual',s:'#FDF3F2',c:'#C0392B'}],
+          processo:'O casal tem um prazo específico para efetuar o pagamento do próprio quarto no bloqueio. O time precisa acompanhar se o pagamento foi feito dentro do prazo.',
+          problemas:['Lembrete feito manualmente — alguém precisa checar ativamente se o casal pagou','Sem notificação automática para o casal se aproximando do prazo','Sem alerta interno se o prazo passar sem pagamento'],
+          responsavel:'Estela / Mari',prazo:'Varia por casamento',solucoes:[]
+        },
+        {
+          titulo:'Prazo de redução do grupo',
+          tags:[{t:'Mari',s:'#FDF3F2',c:'#8A1F14'},{t:'⚠ Memória',s:'#FDF3F2',c:'#C0392B'}],
+          processo:'Data limite para devolver ao hotel quartos bloqueados não vendidos. Após essa data, a Welcome perde o direito aos quartos não vendidos e pode ter penalidades contratuais.',
+          problemas:['Prazo varia por casamento — fica registrado apenas no rooming list','Não há alerta automático se aproximando da data','Controle feito de cabeça — risco real de perder o prazo'],
+          responsavel:'Mari',prazo:'Varia por casamento',solucoes:[]
+        },
+        {
+          titulo:'Prazo de fechamento do grupo + envio do rooming list final',
+          tags:[{t:'Mari',s:'#FDF3F2',c:'#8A1F14'},{t:'⚠ Memória',s:'#FDF3F2',c:'#C0392B'}],
+          processo:'Data limite para enviar ao hotel o rooming list final com todos os nomes e dados dos hóspedes confirmados. É o ponto de encerramento operacional do grupo.',
+          problemas:['Prazo varia por casamento — fica registrado apenas no rooming list','Não há alerta automático','Controle depende de memória — risco de atrasar o envio ao hotel'],
+          responsavel:'Mari',prazo:'Varia por casamento',solucoes:[]
+        }
+      ]
+    },
+    {
+      id:'c7', color:'#444441', chipBg:'#F4F3F0', chipColor:'#2C2B28',
+      title:'Fechamento e conferência',
+      cards:[
+        {
+          titulo:'Conferência dos grupos e fechamento financeiro — Mari',
+          tags:[{t:'Mari',s:'#FDF3F2',c:'#8A1F14'},{t:'Financeiro',s:'#F4F3F0',c:'#444441'}],
+          processo:'A Mari confere o relatório do Monde com o rooming list, envia o rooming list final ao hotel no padrão exigido, confere a fatura do hotel e solicita o pagamento ao financeiro após a conferência.',
+          problemas:['Processo não totalmente mapeado — detalhar com a Mari'],
+          responsavel:'Mari',prazo:'',solucoes:[]
+        }
+      ]
+    }
+  ],
+
+  convidado: [
+    {
+      id:'g1', color:'#2E6FA8', chipBg:'#EEF5FF', chipColor:'#1A4F8A',
+      title:'Início da jornada',
+      cards:[
+        {
+          titulo:'Convidado recebe o Save the Date',
+          tags:[{t:'Casal',s:'#F4F3F0',c:'#444441'},{t:'Início',s:'#EEF5FF',c:'#2563A8'}],
+          processo:'O casal envia o Save the Date para todos os convidados da lista. É o primeiro contato do convidado com o evento.',
+          problemas:['Não há confirmação de recebimento — não se sabe se o convidado recebeu e abriu'],
+          responsavel:'Casal',prazo:'',solucoes:[]
+        },
+        {
+          titulo:'Welcome inicia comunicação — 2 dias após o Save the Date',
+          tags:[{t:'Juliana',s:'#F0ECF9',c:'#4A2F8A'},{t:'WhatsApp',s:'#EEF5FF',c:'#2563A8'}],
+          processo:'2 dias após o envio do Save the Date pelo casal, a Welcome Trips inicia a comunicação automática via WhatsApp.',
+          problemas:['Timing fixo de 2 dias — não considera se o convidado já acessou o site ou demonstrou interesse','Depende do casal informar quando enviou o Save the Date — sem isso a Juliana não sabe quando disparar'],
+          responsavel:'Juliana',prazo:'',solucoes:[]
+        }
+      ]
+    },
+    {
+      id:'g2', color:'#6B4F9E', chipBg:'#F0ECF9', chipColor:'#4A2F8A',
+      title:'Comunicação automática',
+      cards:[
+        {
+          titulo:'Com ação promocional — 5 mensagens de urgência crescente',
+          tags:[{t:'Automático',s:'#EEF9F3',c:'#1A5238'},{t:'WhatsApp',s:'#EEF5FF',c:'#2563A8'}],
+          processo:'5 mensagens distribuídas durante o período da ação. Tom evolui: msg 1 = boas-vindas, msg 2-4 = lembretes com urgência crescente, msg 5 = "ENCERRA AMANHÃ". Todas com botão "Ir ao site" e botão "Não vou ao evento".',
+          problemas:['Sem personalização por destino, tipo de quarto ou perfil do convidado','Mensagens automáticas não consideram se o convidado já visitou o site','Sem variação de canal — tudo via WhatsApp'],
+          responsavel:'Juliana',prazo:'',solucoes:[]
+        },
+        {
+          titulo:'Sem ação promocional — 5 mensagens mensais',
+          tags:[{t:'Automático',s:'#EEF9F3',c:'#1A5238'},{t:'WhatsApp',s:'#EEF5FF',c:'#2563A8'}],
+          processo:'5 mensagens com tom informativo e convidativo, distribuídas mensalmente até o casamento. Também com botão "Ir ao site" e botão "Não vou ao evento".',
+          problemas:['Mesma falta de personalização','Sem variação de canal'],
+          responsavel:'Juliana',prazo:'',solucoes:[]
+        },
+        {
+          titulo:'Pós ação — até 25 mensagens mensais',
+          tags:[{t:'Automático',s:'#EEF9F3',c:'#1A5238'},{t:'WhatsApp',s:'#EEF5FF',c:'#2563A8'}],
+          processo:'Após o fim da ação, convidados que não compraram continuam recebendo mensagens mensais até o casamento.',
+          problemas:['Sem segmentação — quem está quase comprando recebe a mesma mensagem que quem nunca abriu o site','Volume alto pode gerar fadiga e bloqueio do número'],
+          responsavel:'Juliana',prazo:'',solucoes:[]
+        },
+        {
+          titulo:'Convidado clica em "Não vou ao evento"',
+          tags:[{t:'Juliana',s:'#F0ECF9',c:'#4A2F8A'},{t:'⚠ Manual',s:'#FDF3F2',c:'#C0392B'}],
+          processo:'Quando o convidado clica no botão "Não vou ao evento", a resposta cai em uma planilha. A Juliana precisa acessar a planilha, identificar o convidado e mover o card manualmente no Active Campaign para "Perdido", para que ele pare de receber mensagens.',
+          problemas:['100% manual — risco de atraso e convidado continuar recebendo mensagens após desistir','Sem notificação automática para a Juliana quando alguém clica em "Não vou"','Sem confirmação enviada ao convidado de que a desistência foi registrada'],
+          responsavel:'Juliana',prazo:'',solucoes:[]
+        }
+      ]
+    },
+    {
+      id:'g3', color:'#2A7A52', chipBg:'#EEF9F3', chipColor:'#1A5238',
+      title:'Compra de hospedagem',
+      cards:[
+        {
+          titulo:'Convidado acessa o WedMe e compra a hospedagem',
+          tags:[{t:'Convidado',s:'#F4F3F0',c:'#444441'},{t:'WedMe',s:'#F0ECF9',c:'#4A2F8A'}],
+          processo:'O convidado acessa o site do casal, escolhe o tipo de quarto disponível e realiza a compra via cartão de crédito ou Pix. A Amélia está disponível para tirar dúvidas durante o processo.',
+          problemas:['Convidado pode tentar comprar fora do WedMe — reservas fora não contam para o bloqueio e não têm acesso ao casamento','Sem alerta proativo se o quarto estiver quase esgotado'],
+          responsavel:'Convidado / WedMe',prazo:'',solucoes:[]
+        },
+        {
+          titulo:'E-mail de confirmação automático',
+          tags:[{t:'Automático',s:'#EEF9F3',c:'#1A5238'},{t:'Sistema',s:'#F4F3F0',c:'#444441'}],
+          processo:'Após a compra, o sistema envia automaticamente e-mail de confirmação para: convidado, casal e equipe Welcome. Um dos poucos passos totalmente automáticos da jornada.',
+          problemas:[],
+          responsavel:'Sistema automático',prazo:'',solucoes:[]
+        },
+        {
+          titulo:'Amélia atende dúvidas sobre a hospedagem',
+          tags:[{t:'Amélia',s:'#FEF6EE',c:'#924800'},{t:'⚠ Defasada',s:'#FDF3F2',c:'#C0392B'}],
+          processo:'A Amélia, assistente virtual disponível 24h, atende dúvidas dos convidados sobre hospedagem — opções de quarto, check-in, check-out, regras do bloqueio, alterações de reserva.',
+          problemas:['Amélia está defasada e não resolve a maioria dos casos','A Juliana acaba assumindo o atendimento manualmente na maioria das vezes','Sem métricas de taxa de resolução — não se sabe o que a Amélia resolve e o que não resolve','Alterações de data ou nome chegam via Amélia mas precisam de intervenção manual'],
+          responsavel:'Amélia / Juliana',prazo:'',solucoes:[]
+        },
+        {
+          titulo:'Tarefas manuais pós-compra — Juliana',
+          tags:[{t:'Juliana',s:'#F0ECF9',c:'#4A2F8A'},{t:'⚠ 3 tarefas manuais',s:'#FDF3F2',c:'#C0392B'}],
+          processo:'A cada nova compra de hospedagem, a Juliana executa manualmente: (1) mover card no Active Campaign para "Comprou", (2) incluir no Rooming List, (3) ajustar a venda no Monde.',
+          problemas:['3 tarefas manuais por venda — volume cresce com o número de casamentos em paralelo','Risco de inconsistência entre Active, Rooming List e Monde se uma tarefa for esquecida','Sem checklist automático ou gatilho — depende de atenção da Juliana'],
+          responsavel:'Juliana',prazo:'',solucoes:[]
+        }
+      ]
+    },
+    {
+      id:'g4', color:'#C0392B', chipBg:'#FDF3F2', chipColor:'#9A1F14',
+      title:'Pós-compra — extras (grande lacuna)',
+      cards:[
+        {
+          titulo:'Mensagem automática sobre passagem e transfer',
+          tags:[{t:'Automático',s:'#EEF9F3',c:'#1A5238'},{t:'⚠ Timing errado',s:'#FDF3F2',c:'#C0392B'}],
+          processo:'Logo após a compra de hospedagem, o convidado recebe automaticamente uma única mensagem mencionando passagem aérea e transfer. Esta é a única comunicação de extras em toda a jornada.',
+          problemas:['Às vezes a tarifa aérea ainda não está aberta quando a mensagem é enviada — convidado recebe oferta que não consegue contratar','É a única mensagem de extras em toda a jornada — sem follow-up, sem segunda tentativa','Não há contato ativo da Raphaela após essa mensagem'],
+          responsavel:'Automático',prazo:'',solucoes:[]
+        },
+        {
+          titulo:'Raphaela não tem acesso organizado aos contatos para ofertar extras',
+          tags:[{t:'Raphaela',s:'#FEF6EE',c:'#924800'},{t:'⚠ Alta urgência',s:'#FDF3F2',c:'#C0392B'}],
+          processo:'Para vender passagens, transfers e passeios, a Raphaela precisa saber quem comprou hospedagem e ainda não contratou extras. Hoje ela não tem esse acesso de forma organizada.',
+          problemas:['Raphaela não tem lista clara de quem comprou hospedagem e precisa ser contatada para extras','Depende do Monde para buscar contatos — ferramenta ruim para essa finalidade, sem organização','Não há filtro de quem já tem ou não passagem, transfer ou passeio','Precisa consultar manualmente, casamento por casamento'],
+          responsavel:'Raphaela / Ana',prazo:'',solucoes:[]
+        },
+        {
+          titulo:'Sem processo definido de abordagem para extras',
+          tags:[{t:'Raphaela',s:'#FEF6EE',c:'#924800'},{t:'⚠ Processo inexistente',s:'#FDF3F2',c:'#C0392B'}],
+          processo:'Após a mensagem automática, não existe nenhum processo estruturado para dar continuidade à oferta de extras. A Raphaela não tem script, SLA, critério de priorização nem fluxo definido.',
+          problemas:['Não há script ou roteiro de abordagem — cada contato é improvisado','Não há SLA — sem prazo definido para entrar em contato após a compra de hospedagem','Não há critério de priorização — quem contatar primeiro?','Não há critério para mover cards entre etapas no CRM','Mensagens de follow-up em aberto no playbook ("...")','Mensagem de encerramento vazia no playbook ("...")','Não está definido quantas tentativas fazer antes de desistir'],
+          responsavel:'Raphaela',prazo:'',solucoes:[]
+        },
+        {
+          titulo:'Sem visibilidade e controle sobre os extras',
+          tags:[{t:'Gestão',s:'#F4F3F0',c:'#444441'},{t:'⚠ Sem indicadores',s:'#FDF3F2',c:'#C0392B'}],
+          processo:'Não há nenhum painel ou indicador para acompanhar o desempenho do processo de extras.',
+          problemas:['Ninguém sabe quantos convidados estão sendo abordados para extras','Ninguém sabe a taxa de conversão de extras','Ninguém sabe qual extra mais vende (passagem, transfer, passeio)','Não há meta de conversão definida para a Raphaela','Sem indicadores não tem como saber se o processo está melhorando','Playbook com campos em aberto ("...") — processo nunca foi finalizado','Não há checklist de onboarding de extras para um novo casamento'],
+          responsavel:'Ana / Gestão',prazo:'',solucoes:[]
+        }
+      ]
+    },
+    {
+      id:'g5', color:'#444441', chipBg:'#F4F3F0', chipColor:'#2C2B28',
+      title:'Pré-evento — 2 semanas antes',
+      cards:[
+        {
+          titulo:'Emissão e envio dos vouchers — Gigica',
+          tags:[{t:'Gigica',s:'#F4F3F0',c:'#444441'},{t:'⚠ Manual',s:'#FDF3F2',c:'#C0392B'}],
+          processo:'Aproximadamente 2 semanas antes do casamento, a Gigica emite os vouchers de hospedagem para todos os convidados confirmados e envia manualmente, um a um.',
+          problemas:['100% manual — em casamentos grandes o volume é muito alto','Cada voucher enviado individualmente — sem automação de envio em lote','Sem confirmação de recebimento — não se sabe se o convidado recebeu','Risco de esquecer algum convidado'],
+          responsavel:'Gigica',prazo:'2 semanas antes do check-in',solucoes:[]
+        },
+        {
+          titulo:'Convidado chega ao destino',
+          tags:[{t:'Fim da jornada',s:'#EEF9F3',c:'#1A5238'}],
+          processo:'O convidado chega ao hotel com o voucher em mãos, faz check-in e participa do casamento. Fim da jornada de atendimento à viagem.',
+          problemas:[],
+          responsavel:'',prazo:'',solucoes:[]
+        }
+      ]
+    }
+  ]
+};
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+function loadState(){ try{ const s=localStorage.getItem(SK); if(s) state=JSON.parse(s); }catch(e){ state={}; } }
+function saveState(){ try{ localStorage.setItem(SK,JSON.stringify(state)); }catch(e){} }
+function getCS(idx){
+  if(!state[idx]) state[idx]={status:'todo',titulo:'',processo:'',responsavel:'',prazo:'',problemas:[],solucoes:[]};
+  return state[idx];
+}
+function autoResize(ta){ ta.style.height='auto'; ta.style.height=ta.scrollHeight+'px'; }
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ─────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────
+function renderAll(){
+  cardIdx=0;
+  ['casal','convidado'].forEach(tab=>{
+    const panel=document.getElementById('panel-'+tab);
+    panel.innerHTML='';
+    DATA[tab].forEach(fase=>{
+      const faseEl=document.createElement('div');
+      faseEl.className='fase'; faseEl.id='fase-'+fase.id;
+      faseEl.innerHTML=`
+        <div class="fase-hd" onclick="toggleFase('${fase.id}')">
+          <span class="fase-chip" style="background:${fase.chipBg};color:${fase.chipColor}">${fase.title}</span>
+          <div class="fase-line"></div>
+          <span class="fase-prog" id="fprog-${fase.id}">0/${fase.cards.length}</span>
+          <span class="fase-tog open" id="ftog-${fase.id}">▾</span>
+        </div>
+        <div class="fase-body" id="fbody-${fase.id}"></div>
+      `;
+      const body=faseEl.querySelector('.fase-body');
+      fase.cards.forEach((card)=>{
+        const idx=cardIdx++;
+        cardMeta[idx]={tab, faseId:fase.id};
+        const cs=getCS(idx);
+        if(!cs.titulo) cs.titulo=card.titulo;
+        if(!cs.processo) cs.processo=card.processo;
+        if(!cs.responsavel) cs.responsavel=card.responsavel;
+        if(!cs.prazo) cs.prazo=card.prazo;
+        if(!cs.problemas||!cs.problemas.length) cs.problemas=[...card.problemas];
+        if(!cs.solucoes||!cs.solucoes.length) cs.solucoes=card.solucoes.length?[...card.solucoes]:[''];
+        body.appendChild(buildCard(idx,card,cs));
+      });
+      panel.appendChild(faseEl);
+    });
+  });
+  updateStats();
+  updateAllFaseProgs();
+  setTimeout(()=>{ document.querySelectorAll('textarea').forEach(ta=>autoResize(ta)); },80);
+}
+
+function buildCard(idx,card,cs){
+  const wrap=document.createElement('div');
+  wrap.className=`card ${cs.status}`;
+  wrap.dataset.status=cs.status;
+  wrap.dataset.idx=idx;
+  wrap.dataset.tab=cardMeta[idx].tab;
+  const tagsHtml=card.tags.map(t=>`<span class="tag" style="background:${t.s};color:${t.c}">${t.t}</span>`).join('');
+  const probCount=cs.problemas.filter(p=>p.trim()).length;
+  const probBadge=probCount?`<span class="tag" style="background:#FDF3F2;color:#C0392B" data-prob="1">⚠ ${probCount} problema${probCount>1?'s':''}</span>`:'';
+  wrap.innerHTML=`
+    <div class="card-stripe"></div>
+    <div class="card-head">
+      <div class="card-top">
+        <textarea class="card-title-ta" rows="2" placeholder="Nome da etapa..."
+          oninput="updateF(${idx},'titulo',this.value);autoResize(this)"
+          onfocus="autoResize(this)">${esc(cs.titulo)}</textarea>
+        <div class="card-dot"></div>
+      </div>
+      <div class="card-foot">
+        <div class="tags">${tagsHtml}${probBadge}</div>
+        <select class="status-sel" onchange="changeStatus(${idx},this.value)">
+          <option value="todo"${cs.status==='todo'?' selected':''}>A resolver</option>
+          <option value="doing"${cs.status==='doing'?' selected':''}>Em andamento</option>
+          <option value="done"${cs.status==='done'?' selected':''}>Resolvido</option>
+        </select>
+      </div>
+    </div>
+    <button class="card-expbtn" id="expbtn-${idx}" onclick="toggleDet(${idx})">
+      <span class="arr">▾</span> Processo · Problemas · Soluções · Responsável
+    </button>
+    <div class="card-det" id="det-${idx}">
+      <div class="det-sec">
+        <div class="det-lbl">Como funciona hoje</div>
+        <textarea class="det-input" placeholder="Descreva o processo atual..."
+          oninput="updateF(${idx},'processo',this.value);autoResize(this)"
+          onfocus="autoResize(this)">${esc(cs.processo)}</textarea>
+      </div>
+      <div class="det-sec">
+        <div class="det-lbl">Problemas identificados</div>
+        <div class="list-wrap" id="prob-${idx}">${buildListHtml(idx,'problemas',cs.problemas,'prob-ta','⚠ Descreva o problema...')}</div>
+        <button class="btn-add" onclick="addItem(${idx},'problemas')">+ Adicionar problema</button>
+      </div>
+      <div class="det-sec">
+        <div class="det-lbl">Possíveis soluções</div>
+        <div class="list-wrap" id="sol-${idx}">${buildListHtml(idx,'solucoes',cs.solucoes,'sol-ta','💡 Descreva uma solução...')}</div>
+        <button class="btn-add" onclick="addItem(${idx},'solucoes')">+ Adicionar solução</button>
+      </div>
+      <div class="det-sec det-grid">
+        <div>
+          <div class="det-lbl">Responsável</div>
+          <input class="det-input" type="text" placeholder="Ex: Juliana, Ana..." value="${esc(cs.responsavel)}"
+            oninput="updateF(${idx},'responsavel',this.value)">
+        </div>
+        <div>
+          <div class="det-lbl">Prazo</div>
+          <input class="det-input" type="date" value="${esc(cs.prazo)}"
+            onchange="updateF(${idx},'prazo',this.value)">
+        </div>
+      </div>
+    </div>
+  `;
+  return wrap;
+}
+
+function buildListHtml(idx,field,items,cls,ph){
+  return items.map((s,i)=>`
+    <div class="list-row" id="${field}-row-${idx}-${i}">
+      <textarea class="list-ta ${cls}" rows="1" placeholder="${ph}"
+        oninput="updateItem(${idx},'${field}',${i},this.value);autoResize(this)"
+        onfocus="autoResize(this)">${esc(s)}</textarea>
+      <button class="btn-rm" onclick="removeItem(${idx},'${field}',${i})">×</button>
+    </div>`).join('');
+}
+
+// ─────────────────────────────────────────────
+// INTERACTIONS
+// ─────────────────────────────────────────────
+function switchTab(tab, btn){
+  currentTab=tab;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+  updateStats();
+  updateAllFaseProgs();
+  // re-apply current filter
+  const activeFilter = document.querySelector('.fbtn.active');
+  if(activeFilter) filterCards(activeFilter.dataset.filter||'all', activeFilter);
+}
+
+function toggleFase(id){
+  const body=document.getElementById('fbody-'+id);
+  const tog=document.getElementById('ftog-'+id);
+  const col=body.classList.toggle('collapsed');
+  tog.classList.toggle('open',!col);
+}
+
+function toggleDet(idx){
+  const det=document.getElementById('det-'+idx);
+  const btn=document.getElementById('expbtn-'+idx);
+  const open=det.classList.toggle('open');
+  btn.classList.toggle('open',open);
+  if(open) setTimeout(()=>{ det.querySelectorAll('textarea').forEach(ta=>autoResize(ta)); },20);
+}
+
+function changeStatus(idx,value){
+  const cs=getCS(idx);
+  cs.status=value;
+  saveState();
+  const card=document.querySelector(`[data-idx="${idx}"]`);
+  card.className=`card ${value}`;
+  card.dataset.status=value;
+  updateStats();
+  updateAllFaseProgs();
+}
+
+function updateF(idx,field,value){ const cs=getCS(idx); cs[field]=value; saveState(); }
+
+function updateItem(idx,field,i,value){
+  const cs=getCS(idx); cs[field][i]=value; saveState(); refreshProbBadge(idx);
+}
+
+function addItem(idx,field){
+  const cs=getCS(idx); cs[field].push(''); saveState();
+  const i=cs[field].length-1;
+  const wrap=document.getElementById((field==='problemas'?'prob':'sol')+'-'+idx);
+  const cls=field==='problemas'?'prob-ta':'sol-ta';
+  const ph=field==='problemas'?'⚠ Descreva o problema...':'💡 Descreva uma solução...';
+  const div=document.createElement('div');
+  div.id=`${field}-row-${idx}-${i}`; div.className='list-row';
+  div.innerHTML=`<textarea class="list-ta ${cls}" rows="1" placeholder="${ph}"
+    oninput="updateItem(${idx},'${field}',${i},this.value);autoResize(this)"
+    onfocus="autoResize(this)"></textarea>
+    <button class="btn-rm" onclick="removeItem(${idx},'${field}',${i})">×</button>`;
+  wrap.appendChild(div);
+  div.querySelector('textarea').focus();
+}
+
+function removeItem(idx,field,i){
+  const cs=getCS(idx);
+  if(cs[field].length<=1){ cs[field][0]=''; saveState(); const ta=document.querySelector(`#${field}-row-${idx}-${i} textarea`); if(ta) ta.value=''; return; }
+  cs[field].splice(i,1); saveState();
+  const wrap=document.getElementById((field==='problemas'?'prob':'sol')+'-'+idx);
+  const cls=field==='problemas'?'prob-ta':'sol-ta';
+  const ph=field==='problemas'?'⚠ Descreva o problema...':'💡 Descreva uma solução...';
+  wrap.innerHTML=buildListHtml(idx,field,cs[field],cls,ph);
+  wrap.querySelectorAll('textarea').forEach(ta=>autoResize(ta));
+  refreshProbBadge(idx);
+}
+
+function refreshProbBadge(idx){
+  const cs=getCS(idx);
+  const card=document.querySelector(`[data-idx="${idx}"]`);
+  if(!card) return;
+  const tagsWrap=card.querySelector('.tags');
+  const ex=tagsWrap.querySelector('[data-prob]'); if(ex) ex.remove();
+  const count=cs.problemas.filter(p=>p.trim()).length;
+  if(count>0){
+    const span=document.createElement('span');
+    span.className='tag'; span.dataset.prob='1';
+    span.style.background='#FDF3F2'; span.style.color='#C0392B';
+    span.textContent=`⚠ ${count} problema${count>1?'s':''}`;
+    tagsWrap.appendChild(span);
+  }
+}
+
+function filterCards(status, btn){
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  btn.dataset.filter=status;
+  const cards=document.querySelectorAll(`#panel-${currentTab} .card`);
+  let visible=0;
+  cards.forEach(c=>{ const show=status==='all'||c.dataset.status===status; c.style.display=show?'':'none'; if(show) visible++; });
+  document.getElementById('empty-state').style.display=visible===0?'block':'none';
+}
+
+function updateStats(){
+  const cards=document.querySelectorAll(`#panel-${currentTab} .card`);
+  let todo=0,doing=0,done=0;
+  cards.forEach(c=>{ if(c.dataset.status==='todo') todo++; else if(c.dataset.status==='doing') doing++; else if(c.dataset.status==='done') done++; });
+  const total=cards.length;
+  document.getElementById('stat-total').textContent=total;
+  document.getElementById('stat-doing').textContent=doing;
+  document.getElementById('stat-done').textContent=done;
+  const pct=total?Math.round((done/total)*100):0;
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('prog-txt').textContent=`${done} de ${total} etapas resolvidas · ${pct}%`;
+}
+
+function updateAllFaseProgs(){
+  Object.values(DATA).flat().forEach(fase=>{
+    const cards=document.querySelectorAll(`#fbody-${fase.id} .card`);
+    const done=[...cards].filter(c=>c.dataset.status==='done').length;
+    const el=document.getElementById('fprog-'+fase.id);
+    if(el) el.textContent=`${done}/${cards.length}`;
+  });
+}
+
+// INIT
+loadState();
+renderAll();
+</script>
+</body>
+</html>
