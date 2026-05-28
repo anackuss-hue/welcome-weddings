@@ -107,7 +107,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="prog-step" id="ps-2"><div class="prog-dot">2</div><div class="prog-label">Documentos</div></div>
     <div class="prog-step" id="ps-3"><div class="prog-dot">3</div><div class="prog-label">Idiomas</div></div>
     <div class="prog-step" id="ps-4"><div class="prog-dot">4</div><div class="prog-label">Medidas</div></div>
-    <div class="prog-step" id="ps-5"><div class="prog-dot">5</div><div class="prog-label">Disponibilidade</div></div>
   </div>
 
   <!-- ETAPA 1: Dados Pessoais -->
@@ -269,7 +268,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
     <div class="nav-btns">
       <button class="btn-prev" onclick="irPara(3)">← Voltar</button>
-      <button class="btn-next" onclick="irPara(5)">Próximo →</button>
+      <button class="btn-next" id="btn-enviar" onclick="enviarCadastro()">✅ Finalizar Cadastro</button>
     </div>
   </div>
 
@@ -281,20 +280,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <div class="sucesso-sub">Obrigada por se cadastrar no banco de assessoras da<br><strong>Welcome Weddings</strong>.<br><br>Nossa equipe irá analisar seu perfil e entrará em contato em breve.</div>
     </div>
   </div>
-
-
-  <!-- ETAPA 5: Indisponibilidade -->
-  <div class="etapa" id="etapa-5">
-    <div class="etapa-title">Disponibilidade</div>
-    <div class="etapa-sub">Adicione os períodos em que você NÃO está disponível para viajar (opcional)</div>
-
-    <div class="sec">
-      <div id="indisp-list"></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
-        <div class="f" style="flex:1;min-width:130px;margin-bottom:0"><label>De</label><input id="indisp-de" type="date"></div>
-        <div class="f" style="flex:1;min-width:130px;margin-bottom:0"><label>Até</label><input id="indisp-ate" type="date"></div>
-        <div style="display:flex;align-items:flex-end;padding-bottom:1px"><button type="button" onclick="addIndisp()" style="padding:10px 14px;background:var(--gold);color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;white-space:nowrap">+ Adicionar</button></div>
-      </div>
       <div style="margin-top:10px;font-size:12px;color:var(--muted)">💡 Deixe em branco se não tiver restrições de data</div>
     </div>
 
