@@ -156,8 +156,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .kb-col-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding:0 2px}
 .kb-col-title{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase}
 .kb-count{font-size:11px;font-weight:600;color:var(--muted);background:#f0ebe2;border-radius:20px;padding:1px 8px}
-.kb-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:box-shadow .15s,border-color .15s}
+.kb-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:grab;transition:box-shadow .15s,border-color .15s,opacity .15s}
 .kb-card:hover{border-color:var(--gold);box-shadow:0 2px 12px rgba(184,150,90,.1)}
+.kb-card.dragging{opacity:.4;cursor:grabbing}
+.kb-col.drag-over{background:var(--gold-pale);border-radius:10px;outline:2px dashed var(--gold)}
 .kb-card-name{font-size:13px;font-weight:600;color:var(--text);margin:6px 0 5px;line-height:1.4}
 .kb-card-meta{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
 .kb-avatar{width:22px;height:22px;border-radius:50%;background:var(--gold-pale);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--gold);flex-shrink:0}
@@ -441,6 +443,23 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
           </select>
         </div>
         <div class="fp-sec">
+          <div class="fp-sec-t">País</div>
+          <select id="ff-pais" onchange="renderFornecedores()" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none">
+            <option value="">Todos</option>
+            <option>Brasil</option>
+            <option>Portugal</option>
+            <option>Itália</option>
+            <option>França</option>
+            <option>Espanha</option>
+            <option>México</option>
+            <option>EUA</option>
+          </select>
+        </div>
+        <div class="fp-sec">
+          <div class="fp-sec-t">Destination</div>
+          <label class="fl"><input type="checkbox" id="ff-destination" onchange="renderFornecedores()"> ✈️ Faz Destination</label>
+        </div>
+        <div class="fp-sec">
           <div class="fp-sec-t">Histórico</div>
           <label class="fl"><input type="checkbox" id="ff-ja-fizemos" onchange="renderFornecedores()"> ✅ Já fizemos casamento</label>
           <label class="fl" style="margin-top:6px"><input type="checkbox" id="ff-nao-fizemos" onchange="renderFornecedores()"> 🆕 Não fizemos casamento</label>
@@ -538,6 +557,23 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
           <label class="fl"><input type="checkbox" id="fh-regime-mp" onchange="renderHoteis()"> Meia pensão</label>
           <label class="fl"><input type="checkbox" id="fh-regime-sem" onchange="renderHoteis()"> Sem regime</label>
           <label class="fl"><input type="checkbox" id="fh-regime-air" onchange="renderHoteis()"> Airbnb</label>
+        </div>
+        <div class="fp-sec">
+          <div class="fp-sec-t">País</div>
+          <select id="ff-pais" onchange="renderFornecedores()" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none">
+            <option value="">Todos</option>
+            <option>Brasil</option>
+            <option>Portugal</option>
+            <option>Itália</option>
+            <option>França</option>
+            <option>Espanha</option>
+            <option>México</option>
+            <option>EUA</option>
+          </select>
+        </div>
+        <div class="fp-sec">
+          <div class="fp-sec-t">Destination</div>
+          <label class="fl"><input type="checkbox" id="ff-destination" onchange="renderFornecedores()"> ✈️ Faz Destination</label>
         </div>
         <div class="fp-sec">
           <div class="fp-sec-t">Histórico</div>
@@ -1455,6 +1491,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div class="f"><label>Instagram</label><input id="forn-instagram" placeholder="@"></div>
         <div class="f"><label>Site</label><input id="forn-site" placeholder="https://"></div>
         <div class="f"><label>Data de Nascimento</label><input id="forn-nasc" type="date"></div>
+        <div class="f"><label>País</label><input id="forn-pais" placeholder="Ex: Brasil, Portugal..."></div>
+        <div class="f"><label>Localização Secundária</label><input id="forn-loc-sec" placeholder="Ex: Rio de Janeiro, Diversas..."></div>
+        <div class="f"><label>Responsável / Contato</label><input id="forn-responsavel" placeholder="Nome do contato"></div>
+        <div class="f" style="grid-column:1/-1">
+          <div class="tr-row" onclick="tgForn('faz_destination')"><div class="tr-track" id="track-forn-faz_destination"><div class="tr-thumb"></div></div><span class="tr-label">✈️ Faz Destination Wedding</span></div>
+        </div>
         <div class="f" style="grid-column:1/-1"><label>Observações</label><textarea id="forn-obs"></textarea></div>
       </div>
       <!-- Indicação & Status -->
@@ -3064,6 +3106,8 @@ function renderFornecedores(){
   const ffFavorito=document.getElementById('ff-favorito')?.checked
   const ffIndicamos=document.getElementById('ff-indicamos')?.checked
   const ffBlacklist=document.getElementById('ff-blacklist')?.checked
+  const ffPais=document.getElementById('ff-pais')?.value||''
+  const ffDestination=document.getElementById('ff-destination')?.checked
 
   const filtered=fornecedores.filter(f=>{
     if(s&&!f.nome?.toLowerCase().includes(s))return false
@@ -3073,6 +3117,8 @@ function renderFornecedores(){
     if(ffFavorito&&!f.favorito)return false
     if(ffIndicamos&&!(f.status_indicacao?.includes('Indicamos')))return false
     if(ffBlacklist&&!f.blacklist)return false
+    if(ffPais&&f.pais!==ffPais)return false
+    if(ffDestination&&!f.faz_destination)return false
     return true
   })
   const el=document.getElementById('fornecedores-count');if(el)el.textContent=filtered.length+' de '+fornecedores.length+' fornecedor(es)'
@@ -3081,7 +3127,7 @@ function renderFornecedores(){
   grid.innerHTML=filtered.map(f=>`<div class="card">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
       <div><div style="font-size:16px;font-weight:600;font-family:'Cormorant Garamond',serif">${f.nome}</div>
-      <div style="font-size:12px;color:var(--muted);margin-top:3px">${ti[f.tipo]||'🏢'} ${f.tipo}${f.cidade?' · '+f.cidade:''}</div></div>
+      <div style="font-size:12px;color:var(--muted);margin-top:3px">${ti[f.tipo]||'🏢'} ${f.tipo}${f.cidade?' · '+f.cidade:''}${f.pais?' · '+f.pais:''}${f.faz_destination?' · ✈️ Destination':''}</div></div>
       <button class="btn bd bsm" onclick="deletarFornecedor('${f.id}')">✕</button>
     </div>
     ${f.telefone?`<div style="font-size:12px;color:var(--muted)">📞 ${f.telefone}</div>`:''}
@@ -3093,7 +3139,7 @@ function renderFornecedores(){
 function openNovoFornecedor(){
   fornecedorAtual=null
   document.getElementById('mf-title').textContent='Novo Fornecedor'
-  ;['forn-nome','forn-cidade','forn-tel','forn-email','forn-instagram','forn-site','forn-obs','forn-nasc','forn-motivo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
+  ;['forn-nome','forn-cidade','forn-tel','forn-email','forn-instagram','forn-site','forn-obs','forn-nasc','forn-motivo','forn-pais','forn-loc-sec','forn-responsavel'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
   document.getElementById('forn-tipo').value=''
   document.getElementById('forn-status-indicacao').value=''
   setFornToggles({favorito:false,blacklist:false,ja_trabalhamos:false})
@@ -3108,6 +3154,9 @@ function openFornecedor(id){
     const el=document.getElementById('forn-'+campo);if(el)el.value=f[campo]||''
   })
   document.getElementById('forn-nasc').value=f.data_nascimento||''
+  document.getElementById('forn-pais').value=f.pais||''
+  document.getElementById('forn-loc-sec').value=f.localizacao_secundaria||''
+  document.getElementById('forn-responsavel').value=f.responsavel||''
   document.getElementById('forn-status-indicacao').value=f.status_indicacao||''
   document.getElementById('forn-motivo').value=f.motivo_nao_indicacao||''
   setFornToggles(f)
@@ -3125,7 +3174,7 @@ function tgForn(campo){
   document.getElementById('track-forn-'+campo)?.classList.toggle('on',_fornToggles[campo])
 }
 function setFornToggles(f){
-  ;['favorito','blacklist','ja_trabalhamos'].forEach(c=>{
+  ;['favorito','blacklist','ja_trabalhamos','faz_destination'].forEach(c=>{
     _fornToggles[c]=!!f[c]
     document.getElementById('track-forn-'+c)?.classList.toggle('on',!!f[c])
   })
@@ -3136,7 +3185,7 @@ async function salvarFornecedor(){
   const nome=document.getElementById('forn-nome').value.trim()
   const tipo=document.getElementById('forn-tipo').value
   if(!nome||!tipo){alert('Preencha nome e tipo!');btn.textContent='Salvar';btn.disabled=false;return}
-  const data={nome,tipo,cidade:document.getElementById('forn-cidade').value||null,telefone:document.getElementById('forn-tel').value||null,email:document.getElementById('forn-email').value||null,instagram:document.getElementById('forn-instagram').value||null,site:document.getElementById('forn-site').value||null,obs:document.getElementById('forn-obs').value||null,data_nascimento:document.getElementById('forn-nasc').value||null,favorito:_fornToggles.favorito,blacklist:_fornToggles.blacklist,ja_trabalhamos:_fornToggles.ja_trabalhamos,status_indicacao:document.getElementById('forn-status-indicacao').value||null,motivo_nao_indicacao:document.getElementById('forn-motivo').value||null}
+  const data={nome,tipo,cidade:document.getElementById('forn-cidade').value||null,telefone:document.getElementById('forn-tel').value||null,email:document.getElementById('forn-email').value||null,instagram:document.getElementById('forn-instagram').value||null,site:document.getElementById('forn-site').value||null,obs:document.getElementById('forn-obs').value||null,data_nascimento:document.getElementById('forn-nasc').value||null,pais:document.getElementById('forn-pais').value||null,localizacao_secundaria:document.getElementById('forn-loc-sec').value||null,responsavel:document.getElementById('forn-responsavel').value||null,faz_destination:_fornToggles.faz_destination||false,favorito:_fornToggles.favorito,blacklist:_fornToggles.blacklist,ja_trabalhamos:_fornToggles.ja_trabalhamos,status_indicacao:document.getElementById('forn-status-indicacao').value||null,motivo_nao_indicacao:document.getElementById('forn-motivo').value||null}
   if(fornecedorAtual)await sb.from('fornecedores').update(data).eq('id',fornecedorAtual.id)
   else await sb.from('fornecedores').insert(data)
   btn.textContent='Salvar';btn.disabled=false
@@ -3214,7 +3263,8 @@ function renderKanban(){
   const colunas=getColunasAtivas(kanbanTabAtual)
   board.innerHTML=colunas.map(col=>{
     const cards=filtered.filter(k=>k.coluna===col.id)
-    return`<div class="kb-col">
+    return`<div class="kb-col" id="kbcol-${col.id}" data-coluna="${col.id}"
+      ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dragDrop(event,'${col.id}')">
       <div class="kb-col-header">
         <span class="kb-col-title">${col.label}</span>
         <span class="kb-count">${cards.length}</span>
@@ -3254,7 +3304,7 @@ function renderKanbanCard(k){
   const avatar=(k.assessora_nome||k.casamento_nome||'?')[0].toUpperCase()
   const dt=new Date(k.created_at).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})
 
-  return`<div class="kb-card" onclick="openKanbanCard('${k.id}')">
+  return`<div class="kb-card" draggable="true" data-id="${k.id}" ondragstart="dragStart(event,'${k.id}')" ondragend="dragEnd(event)" onclick="openKanbanCard('${k.id}')">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px">
       ${tipoTag}
       <span style="font-size:13px" title="${k.prioridade||'media'}">${k.prioridade==='alta'?'🔴':k.prioridade==='baixa'?'🟢':'🟡'}</span>
@@ -3681,6 +3731,51 @@ async function criarNotificacao(cardId,mensagem,solicitanteNome){
 
 // Polling de notificações a cada 30 segundos
 setInterval(()=>{if(usuarioAtual?.id)carregarNotificacoes()},30000)
+
+// ══ DRAG AND DROP KANBAN ══
+let _dragCardId=null
+
+function dragStart(e,cardId){
+  _dragCardId=cardId
+  e.dataTransfer.effectAllowed='move'
+  setTimeout(()=>document.querySelector(`[data-id="${cardId}"]`)?.classList.add('dragging'),0)
+}
+
+function dragEnd(e){
+  document.querySelectorAll('.kb-card.dragging').forEach(c=>c.classList.remove('dragging'))
+  document.querySelectorAll('.kb-col.drag-over').forEach(c=>c.classList.remove('drag-over'))
+}
+
+function dragOver(e){
+  e.preventDefault()
+  e.dataTransfer.dropEffect='move'
+  e.currentTarget.classList.add('drag-over')
+}
+
+function dragLeave(e){
+  if(!e.currentTarget.contains(e.relatedTarget))
+    e.currentTarget.classList.remove('drag-over')
+}
+
+async function dragDrop(e,novaColuna){
+  e.preventDefault()
+  e.currentTarget.classList.remove('drag-over')
+  if(!_dragCardId)return
+  const card=kanbanData.find(k=>k.id===_dragCardId)
+  if(!card||card.coluna===novaColuna){_dragCardId=null;return}
+  // Atualiza localmente primeiro (UI imediata)
+  card.coluna=novaColuna
+  renderKanban()
+  // Salva no banco
+  await sb.from('solicitacoes_kanban').update({coluna:novaColuna}).eq('id',_dragCardId)
+  // Notifica solicitante
+  if(card.criado_por&&card.criado_por!==usuarioAtual?.nome){
+    const colLabel=getColunasAtivas(card.responsavel).find(c=>c.id===novaColuna)?.label||novaColuna
+    const cardNome=card.convidado_nome?`${card.convidado_nome} — ${card.casamento_nome}`:card.casamento_nome
+    await criarNotificacao(card.id,`${usuarioAtual?.nome||'Alguém'} moveu seu card "${cardNome}" para "${colLabel}"`,card.criado_por)
+  }
+  _dragCardId=null
+}
 
 // ══ PACOTES DE LOCAIS ══
 async function carregarPacotes(localId){
