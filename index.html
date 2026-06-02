@@ -2062,7 +2062,7 @@ async function loadCasamentos(){
   const hoje=new Date().toISOString().split('T')[0]
   const ultimaRodada=localStorage.getItem('_autoRealizado')
   if(ultimaRodada!==hoje){
-    await sb.from('casamentos').update({status:'Realizado'}).lt('plan_data',hoje).not('status','in','("Realizado","Concluído","Cancelado")')
+    await sb.from("casamentos").update({status:"Realizado"}).lt("plan_data",hoje).not("status","in","("Realizado","Cancelado")")
     localStorage.setItem('_autoRealizado',hoje)
   }
   const{data}=await sb.from('casamentos').select('*').order('plan_data',{ascending:true,nullsFirst:false})
@@ -2124,10 +2124,10 @@ function renderCasamentos(){
   const destino=document.getElementById('f-c-destino')?.value||''
   const hotel=document.getElementById('f-c-hotel')?.value||''
   const fI=id=>document.getElementById(id)?.checked
-  const statusAtivos=[fI('f-c-andamento')&&'Em andamento',fI('f-c-confirmado')&&'Confirmado',fI('f-c-concluido')&&'Concluído',fI('f-c-cancelado')&&'Cancelado'].filter(Boolean)
+  const statusAtivos=[fI('f-c-andamento')&&'Em andamento',fI('f-c-confirmado')&&'Confirmado',fI('f-c-concluido')&&'Realizado',fI('f-c-cancelado')&&'Cancelado'].filter(Boolean)
   const tabStatus={todos:null,andamento:'Em andamento',planejamento:'Planejamento',producao:'Produção+Viagem',realizado:'Realizado',cancelado:'Cancelado'}[window._cTabAtual||'todos']
   const tabSetor=['planejamento','producao'].includes(window._cTabAtual||'')
-  const isRealizado=(st)=>st==='Realizado'||st==='Concluído'
+  const isRealizado=(st)=>st==='Realizado'
   const grid=document.getElementById('casamentos-grid')
   const filtered=casamentos.filter(c=>{
     const ms=!s||c.nome?.toLowerCase().includes(s)||c.destino?.toLowerCase().includes(s)
@@ -2142,7 +2142,7 @@ function renderCasamentos(){
   const hoje2=new Date().toISOString().split('T')[0]
   filtered.sort((a,b)=>{
     const stA=a.status||'Em andamento', stB=b.status||'Em andamento'
-    const concA=['Realizado','Concluído','Cancelado'].includes(stA), concB=['Realizado','Concluído','Cancelado'].includes(stB)
+    const concA=['Realizado','Cancelado'].includes(stA), concB=['Realizado','Cancelado'].includes(stB)
     if(concA&&!concB)return 1
     if(!concA&&concB)return -1
     if(!a.plan_data&&!b.plan_data)return 0
@@ -2154,7 +2154,7 @@ function renderCasamentos(){
   const counts={todos:casamentos.length,andamento:0,planejamento:0,producao:0,realizado:0,cancelado:0}
   casamentos.forEach(c=>{
     const st=(c.status||'Em andamento')
-    if(st==='Realizado'||st==='Concluído')counts.realizado++
+    if(st==='Realizado')counts.realizado++
     else if(st==='Cancelado')counts.cancelado++
     else counts.andamento++
     if(c.setor==='Planejamento')counts.planejamento++
@@ -4116,27 +4116,37 @@ function coordFornPills(list){
 }
 
 async function loadCoordenacao(){
-  // Lê direto da tabela de casamentos — mesma fonte das produtoras
-  const[{data:cas},{data:plan},{data:dist}]=await Promise.all([
-    sb.from('casamentos').select('*').order('plan_data',{ascending:true,nullsFirst:false}),
-    sb.from('coord_planejamento').select('*').order('data_interesse',{ascending:true,nullsFirst:false}),
-    sb.from('coord_distratos').select('*').order('created_at',{ascending:false})
-  ])
-  // Normaliza campos jsonb que podem vir como string
-  coordCasamentos=(cas||[]).map(c=>({
-    ...c,
-    casal:c.nome,
-    local:c.plan_hotel,
-    data:c.plan_data,
-    produtora:c.prod_produtora,
-    assessor:c.consultora_prod,
-    andamento:c.prod_obs||c.prod_status,
-    fornecedores:_parseJsonField(c.prod_fornecedores_json),
-    reunioes:_parseJsonField(c.prod_reunioes),
-    eventos:_parseJsonField(c.prod_eventos)
-  }))
-  coordPlano=(plan||[]).map(p=>({...p,reunioes:_parseJsonField(p.reunioes)}))
-  coordDistratos=(dist||[]).map(d=>({...d,reunioes:_parseJsonField(d.reunioes)}))
+  const el=document.getElementById('coord-content')
+  if(el)el.innerHTML='<div class="ld">Carregando...</div>'
+  try{
+    // Casamentos — lê direto da tabela principal
+    const{data:cas,error:eCas}=await sb.from('casamentos').select('*').order('plan_data',{ascending:true,nullsFirst:false})
+    if(eCas)throw eCas
+    coordCasamentos=(cas||[]).map(c=>({
+      ...c,
+      casal:c.nome,
+      local:c.plan_hotel,
+      data:c.plan_data,
+      produtora:c.prod_produtora,
+      assessor:c.consultora_prod,
+      andamento:c.prod_obs||c.prod_status||'',
+      fornecedores:_parseJsonField(c.prod_fornecedores_json),
+      reunioes:_parseJsonField(c.prod_reunioes),
+      eventos:_parseJsonField(c.prod_eventos)
+    }))
+  }catch(e){
+    console.warn('Coord: erro ao carregar casamentos',e)
+    coordCasamentos=[]
+  }
+  // Planejamento e Distratos — tabelas opcionais, não travam se não existirem
+  try{
+    const{data:plan}=await sb.from('coord_planejamento').select('*').order('data_interesse',{ascending:true,nullsFirst:false})
+    coordPlano=(plan||[]).map(p=>({...p,reunioes:_parseJsonField(p.reunioes)}))
+  }catch{coordPlano=[]}
+  try{
+    const{data:dist}=await sb.from('coord_distratos').select('*').order('created_at',{ascending:false})
+    coordDistratos=(dist||[]).map(d=>({...d,reunioes:_parseJsonField(d.reunioes)}))
+  }catch{coordDistratos=[]}
   coordUpdateCounts()
   coordRender()
   coordPopulateFilters()
@@ -4151,7 +4161,7 @@ function _parseJsonField(val){
 function coordUpdateCounts(){
   const c26=coordCasamentos.filter(c=>c.data?.startsWith('2026')).length
   const c27=coordCasamentos.filter(c=>c.data?.startsWith('2027')).length
-  const prod=coordCasamentos.filter(c=>!['Realizado','Concluído','Cancelado'].includes(c.status)).length
+  const prod=coordCasamentos.filter(c=>!['Realizado','Cancelado'].includes(c.status)).length
   document.getElementById('coord-cnt-2026').textContent=c26
   document.getElementById('coord-cnt-2027').textContent=c27
   document.getElementById('coord-cnt-plan').textContent=coordPlano.length
@@ -4236,7 +4246,7 @@ function coordRenderDashboard(){
 
 function coordRenderCasamentos(data,ano){
   const filtered=coordFilterCasamentos(data)
-  const fin=data.filter(c=>['Realizado','Concluído'].includes(c.status)).length
+  const fin=data.filter(c=>['Realizado'].includes(c.status)).length
   const urg=data.filter(c=>c.status==='Urgente').length
   const and=data.filter(c=>c.status==='Em andamento'||c.status==='Confirmado').length
   return`<div class="coord-stat-grid">
@@ -4291,7 +4301,7 @@ function coordRenderPlanejamento(){
 }
 
 function coordRenderProducao(){
-  const ativos=coordCasamentos.filter(c=>!['Realizado','Concluído','Cancelado'].includes(c.status))
+  const ativos=coordCasamentos.filter(c=>!['Realizado','Cancelado'].includes(c.status))
   const filtered=coordFilterCasamentos(ativos)
   const agrupamento=document.getElementById('coord-f-agrupamento')?.value||'produtora'
   const urg=filtered.filter(c=>c.status==='Urgente')
