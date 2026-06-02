@@ -1789,19 +1789,12 @@ async function carregarUsuario(user){
   document.getElementById('user-setor').textContent=data.setor
   document.getElementById('user-avatar').textContent=data.nome[0].toUpperCase()
   carregarNotificacoes()
-  if(data.setor==='admin'){
-    document.getElementById('nav-logs').style.display='flex'
-    document.getElementById('nav-usuarios').style.display='flex'
-    document.getElementById('nav-coordenacao').style.display='flex'
-    loadCoordenacao()
-  }
-  if(data.setor==='coordenacao'){
-    document.getElementById('nav-coordenacao').style.display='flex'
-    loadCoordenacao()
-  }
   aplicarPermissoes()
   await loadIndispCache()
   loadCasamentos();loadAssessoras();loadHoteis()
+  if(data.setor==='admin'||data.setor==='coordenacao'){
+    setTimeout(()=>loadCoordenacao(),800)
+  }
   setTimeout(()=>syncFabs(),400)
 }
 
@@ -1816,6 +1809,13 @@ function aplicarPermissoes(){
   if(!window._podeEditarCasamentos)document.querySelector('[onclick="openNovoCasamento()"]')?.style.setProperty('display','none')
   if(!window._podeEditarLocais)document.querySelector('[onclick="openNovoHotel()"]')?.style.setProperty('display','none')
   if(!window._podeEditarAssessoras)document.querySelector('[onclick="openNovaAssessora()"]')?.style.setProperty('display','none')
+  if(s==='admin'){
+    document.getElementById('nav-logs').style.display='flex'
+    document.getElementById('nav-usuarios').style.display='flex'
+  }
+  if(s==='admin'||s==='coordenacao'){
+    document.getElementById('nav-coordenacao').style.display='flex'
+  }
 }
 
 function verificarPermissaoAba(aba){
@@ -1905,7 +1905,7 @@ function showPage(p){
   if(p==='logs')loadLogs()
   if(p==='usuarios')loadUsuarios()
   if(p==='viagens'){carregarColunasCustom().then(()=>loadKanban())}
-  if(p==='coordenacao')coordRender()
+  if(p==='coordenacao'){if(coordCasamentos.length===0)loadCoordenacao();else coordRender()}
   syncFabs()
 }
 function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow=''}
@@ -2062,7 +2062,7 @@ async function loadCasamentos(){
   const hoje=new Date().toISOString().split('T')[0]
   const ultimaRodada=localStorage.getItem('_autoRealizado')
   if(ultimaRodada!==hoje){
-    await sb.from("casamentos").update({status:"Realizado"}).lt("plan_data",hoje).not("status","in","("Realizado","Cancelado")")
+    await sb.from('casamentos').update({status:'Realizado'}).lt('plan_data',hoje).not('status','in','("Realizado","Cancelado")')
     localStorage.setItem('_autoRealizado',hoje)
   }
   const{data}=await sb.from('casamentos').select('*').order('plan_data',{ascending:true,nullsFirst:false})
