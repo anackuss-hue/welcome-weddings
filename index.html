@@ -92,6 +92,43 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .quad-opt.sel-na{border-color:#b8965a;background:var(--gold-pale);color:var(--gold);font-weight:600}
 .quad-item{margin-bottom:14px}
 .quad-item label{display:block;font-size:11px;font-weight:700;color:#666;margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase}
+.coord-snav{padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
+.coord-snav:hover{color:var(--gold)}.coord-snav.active{color:var(--gold);border-bottom-color:var(--gold);font-weight:600}
+.coord-stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px}
+.coord-stat{background:var(--white);border-radius:12px;border:1px solid var(--border);padding:16px 18px}
+.coord-stat-label{font-size:11px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+.coord-stat-val{font-size:28px;font-weight:700;font-family:'Cormorant Garamond',serif;line-height:1}
+.coord-stat-sub{font-size:11px;color:#bbb;margin-top:5px}
+.coord-tbl-card{background:var(--white);border-radius:12px;border:1px solid var(--border);overflow:hidden;margin-bottom:20px}
+.coord-tbl-header{padding:14px 18px;border-bottom:1px solid #f0ebe2;font-weight:600;font-size:14px;display:flex;align-items:center;gap:8px}
+.coord-tbl{width:100%;border-collapse:collapse}
+.coord-tbl th{font-size:11px;color:var(--muted);font-weight:600;text-align:left;padding:10px 16px;border-bottom:1px solid #f0ebe2;background:#faf8f4;white-space:nowrap;text-transform:uppercase;letter-spacing:.05em}
+.coord-tbl td{padding:11px 16px;border-bottom:1px solid #f7f4ef;vertical-align:middle;font-size:13px}
+.coord-tbl tbody tr:last-child td{border-bottom:none}
+.coord-tbl tbody tr{cursor:pointer;transition:background .15s}
+.coord-tbl tbody tr:hover td{background:#faf8f4}
+.coord-badge{display:inline-block;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.cb-green{background:#e6f4ea;color:#1e7e34}.cb-amber{background:#fff3cd;color:#856404}
+.cb-red{background:#fde8e8;color:#a81a1a}.cb-blue{background:#e8f0fd;color:#1a4fa8}
+.cb-purple{background:#f5e8fd;color:#6f1aa8}.cb-gray{background:#f0ebe2;color:#666}
+.cb-hotel{background:#fff0e0;color:#8b5000}
+.coord-prog-bar{height:4px;background:#f0ebe2;border-radius:4px;overflow:hidden;width:60px;display:inline-block}
+.coord-prog-fill{height:100%;border-radius:4px}
+.coord-group-header{display:flex;align-items:center;gap:10px;margin:20px 0 10px}
+.coord-expand-row{cursor:pointer;transition:background .15s;border-bottom:1px solid #f7f4ef}
+.coord-expand-row:hover{background:#faf8f4}
+.coord-expand-detail{background:#faf8f4;padding:16px 20px;border-top:1px solid #f0ebe2}
+.coord-detail-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px;font-weight:600}
+.coord-prazo-ok{background:#f0faf0;border-left:3px solid #1e7e34}
+.coord-prazo-medio{background:#fffbf0;border-left:3px solid #e6a817}
+.coord-prazo-critico{background:#fff5f0;border-left:3px solid #d9480f}
+.coord-prazo-gritando{background:#fff0f0;border-left:3px solid #a81a1a}
+.coord-badge-ok{background:#e6f4ea;color:#1e7e34;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
+.coord-badge-medio{background:#fff3cd;color:#856404;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
+.coord-badge-critico{background:#ffe8d6;color:#d9480f;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
+.coord-badge-gritando{background:#fde8e8;color:#a81a1a;font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px}
+.coord-reuniao-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #f0ebe2}
+.coord-reuniao-item:last-child{border-bottom:none}
 .c-tab{padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
 .c-tab:hover{color:var(--gold)}
 .c-tab.active{color:var(--gold);border-bottom-color:var(--gold);font-weight:600}
@@ -278,6 +315,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="nav" onclick="showPage('fornecedores')" id="nav-fornecedores">🏢 Fornecedores</div>
   <div class="nav" onclick="showPage('hoteis')" id="nav-hoteis">🏨 Locais</div>
   <div class="nav" onclick="showPage('viagens')" id="nav-viagens">✈️ Viagens</div>
+  <div class="nav" onclick="showPage('coordenacao')" id="nav-coordenacao" style="display:none">👑 Coordenação</div>
   <div class="nav" onclick="showPage('logs')" id="nav-logs" style="display:none">📋 Logs</div>
   <div class="nav" onclick="showPage('usuarios')" id="nav-usuarios" style="display:none">👤 Usuários</div>
   <div class="user-bar" id="user-bar">
@@ -647,6 +685,59 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div id="logs-list"><div class="ld">Carregando logs...</div></div>
   </div>
 
+  <!-- COORDENAÇÃO PAGE -->
+  <div class="page" id="page-coordenacao">
+    <div class="ph">
+      <div>
+        <div class="pt">Coordenação</div>
+        <div class="ps" id="coord-subtitle">Visão geral da gestão</div>
+      </div>
+    </div>
+
+    <!-- Sub-nav -->
+    <div style="display:flex;gap:6px;margin-bottom:28px;border-bottom:1.5px solid var(--border);padding-bottom:0;flex-wrap:wrap" id="coord-subnav">
+      <button class="coord-snav active" onclick="coordSetView('dashboard',this)">📊 Visão Geral</button>
+      <button class="coord-snav" onclick="coordSetView('c2026',this)">💍 2026 <span class="c-tab-badge" id="coord-cnt-2026">—</span></button>
+      <button class="coord-snav" onclick="coordSetView('c2027',this)">💍 2027 <span class="c-tab-badge" id="coord-cnt-2027">—</span></button>
+      <button class="coord-snav" onclick="coordSetView('planejamento',this)">📋 Planejamento <span class="c-tab-badge" id="coord-cnt-plan">—</span></button>
+      <button class="coord-snav" onclick="coordSetView('producao',this)">🎨 Produção <span class="c-tab-badge" id="coord-cnt-prod">—</span></button>
+    </div>
+
+    <!-- Filterbar (hidden on dashboard) -->
+    <div id="coord-filterbar" style="display:none;margin-bottom:20px;display:none;gap:8px;flex-wrap:wrap;align-items:center">
+      <div style="position:relative">
+        <i class="ti ti-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#aaa;font-size:13px;pointer-events:none"></i>
+        <input id="coord-search" placeholder="Buscar casal..." oninput="coordRender()"
+          style="padding-left:32px;height:34px;border-radius:8px;border:1px solid var(--border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;width:200px;background:var(--white)">
+      </div>
+      <select id="coord-f-status" onchange="coordRender()"
+        style="height:34px;padding:0 10px;border-radius:8px;border:1px solid var(--border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;background:var(--white)">
+        <option value="">Todos os status</option>
+        <option value="Em andamento">Em andamento</option>
+        <option value="Confirmado">Confirmado</option>
+        <option value="Realizado">Realizado</option>
+        <option value="Cancelado">Cancelado</option>
+        <option value="Urgente">Urgente</option>
+      </select>
+      <select id="coord-f-destino" onchange="coordRender()"
+        style="height:34px;padding:0 10px;border-radius:8px;border:1px solid var(--border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;background:var(--white)">
+        <option value="">Todos os destinos</option>
+      </select>
+      <select id="coord-f-produtora" onchange="coordRender()"
+        style="height:34px;padding:0 10px;border-radius:8px;border:1px solid var(--border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;background:var(--white)">
+        <option value="">Todas as produtoras</option>
+      </select>
+      <select id="coord-f-agrupamento" onchange="coordRender()"
+        style="height:34px;padding:0 10px;border-radius:8px;border:1px solid var(--border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;background:var(--white);display:none" id="coord-f-agrupamento">
+        <option value="produtora">Agrupar por produtora</option>
+        <option value="lista">Lista completa</option>
+        <option value="urgentes">Urgentes primeiro</option>
+      </select>
+    </div>
+
+    <div id="coord-content"><div class="ld">Carregando...</div></div>
+  </div>
+
 </div><!-- /main -->
 
 <!-- ══ FABs de filtro (mobile) ══ -->
@@ -725,11 +816,46 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       </div>
     </div>
     <div class="tc" id="tab-prod">
-      <div style="text-align:center;padding:60px 20px">
-        <div style="font-size:48px;margin-bottom:16px">🚧</div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold);margin-bottom:8px">Em Construção</div>
-        <div style="font-size:14px;color:var(--muted)">Esta seção está sendo desenvolvida</div>
+
+      <!-- Reuniões -->
+      <div class="sec">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div class="st" style="margin-bottom:0">📅 Reuniões com o Casal</div>
+          <span id="prod-reunioes-count" style="font-size:12px;color:var(--muted)">0 reuniões</span>
+        </div>
+        <div id="prod-reunioes-list" style="margin-bottom:14px"></div>
+        <div style="background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:10px;padding:14px">
+          <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">Nova reunião</div>
+          <div class="g2" style="margin-bottom:8px">
+            <div class="f"><label>Data</label><input type="date" id="prod-r-data"></div>
+            <div class="f"><label>Horário</label><input type="time" id="prod-r-horario"></div>
+          </div>
+          <div class="f" style="margin-bottom:8px"><label>Assunto / Pauta</label><input id="prod-r-assunto" placeholder="Ex: Alinhamento de fornecedores..." onkeydown="if(event.key==='Enter'){event.preventDefault();prodAddReuniao()}"></div>
+          <button class="btn bg bsm" onclick="prodAddReuniao()">+ Adicionar Reunião</button>
+        </div>
       </div>
+
+      <!-- Programação / Eventos -->
+      <div class="sec" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--gold-border)">
+        <div class="st" style="margin-bottom:14px">🗓 Programação / Eventos</div>
+        <div id="prod-eventos-list" style="margin-bottom:12px"></div>
+        <div style="background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:10px;padding:14px">
+          <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">Novo evento</div>
+          <div class="g2" style="margin-bottom:8px">
+            <div class="f"><label>Data</label><input type="date" id="prod-e-data"></div>
+            <div class="f"><label>Horário</label><input type="time" id="prod-e-horario"></div>
+          </div>
+          <div class="f" style="margin-bottom:8px"><label>Descrição do Evento</label><input id="prod-e-desc" placeholder="Ex: Luau de boas-vindas..." onkeydown="if(event.key==='Enter'){event.preventDefault();prodAddEvento()}"></div>
+          <button class="btn bg bsm" onclick="prodAddEvento()">+ Adicionar Evento</button>
+        </div>
+      </div>
+
+      <!-- Em andamento / Andamento geral -->
+      <div class="sec" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--gold-border)">
+        <div class="st" style="margin-bottom:10px">📝 Andamento / Observações de Produção</div>
+        <textarea id="c-prod-obs" placeholder="Status atual, pendências, próximos passos..." style="width:100%;min-height:80px;border-radius:8px;border:1px solid var(--border);padding:10px 12px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;resize:vertical"></textarea>
+      </div>
+
       <div id="prod-assess-preview"></div>
     </div>
     <div class="tc" id="tab-viag">
@@ -1557,6 +1683,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
           <option value="planejamento">📋 Planejamento</option>
           <option value="viagem">✈️ Viagem</option>
           <option value="producao">🎨 Produção</option>
+          <option value="coordenacao">👑 Coordenação</option>
           <option value="visualizacao">👁️ Visualização</option>
           <option value="admin">👑 Admin</option>
         </select>
@@ -1569,6 +1696,29 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="mf">
       <button class="btn bo" onclick="closeModal('modal-usuario')">Cancelar</button>
       <button class="btn bg" id="btn-su" onclick="salvarUsuario()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL COORDENAÇÃO -->
+<div class="mo" id="modal-coord">
+  <div class="mb" style="max-width:740px">
+    <div class="mh">
+      <div>
+        <div class="mt" id="coord-modal-title">Editar</div>
+        <div class="ms" id="coord-modal-sub"></div>
+      </div>
+      <button class="mcl" onclick="closeModal('modal-coord')">✕</button>
+    </div>
+    <!-- Tabs -->
+    <div style="display:flex;border-bottom:1.5px solid var(--border);margin-bottom:20px" id="coord-modal-tabs"></div>
+    <!-- Body -->
+    <div id="coord-modal-body"></div>
+    <!-- Footer -->
+    <div style="display:flex;gap:10px;justify-content:flex-end;padding-top:16px;border-top:1px solid var(--border);margin-top:4px">
+      <button class="btn bd" id="coord-btn-delete" onclick="coordDeleteItem()" style="margin-right:auto">🗑 Excluir</button>
+      <button class="btn bo" onclick="closeModal('modal-coord')">Cancelar</button>
+      <button class="btn bg" onclick="coordSaveItem()">Salvar</button>
     </div>
   </div>
 </div>
@@ -1642,6 +1792,12 @@ async function carregarUsuario(user){
   if(data.setor==='admin'){
     document.getElementById('nav-logs').style.display='flex'
     document.getElementById('nav-usuarios').style.display='flex'
+    document.getElementById('nav-coordenacao').style.display='flex'
+    loadCoordenacao()
+  }
+  if(data.setor==='coordenacao'){
+    document.getElementById('nav-coordenacao').style.display='flex'
+    loadCoordenacao()
   }
   aplicarPermissoes()
   await loadIndispCache()
@@ -1749,6 +1905,7 @@ function showPage(p){
   if(p==='logs')loadLogs()
   if(p==='usuarios')loadUsuarios()
   if(p==='viagens'){carregarColunasCustom().then(()=>loadKanban())}
+  if(p==='coordenacao')coordRender()
   syncFabs()
 }
 function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow=''}
@@ -2064,7 +2221,9 @@ async function openCasamento(id){
   setTimeout(()=>aplicarReadonlyAba('plan'),100)
 }
 function clearCasForm(){
-  ['c-nome','c-destino','c-data','c-horario','c-hotel','c-pacote','c-extra','c-obs','c-produtora','c-num-assessores','c-datas','c-ultima-reuniao','c-servicos','c-programacao','c-fornecedores','c-prod-status','c-transfer','c-passeios-txt','c-hospedagem','c-viag-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
+  ['c-nome','c-destino','c-data','c-horario','c-hotel','c-pacote','c-extra','c-obs','c-produtora','c-num-assessores','c-datas','c-ultima-reuniao','c-servicos','c-programacao','c-fornecedores','c-prod-status','c-prod-obs','c-transfer','c-passeios-txt','c-hospedagem','c-viag-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
+  window._prodReunioes=[];window._prodEventos=[]
+  renderProdReunioes();renderProdEventos()
   document.getElementById('c-status').value='Em andamento'
   ;['c-cons-plan','c-cons-prod','c-setor'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
   ;['c-voos','c-transfers','c-passeios','c-vok'].forEach(id=>setTg(id,false))
@@ -2080,12 +2239,17 @@ function fillCasForm(c){
   s('c-cons-plan',c.consultora_plan||'');s('c-cons-prod',c.consultora_prod||'')
   s('c-datas',c.prod_datas);s('c-ultima-reuniao',c.prod_ultima_reuniao);s('c-servicos',c.prod_servicos)
   s('c-programacao',c.prod_programacao);s('c-fornecedores',c.prod_fornecedores);s('c-prod-status',c.prod_status)
+  s('c-prod-obs',c.prod_obs)
+  // Reuniões e eventos estruturados
+  window._prodReunioes=typeof c.prod_reunioes==='string'?JSON.parse(c.prod_reunioes||'[]'):c.prod_reunioes||[]
+  window._prodEventos=typeof c.prod_eventos==='string'?JSON.parse(c.prod_eventos||'[]'):c.prod_eventos||[]
+  renderProdReunioes();renderProdEventos()
   s('c-transfer',c.viag_transfer);s('c-passeios-txt',c.viag_passeios);s('c-hospedagem',c.viag_hospedagem);s('c-viag-obs',c.viag_obs)
   setTg('c-voos',c.checklist_voos);setTg('c-transfers',c.checklist_transfers);setTg('c-passeios',c.checklist_passeios);setTg('c-vok',c.viagem_ok)
 }
 function getCasData(){
   const v=id=>document.getElementById(id)?.value||''
-  return{nome:v('c-nome'),destino:v('c-destino'),plan_data:v('c-data'),plan_horario:v('c-horario'),local_id:document.getElementById('c-hotel')?.value||null,plan_pacote:v('c-pacote'),plan_extra:v('c-extra'),plan_obs:v('c-obs'),status:v('c-status'),setor:document.getElementById('c-setor')?.value||null,consultora_plan:v('c-cons-plan')||null,consultora_prod:v('c-cons-prod')||null,prod_produtora:v('c-produtora'),prod_num_assessores:v('c-num-assessores'),prod_datas:v('c-datas'),prod_ultima_reuniao:v('c-ultima-reuniao'),prod_servicos:v('c-servicos'),prod_programacao:v('c-programacao'),prod_fornecedores:v('c-fornecedores'),prod_status:v('c-prod-status'),viag_transfer:v('c-transfer'),viag_passeios:v('c-passeios-txt'),viag_hospedagem:v('c-hospedagem'),viag_obs:v('c-viag-obs'),checklist_voos:getTg('c-voos'),checklist_transfers:getTg('c-transfers'),checklist_passeios:getTg('c-passeios'),viagem_ok:getTg('c-vok')}
+  return{nome:v('c-nome'),destino:v('c-destino'),plan_data:v('c-data'),plan_horario:v('c-horario'),local_id:document.getElementById('c-hotel')?.value||null,plan_pacote:v('c-pacote'),plan_extra:v('c-extra'),plan_obs:v('c-obs'),status:v('c-status'),setor:document.getElementById('c-setor')?.value||null,consultora_plan:v('c-cons-plan')||null,consultora_prod:v('c-cons-prod')||null,prod_produtora:v('c-produtora'),prod_num_assessores:v('c-num-assessores'),prod_datas:v('c-datas'),prod_ultima_reuniao:v('c-ultima-reuniao'),prod_servicos:v('c-servicos'),prod_programacao:v('c-programacao'),prod_fornecedores:v('c-fornecedores'),prod_status:v('c-prod-status'),prod_reunioes:JSON.stringify(window._prodReunioes||[]),prod_eventos:JSON.stringify(window._prodEventos||[]),prod_obs:v('c-prod-obs'),viag_transfer:v('c-transfer'),viag_passeios:v('c-passeios-txt'),viag_hospedagem:v('c-hospedagem'),viag_obs:v('c-viag-obs'),checklist_voos:getTg('c-voos'),checklist_transfers:getTg('c-transfers'),checklist_passeios:getTg('c-passeios'),viagem_ok:getTg('c-vok')}
 }
 async function salvarCasamento(){
   const btn=document.getElementById('btn-sc');btn.textContent='Salvando...';btn.disabled=true
@@ -3835,7 +3999,541 @@ function setMeses(val){
   val.split(',').forEach(m=>{const el=document.querySelector(`.h-mes[value="${m}"]`);if(el)el.checked=true})
 }
 
-function fmtDate(d){if(!d)return'—';const[y,m,day]=d.split('-');return`${day}/${m}/${y}`}
+
+
+// ── PRODUÇÃO — Reuniões e Eventos ────────────────────────────────────────────
+window._prodReunioes=[]
+window._prodEventos=[]
+
+function renderProdReunioes(){
+  const list=window._prodReunioes||[]
+  const el=document.getElementById('prod-reunioes-list')
+  const cnt=document.getElementById('prod-reunioes-count')
+  if(cnt)cnt.textContent=list.length+' reunião(ões)'
+  if(!el)return
+  if(!list.length){el.innerHTML='<div style="font-size:12px;color:#aaa;padding:8px 0">Nenhuma reunião registrada ainda.</div>';return}
+  el.innerHTML=list.map((r,i)=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--gold-border)">
+    <div style="width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:6px"></div>
+    <div style="flex:1">
+      <div style="font-size:12px;font-weight:600;color:var(--text)">${r.data}${r.horario?' às '+r.horario:''}</div>
+      <div style="font-size:13px;color:var(--text);margin-top:2px">${r.assunto}</div>
+      ${r.registrado_por?`<div style="font-size:11px;color:var(--gold);margin-top:2px">por ${r.registrado_por}</div>`:''}
+    </div>
+    <button onclick="prodDeleteReuniao(${i})" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:14px;padding:0 4px">✕</button>
+  </div>`).join('')
+}
+
+function renderProdEventos(){
+  const list=window._prodEventos||[]
+  const el=document.getElementById('prod-eventos-list')
+  if(!el)return
+  if(!list.length){el.innerHTML='<div style="font-size:12px;color:#aaa;padding:8px 0">Nenhum evento adicionado ainda.</div>';return}
+  el.innerHTML=list.map((e,i)=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:8px;margin-bottom:6px">
+    <span style="font-size:13px;flex:1"><strong style="color:var(--gold)">${e.data}${e.horario?' às '+e.horario:''}</strong> — ${e.desc}</span>
+    <button onclick="prodDeleteEvento(${i})" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:14px;padding:0 4px">✕</button>
+  </div>`).join('')
+}
+
+function prodAddReuniao(){
+  const data=document.getElementById('prod-r-data')?.value
+  const horario=document.getElementById('prod-r-horario')?.value
+  const assunto=document.getElementById('prod-r-assunto')?.value.trim()
+  if(!assunto)return
+  const d=data?data.split('-').reverse().join('/'):new Date().toLocaleDateString('pt-BR')
+  if(!window._prodReunioes)window._prodReunioes=[]
+  window._prodReunioes.push({data:d,horario:horario||null,assunto,registrado_por:usuarioAtual?.nome||null})
+  const el=document.getElementById('prod-r-assunto');if(el)el.value=''
+  renderProdReunioes()
+}
+
+function prodAddEvento(){
+  const data=document.getElementById('prod-e-data')?.value
+  const horario=document.getElementById('prod-e-horario')?.value
+  const desc=document.getElementById('prod-e-desc')?.value.trim()
+  if(!desc)return
+  const d=data?data.split('-').reverse().join('/'):new Date().toLocaleDateString('pt-BR')
+  if(!window._prodEventos)window._prodEventos=[]
+  window._prodEventos.push({data:d,horario:horario||null,desc})
+  const el=document.getElementById('prod-e-desc');if(el)el.value=''
+  renderProdEventos()
+}
+
+function prodDeleteReuniao(idx){
+  window._prodReunioes.splice(idx,1)
+  renderProdReunioes()
+}
+
+function prodDeleteEvento(idx){
+  window._prodEventos.splice(idx,1)
+  renderProdEventos()
+}
+
+// ══════════════════════════════════════════════
+// COORDENAÇÃO — Ana Tereza
+// ══════════════════════════════════════════════
+let coordCasamentos=[], coordPlano=[], coordDistratos=[]
+let coordView='dashboard', coordExpanded=null
+let coordEditingItem=null, coordEditingDs=null, coordModalTab='info'
+
+const COORD_PLANNERS={
+  Julia:{color:'#E8F4FD',text:'#1a6fa8',initials:'JU'},
+  Raphaela:{color:'#FDE8F4',text:'#a81a6f',initials:'RA'},
+  Corina:{color:'#E8FDE8',text:'#1a6f1a',initials:'CO'},
+  Isabela:{color:'#FDF5E8',text:'#a86f1a',initials:'IS'},
+  Sabrina:{color:'#F0E8FD',text:'#6f1aa8',initials:'SA'},
+  Giulia:{color:'#E8FDF5',text:'#1aa86f',initials:'GI'},
+  Diana:{color:'#FDE8E8',text:'#a81a1a',initials:'DI'}
+}
+const COORD_FLAGS={Itália:'🇮🇹',Nordeste:'🌊',Caribe:'🌴',México:'🇲🇽',Grécia:'🇬🇷',Argentina:'🇦🇷',Portugal:'🇵🇹',Brasil:'🇧🇷',Punta:'🌴',Mendoza:'🇦🇷',Aruba:'🏝️',Espanha:'🇪🇸',Bahia:'🌊',Cancun:'🇲🇽'}
+function coordFlag(d){if(!d)return'📍';for(const[k,v]of Object.entries(COORD_FLAGS))if(d.includes(k))return v;return'📍'}
+function coordParseDias(s){if(!s||!s.includes('-'))return null;return Math.ceil((new Date(s)-new Date())/86400000)}
+function coordFmtDate(d){if(!d)return'—';const[y,m,day]=d.split('-');return`${day}/${m}/${y}`}
+
+function coordPlannerChip(name,size=24){
+  const p=COORD_PLANNERS[name]||{color:'#f0ebe2',text:'#888',initials:(name||'?').slice(0,2).toUpperCase()}
+  return`<div style="display:flex;align-items:center;gap:6px"><div style="width:${size}px;height:${size}px;border-radius:50%;background:${p.color};color:${p.text};display:flex;align-items:center;justify-content:center;font-size:${size<=24?9:11}px;font-weight:700;flex-shrink:0">${p.initials}</div><span style="font-size:12px;color:var(--muted)">${name||'—'}</span></div>`
+}
+
+function coordStatusBadge(s){
+  const m={finalizado:{l:'Finalizado',c:'cb-green'},'em-andamento':{l:'Em andamento',c:'cb-amber'},urgente:{l:'Urgente',c:'cb-red'},planejamento:{l:'Planejamento',c:'cb-blue'},distrato:{l:'Distrato',c:'cb-purple'},'escolher-hotel':{l:'🏨 Escolher hotel',c:'cb-hotel'},'Em andamento':{l:'Em andamento',c:'cb-amber'},Urgente:{l:'Urgente',c:'cb-red'},Finalizado:{l:'Finalizado',c:'cb-green'}}
+  const x=m[s]||{l:s||'—',c:'cb-gray'}
+  return`<span class="coord-badge ${x.c}">${x.l}</span>`
+}
+
+function coordPrazoCls(d){
+  if(d===null)return{cls:'',badge:'',txt:''}
+  if(d<0)return{cls:'coord-prazo-gritando',badge:'coord-badge-gritando',txt:'🔴 REALIZADO'}
+  if(d<=30)return{cls:'coord-prazo-gritando',badge:'coord-badge-gritando',txt:`🔴 ${d}d — URGENTE!`}
+  if(d<=45)return{cls:'coord-prazo-critico',badge:'coord-badge-critico',txt:`🟠 ${d}d`}
+  if(d<=90)return{cls:'coord-prazo-medio',badge:'coord-badge-medio',txt:`🟡 ${d}d`}
+  return{cls:'coord-prazo-ok',badge:'coord-badge-ok',txt:`✅ ${d}d`}
+}
+
+function coordFornPills(list){
+  if(!list||list.length===0)return`<span class="coord-badge cb-red" style="font-size:10px">sem forn.</span>`
+  const total=list.length,checked=list.filter(f=>f.checked).length
+  return`<span class="coord-badge ${checked===total?'cb-green':'cb-gray'}" style="font-size:10px">${checked}/${total} forn.</span>`
+}
+
+async function loadCoordenacao(){
+  // Lê direto da tabela de casamentos — mesma fonte das produtoras
+  const[{data:cas},{data:plan},{data:dist}]=await Promise.all([
+    sb.from('casamentos').select('*').order('plan_data',{ascending:true,nullsFirst:false}),
+    sb.from('coord_planejamento').select('*').order('data_interesse',{ascending:true,nullsFirst:false}),
+    sb.from('coord_distratos').select('*').order('created_at',{ascending:false})
+  ])
+  // Normaliza campos jsonb que podem vir como string
+  coordCasamentos=(cas||[]).map(c=>({
+    ...c,
+    casal:c.nome,
+    local:c.plan_hotel,
+    data:c.plan_data,
+    produtora:c.prod_produtora,
+    assessor:c.consultora_prod,
+    andamento:c.prod_obs||c.prod_status,
+    fornecedores:_parseJsonField(c.prod_fornecedores_json),
+    reunioes:_parseJsonField(c.prod_reunioes),
+    eventos:_parseJsonField(c.prod_eventos)
+  }))
+  coordPlano=(plan||[]).map(p=>({...p,reunioes:_parseJsonField(p.reunioes)}))
+  coordDistratos=(dist||[]).map(d=>({...d,reunioes:_parseJsonField(d.reunioes)}))
+  coordUpdateCounts()
+  coordRender()
+  coordPopulateFilters()
+}
+
+function _parseJsonField(val){
+  if(!val)return[]
+  if(Array.isArray(val))return val
+  try{return JSON.parse(val)}catch{return[]}
+}
+
+function coordUpdateCounts(){
+  const c26=coordCasamentos.filter(c=>c.data?.startsWith('2026')).length
+  const c27=coordCasamentos.filter(c=>c.data?.startsWith('2027')).length
+  const prod=coordCasamentos.filter(c=>!['Realizado','Concluído','Cancelado'].includes(c.status)).length
+  document.getElementById('coord-cnt-2026').textContent=c26
+  document.getElementById('coord-cnt-2027').textContent=c27
+  document.getElementById('coord-cnt-plan').textContent=coordPlano.length
+  document.getElementById('coord-cnt-prod').textContent=prod
+}
+
+function coordPopulateFilters(){
+  const destinos=[...new Set(coordCasamentos.map(c=>c.destino).filter(Boolean))].sort()
+  const produtoras=[...new Set(coordCasamentos.map(c=>c.produtora).filter(Boolean))].sort()
+  const fd=document.getElementById('coord-f-destino'),fp=document.getElementById('coord-f-produtora')
+  if(fd)fd.innerHTML='<option value="">Todos os destinos</option>'+destinos.map(d=>`<option value="${d}">${coordFlag(d)} ${d}</option>`).join('')
+  if(fp)fp.innerHTML='<option value="">Todas as produtoras</option>'+produtoras.map(p=>`<option value="${p}">${p}</option>`).join('')
+}
+
+function coordFilterCasamentos(list){
+  const s=(document.getElementById('coord-search')?.value||'').toLowerCase()
+  const st=document.getElementById('coord-f-status')?.value||''
+  const dest=document.getElementById('coord-f-destino')?.value||''
+  const prod=document.getElementById('coord-f-produtora')?.value||''
+  return list.filter(c=>{
+    if(s&&!(c.casal||'').toLowerCase().includes(s)&&!(c.local||'').toLowerCase().includes(s))return false
+    if(st&&c.status!==st)return false
+    if(dest&&c.destino!==dest)return false
+    if(prod&&c.produtora!==prod)return false
+    return true
+  })
+}
+
+function coordSetView(v,btn){
+  coordView=v;coordExpanded=null
+  document.querySelectorAll('.coord-snav').forEach(b=>b.classList.remove('active'))
+  btn.classList.add('active')
+  const showFilters=v!=='dashboard'
+  const fb=document.getElementById('coord-filterbar')
+  if(fb)fb.style.display=showFilters?'flex':'none'
+  const ag=document.getElementById('coord-f-agrupamento')
+  if(ag)ag.style.display=v==='producao'?'block':'none'
+  document.getElementById('coord-subtitle').textContent={dashboard:'Visão geral da gestão',c2026:'Casamentos 2026',c2027:'Casamentos 2027',planejamento:'Planejamento & Distratos',producao:'Produção ativa'}[v]||''
+  coordRender()
+}
+
+function coordRender(){
+  const el=document.getElementById('coord-content')
+  if(!el)return
+  if(coordView==='dashboard')el.innerHTML=coordRenderDashboard()
+  else if(coordView==='c2026')el.innerHTML=coordRenderCasamentos(coordCasamentos.filter(c=>c.data?.startsWith('2026')),'2026')
+  else if(coordView==='c2027')el.innerHTML=coordRenderCasamentos(coordCasamentos.filter(c=>c.data?.startsWith('2027')),'2027')
+  else if(coordView==='planejamento')el.innerHTML=coordRenderPlanejamento()
+  else if(coordView==='producao')el.innerHTML=coordRenderProducao()
+}
+
+function coordRenderDashboard(){
+  const now=new Date(),all=coordCasamentos
+  const urgentes=all.filter(c=>c.status==='urgente'||c.status==='Urgente').length
+  const proximos=all.filter(c=>{const d=c.data?new Date(c.data):null;return d&&d>=now&&(d-now)<45*864e5}).sort((a,b)=>a.data?.localeCompare(b.data||'')||0).slice(0,6)
+  const pstats={}
+  all.forEach(c=>{pstats[c.produtora]=(pstats[c.produtora]||0)+1})
+  coordPlano.forEach(c=>{pstats[c.responsavel]=(pstats[c.responsavel]||0)+1})
+  const plist=Object.entries(pstats).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1])
+  const pmax=plist[0]?.[1]||1
+  const dst={}
+  ;[...all,...coordPlano].forEach(c=>{const k=(c.destino||'Outro').split(' ')[0];dst[k]=(dst[k]||0)+1})
+  const dlist=Object.entries(dst).sort((a,b)=>b[1]-a[1]).slice(0,7)
+  const c26=all.filter(c=>c.data?.startsWith('2026')||c.ano==='2026').length
+  const c27=all.filter(c=>c.data?.startsWith('2027')||c.ano==='2027').length
+  return`<div class="coord-stat-grid">
+    ${[{l:'Total casamentos',v:all.length,s:'2026 + 2027',col:'#1a1a1a'},{l:'Casamentos 2026',v:c26,s:'Produção ativa',col:'#1a4fa8'},{l:'Casamentos 2027',v:c27,s:'Em produção',col:'#1a6f4a'},{l:'Em planejamento',v:coordPlano.length,s:'Negociando',col:'#856404'},{l:'Ações urgentes',v:urgentes,s:'Requerem atenção',col:'#a81a1a'}].map(s=>`<div class="coord-stat"><div class="coord-stat-label">${s.l}</div><div class="coord-stat-val" style="color:${s.col}">${s.v}</div><div class="coord-stat-sub">${s.s}</div></div>`).join('')}
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px">
+    <div class="coord-tbl-card"><div class="coord-tbl-header">📅 Próximos casamentos</div>
+    ${proximos.length===0?`<div style="padding:24px;text-align:center;color:#aaa;font-size:13px">Nenhum nas próximas 45 dias</div>`:proximos.map(c=>{const d=c.data?Math.ceil((new Date(c.data)-now)/86400000):null;const p=coordPrazoCls(d);return`<div style="display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid #f7f4ef"><div style="width:44px;height:44px;border-radius:10px;background:${p.cls?'#fde8e8':'#f7f4ef'};display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0"><div style="font-size:16px;font-weight:700;font-family:'Cormorant Garamond',serif;line-height:1">${c.data?.split('-')[2]||'—'}</div><div style="font-size:9px;color:#aaa;text-transform:uppercase">${['','jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'][parseInt(c.data?.split('-')[1]||0)]||''}</div></div><div style="flex:1"><div style="font-size:13px;font-weight:600">${c.casal}</div><div style="font-size:11px;color:#aaa">${c.local||''}</div></div>${d!==null?`<span class="${p.badge}">${p.txt}</span>`:''}</div>`}).join('')}
+    </div>
+    <div class="coord-tbl-card"><div class="coord-tbl-header">👥 Por produtora</div>
+      <div style="padding:16px 18px">${plist.map(([name,n])=>{const p=COORD_PLANNERS[name]||{color:'#f0ebe2',text:'#888',initials:'?'};return`<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><div style="display:flex;align-items:center;gap:6px;min-width:90px"><div style="width:28px;height:28px;border-radius:50%;background:${p.color};color:${p.text};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">${p.initials}</div><span style="font-size:12px;color:var(--muted)">${name}</span></div><div style="flex:1;height:6px;background:#f0ebe2;border-radius:4px;overflow:hidden"><div style="width:${Math.round(n/pmax*100)}%;height:100%;background:${p.text};border-radius:4px"></div></div><span style="font-size:13px;font-weight:600;min-width:20px;text-align:right">${n}</span></div>`}).join('')}</div>
+    </div>
+  </div>
+  <div class="coord-tbl-card"><div class="coord-tbl-header">🌍 Destinos</div>
+    <div style="padding:18px;display:flex;gap:14px;flex-wrap:wrap">${dlist.map(([d,n])=>`<div style="background:#faf8f4;border-radius:12px;border:1px solid var(--border);padding:12px 18px;text-align:center"><div style="font-size:22px">${coordFlag(d)}</div><div style="font-size:13px;font-weight:600;margin-top:4px">${d}</div><div style="font-size:11px;color:#aaa">${n} casamentos</div></div>`).join('')}
+    </div>
+  </div>`
+}
+
+function coordRenderCasamentos(data,ano){
+  const filtered=coordFilterCasamentos(data)
+  const fin=data.filter(c=>['Realizado','Concluído'].includes(c.status)).length
+  const urg=data.filter(c=>c.status==='Urgente').length
+  const and=data.filter(c=>c.status==='Em andamento'||c.status==='Confirmado').length
+  return`<div class="coord-stat-grid">
+    ${[{l:'Total',v:data.length,col:'#1a4fa8'},{l:'Finalizados',v:fin,col:'#1e7e34'},{l:'Em andamento',v:and,col:'#856404'},{l:'Urgentes',v:urg,col:'#a81a1a'}].map(s=>`<div class="coord-stat"><div class="coord-stat-label">${s.l}</div><div class="coord-stat-val" style="color:${s.col}">${s.v}</div></div>`).join('')}
+  </div>
+  <div class="coord-tbl-card"><div style="overflow-x:auto"><table class="coord-tbl">
+    <thead><tr><th>Casal</th><th>Data</th><th>Destino / Local</th><th>Produtora</th><th>Status</th><th>Fornecedores</th><th>Reuniões</th><th>Em andamento</th></tr></thead>
+    <tbody>${filtered.length===0?`<tr><td colspan="8" style="text-align:center;padding:40px;color:#aaa">Nenhum resultado.</td></tr>`:filtered.map(c=>`<tr onclick="coordOpenModal(${JSON.stringify(c).replace(/"/g,'&quot;')},'cas')">
+      <td><div style="font-size:13px;font-weight:600">${c.casal}</div>${c.convidados>0?`<div style="font-size:11px;color:#aaa">${c.convidados} conv.</div>`:''}</td>
+      <td style="font-size:12px;color:var(--muted);white-space:nowrap">${c.data?coordFmtDate(c.data):c.ano||'—'}</td>
+      <td><span style="font-size:12px;color:var(--muted)">${coordFlag(c.destino)} ${c.destino||'—'}</span><div style="font-size:11px;color:#aaa">${c.local||''}</div></td>
+      <td>${coordPlannerChip(c.produtora)}</td>
+      <td>${coordStatusBadge(c.status)}</td>
+      <td>${coordFornPills(c.fornecedores)}</td>
+      <td><span class="coord-badge cb-gray" style="font-size:10px">${(c.reunioes||[]).length} reuniões</span></td>
+      <td style="font-size:11px;color:var(--muted);max-width:180px"><div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.andamento||''}</div></td>
+    </tr>`).join('')}</tbody>
+  </table></div></div>`
+}
+
+function coordRenderPlanejamento(){
+  const filteredP=coordPlano.filter(c=>{const s=(document.getElementById('coord-search')?.value||'').toLowerCase();return!s||(c.casal||'').toLowerCase().includes(s)})
+  return`<div class="coord-stat-grid">
+    ${[{l:'Em planejamento',v:coordPlano.length,col:'#1a4fa8'},{l:'Urgentes',v:coordPlano.filter(c=>c.status==='urgente').length,col:'#a81a1a'},{l:'Escolher hotel',v:coordPlano.filter(c=>c.status==='escolher-hotel').length,col:'#8b5000'},{l:'Distratos',v:coordDistratos.length,col:'#6f1aa8'}].map(s=>`<div class="coord-stat"><div class="coord-stat-label">${s.l}</div><div class="coord-stat-val" style="color:${s.col}">${s.v}</div></div>`).join('')}
+  </div>
+  <div class="coord-tbl-card"><div class="coord-tbl-header">📋 Planejamento ativo</div>
+    <div style="overflow-x:auto"><table class="coord-tbl">
+      <thead><tr><th>Casal</th><th>Destino / Hotel</th><th>Data interesse</th><th>Convidados</th><th>Responsável</th><th>Status</th><th>Reuniões</th><th>Em andamento</th></tr></thead>
+      <tbody>${filteredP.map(c=>`<tr onclick="coordOpenModal(${JSON.stringify(c).replace(/"/g,'&quot;')},'plan')">
+        <td style="font-size:13px;font-weight:600">${c.casal}</td>
+        <td><span style="font-size:12px;color:var(--muted)">${coordFlag(c.destino)} ${c.destino||'—'}</span><div style="font-size:11px;color:#aaa">${c.hotel||''}</div></td>
+        <td style="font-size:12px;color:var(--muted)">${c.data_interesse||'—'}</td>
+        <td style="font-size:12px;color:var(--muted)">${c.convidados||'—'}</td>
+        <td>${coordPlannerChip(c.responsavel)}</td>
+        <td>${coordStatusBadge(c.status)}</td>
+        <td><span class="coord-badge cb-gray" style="font-size:10px">${(c.reunioes||[]).length}</span></td>
+        <td style="font-size:11px;color:var(--muted);max-width:200px"><div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.andamento||''}</div></td>
+      </tr>`).join('')}</tbody>
+    </table></div>
+  </div>
+  <div class="coord-tbl-card"><div class="coord-tbl-header">⚠️ Distratos <span class="coord-badge cb-purple" style="margin-left:auto">${coordDistratos.length}</span></div>
+    <table class="coord-tbl"><thead><tr><th>Casal</th><th>Destino</th><th>Convidados</th><th>Responsável</th><th>Em andamento</th></tr></thead>
+    <tbody>${coordDistratos.map(c=>`<tr onclick="coordOpenModal(${JSON.stringify(c).replace(/"/g,'&quot;')},'dist')">
+      <td style="font-size:13px;font-weight:600">${c.casal}</td>
+      <td><span style="font-size:12px;color:var(--muted)">${coordFlag(c.destino)} ${c.destino||'—'}</span></td>
+      <td style="font-size:12px;color:var(--muted)">${c.convidados||'—'}</td>
+      <td>${coordPlannerChip(c.responsavel)}</td>
+      <td style="font-size:11px;color:var(--muted)">${c.andamento||''}</td>
+    </tr>`).join('')}</tbody>
+    </table>
+  </div>`
+}
+
+function coordRenderProducao(){
+  const ativos=coordCasamentos.filter(c=>!['Realizado','Concluído','Cancelado'].includes(c.status))
+  const filtered=coordFilterCasamentos(ativos)
+  const agrupamento=document.getElementById('coord-f-agrupamento')?.value||'produtora'
+  const urg=filtered.filter(c=>c.status==='Urgente')
+  const and=filtered.filter(c=>c.status!=='Urgente')
+  let html=`<div class="coord-stat-grid">
+    ${[{l:'Em produção',v:filtered.length,col:'#1a4fa8'},{l:'Urgentes',v:urg.length,col:'#a81a1a'},{l:'Em andamento',v:and.length,col:'#856404'},{l:'Sem fornecedores',v:filtered.filter(c=>!c.fornecedores||c.fornecedores.length===0).length,col:'#6f1aa8'}].map(s=>`<div class="coord-stat"><div class="coord-stat-label">${s.l}</div><div class="coord-stat-val" style="color:${s.col}">${s.v}</div></div>`).join('')}
+  </div>`
+  if(agrupamento==='produtora'||true){
+    const groups={}
+    filtered.forEach(c=>{const k=c.produtora||'?';if(!groups[k])groups[k]=[];groups[k].push(c)})
+    Object.entries(groups).sort((a,b)=>b[1].length-a[1].length).forEach(([prod,casais])=>{
+      const p=COORD_PLANNERS[prod]||{color:'#f0ebe2',text:'#888',initials:'?'}
+      const urgCt=casais.filter(c=>c.status==='urgente'||c.status==='Urgente').length
+      html+=`<div style="margin-bottom:24px">
+        <div class="coord-group-header">
+          <div style="width:32px;height:32px;border-radius:50%;background:${p.color};color:${p.text};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">${p.initials}</div>
+          <span style="font-family:'Cormorant Garamond',serif;font-weight:700;font-size:15px">${prod}</span>
+          <span style="font-size:12px;color:var(--muted)">${casais.length} casamento${casais.length!==1?'s':''}</span>
+          ${urgCt>0?`<span class="coord-badge cb-red" style="font-size:10px">${urgCt} urgente${urgCt!==1?'s':''}</span>`:''}
+        </div>
+        <div class="coord-tbl-card" style="margin-bottom:0">`
+      casais.forEach((c,idx)=>{
+        const isExp=coordExpanded===c.id
+        const d=c.data?coordParseDias(c.data):null
+        const prazo=coordPrazoCls(d)
+        const forn=c.fornecedores||[]
+        const fornChk=forn.filter(f=>f.checked).length
+        html+=`<div style="border-bottom:${idx<casais.length-1?'1px solid #f7f4ef':'none'}">
+          <div class="coord-expand-row ${prazo.cls}" style="padding:13px 18px;display:flex;align-items:center;gap:12px" onclick="coordToggleExpand('${c.id}')">
+            <div style="width:44px;height:44px;border-radius:10px;background:${prazo.cls?'#fde8e8':'#f7f4ef'};display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
+              <div style="font-size:15px;font-weight:700;font-family:'Cormorant Garamond',serif;line-height:1">${c.data?.split('-')[2]||'—'}</div>
+              <div style="font-size:9px;color:#aaa;text-transform:uppercase">${['','jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'][parseInt(c.data?.split('-')[1]||0)]||''}</div>
+            </div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px">${c.casal} ${prazo.txt?`<span class="${prazo.badge}">${prazo.txt}</span>`:''}</div>
+              <div style="font-size:11px;color:#aaa">${coordFlag(c.destino)} ${c.destino||''} · ${c.local||''}</div>
+            </div>
+            <div style="font-size:11px;color:#aaa;text-align:center;min-width:80px"><div style="font-size:10px;color:#ccc;margin-bottom:2px">Assessor</div><div style="font-weight:500;color:${c.assessor&&!['n/a','a definir'].includes(c.assessor?.toLowerCase())?'#1a1a1a':'#ccc'}">${c.assessor||'—'}</div></div>
+            ${coordFornPills(forn)}
+            <span class="coord-badge cb-gray" style="font-size:10px">${(c.reunioes||[]).length} reun.</span>
+            ${coordStatusBadge(c.status)}
+            <button onclick="event.stopPropagation();coordOpenModal(${JSON.stringify(c).replace(/"/g,'&quot;')},'cas')" style="background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:8px;padding:5px 10px;font-size:11px;color:var(--gold);cursor:pointer">✏️</button>
+            <i class="ti ti-chevron-${isExp?'up':'down'}" style="font-size:14px;color:#ccc;flex-shrink:0"></i>
+          </div>
+          ${isExp?`<div class="coord-expand-detail">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px">
+              <div>
+                <div class="coord-detail-label">Em andamento</div>
+                <div style="font-size:13px;line-height:1.5">${c.andamento||'—'}</div>
+                ${(c.eventos||[]).length>0?`<div class="coord-detail-label" style="margin-top:14px">Eventos</div>${c.eventos.map(e=>`<div style="font-size:12px;color:var(--muted);margin-bottom:3px">• ${e}</div>`).join('')}`:''}
+              </div>
+              <div>
+                <div class="coord-detail-label">Fornecedores (${fornChk}/${forn.length})</div>
+                ${forn.length===0?`<div style="font-size:12px;color:#a81a1a">⚠ Nenhum fornecedor</div>`:forn.map(f=>`<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px"><div style="width:14px;height:14px;border-radius:3px;background:${f.checked?'#1a6f4a':'#eee'};border:1.5px solid ${f.checked?'#1a6f4a':'#ccc'};display:flex;align-items:center;justify-content:center;flex-shrink:0">${f.checked?'<i class="ti ti-check" style="font-size:9px;color:#fff"></i>':''}</div><span style="font-size:12px;${f.checked?'color:#aaa;text-decoration:line-through':''}">${f.nome}</span></div>`).join('')}
+              </div>
+              <div>
+                <div class="coord-detail-label">Reuniões (${(c.reunioes||[]).length})</div>
+                ${(c.reunioes||[]).length===0?`<div style="font-size:12px;color:#aaa">Nenhuma reunião registrada</div>`:c.reunioes.map(r=>`<div style="margin-bottom:8px"><div style="font-size:10px;color:#aaa">${r.data}${r.horario?' às '+r.horario:''}</div><div style="font-size:12px">${r.assunto}</div>${r.registrado_por?`<div style="font-size:10px;color:var(--gold)">por ${r.registrado_por}</div>`:''}</div>`).join('')}
+              </div>
+            </div>
+          </div>`:''}
+        </div>`
+      })
+      html+=`</div></div>`
+    })
+  }
+  return html
+}
+
+function coordToggleExpand(id){
+  coordExpanded=(coordExpanded===id?null:id)
+  coordRender()
+}
+
+// ── MODAL COORDENAÇÃO ──
+function coordOpenModal(item,ds){
+  coordEditingItem=JSON.parse(JSON.stringify(item))
+  coordEditingDs=ds
+  coordModalTab='info'
+  document.getElementById('coord-modal-title').textContent=item.casal||'Editar'
+  document.getElementById('coord-modal-sub').textContent=ds==='cas'?`${item.destino||''} · ${item.data?coordFmtDate(item.data):''}`:ds==='plan'?'Planejamento':'Distrato'
+  const isCas=ds==='cas'
+  document.getElementById('coord-modal-tabs').innerHTML=
+    (isCas?`<button class="c-tab active" onclick="coordSwitchTab('info',this)">📋 Informações</button><button class="c-tab" onclick="coordSwitchTab('fornecedores',this)">✅ Fornecedores</button>`:'<button class="c-tab active" onclick="coordSwitchTab(\'info\',this)">📋 Informações</button>')
+    +`<button class="c-tab" onclick="coordSwitchTab('reunioes',this)">📅 Reuniões</button>`
+  coordRenderModalBody()
+  document.getElementById('modal-coord').classList.add('open')
+  document.body.style.overflow='hidden'
+}
+
+function coordSwitchTab(tab,btn){
+  coordModalTab=tab
+  document.querySelectorAll('#coord-modal-tabs .c-tab').forEach(b=>b.classList.remove('active'))
+  btn.classList.add('active')
+  coordRenderModalBody()
+}
+
+function coordRenderModalBody(){
+  document.getElementById('coord-modal-body').innerHTML=coordBuildTab()
+}
+
+function coordBuildTab(){
+  const item=coordEditingItem, ds=coordEditingDs
+  const pOpts=Object.keys(COORD_PLANNERS)
+  const sOpts=['em-andamento','finalizado','urgente','planejamento','escolher-hotel','distrato']
+  const dOpts=['Nordeste','Caribe','Itália','Grécia','México','Brasil','Argentina','Portugal','Punta Cana','Mendoza','Aruba','Espanha','Bahia','Cancun','Outro']
+
+  if(coordModalTab==='fornecedores'){
+    const flist=item.fornecedores||[]
+    const chk=flist.filter(f=>f.checked).length
+    return`<div style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+        <span style="font-size:13px;font-weight:600">${chk} de ${flist.length} confirmados</span>
+        <div style="flex:1;height:6px;background:#f0ebe2;border-radius:4px;overflow:hidden"><div style="width:${flist.length?Math.round(chk/flist.length*100):0}%;height:100%;background:var(--gold);border-radius:4px;transition:width .3s"></div></div>
+      </div>
+      ${flist.map((f,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;cursor:pointer;transition:background .15s" onmouseover="this.style.background='#f7f4ef'" onmouseout="this.style.background=''" onclick="coordToggleForn(${i})">
+        <div style="width:16px;height:16px;border-radius:4px;border:1.5px solid ${f.checked?'var(--gold)':'#ccc'};background:${f.checked?'var(--gold)':'#fff'};display:flex;align-items:center;justify-content:center;flex-shrink:0">${f.checked?'<i class="ti ti-check" style="font-size:10px;color:#fff"></i>':''}</div>
+        <span style="font-size:13px;${f.checked?'color:#aaa;text-decoration:line-through':''}">${f.nome}</span>
+      </div>`).join('')}
+      <div style="margin-top:16px;padding-top:14px;border-top:1px solid #f0ebe2">
+        <div style="font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Adicionar fornecedor</div>
+        <div style="display:flex;gap:8px">
+          <input class="f" id="coord-new-forn" placeholder="Nome do fornecedor..." onkeydown="if(event.key==='Enter')coordAddForn()" style="flex:1;height:38px;border-radius:8px;border:1px solid #ddd;padding:0 12px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+          <button class="btn bg" style="padding:0 16px" onclick="coordAddForn()"><i class="ti ti-plus"></i></button>
+        </div>
+      </div>
+    </div>`
+  }
+
+  if(coordModalTab==='reunioes'){
+    const rlist=item.reunioes||[]
+    return`<div>
+      <div style="font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Histórico de reuniões (${rlist.length})</div>
+      ${rlist.length===0?`<div style="font-size:12px;color:#aaa;padding:16px 0;text-align:center">Nenhuma reunião registrada ainda.</div>`:
+      rlist.map((r,i)=>`<div class="coord-reuniao-item">
+        <div style="width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:5px"></div>
+        <div style="flex:1">
+          <div style="font-size:12px;font-weight:600">${r.data}${r.horario?` às ${r.horario}`:''}</div>
+          <div style="font-size:13px;margin-top:2px">${r.assunto}</div>
+          ${r.registrado_por?`<div style="font-size:11px;color:var(--gold);margin-top:2px">por ${r.registrado_por}</div>`:''}
+        </div>
+        <button onclick="coordDeleteReuniao(${i})" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:14px"><i class="ti ti-x"></i></button>
+      </div>`).join('')}
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid #f0ebe2">
+        <div style="font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Registrar nova reunião</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <div><div style="font-size:11px;color:#888;margin-bottom:4px">Data</div><input type="date" id="coord-r-data" style="width:100%;height:36px;border-radius:8px;border:1px solid #ddd;padding:0 10px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none"></div>
+          <div><div style="font-size:11px;color:#888;margin-bottom:4px">Horário</div><input type="time" id="coord-r-horario" style="width:100%;height:36px;border-radius:8px;border:1px solid #ddd;padding:0 10px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none"></div>
+        </div>
+        <input id="coord-r-assunto" placeholder="Assunto / pauta..." onkeydown="if(event.key==='Enter')coordAddReuniao()" style="width:100%;height:36px;border-radius:8px;border:1px solid #ddd;padding:0 12px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:8px">
+        <button class="btn bg bsm" onclick="coordAddReuniao()"><i class="ti ti-plus"></i> Adicionar</button>
+      </div>
+    </div>`
+  }
+
+  // INFO TAB
+  if(ds==='dist')return`<div class="g2">
+    <div class="f" style="grid-column:1/-1"><label>Nome do casal</label><input id="cf-casal" value="${item.casal||''}"></div>
+    <div class="f"><label>Destino</label><input id="cf-destino" value="${item.destino||''}"></div>
+    <div class="f"><label>Convidados</label><input type="number" id="cf-convidados" value="${item.convidados||0}"></div>
+    <div class="f"><label>Responsável</label><select id="cf-responsavel">${pOpts.map(p=>`<option value="${p}"${item.responsavel===p?' selected':''}>${p}</option>`).join('')}</select></div>
+    <div class="f" style="grid-column:1/-1"><label>Em andamento / Observações</label><textarea id="cf-andamento">${item.andamento||''}</textarea></div>
+  </div>`
+
+  if(ds==='plan')return`<div class="g2">
+    <div class="f" style="grid-column:1/-1"><label>Nome do casal</label><input id="cf-casal" value="${item.casal||''}"></div>
+    <div class="f"><label>Destino</label><input id="cf-destino" value="${item.destino||''}"></div>
+    <div class="f"><label>Hotel de interesse</label><input id="cf-hotel" value="${item.hotel||''}"></div>
+    <div class="f"><label>Data de interesse</label><input id="cf-data-interesse" value="${item.data_interesse||''}"></div>
+    <div class="f"><label>Convidados</label><input type="number" id="cf-convidados" value="${item.convidados||0}"></div>
+    <div class="f"><label>Responsável</label><select id="cf-responsavel">${pOpts.map(p=>`<option value="${p}"${item.responsavel===p?' selected':''}>${p}</option>`).join('')}</select></div>
+    <div class="f"><label>Status</label><select id="cf-status">${sOpts.map(s=>`<option value="${s}"${item.status===s?' selected':''}>${s}</option>`).join('')}</select></div>
+    <div class="f" style="grid-column:1/-1"><label>Em andamento / Observações</label><textarea id="cf-andamento">${item.andamento||''}</textarea></div>
+  </div>`
+
+  return`<div class="g2">
+    <div class="f" style="grid-column:1/-1"><label>Nome do casal</label><input id="cf-casal" value="${item.casal||''}"></div>
+    <div class="f"><label>Local / Hotel</label><input id="cf-local" value="${item.local||''}"></div>
+    <div class="f"><label>Destino</label><select id="cf-destino">${dOpts.map(d=>`<option value="${d}"${item.destino===d?' selected':''}>${coordFlag(d)} ${d}</option>`).join('')}</select></div>
+    <div class="f"><label>Data (AAAA-MM-DD)</label><input type="date" id="cf-data" value="${item.data||''}"></div>
+    <div class="f"><label>Convidados</label><input type="number" id="cf-convidados" value="${item.convidados||0}"></div>
+    <div class="f"><label>Produtora</label><select id="cf-produtora">${pOpts.map(p=>`<option value="${p}"${item.produtora===p?' selected':''}>${p}</option>`).join('')}</select></div>
+    <div class="f"><label>Assessor local</label><input id="cf-assessor" value="${item.assessor||''}"></div>
+    <div class="f"><label>Status</label><select id="cf-status">${sOpts.map(s=>`<option value="${s}"${item.status===s?' selected':''}>${s}</option>`).join('')}</select></div>
+    <div class="f" style="grid-column:1/-1"><label>Em andamento / Observações</label><textarea id="cf-andamento">${item.andamento||''}</textarea></div>
+    <div class="f" style="grid-column:1/-1"><label>Eventos <span style="font-weight:400;text-transform:none;font-size:11px;color:#aaa">(um por linha)</span></label><textarea id="cf-eventos" style="min-height:60px">${(item.eventos||[]).join('\n')}</textarea></div>
+  </div>`
+}
+
+function coordToggleForn(idx){
+  coordEditingItem.fornecedores[idx].checked=!coordEditingItem.fornecedores[idx].checked
+  coordRenderModalBody()
+}
+function coordAddForn(){
+  const v=document.getElementById('coord-new-forn')?.value.trim()
+  if(!v)return
+  coordEditingItem.fornecedores.push({nome:v,checked:false})
+  coordRenderModalBody()
+}
+function coordAddReuniao(){
+  const data=document.getElementById('coord-r-data')?.value
+  const horario=document.getElementById('coord-r-horario')?.value
+  const assunto=document.getElementById('coord-r-assunto')?.value.trim()
+  if(!assunto)return
+  const d=data?data.split('-').reverse().join('/'):new Date().toLocaleDateString('pt-BR')
+  coordEditingItem.reunioes.push({data:d,horario:horario||null,assunto,registrado_por:usuarioAtual?.nome||null})
+  coordRenderModalBody()
+}
+function coordDeleteReuniao(idx){
+  coordEditingItem.reunioes.splice(idx,1)
+  coordRenderModalBody()
+}
+
+async function coordSaveItem(){
+  const item=coordEditingItem, ds=coordEditingDs
+  const gv=id=>{const el=document.getElementById(id);return el?el.value.trim():''}
+  let updated
+  if(ds==='cas'){
+    updated={...item,casal:gv('cf-casal'),local:gv('cf-local'),destino:gv('cf-destino'),data:gv('cf-data')||item.data,convidados:parseInt(gv('cf-convidados'))||0,produtora:gv('cf-produtora'),assessor:gv('cf-assessor'),status:gv('cf-status'),andamento:gv('cf-andamento'),eventos:gv('cf-eventos').split('\n').map(x=>x.trim()).filter(Boolean),fornecedores:item.fornecedores,reunioes:item.reunioes}
+    if(item.id){await sb.from("casamentos").update({nome:updated.casal,destino:updated.destino,plan_data:updated.data||null,status:updated.status,prod_obs:updated.andamento,prod_reunioes:JSON.stringify(updated.reunioes)}).eq("id",item.id)}
+  }else if(ds==='plan'){
+    updated={...item,casal:gv('cf-casal'),destino:gv('cf-destino'),hotel:gv('cf-hotel'),data_interesse:gv('cf-data-interesse'),convidados:parseInt(gv('cf-convidados'))||0,responsavel:gv('cf-responsavel'),status:gv('cf-status'),andamento:gv('cf-andamento'),reunioes:item.reunioes}
+    if(item.id){await sb.from('coord_planejamento').update({casal:updated.casal,destino:updated.destino,hotel:updated.hotel,data_interesse:updated.data_interesse,convidados:updated.convidados,responsavel:updated.responsavel,status:updated.status,andamento:updated.andamento,reunioes:JSON.stringify(updated.reunioes)}).eq('id',item.id)}
+  }else{
+    updated={...item,casal:gv('cf-casal'),destino:gv('cf-destino'),convidados:parseInt(gv('cf-convidados'))||0,responsavel:gv('cf-responsavel'),andamento:gv('cf-andamento'),reunioes:item.reunioes}
+    if(item.id){await sb.from('coord_distratos').update({casal:updated.casal,destino:updated.destino,convidados:updated.convidados,responsavel:updated.responsavel,andamento:updated.andamento,reunioes:JSON.stringify(updated.reunioes)}).eq('id',item.id)}
+  }
+  closeModal('modal-coord')
+  await loadCoordenacao()
+}
+
+async function coordDeleteItem(){
+  if(!confirm(`Excluir "${coordEditingItem.casal}"?`))return
+  const ds=coordEditingDs, id=coordEditingItem.id
+  if(!id){closeModal('modal-coord');return}
+  if(ds==='cas')await sb.from('casamentos').delete().eq('id',id)
+  else if(ds==='plan')await sb.from('coord_planejamento').delete().eq('id',id)
+  else await sb.from('coord_distratos').delete().eq('id',id)
+  closeModal('modal-coord')
+  await loadCoordenacao()
+}
+
 </script>
 </body>
 </html>
