@@ -652,6 +652,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       </div>
       <button onclick="abrirConfigColunas()" title="Configurar colunas" style="padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--white);cursor:pointer;font-size:15px;margin-bottom:4px;color:var(--muted);transition:all .15s" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">⚙️ Colunas</button>
     </div>
+    <!-- Search -->
+    <div style="margin-bottom:18px">
+      <div style="position:relative;max-width:320px">
+        <i class="ti ti-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#aaa;font-size:14px;pointer-events:none"></i>
+        <input id="kb-search" placeholder="Buscar nome, casal, assessora..." oninput="renderKanban()"
+          style="width:100%;padding-left:34px;height:36px;border-radius:8px;border:1px solid var(--border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;background:var(--white)">
+      </div>
+    </div>
     <!-- Board -->
     <div class="kb-board" id="kb-board"></div>
   </div>
@@ -3418,12 +3426,18 @@ function showKanbanTab(tab,btn){
   kanbanTabAtual=tab
   document.querySelectorAll('.kb-tab').forEach(t=>t.classList.remove('active'))
   if(btn)btn.classList.add('active')
+  const s=document.getElementById('kb-search');if(s)s.value=''
   renderKanban()
 }
 
 function renderKanban(){
   const board=document.getElementById('kb-board');if(!board)return
-  const filtered=kanbanData.filter(k=>k.responsavel===kanbanTabAtual)
+  const q=(document.getElementById('kb-search')?.value||'').toLowerCase()
+  const filtered=kanbanData.filter(k=>{
+    if(k.responsavel!==kanbanTabAtual)return false
+    if(!q)return true
+    return(k.casamento_nome||'').toLowerCase().includes(q)||(k.assessora_nome||'').toLowerCase().includes(q)||(k.fornecedor_nome||'').toLowerCase().includes(q)||(k.solicitacao||'').toLowerCase().includes(q)
+  })
   const colunas=getColunasAtivas(kanbanTabAtual)
   board.innerHTML=colunas.map(col=>{
     const cards=filtered.filter(k=>k.coluna===col.id)
