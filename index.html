@@ -2062,8 +2062,7 @@ async function loadCasamentos(){
   const hoje=new Date().toISOString().split('T')[0]
   const ultimaRodada=localStorage.getItem('_autoRealizado')
   if(ultimaRodada!==hoje){
-    await sb.from('casamentos').update({status:'Realizado'}).lt('plan_data',hoje).not('status','in','("Realizado","Cancelado")')
-    localStorage.setItem('_autoRealizado',hoje)
+    try{await sb.from('casamentos').update({status:'Realizado'}).lt('plan_data',hoje).not('status','in','("Realizado","Cancelado")');localStorage.setItem('_autoRealizado',hoje)}catch(e){console.warn('auto-realizado:',e)}
   }
   const{data}=await sb.from('casamentos').select('*').order('plan_data',{ascending:true,nullsFirst:false})
   casamentos=data||[]
