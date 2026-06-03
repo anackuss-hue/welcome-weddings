@@ -304,6 +304,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div class="serv-card" id="rfv-voo" onclick="togServRF('rfv-voo')"><div style="font-size:22px;margin-bottom:4px">✈️</div><div class="serv-label">Voo</div></div>
         <div class="serv-card" id="rfv-transfer" onclick="togServRF('rfv-transfer')"><div style="font-size:22px;margin-bottom:4px">🚌</div><div class="serv-label">Transfer</div></div>
         <div class="serv-card" id="rfv-hospedagem" onclick="togServRF('rfv-hospedagem')"><div style="font-size:22px;margin-bottom:4px">🏨</div><div class="serv-label">Hospedagem</div></div>
+        <div class="serv-card" id="rfv-nenhum" onclick="togServRF('rfv-nenhum')" style="grid-column:1/-1"><div style="font-size:22px;margin-bottom:4px">🚫</div><div class="serv-label">Não precisa de nenhum serviço</div></div>
       </div>
     </div>
     <div class="f"><label>Observações</label><textarea id="rf-obs" placeholder="Informações adicionais..."></textarea></div>
@@ -411,8 +412,21 @@ function selForn(id,nome){
 // Toggle serviços viagem fornecedor
 let _servRF={}
 function togServRF(s){
-  _servRF[s]=!_servRF[s]
-  document.getElementById(s)?.classList.toggle('sel',_servRF[s])
+  if(s==='rfv-nenhum'){
+    // Selecionar "nenhum" desmarca todos os outros
+    const era=_servRF['rfv-nenhum']
+    _servRF={}
+    _servRF['rfv-nenhum']=!era
+    ;['rfv-voo','rfv-transfer','rfv-hospedagem','rfv-nenhum'].forEach(id=>{
+      document.getElementById(id)?.classList.toggle('sel',!!_servRF[id])
+    })
+  } else {
+    // Selecionar qualquer serviço desmarca "nenhum"
+    _servRF[s]=!_servRF[s]
+    _servRF['rfv-nenhum']=false
+    document.getElementById(s)?.classList.toggle('sel',_servRF[s])
+    document.getElementById('rfv-nenhum')?.classList.remove('sel')
+  }
 }
 
 document.addEventListener('click',e=>{
@@ -438,7 +452,7 @@ async function enviar(tipo){
     if(!c.id){alert('Selecione o casamento!');reset();return}
     if(!fornId){alert('Selecione o fornecedor!');reset();return}
     if(!document.getElementById('rf-data-chegada')?.value||!document.getElementById('rf-data-saida')?.value){alert('Preencha as datas!');reset();return}
-    const servStr=[_servRF['rfv-voo']&&'Voo',_servRF['rfv-transfer']&&'Transfer',_servRF['rfv-hospedagem']&&'Hospedagem'].filter(Boolean).join(' · ')||'Não especificado'
+    const servStr=_servRF['rfv-nenhum']?'Nenhum serviço necessário':[_servRF['rfv-voo']&&'Voo',_servRF['rfv-transfer']&&'Transfer',_servRF['rfv-hospedagem']&&'Hospedagem'].filter(Boolean).join(' · ')||'Não especificado'
     const{data:r,error}=await sb.from('solicitacoes_kanban').insert({tipo:'viagem_fornecedor',responsavel:'rapha',coluna:'nova',casamento_id:c.id,casamento_nome:c.nome,assessora_id:fornId,assessora_nome:fornNome,periodo_de:document.getElementById('rf-data-chegada').value,periodo_ate:document.getElementById('rf-data-saida').value,hora_chegada:document.getElementById('rf-hora-chegada')?.value||null,hora_saida:document.getElementById('rf-hora-saida')?.value||null,cidade_saida:document.getElementById('rf-cidade')?.value||null,servicos:servStr,solicitacao:document.getElementById('rf-obs')?.value||null,criado_por:sol}).select().single()
     if(error){alert('Erro: '+error.message);reset();return}
     // Vincula fornecedor ao casamento
@@ -461,9 +475,9 @@ async function enviar(tipo){
       fornecedor_id:fornIdFinal,
       periodo_inicio:document.getElementById('rf-data-chegada').value,
       periodo_fim:document.getElementById('rf-data-saida').value,
-      status_voo:_servRF['rfv-voo']?'pendente':null,
-      status_hotel:_servRF['rfv-hospedagem']?'pendente':null,
-      status_transfer:_servRF['rfv-transfer']?'pendente':null
+      status_voo:(!_servRF['rfv-nenhum']&&_servRF['rfv-voo'])?'pendente':null,
+      status_hotel:(!_servRF['rfv-nenhum']&&_servRF['rfv-hospedagem'])?'pendente':null,
+      status_transfer:(!_servRF['rfv-nenhum']&&_servRF['rfv-transfer'])?'pendente':null
     })
     if(cfErr)console.error('Erro ao vincular fornecedor:',cfErr)
     await notificarSolicitante(r?.id,sol,`Sua solicitação de viagem para ${fornNome} em ${c.nome} foi recebida`)
