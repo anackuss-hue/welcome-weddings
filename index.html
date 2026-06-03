@@ -807,6 +807,24 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div class="f"><label>Extra</label><input id="c-extra"></div>
       </div>
       <div class="f"><label>Observações sobre o Casal</label><textarea id="c-obs"></textarea></div>
+
+      <!-- Reuniões de Planejamento -->
+      <div class="sec" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--gold-border)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div class="st" style="margin-bottom:0">📅 Reuniões de Planejamento</div>
+          <span id="plan-reunioes-count" style="font-size:12px;color:var(--muted)">0 reuniões</span>
+        </div>
+        <div id="plan-reunioes-list" style="margin-bottom:14px"></div>
+        <div style="background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:10px;padding:14px">
+          <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">Nova reunião</div>
+          <div class="g2" style="margin-bottom:8px">
+            <div class="f"><label>Data</label><input type="date" id="plan-r-data"></div>
+            <div class="f"><label>Horário</label><input type="time" id="plan-r-horario"></div>
+          </div>
+          <div class="f" style="margin-bottom:8px"><label>Assunto / Pauta</label><input id="plan-r-assunto" placeholder="Ex: Briefing inicial, escolha de fornecedores..." onkeydown="if(event.key==='Enter'){event.preventDefault();planAddReuniao()}"></div>
+          <button class="btn bg bsm" onclick="planAddReuniao()">+ Adicionar Reunião</button>
+        </div>
+      </div>
       <div id="c-hoteis-section" style="display:none;margin-top:20px;padding-top:20px;border-top:1px solid var(--gold-border)">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
           <div class="st" style="margin-bottom:0">🏨 Hotéis Recomendados para o Casal</div>
@@ -2230,8 +2248,8 @@ async function openCasamento(id){
 }
 function clearCasForm(){
   ['c-nome','c-destino','c-data','c-horario','c-hotel','c-pacote','c-extra','c-obs','c-produtora','c-num-assessores','c-datas','c-ultima-reuniao','c-servicos','c-programacao','c-fornecedores','c-prod-status','c-prod-obs','c-transfer','c-passeios-txt','c-hospedagem','c-viag-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
-  window._prodReunioes=[];window._prodEventos=[]
-  renderProdReunioes();renderProdEventos()
+  window._planReunioes=[];window._prodReunioes=[];window._prodEventos=[]
+  renderPlanReunioes();renderProdReunioes();renderProdEventos()
   document.getElementById('c-status').value='Em andamento'
   ;['c-cons-plan','c-cons-prod','c-setor'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
   ;['c-voos','c-transfers','c-passeios','c-vok'].forEach(id=>setTg(id,false))
@@ -2249,15 +2267,16 @@ function fillCasForm(c){
   s('c-programacao',c.prod_programacao);s('c-fornecedores',c.prod_fornecedores);s('c-prod-status',c.prod_status)
   s('c-prod-obs',c.prod_obs)
   // Reuniões e eventos estruturados
-  window._prodReunioes=typeof c.prod_reunioes==='string'?JSON.parse(c.prod_reunioes||'[]'):c.prod_reunioes||[]
-  window._prodEventos=typeof c.prod_eventos==='string'?JSON.parse(c.prod_eventos||'[]'):c.prod_eventos||[]
-  renderProdReunioes();renderProdEventos()
+  window._planReunioes=_parseJsonField(c.plan_reunioes)
+  window._prodReunioes=_parseJsonField(c.prod_reunioes)
+  window._prodEventos=_parseJsonField(c.prod_eventos)
+  renderPlanReunioes();renderProdReunioes();renderProdEventos()
   s('c-transfer',c.viag_transfer);s('c-passeios-txt',c.viag_passeios);s('c-hospedagem',c.viag_hospedagem);s('c-viag-obs',c.viag_obs)
   setTg('c-voos',c.checklist_voos);setTg('c-transfers',c.checklist_transfers);setTg('c-passeios',c.checklist_passeios);setTg('c-vok',c.viagem_ok)
 }
 function getCasData(){
   const v=id=>document.getElementById(id)?.value||''
-  return{nome:v('c-nome'),destino:v('c-destino'),plan_data:v('c-data'),plan_horario:v('c-horario'),local_id:document.getElementById('c-hotel')?.value||null,plan_pacote:v('c-pacote'),plan_extra:v('c-extra'),plan_obs:v('c-obs'),status:v('c-status'),setor:document.getElementById('c-setor')?.value||null,consultora_plan:v('c-cons-plan')||null,consultora_prod:v('c-cons-prod')||null,prod_produtora:v('c-produtora'),prod_num_assessores:v('c-num-assessores'),prod_datas:v('c-datas'),prod_ultima_reuniao:v('c-ultima-reuniao'),prod_servicos:v('c-servicos'),prod_programacao:v('c-programacao'),prod_fornecedores:v('c-fornecedores'),prod_status:v('c-prod-status'),prod_reunioes:JSON.stringify(window._prodReunioes||[]),prod_eventos:JSON.stringify(window._prodEventos||[]),prod_obs:v('c-prod-obs'),viag_transfer:v('c-transfer'),viag_passeios:v('c-passeios-txt'),viag_hospedagem:v('c-hospedagem'),viag_obs:v('c-viag-obs'),checklist_voos:getTg('c-voos'),checklist_transfers:getTg('c-transfers'),checklist_passeios:getTg('c-passeios'),viagem_ok:getTg('c-vok')}
+  return{nome:v('c-nome'),destino:v('c-destino'),plan_data:v('c-data'),plan_horario:v('c-horario'),local_id:document.getElementById('c-hotel')?.value||null,plan_pacote:v('c-pacote'),plan_extra:v('c-extra'),plan_obs:v('c-obs'),status:v('c-status'),setor:document.getElementById('c-setor')?.value||null,consultora_plan:v('c-cons-plan')||null,consultora_prod:v('c-cons-prod')||null,prod_produtora:v('c-produtora'),prod_num_assessores:v('c-num-assessores'),prod_datas:v('c-datas'),prod_ultima_reuniao:v('c-ultima-reuniao'),prod_servicos:v('c-servicos'),prod_programacao:v('c-programacao'),prod_fornecedores:v('c-fornecedores'),prod_status:v('c-prod-status'),plan_reunioes:JSON.stringify(window._planReunioes||[]),prod_reunioes:JSON.stringify(window._prodReunioes||[]),prod_eventos:JSON.stringify(window._prodEventos||[]),prod_obs:v('c-prod-obs'),viag_transfer:v('c-transfer'),viag_passeios:v('c-passeios-txt'),viag_hospedagem:v('c-hospedagem'),viag_obs:v('c-viag-obs'),checklist_voos:getTg('c-voos'),checklist_transfers:getTg('c-transfers'),checklist_passeios:getTg('c-passeios'),viagem_ok:getTg('c-vok')}
 }
 async function salvarCasamento(){
   const btn=document.getElementById('btn-sc');btn.textContent='Salvando...';btn.disabled=true
@@ -4015,6 +4034,44 @@ function setMeses(val){
 
 
 
+// ── PLANEJAMENTO — Reuniões ───────────────────────────────────────────────────
+window._planReunioes=[]
+
+function renderPlanReunioes(){
+  const list=window._planReunioes||[]
+  const el=document.getElementById('plan-reunioes-list')
+  const cnt=document.getElementById('plan-reunioes-count')
+  if(cnt)cnt.textContent=list.length+' reunião(ões)'
+  if(!el)return
+  if(!list.length){el.innerHTML='<div style="font-size:12px;color:#aaa;padding:8px 0">Nenhuma reunião registrada ainda.</div>';return}
+  el.innerHTML=list.map((r,i)=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--gold-border)">
+    <div style="width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:6px"></div>
+    <div style="flex:1">
+      <div style="font-size:12px;font-weight:600;color:var(--text)">${r.data}${r.horario?' às '+r.horario:''}</div>
+      <div style="font-size:13px;color:var(--text);margin-top:2px">${r.assunto}</div>
+      ${r.registrado_por?`<div style="font-size:11px;color:var(--gold);margin-top:2px">por ${r.registrado_por}</div>`:''}
+    </div>
+    <button onclick="planDeleteReuniao(${i})" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:14px;padding:0 4px">✕</button>
+  </div>`).join('')
+}
+
+function planAddReuniao(){
+  const data=document.getElementById('plan-r-data')?.value
+  const horario=document.getElementById('plan-r-horario')?.value
+  const assunto=document.getElementById('plan-r-assunto')?.value.trim()
+  if(!assunto)return
+  const d=data?data.split('-').reverse().join('/'):new Date().toLocaleDateString('pt-BR')
+  if(!window._planReunioes)window._planReunioes=[]
+  window._planReunioes.push({data:d,horario:horario||null,assunto,registrado_por:usuarioAtual?.nome||null})
+  const el=document.getElementById('plan-r-assunto');if(el)el.value=''
+  renderPlanReunioes()
+}
+
+function planDeleteReuniao(idx){
+  window._planReunioes.splice(idx,1)
+  renderPlanReunioes()
+}
+
 // ── PRODUÇÃO — Reuniões e Eventos ────────────────────────────────────────────
 window._prodReunioes=[]
 window._prodEventos=[]
@@ -4145,7 +4202,9 @@ async function loadCoordenacao(){
       assessor:c.consultora_prod,
       andamento:c.prod_obs||c.prod_status||'',
       fornecedores:_parseJsonField(c.prod_fornecedores_json),
-      reunioes:_parseJsonField(c.prod_reunioes),
+      reunioes_plan:_parseJsonField(c.plan_reunioes),
+      reunioes_prod:_parseJsonField(c.prod_reunioes),
+      reunioes:_parseJsonField(c.plan_reunioes).concat(_parseJsonField(c.prod_reunioes)),
       eventos:_parseJsonField(c.prod_eventos)
     }))
   }catch(e){
@@ -4372,8 +4431,10 @@ function coordRenderProducao(){
                 ${forn.length===0?`<div style="font-size:12px;color:#a81a1a">⚠ Nenhum fornecedor</div>`:forn.map(f=>`<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px"><div style="width:14px;height:14px;border-radius:3px;background:${f.checked?'#1a6f4a':'#eee'};border:1.5px solid ${f.checked?'#1a6f4a':'#ccc'};display:flex;align-items:center;justify-content:center;flex-shrink:0">${f.checked?'<i class="ti ti-check" style="font-size:9px;color:#fff"></i>':''}</div><span style="font-size:12px;${f.checked?'color:#aaa;text-decoration:line-through':''}">${f.nome}</span></div>`).join('')}
               </div>
               <div>
-                <div class="coord-detail-label">Reuniões (${(c.reunioes||[]).length})</div>
-                ${(c.reunioes||[]).length===0?`<div style="font-size:12px;color:#aaa">Nenhuma reunião registrada</div>`:c.reunioes.map(r=>`<div style="margin-bottom:8px"><div style="font-size:10px;color:#aaa">${r.data}${r.horario?' às '+r.horario:''}</div><div style="font-size:12px">${r.assunto}</div>${r.registrado_por?`<div style="font-size:10px;color:var(--gold)">por ${r.registrado_por}</div>`:''}</div>`).join('')}
+                <div class="coord-detail-label">Reuniões de Planejamento (${(c.reunioes_plan||[]).length})</div>
+                ${(c.reunioes_plan||[]).length===0?`<div style="font-size:12px;color:#aaa">Nenhuma</div>`:c.reunioes_plan.map(r=>`<div style="margin-bottom:8px"><div style="font-size:10px;color:#aaa">${r.data}${r.horario?' às '+r.horario:''}</div><div style="font-size:12px">${r.assunto}</div>${r.registrado_por?`<div style="font-size:10px;color:var(--gold)">por ${r.registrado_por}</div>`:''}</div>`).join('')}
+                <div class="coord-detail-label" style="margin-top:12px">Reuniões de Produção (${(c.reunioes_prod||[]).length})</div>
+                ${(c.reunioes_prod||[]).length===0?`<div style="font-size:12px;color:#aaa">Nenhuma</div>`:c.reunioes_prod.map(r=>`<div style="margin-bottom:8px"><div style="font-size:10px;color:#aaa">${r.data}${r.horario?' às '+r.horario:''}</div><div style="font-size:12px">${r.assunto}</div>${r.registrado_por?`<div style="font-size:10px;color:var(--gold)">por ${r.registrado_por}</div>`:''}</div>`).join('')}
               </div>
             </div>
           </div>`:''}
