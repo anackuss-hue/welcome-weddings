@@ -70,9 +70,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .ftc{display:none}
 .kc-pri{background:none;border:1.5px solid var(--border);border-radius:8px;padding:4px 8px;cursor:pointer;font-size:16px;transition:all .15s}
 .kc-pri.ativo{border-color:var(--gold);background:var(--gold-pale);transform:scale(1.1)}
-.kc-nota-item{background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:8px;padding:10px 12px;margin-bottom:8px}
-.kc-nota-texto{font-size:13px;color:var(--text);margin-bottom:4px}
-.kc-nota-meta{font-size:11px;color:var(--muted)}
+.kc-nota-item{display:flex;flex-direction:column;max-width:80%}
+.kc-nota-item.mine{align-self:flex-end;align-items:flex-end}
+.kc-nota-item.theirs{align-self:flex-start;align-items:flex-start}
+.kc-nota-bubble{padding:9px 13px;border-radius:14px;font-size:13px;line-height:1.45;word-break:break-word}
+.kc-nota-item.mine .kc-nota-bubble{background:var(--gold);color:#fff;border-bottom-right-radius:4px}
+.kc-nota-item.theirs .kc-nota-bubble{background:var(--gold-pale);border:1px solid var(--gold-border);color:var(--text);border-bottom-left-radius:4px}
+.kc-nota-meta{font-size:10px;color:var(--muted);margin-top:3px;padding:0 2px}
 .kc-check-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;border:1px solid var(--border);margin-bottom:6px;background:var(--white)}
 .kc-check-item.feito{background:#f9f9f9;opacity:.7}
 .kc-check-cb{width:16px;height:16px;cursor:pointer;accent-color:var(--gold);flex-shrink:0}
@@ -1511,13 +1515,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         </div>
       </div>
 
-      <!-- Notas -->
+      <!-- Chat / Notas -->
       <div style="margin-bottom:20px">
-        <div style="font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px">💬 Notas</div>
-        <div id="kc-notas" style="margin-bottom:10px"></div>
-        <div style="display:flex;gap:8px">
-          <input id="kc-nota-input" placeholder="Adicionar nota..." style="flex:1;padding:8px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none" onkeydown="if(event.key==='Enter')adicionarNota()">
-          <button class="btn bg bsm" onclick="adicionarNota()">Enviar</button>
+        <div style="font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px">💬 Conversa</div>
+        <div id="kc-notas" style="display:flex;flex-direction:column;gap:6px;max-height:260px;overflow-y:auto;padding:4px 2px;margin-bottom:10px;scroll-behavior:smooth"></div>
+        <div style="display:flex;gap:8px;align-items:flex-end;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:12px;padding:8px 10px">
+          <textarea id="kc-nota-input" placeholder="Escreva uma mensagem... (Enter para enviar, Shift+Enter para nova linha)" rows="1"
+            style="flex:1;border:none;background:transparent;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;resize:none;max-height:100px;overflow-y:auto;line-height:1.4"
+            oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();adicionarNota()}"></textarea>
+          <button class="btn bg bsm" onclick="adicionarNota()" style="flex-shrink:0;border-radius:8px;padding:6px 12px"><i class="ti ti-send"></i></button>
         </div>
       </div>
 
@@ -3688,12 +3695,18 @@ async function deletarCheck(id){
 
 // ── NOTAS ──
 async function carregarNotasKanban(cardId){
-  const{data}=await sb.from('kanban_notas').select('*').eq('card_id',cardId).order('created_at',{ascending:false})
+  const{data}=await sb.from('kanban_notas').select('*').eq('card_id',cardId).order('created_at',{ascending:true})
   const con=document.getElementById('kc-notas')
-  con.innerHTML=(data||[]).map(n=>`<div class="kc-nota-item">
-    <div class="kc-nota-texto">${n.texto}</div>
-    <div class="kc-nota-meta">${n.criado_por||'—'} · ${new Date(n.created_at).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</div>
-  </div>`).join('')||'<div style="font-size:12px;color:var(--muted);padding:8px 0">Nenhuma nota ainda</div>'
+  const eu=usuarioAtual?.nome
+  con.innerHTML=(data||[]).map(n=>{
+    const mine=n.criado_por===eu
+    const hora=new Date(n.created_at).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})
+    return`<div class="kc-nota-item ${mine?'mine':'theirs'}">
+      <div class="kc-nota-bubble">${n.texto.replace(/\n/g,'<br>')}</div>
+      <div class="kc-nota-meta">${mine?'':n.criado_por+' · '}${hora}</div>
+    </div>`
+  }).join('')||'<div style="font-size:12px;color:var(--muted);padding:8px 0;text-align:center">Nenhuma mensagem ainda</div>'
+  con.scrollTop=con.scrollHeight
 }
 
 async function adicionarNota(){
@@ -3705,7 +3718,7 @@ async function adicionarNota(){
     const cardNome=kanbanCardAtual.convidado_nome?`${kanbanCardAtual.convidado_nome} — ${kanbanCardAtual.casamento_nome}`:kanbanCardAtual.casamento_nome
     await criarNotificacao(kanbanCardAtual.id,`${usuarioAtual?.nome||'Alguém'} adicionou uma nota no card "${cardNome}"`,kanbanCardAtual.criado_por)
   }
-  inp.value='';carregarNotasKanban(kanbanCardAtual.id)
+  inp.value='';inp.style.height='auto';carregarNotasKanban(kanbanCardAtual.id)
 }
 
 // ── ANEXOS KANBAN ──
