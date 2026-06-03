@@ -2294,8 +2294,17 @@ async function salvarCasamento(){
   const data=getCasData()
   if(!data.nome){alert('Preencha o nome do casal!');btn.textContent='Salvar';btn.disabled=false;return}
   if(casamentoAtual){
+    const nomeAnterior=casamentoAtual.nome
     await sb.from('casamentos').update(data).eq('id',casamentoAtual.id)
     await registrarLog('editou','casamentos',casamentoAtual.id,data.nome,casamentoAtual,data)
+    // Atualiza nome em cascata se mudou
+    if(data.nome!==nomeAnterior){
+      await Promise.all([
+        sb.from('solicitacoes_kanban').update({casamento_nome:data.nome}).eq('casamento_id',casamentoAtual.id),
+        sb.from('casamento_assessoras').update({casamento_nome:data.nome}).eq('casamento_id',casamentoAtual.id),
+        sb.from('casamento_fornecedores').update({casamento_nome:data.nome}).eq('casamento_id',casamentoAtual.id),
+      ])
+    }
   }else{
     const{data:r}=await sb.from('casamentos').insert(data).select()
     await registrarLog('criou','casamentos',r?.[0]?.id,data.nome,null,data)
@@ -3706,17 +3715,28 @@ async function carregarNotasKanban(cardId){
     const mine=n.criado_por===eu
     const hora=new Date(n.created_at).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})
     const acoes=mine?`<div class="kc-nota-acoes">
-      <button onclick="editarNota(${n.id},'${n.texto.replace(/'/g,"\\'").replace(/\n/g,'\\n')}')" title="Editar">✏️</button>
-      <button onclick="excluirNota(${n.id})" title="Excluir">🗑</button>
+      <button data-edit-id="${n.id}" title="Editar">✏️</button>
+      <button data-del-id="${n.id}" title="Excluir">🗑</button>
     </div>`:''
-    return`<div class="kc-nota-item ${mine?'mine':'theirs'}" id="nota-${n.id}">
+    return`<div class="kc-nota-item ${mine?'mine':'theirs'}" id="nota-${n.id}" data-texto="${encodeURIComponent(n.texto)}">
       ${acoes}
       <div class="kc-nota-bubble" id="nota-bubble-${n.id}">${n.texto.replace(/\n/g,'<br>')}</div>
       <div class="kc-nota-meta">${mine?'':n.criado_por+' · '}${hora}</div>
     </div>`
   }).join('')||'<div style="font-size:12px;color:var(--muted);padding:8px 0;text-align:center">Nenhuma mensagem ainda</div>'
   con.scrollTop=con.scrollHeight
-  // Garante listener de Enter no textarea (fix para modal)
+  // Delegated click handler para editar/excluir
+  con.onclick=e=>{
+    const editBtn=e.target.closest('[data-edit-id]')
+    const delBtn=e.target.closest('[data-del-id]')
+    if(editBtn){
+      const id=editBtn.dataset.editId
+      const item=document.getElementById('nota-'+id)
+      const texto=item?decodeURIComponent(item.dataset.texto):''
+      editarNota(id,texto)
+    }
+    if(delBtn) excluirNota(delBtn.dataset.delId)
+  }
   const inp=document.getElementById('kc-nota-input')
   if(inp&&!inp._listenerAdded){
     inp._listenerAdded=true
@@ -3728,24 +3748,25 @@ async function carregarNotasKanban(cardId){
 
 async function excluirNota(id){
   if(!confirm('Excluir esta mensagem?'))return
-  await sb.from('kanban_notas').delete().eq('id',id)
+  await sb.from('kanban_notas').delete().eq('id',Number(id))
   carregarNotasKanban(kanbanCardAtual.id)
 }
 
 function editarNota(id,textoAtual){
   const bubble=document.getElementById('nota-bubble-'+id)
   if(!bubble)return
-  const textoReal=textoAtual.replace(/\\n/g,'\n')
   bubble.innerHTML=`<textarea id="edit-nota-${id}"
     style="width:100%;border:none;background:transparent;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;resize:none;color:inherit;min-height:40px;line-height:1.4"
-    onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();salvarEdicaoNota(${id})}"
-  >${textoReal}</textarea>
+  >${textoAtual}</textarea>
   <div style="display:flex;gap:6px;margin-top:6px;justify-content:flex-end">
     <button onclick="carregarNotasKanban(kanbanCardAtual.id)" style="background:rgba(255,255,255,.3);border:none;border-radius:6px;padding:3px 10px;font-size:11px;cursor:pointer;color:inherit">Cancelar</button>
-    <button onclick="salvarEdicaoNota(${id})" style="background:rgba(255,255,255,.4);border:none;border-radius:6px;padding:3px 10px;font-size:11px;font-weight:600;cursor:pointer;color:inherit">Salvar</button>
+    <button onclick="salvarEdicaoNota('${id}')" style="background:rgba(255,255,255,.4);border:none;border-radius:6px;padding:3px 10px;font-size:11px;font-weight:600;cursor:pointer;color:inherit">Salvar</button>
   </div>`
   const ta=document.getElementById('edit-nota-'+id)
-  if(ta){ta.focus();ta.style.height='auto';ta.style.height=ta.scrollHeight+'px'}
+  if(ta){
+    ta.focus();ta.style.height='auto';ta.style.height=ta.scrollHeight+'px'
+    ta.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();salvarEdicaoNota(id)}})
+  }
 }
 
 async function salvarEdicaoNota(id){
@@ -3753,7 +3774,7 @@ async function salvarEdicaoNota(id){
   if(!ta)return
   const txt=ta.value.trim()
   if(!txt)return
-  await sb.from('kanban_notas').update({texto:txt}).eq('id',id)
+  await sb.from('kanban_notas').update({texto:txt}).eq('id',Number(id))
   carregarNotasKanban(kanbanCardAtual.id)
 }
 
