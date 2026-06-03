@@ -3426,6 +3426,10 @@ async function loadKanban(){
     const badge=document.getElementById('badge-'+r)
     if(badge){badge.textContent=novas;badge.style.display=novas>0?'inline':'none'}
   })
+  // Badge da Estela — cards criados por ela na coluna nova
+  const novasEstela=kanbanData.filter(k=>(k.criado_por||'').toLowerCase().includes('estela')&&k.coluna==='nova').length
+  const badgeEstela=document.getElementById('badge-estela')
+  if(badgeEstela){badgeEstela.textContent=novasEstela;badgeEstela.style.display=novasEstela>0?'inline':'none'}
   const total=kanbanData.length
   document.getElementById('viagens-count').textContent=total+' solicitação(ões) no total'
   populateFormCasamentos()
@@ -3452,12 +3456,19 @@ function showKanbanTab(tab,btn){
 function renderKanban(){
   const board=document.getElementById('kb-board');if(!board)return
   const q=(document.getElementById('kb-search')?.value||'').toLowerCase()
+  const isEstela=kanbanTabAtual==='estela'
   const filtered=kanbanData.filter(k=>{
-    if(k.responsavel!==kanbanTabAtual)return false
+    if(isEstela){
+      // Aba da Estela: mostra todos os cards criados por ela
+      if(!(k.criado_por||'').toLowerCase().includes('estela'))return false
+    } else {
+      if(k.responsavel!==kanbanTabAtual)return false
+    }
     if(!q)return true
     return(k.casamento_nome||'').toLowerCase().includes(q)||(k.assessora_nome||'').toLowerCase().includes(q)||(k.fornecedor_nome||'').toLowerCase().includes(q)||(k.solicitacao||'').toLowerCase().includes(q)
   })
-  const colunas=getColunasAtivas(kanbanTabAtual)
+  // Para Estela usa as colunas da Rapha como base
+  const colunas=getColunasAtivas(isEstela?'rapha':kanbanTabAtual)
   board.innerHTML=colunas.map(col=>{
     const cards=filtered.filter(k=>k.coluna===col.id)
     return`<div class="kb-col" id="kbcol-${col.id}" data-coluna="${col.id}"
