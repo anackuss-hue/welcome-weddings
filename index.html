@@ -77,6 +77,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .kc-nota-item.mine .kc-nota-bubble{background:var(--gold);color:#fff;border-bottom-right-radius:4px}
 .kc-nota-item.theirs .kc-nota-bubble{background:var(--gold-pale);border:1px solid var(--gold-border);color:var(--text);border-bottom-left-radius:4px}
 .kc-nota-meta{font-size:10px;color:var(--muted);margin-top:3px;padding:0 2px}
+.kc-nota-acoes{display:none;gap:4px;margin-bottom:3px}
+.kc-nota-item:hover .kc-nota-acoes{display:flex}
+.kc-nota-acoes button{background:none;border:none;cursor:pointer;font-size:12px;padding:2px 4px;border-radius:4px;opacity:.6;transition:opacity .15s}
+.kc-nota-acoes button:hover{opacity:1;background:var(--gold-pale)}
 .kc-check-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;border:1px solid var(--border);margin-bottom:6px;background:var(--white)}
 .kc-check-item.feito{background:#f9f9f9;opacity:.7}
 .kc-check-cb{width:16px;height:16px;cursor:pointer;accent-color:var(--gold);flex-shrink:0}
@@ -3701,12 +3705,56 @@ async function carregarNotasKanban(cardId){
   con.innerHTML=(data||[]).map(n=>{
     const mine=n.criado_por===eu
     const hora=new Date(n.created_at).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})
-    return`<div class="kc-nota-item ${mine?'mine':'theirs'}">
-      <div class="kc-nota-bubble">${n.texto.replace(/\n/g,'<br>')}</div>
+    const acoes=mine?`<div class="kc-nota-acoes">
+      <button onclick="editarNota(${n.id},'${n.texto.replace(/'/g,"\\'").replace(/\n/g,'\\n')}')" title="Editar">✏️</button>
+      <button onclick="excluirNota(${n.id})" title="Excluir">🗑</button>
+    </div>`:''
+    return`<div class="kc-nota-item ${mine?'mine':'theirs'}" id="nota-${n.id}">
+      ${acoes}
+      <div class="kc-nota-bubble" id="nota-bubble-${n.id}">${n.texto.replace(/\n/g,'<br>')}</div>
       <div class="kc-nota-meta">${mine?'':n.criado_por+' · '}${hora}</div>
     </div>`
   }).join('')||'<div style="font-size:12px;color:var(--muted);padding:8px 0;text-align:center">Nenhuma mensagem ainda</div>'
   con.scrollTop=con.scrollHeight
+  // Garante listener de Enter no textarea (fix para modal)
+  const inp=document.getElementById('kc-nota-input')
+  if(inp&&!inp._listenerAdded){
+    inp._listenerAdded=true
+    inp.addEventListener('keydown',e=>{
+      if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();adicionarNota()}
+    })
+  }
+}
+
+async function excluirNota(id){
+  if(!confirm('Excluir esta mensagem?'))return
+  await sb.from('kanban_notas').delete().eq('id',id)
+  carregarNotasKanban(kanbanCardAtual.id)
+}
+
+function editarNota(id,textoAtual){
+  const bubble=document.getElementById('nota-bubble-'+id)
+  if(!bubble)return
+  const textoReal=textoAtual.replace(/\\n/g,'\n')
+  bubble.innerHTML=`<textarea id="edit-nota-${id}"
+    style="width:100%;border:none;background:transparent;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;resize:none;color:inherit;min-height:40px;line-height:1.4"
+    onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();salvarEdicaoNota(${id})}"
+  >${textoReal}</textarea>
+  <div style="display:flex;gap:6px;margin-top:6px;justify-content:flex-end">
+    <button onclick="carregarNotasKanban(kanbanCardAtual.id)" style="background:rgba(255,255,255,.3);border:none;border-radius:6px;padding:3px 10px;font-size:11px;cursor:pointer;color:inherit">Cancelar</button>
+    <button onclick="salvarEdicaoNota(${id})" style="background:rgba(255,255,255,.4);border:none;border-radius:6px;padding:3px 10px;font-size:11px;font-weight:600;cursor:pointer;color:inherit">Salvar</button>
+  </div>`
+  const ta=document.getElementById('edit-nota-'+id)
+  if(ta){ta.focus();ta.style.height='auto';ta.style.height=ta.scrollHeight+'px'}
+}
+
+async function salvarEdicaoNota(id){
+  const ta=document.getElementById('edit-nota-'+id)
+  if(!ta)return
+  const txt=ta.value.trim()
+  if(!txt)return
+  await sb.from('kanban_notas').update({texto:txt}).eq('id',id)
+  carregarNotasKanban(kanbanCardAtual.id)
 }
 
 async function adicionarNota(){
