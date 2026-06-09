@@ -3470,6 +3470,17 @@ function showKanbanTab(tab,btn){
   document.querySelectorAll('.kb-tab').forEach(t=>t.classList.remove('active'))
   if(btn)btn.classList.add('active')
   const s=document.getElementById('kb-search');if(s)s.value=''
+  _kbTermExpand=new Set()
+  renderKanban()
+}
+
+// Colunas de encerramento — cards somem do board e ficam atrás de "Abrir"
+const KB_TERMINAIS=['finalizado','ganho','perdido','desistiu','cancelado','realizado']
+function isColunaTerminal(colId){return KB_TERMINAIS.includes(colId)}
+let _kbTermExpand=new Set()
+function toggleTermCol(colId){
+  if(_kbTermExpand.has(colId))_kbTermExpand.delete(colId)
+  else _kbTermExpand.add(colId)
   renderKanban()
 }
 
@@ -3491,13 +3502,28 @@ function renderKanban(){
   const colunas=getColunasAtivas(isEstela?'rapha':kanbanTabAtual)
   board.innerHTML=colunas.map(col=>{
     const cards=filtered.filter(k=>k.coluna===col.id)
+    const terminal=isColunaTerminal(col.id)
+    const aberta=_kbTermExpand.has(col.id)
+    // Coluna de encerramento fechada: esconde os cards, mostra só "Abrir"
+    if(terminal&&!aberta){
+      return`<div class="kb-col" id="kbcol-${col.id}" data-coluna="${col.id}"
+        ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dragDrop(event,'${col.id}')">
+        <div class="kb-col-header">
+          <span class="kb-col-title">${col.label}</span>
+          <span class="kb-count">${cards.length}</span>
+        </div>
+        <button class="kb-add-btn" onclick="toggleTermCol('${col.id}')" style="border-style:solid">📂 Abrir (${cards.length})</button>
+      </div>`
+    }
     return`<div class="kb-col" id="kbcol-${col.id}" data-coluna="${col.id}"
       ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dragDrop(event,'${col.id}')">
       <div class="kb-col-header">
         <span class="kb-col-title">${col.label}</span>
         <span class="kb-count">${cards.length}</span>
       </div>
-      <button class="kb-add-btn" onclick="openNovaKanban('${col.id}')">+ Adicionar</button>
+      ${terminal
+        ? `<button class="kb-add-btn" onclick="toggleTermCol('${col.id}')" style="border-style:solid">✕ Fechar finalizados</button>`
+        : `<button class="kb-add-btn" onclick="openNovaKanban('${col.id}')">+ Adicionar</button>`}
       ${cards.map(k=>renderKanbanCard(k)).join('')}
     </div>`
   }).join('')
@@ -3529,7 +3555,8 @@ function renderKanbanCard(k){
   if(k.servicos)tags.push(k.servicos)
   if(k.solicitacao)tags.push(k.solicitacao.slice(0,30)+(k.solicitacao.length>30?'...':''))
 
-  const avatar=(k.assessora_nome||k.casamento_nome||'?')[0].toUpperCase()
+  const solicitante=k.criado_por||''
+  const avatar=(solicitante||k.assessora_nome||k.casamento_nome||'?')[0].toUpperCase()
   const dt=new Date(k.created_at).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})
 
   return`<div class="kb-card" draggable="true" data-id="${k.id}" ondragstart="dragStart(event,'${k.id}')" ondragend="dragEnd(event)" onclick="openKanbanCard('${k.id}')">
@@ -3541,7 +3568,9 @@ function renderKanbanCard(k){
     ${tags.length?`<div class="kb-tags">${tags.map(t=>`<span class="kb-tag">${t}</span>`).join('')}</div>`:''}
     <div class="kb-card-meta">
       <span class="kb-date">${dt}</span>
-      <div class="kb-avatar">${avatar}</div>
+      ${solicitante
+        ? `<div style="display:flex;align-items:center;gap:5px;min-width:0"><span style="font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:95px">${solicitante}</span><div class="kb-avatar" title="Solicitado por ${solicitante}">${avatar}</div></div>`
+        : `<div class="kb-avatar">${avatar}</div>`}
     </div>
   </div>`
 }
