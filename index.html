@@ -1418,6 +1418,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <label>✈️ Cidade de saída <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;color:var(--muted)">(se diferente do perfil)</span></label>
       <input id="sol-cidade-saida" placeholder="Ex: Rio de Janeiro">
     </div>
+    <div class="f" id="sol-assessora2-wrap" style="margin-top:4px">
+      <label>👥 2ª assessora na mesma viagem <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;color:var(--muted)">(opcional — vira um card só)</span></label>
+      <select id="sol-assessora2" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+        <option value="">Somente esta assessora</option>
+      </select>
+    </div>
     <div class="sec" style="margin-top:8px">
       <div class="st">O que vai precisar</div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px">
@@ -1433,6 +1439,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
           <span style="font-size:22px">🏨</span>
           <span style="font-size:12px;font-weight:600;color:#888">Hospedagem</span>
         </div>
+      </div>
+      <div id="sol-hosp-detail" style="display:none;margin-top:10px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:10px;padding:12px">
+        <label style="display:block;font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px">🏨 Onde fica a hospedagem?</label>
+        <select id="sol-hosp-local" onchange="toggleHospProximo()" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--gold-border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;background:#fff">
+          <option value="">Selecionar...</option>
+          <option value="mesmo">No mesmo hotel do casamento</option>
+          <option value="proximo">Em hotel próximo</option>
+        </select>
+        <input id="sol-hosp-proximo" placeholder="Qual hotel? (opcional)" style="display:none;width:100%;margin-top:8px;padding:9px 12px;border-radius:8px;border:1px solid var(--gold-border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;background:#fff">
       </div>
     </div>
     <div class="f" style="margin-top:12px"><label>Observações</label><textarea id="sol-obs" placeholder="Informações adicionais, preferências..."></textarea></div>
@@ -2829,6 +2844,10 @@ function toggleSolCard(tipo){
 function setSolCard(tipo,val){
   solCards[tipo]=val
   const el=document.getElementById('sol-card-'+tipo)
+  if(tipo==='hotel'){
+    const det=document.getElementById('sol-hosp-detail')
+    if(det)det.style.display=val?'block':'none'
+  }
   if(!el)return
   if(val){
     el.style.border='1.5px solid var(--gold)'
@@ -2839,6 +2858,11 @@ function setSolCard(tipo,val){
     el.style.background='var(--bg)'
     el.querySelector('span:last-child').style.color='#888'
   }
+}
+function toggleHospProximo(){
+  const v=document.getElementById('sol-hosp-local')?.value
+  const inp=document.getElementById('sol-hosp-proximo')
+  if(inp)inp.style.display=v==='proximo'?'block':'none'
 }
 
 // ── Estados de logística da Rapha: pendente → emitido → nao_necessario → pendente
@@ -2941,27 +2965,56 @@ function abrirSolicitacao(escaladaId){
   document.getElementById('msol-avatar').textContent=(e.assessora?.nome||'?')[0]
   ;['sol-data-chegada','sol-data-saida','sol-hora-chegada','sol-hora-saida','sol-obs','sol-cidade-saida'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
   ;['passagem','transfer','hotel'].forEach(id=>setSolCard(id,false))
+  // Detalhe de hospedagem
+  const hl=document.getElementById('sol-hosp-local');if(hl)hl.value=''
+  const hp=document.getElementById('sol-hosp-proximo');if(hp){hp.value='';hp.style.display='none'}
+  // 2ª assessora (outras escaladas do mesmo casamento)
+  const sel2=document.getElementById('sol-assessora2')
+  if(sel2){
+    const outras=escaladas.filter(x=>x.id!==e.id)
+    sel2.innerHTML='<option value="">Somente esta assessora</option>'+outras.map(o=>`<option value="${o.id}">${o.assessora?.nome||'?'}${o.assessora?.cidade?' — '+o.assessora.cidade:''}</option>`).join('')
+    sel2.value=''
+    document.getElementById('sol-assessora2-wrap').style.display=outras.length?'block':'none'
+  }
   document.getElementById('modal-solicitacao').classList.add('open')
 }
 async function salvarSolicitacao(){
   const btn=document.getElementById('btn-ssol');btn.textContent='Enviando...';btn.disabled=true
   const dataChegada=document.getElementById('sol-data-chegada').value||null
   const dataSaida=document.getElementById('sol-data-saida').value||null
+  // 2ª assessora opcional (mesma viagem)
+  const esc2id=document.getElementById('sol-assessora2')?.value||''
+  const esc2=esc2id?escaladas.find(x=>x.id===esc2id):null
+  const nome1=solAssessoraAtual?.assessora?.nome||'?'
+  const nomeCombinado=esc2?`${nome1} + ${esc2.assessora?.nome||'?'}`:nome1
   const data={casamento_id:casamentoAtual?.id,casamento_nome:casamentoAtual?.nome,assessora_id:solAssessoraAtual?.assessora_id,assessora_nome:solAssessoraAtual?.assessora?.nome,data_chegada:dataChegada,hora_chegada:document.getElementById('sol-hora-chegada').value||null,data_saida:dataSaida,hora_saida:document.getElementById('sol-hora-saida').value||null,cidade_saida:document.getElementById('sol-cidade-saida').value||null,precisa_passagem:solCards.passagem,precisa_hotel:solCards.hotel,precisa_transfer:solCards.transfer,obs:document.getElementById('sol-obs').value,solicitado_por:usuarioAtual?.nome,status:'pendente'}
   await sb.from('solicitacoes_viagem').insert(data)
-  // Cria card no Kanban automaticamente
-  const servicos=[solCards.passagem&&'Voo',solCards.transfer&&'Transfer',solCards.hotel&&'Hospedagem'].filter(Boolean).join(' · ')
-  await sb.from('solicitacoes_kanban').insert({tipo:'viagem_assessora',coluna:'nova',responsavel:'rapha',casamento_id:casamentoAtual?.id,casamento_nome:casamentoAtual?.nome,assessora_id:solAssessoraAtual?.assessora_id,assessora_nome:solAssessoraAtual?.assessora?.nome,periodo_de:dataChegada,periodo_ate:dataSaida,servicos:servicos||null,solicitacao:document.getElementById('sol-obs').value||null,criado_por:usuarioAtual?.nome})
-  // Atualiza período de ocupação na escala automaticamente
-  if(solAssessoraAtual?.id&&(dataChegada||dataSaida)){
+  // Se houver 2ª assessora, registra a viagem dela também (registro individual por assessora)
+  if(esc2){
+    await sb.from('solicitacoes_viagem').insert({...data,assessora_id:esc2.assessora_id,assessora_nome:esc2.assessora?.nome})
+  }
+  // Hospedagem detalhada (mesmo hotel do casamento ou hotel próximo)
+  let hospLabel='Hospedagem'
+  if(solCards.hotel){
+    const hlv=document.getElementById('sol-hosp-local')?.value
+    if(hlv==='mesmo')hospLabel='Hospedagem (mesmo hotel do casamento)'
+    else if(hlv==='proximo'){const hpv=(document.getElementById('sol-hosp-proximo')?.value||'').trim();hospLabel='Hospedagem (hotel próximo'+(hpv?': '+hpv:'')+')'}
+  }
+  // Cria UM card no Kanban (combina as 2 assessoras se houver)
+  const servicos=[solCards.passagem&&'Voo',solCards.transfer&&'Transfer',solCards.hotel&&hospLabel].filter(Boolean).join(' · ')
+  await sb.from('solicitacoes_kanban').insert({tipo:'viagem_assessora',coluna:'nova',responsavel:'rapha',casamento_id:casamentoAtual?.id,casamento_nome:casamentoAtual?.nome,assessora_id:solAssessoraAtual?.assessora_id,assessora_nome:nomeCombinado,periodo_de:dataChegada,periodo_ate:dataSaida,servicos:servicos||null,solicitacao:document.getElementById('sol-obs').value||null,criado_por:usuarioAtual?.nome})
+  // Atualiza período de ocupação nas escalas (as duas, se houver)
+  const escalasParaAtualizar=[solAssessoraAtual,esc2].filter(x=>x&&x.id)
+  if(escalasParaAtualizar.length&&(dataChegada||dataSaida)){
     const update={}
     if(dataChegada)update.periodo_inicio=dataChegada
     if(dataSaida)update.periodo_fim=dataSaida
-    await sb.from('casamento_assessoras').update(update).eq('id',solAssessoraAtual.id)
-    // Atualiza cache local
-    const esc=window._escaladasCache||[]
-    const idx=esc.findIndex(e=>e.casamento_id===casamentoAtual?.id&&e.assessora_id===solAssessoraAtual?.assessora_id)
-    if(idx>=0){if(dataChegada)esc[idx].periodo_inicio=dataChegada;if(dataSaida)esc[idx].periodo_fim=dataSaida}
+    for(const ex of escalasParaAtualizar){
+      await sb.from('casamento_assessoras').update(update).eq('id',ex.id)
+      const esc=window._escaladasCache||[]
+      const idx=esc.findIndex(e=>e.casamento_id===casamentoAtual?.id&&e.assessora_id===ex.assessora_id)
+      if(idx>=0){if(dataChegada)esc[idx].periodo_inicio=dataChegada;if(dataSaida)esc[idx].periodo_fim=dataSaida}
+    }
   }
   await enviarEmailSolicitacao(data)
   await enviarTarefaTeams(data)
@@ -3529,6 +3582,20 @@ function renderKanban(){
   }).join('')
 }
 
+// Cidade(s) de origem da(s) assessora(s) do card — busca por id (principal) e por nome
+function kbCidadesOrigem(k){
+  if(k.tipo!=='viagem_assessora')return ''
+  const nomes=(k.assessora_nome||'').split(' + ').map(s=>s.trim()).filter(Boolean)
+  const cidades=[]
+  nomes.forEach((nm,i)=>{
+    let c=''
+    if(i===0&&k.assessora_id){const a=(assessoras||[]).find(x=>x.id===k.assessora_id);c=a?.cidade||''}
+    if(!c){const a=(assessoras||[]).find(x=>(x.nome||'').toLowerCase()===nm.toLowerCase());c=a?.cidade||''}
+    if(c)cidades.push(c)
+  })
+  return [...new Set(cidades)].join(' · ')
+}
+
 function renderKanbanCard(k){
   const tipoTag={
     viagem_assessora:`<span class="tipo-tag tipo-viagem">🧳 Viagem assessora</span>`,
@@ -3565,6 +3632,7 @@ function renderKanbanCard(k){
       <span style="font-size:13px" title="${k.prioridade||'media'}">${k.prioridade==='alta'?'🔴':k.prioridade==='baixa'?'🟢':'🟡'}</span>
     </div>
     <div class="kb-card-name">${nome}</div>
+    ${k.tipo==='viagem_assessora'&&kbCidadesOrigem(k)?`<div style="font-size:11px;color:var(--muted);margin-top:2px">📍 Origem: ${kbCidadesOrigem(k)}</div>`:''}
     ${tags.length?`<div class="kb-tags">${tags.map(t=>`<span class="kb-tag">${t}</span>`).join('')}</div>`:''}
     <div class="kb-card-meta">
       <span class="kb-date">${dt}</span>
@@ -3598,6 +3666,8 @@ async function openKanbanCard(id){
   let html=''
   // Fornecedor/Assessora
   if(k.assessora_nome)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">${k.tipo==='viagem_fornecedor'?'Fornecedor':'Assessora'}</span><div style="font-size:13px;margin-top:2px">🏢 ${k.assessora_nome}</div></div>`
+  // Cidade de origem da(s) assessora(s)
+  {const co=kbCidadesOrigem(k);if(co)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">Cidade de Origem</span><div style="font-size:13px;margin-top:2px">📍 ${co}</div></div>`}
   // Casamento
   if(k.casamento_nome)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">Casamento</span><div style="font-size:13px;margin-top:2px">💒 ${k.casamento_nome}</div></div>`
   // Período e horários
