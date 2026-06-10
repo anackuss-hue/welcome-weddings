@@ -2187,7 +2187,7 @@ function renderCasamentos(){
     const mm=!mes||c.plan_data?.split('-')[1]===mes.padStart(2,'0')
     const md=!destino||c.destino===destino
     const mh=!hotel||c.plan_hotel===hotel
-    const mst=tabSetor?(c.setor===tabStatus):((!tabStatus||(tabStatus==='Realizado'?isRealizado(c.status||'Em andamento'):(c.status||'Em andamento')===tabStatus)))
+    const mst=tabSetor?(c.setor===tabStatus&&((window._cTabAtual!=='producao')||!['Realizado','Cancelado'].includes(c.status||'Em andamento'))):((!tabStatus||(tabStatus==='Realizado'?isRealizado(c.status||'Em andamento'):(c.status||'Em andamento')===tabStatus)))
     return ms&&ma&&mm&&md&&mh&&mst
   })
   // Ordenação: futuros primeiro (mais próximo antes), sem data depois, concluídos/cancelados no fim
@@ -2210,7 +2210,7 @@ function renderCasamentos(){
     else if(st==='Cancelado')counts.cancelado++
     else counts.andamento++
     if(c.setor==='Planejamento')counts.planejamento++
-    else if(c.setor==='Produção+Viagem')counts.producao++
+    else if(c.setor==='Produção+Viagem'&&!['Realizado','Cancelado'].includes(st))counts.producao++
   })
   Object.entries(counts).forEach(([k,v])=>{const el=document.getElementById('ctab-n-'+k);if(el)el.textContent=v})
   document.getElementById('casamentos-count').textContent=filtered.length+' de '+casamentos.length+' casamento(s)'
