@@ -893,10 +893,73 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <div id="prod-assess-preview"></div>
     </div>
     <div class="tc" id="tab-viag">
-      <div style="text-align:center;padding:60px 20px">
-        <div style="font-size:48px;margin-bottom:16px">🚧</div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold);margin-bottom:8px">Em Construção</div>
-        <div style="font-size:14px;color:var(--muted)">Esta seção está sendo desenvolvida</div>
+      <!-- Checklist de Viagem -->
+      <div class="sec">
+        <div class="st" style="margin-bottom:14px">✅ Checklist de Viagem</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:4px 16px">
+          <div class="tr-row" onclick="tg('c-voos')"><div class="tr-track" id="track-c-voos"><div class="tr-thumb"></div></div><span class="tr-label">✈️ Voos confirmados</span></div>
+          <div class="tr-row" onclick="tg('c-transfers')"><div class="tr-track" id="track-c-transfers"><div class="tr-thumb"></div></div><span class="tr-label">🚐 Transfers confirmados</span></div>
+          <div class="tr-row" onclick="tg('c-passeios')"><div class="tr-track" id="track-c-passeios"><div class="tr-thumb"></div></div><span class="tr-label">🗺️ Passeios confirmados</span></div>
+        </div>
+        <div style="margin-top:12px;padding:10px 14px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:10px">
+          <div class="tr-row" onclick="tg('c-vok')" style="padding:0;min-height:auto"><div class="tr-track" id="track-c-vok"><div class="tr-thumb"></div></div><span class="tr-label" style="font-weight:700;color:var(--gold)">✅ Viagem OK — tudo confirmado</span></div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px;margin-left:54px">Quando ativado, o card do casamento exibe a tag "Viagem OK"</div>
+        </div>
+      </div>
+
+      <!-- Viagem do Casal -->
+      <div class="sec" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--gold-border)">
+        <div class="st" style="margin-bottom:12px">💑 Viagem do Casal</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <div class="ro-opt vsel-casal" data-val="Em andamento" onclick="selViag('casal',this.dataset.val)">⏳ Em andamento</div>
+          <div class="ro-opt vsel-casal" data-val="Fechada" onclick="selViag('casal',this.dataset.val)">✅ Fechada</div>
+        </div>
+      </div>
+
+      <!-- Passeios & Experiências -->
+      <div class="sec" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--gold-border)">
+        <div class="st" style="margin-bottom:12px">🎟️ Passeios & Experiências</div>
+        <div style="margin-bottom:16px">
+          <div style="font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">🚤 Passeio de Barco</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <div class="ro-opt vsel-barco" data-val="Foi oferecido" onclick="selViag('barco',this.dataset.val)">📣 Foi oferecido</div>
+            <div class="ro-opt vsel-barco" data-val="Não oferecido" onclick="selViag('barco',this.dataset.val)">➖ Não oferecido</div>
+            <div class="ro-opt vsel-barco" data-val="Não quis" onclick="selViag('barco',this.dataset.val)">🙅 Não quis</div>
+            <div class="ro-opt vsel-barco" data-val="Fechado" onclick="selViag('barco',this.dataset.val)">✅ Fechado</div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">🎉 Coco Bongo</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <div class="ro-opt vsel-coco" data-val="Foi oferecido" onclick="selViag('coco',this.dataset.val)">📣 Foi oferecido</div>
+            <div class="ro-opt vsel-coco" data-val="Não oferecido" onclick="selViag('coco',this.dataset.val)">➖ Não oferecido</div>
+            <div class="ro-opt vsel-coco" data-val="Não quis" onclick="selViag('coco',this.dataset.val)">🙅 Não quis</div>
+            <div class="ro-opt vsel-coco" data-val="Fechado" onclick="selViag('coco',this.dataset.val)">✅ Fechado</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Viagem da Assessora (automático) -->
+      <div class="sec" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--gold-border)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+          <div class="st" style="margin-bottom:0">🧳 Viagem da Assessora</div>
+          <span style="font-size:10px;color:var(--gold);background:var(--gold-pale);padding:2px 8px;border-radius:10px;border:1px solid var(--gold-border)">automático</span>
+        </div>
+        <div id="viag-assess-resumo"><div style="font-size:13px;color:var(--muted)">—</div></div>
+      </div>
+
+      <!-- Detalhes da Viagem -->
+      <div class="sec" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--gold-border)">
+        <div class="st" style="margin-bottom:14px">🧳 Detalhes da Viagem</div>
+        <div class="f" style="margin-bottom:10px"><label>🚐 Transfer</label><input id="c-transfer" placeholder="Ex: Transfer aeroporto ↔ hotel confirmado com fornecedor X..."></div>
+        <div class="f" style="margin-bottom:10px"><label>🏨 Hospedagem</label><textarea id="c-hospedagem" placeholder="Hotel, quartos bloqueados, datas de check-in/check-out, upgrades..." style="min-height:70px"></textarea></div>
+        <div class="f"><label>🗺️ Passeios</label><textarea id="c-passeios-txt" placeholder="Passeios programados para o casal e convidados..." style="min-height:70px"></textarea></div>
+      </div>
+
+      <!-- Observações -->
+      <div class="sec" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--gold-border)">
+        <div class="st" style="margin-bottom:10px">📝 Observações de Viagem</div>
+        <textarea id="c-viag-obs" placeholder="Pendências, informações importantes, próximos passos..." style="width:100%;min-height:80px;border-radius:8px;border:1px solid var(--border);padding:10px 12px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;resize:vertical"></textarea>
       </div>
     </div>
     <div class="tc" id="tab-assess">
@@ -2004,6 +2067,39 @@ function closeFilterDrawer(tipo){
 // ── TOGGLE
 function tg(id){tgStates[id]=!tgStates[id];const t=document.getElementById('track-'+id);if(t)t.classList.toggle('on',tgStates[id])}
 function setTg(id,val){tgStates[id]=!!val;const t=document.getElementById('track-'+id);if(t)t.classList.toggle('on',!!val)}
+
+// ── Seletores da aba Viagem (pills de status)
+window._viagSel={}
+function selViag(campo,valor){
+  window._viagSel[campo]=window._viagSel[campo]===valor?null:valor // clicar de novo desmarca
+  document.querySelectorAll('.vsel-'+campo).forEach(el=>el.classList.toggle('sel',el.dataset.val===window._viagSel[campo]))
+}
+function setViag(campo,valor){
+  window._viagSel[campo]=valor||null
+  document.querySelectorAll('.vsel-'+campo).forEach(el=>el.classList.toggle('sel',el.dataset.val===window._viagSel[campo]))
+}
+
+// ── Resumo automático da viagem da assessora (aba Viagem)
+async function loadViagResumoAssessora(casId){
+  const box=document.getElementById('viag-assess-resumo');if(!box)return
+  box.innerHTML='<div class="ld">Carregando...</div>'
+  const{data}=await sb.from('solicitacoes_viagem').select('*,assessora:assessoras(nome)').eq('casamento_id',casId).order('created_at',{ascending:false})
+  if(!data?.length){box.innerHTML='<div style="font-size:13px;color:var(--muted);padding:12px;background:#f8f6f2;border-radius:8px">Nenhuma solicitação de viagem registrada para este casamento. As solicitações feitas na aba Fornecedores ou no Kanban de Viagens aparecem aqui automaticamente.</div>';return}
+  const stMini=(st)=>st==='emitido'?{t:'✓',c:'var(--green)',bg:'#e8f5ee'}:st==='nao_necessario'?{t:'✕',c:'#999',bg:'#f0f0f0'}:{t:'⏳',c:'#856404',bg:'#fdf6e3'}
+  box.innerHTML=data.map(s=>{
+    const itens=[['✈️ Voo',s.status_passagem],['🏨 Hotel',s.status_hotel],['🚌 Transfer',s.status_transfer],['🛡️ Seguro',s.status_seguro],['🚂 Trem',s.status_trem]].filter(([,v])=>v!=null)
+    const total=itens.length,done=itens.filter(([,v])=>v==='emitido'||v==='nao_necessario').length
+    const completa=total>0&&done===total
+    return`<div style="border:1px solid var(--gold-border);border-radius:10px;padding:12px 14px;margin-bottom:8px;background:#fff">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:8px">
+        <div style="font-weight:600;font-size:13px">${s.assessora?.nome||s.assessora_nome||'Assessora'}</div>
+        <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;${completa?'background:#e8f5ee;color:var(--green);border:1px solid #bfe3cd':'background:#fdf6e3;color:#856404;border:1px solid #f0e0b0'}">${completa?'✅ Completa':'⏳ Em andamento'}</span>
+      </div>
+      <div style="font-size:12px;color:#888;margin-bottom:8px">📅 ${s.data_chegada?fmtDate(s.data_chegada):'-'} → ${s.data_saida?fmtDate(s.data_saida):'-'}${s.cidade_saida?' · 📍 '+s.cidade_saida:''}</div>
+      ${itens.length?`<div style="display:flex;gap:6px;flex-wrap:wrap">${itens.map(([l,v])=>{const m=stMini(v);return`<span style="font-size:11px;font-weight:500;padding:3px 9px;border-radius:14px;background:${m.bg};color:${m.c}">${l} ${m.t}</span>`}).join('')}</div>`:''}
+    </div>`
+  }).join('')+'<div style="font-size:11px;color:var(--muted);margin-top:4px">Detalhes e alteração de status na aba 🏢 Fornecedores · seção Solicitações de Viagem</div>'
+}
 function getTg(id){return!!tgStates[id]}
 
 // ── QUAD OPTS (Sim/Não/Não verificado/Não aplicável)
@@ -2086,7 +2182,7 @@ function aplicarReadonlyAba(tab){
   const tabEl=document.getElementById('tab-'+tab)
   if(!tabEl)return
   tabEl.querySelectorAll('input,select,textarea').forEach(el=>{el.disabled=!pode;el.style.background=pode?'':'#f8f8f8';el.style.color=pode?'':'#aaa';el.style.cursor=pode?'':'not-allowed'})
-  tabEl.querySelectorAll('.tr-row').forEach(el=>{el.style.pointerEvents=pode?'':'none';el.style.opacity=pode?'':'0.5'})
+  tabEl.querySelectorAll('.tr-row,.ro-opt').forEach(el=>{el.style.pointerEvents=pode?'':'none';el.style.opacity=pode?'':'0.5'})
   const btnSalvar=document.getElementById('btn-sc')
   if(btnSalvar){const algumaPode=['plan','prod','viag','assess'].some(t=>verificarPermissaoAba(t));btnSalvar.style.display=algumaPode?'':'none'}
 }
@@ -2279,6 +2375,8 @@ function clearCasForm(){
   document.getElementById('c-status').value='Em andamento'
   ;['c-cons-plan','c-cons-prod','c-setor'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
   ;['c-voos','c-transfers','c-passeios','c-vok'].forEach(id=>setTg(id,false))
+  ;['casal','barco','coco'].forEach(c=>setViag(c,null))
+  const _var=document.getElementById('viag-assess-resumo');if(_var)_var.innerHTML='<div style="font-size:13px;color:var(--muted)">Salve o casamento para visualizar as solicitações de viagem.</div>'
 }
 function fillCasForm(c){
   const s=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||''}
@@ -2299,10 +2397,12 @@ function fillCasForm(c){
   renderPlanReunioes();renderProdReunioes();renderProdEventos()
   s('c-transfer',c.viag_transfer);s('c-passeios-txt',c.viag_passeios);s('c-hospedagem',c.viag_hospedagem);s('c-viag-obs',c.viag_obs)
   setTg('c-voos',c.checklist_voos);setTg('c-transfers',c.checklist_transfers);setTg('c-passeios',c.checklist_passeios);setTg('c-vok',c.viagem_ok)
+  setViag('casal',c.viag_casal_status);setViag('barco',c.viag_passeio_barco);setViag('coco',c.viag_coco_bongo)
+  if(c.id)loadViagResumoAssessora(c.id)
 }
 function getCasData(){
   const v=id=>document.getElementById(id)?.value||''
-  return{nome:v('c-nome'),destino:v('c-destino'),plan_data:v('c-data'),plan_horario:v('c-horario'),local_id:document.getElementById('c-hotel')?.value||null,plan_pacote:v('c-pacote'),plan_extra:v('c-extra'),plan_obs:v('c-obs'),status:v('c-status'),setor:document.getElementById('c-setor')?.value||null,consultora_plan:v('c-cons-plan')||null,consultora_prod:v('c-cons-prod')||null,prod_produtora:v('c-produtora'),prod_num_assessores:v('c-num-assessores'),prod_datas:v('c-datas'),prod_ultima_reuniao:v('c-ultima-reuniao'),prod_servicos:v('c-servicos'),prod_programacao:v('c-programacao'),prod_fornecedores:v('c-fornecedores'),prod_status:v('c-prod-status'),plan_reunioes:JSON.stringify(window._planReunioes||[]),prod_reunioes:JSON.stringify(window._prodReunioes||[]),prod_eventos:JSON.stringify(window._prodEventos||[]),prod_obs:v('c-prod-obs'),viag_transfer:v('c-transfer'),viag_passeios:v('c-passeios-txt'),viag_hospedagem:v('c-hospedagem'),viag_obs:v('c-viag-obs'),checklist_voos:getTg('c-voos'),checklist_transfers:getTg('c-transfers'),checklist_passeios:getTg('c-passeios'),viagem_ok:getTg('c-vok')}
+  return{nome:v('c-nome'),destino:v('c-destino'),plan_data:v('c-data'),plan_horario:v('c-horario'),local_id:document.getElementById('c-hotel')?.value||null,plan_pacote:v('c-pacote'),plan_extra:v('c-extra'),plan_obs:v('c-obs'),status:v('c-status'),setor:document.getElementById('c-setor')?.value||null,consultora_plan:v('c-cons-plan')||null,consultora_prod:v('c-cons-prod')||null,prod_produtora:v('c-produtora'),prod_num_assessores:v('c-num-assessores'),prod_datas:v('c-datas'),prod_ultima_reuniao:v('c-ultima-reuniao'),prod_servicos:v('c-servicos'),prod_programacao:v('c-programacao'),prod_fornecedores:v('c-fornecedores'),prod_status:v('c-prod-status'),plan_reunioes:JSON.stringify(window._planReunioes||[]),prod_reunioes:JSON.stringify(window._prodReunioes||[]),prod_eventos:JSON.stringify(window._prodEventos||[]),prod_obs:v('c-prod-obs'),viag_transfer:v('c-transfer'),viag_passeios:v('c-passeios-txt'),viag_hospedagem:v('c-hospedagem'),viag_obs:v('c-viag-obs'),checklist_voos:getTg('c-voos'),checklist_transfers:getTg('c-transfers'),checklist_passeios:getTg('c-passeios'),viagem_ok:getTg('c-vok'),viag_casal_status:window._viagSel?.casal||null,viag_passeio_barco:window._viagSel?.barco||null,viag_coco_bongo:window._viagSel?.coco||null}
 }
 async function salvarCasamento(){
   const btn=document.getElementById('btn-sc');btn.textContent='Salvando...';btn.disabled=true
