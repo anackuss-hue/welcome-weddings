@@ -33,6 +33,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .tg{background:#fdf3e0;color:var(--gold)}.tgr{background:#e8f5e9;color:var(--green)}
 .tr{background:#fdecea;color:var(--red)}.tgy{background:#f0f0f0;color:#666}.tb{background:#e3f2fd;color:#1565c0}
 .ta{background:#fff4e2;color:#c47d1a;border:1px solid #f3d9a8}
+.cd-chip{display:inline-block;background:var(--gold-pale);border:1px solid var(--gold-border);color:var(--gold);font-weight:600;font-size:12px;padding:3px 11px;border-radius:20px}
+.cview{display:inline-flex;background:#fff;border:1px solid var(--gold-border);border-radius:10px;padding:3px;gap:3px;margin-bottom:16px}
+.cview button{font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:600;border:0;background:transparent;color:#9a8a6a;padding:6px 14px;border-radius:7px;cursor:pointer;transition:all .15s}
+.cview button.on{background:var(--gold);color:#fff}
+.lpanel{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.crow{display:flex;align-items:center;gap:13px;padding:13px 16px;border-bottom:1px solid #f3eee3}
+.crow:last-child{border-bottom:0}
+.cdot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.crow-nm{font-weight:600;font-size:14px}
+.crow-meta{font-size:11.5px;color:#999;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crow-dt{font-size:12px;color:#777;white-space:nowrap}
+.crow-cd{font-size:11px;color:var(--gold);font-weight:600;white-space:nowrap}
+.crow-av{width:23px;height:23px;border-radius:50%;background:#fdf3e0;color:var(--gold);font-size:9.5px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--gold-border)}
+.crow .bo{padding:5px 12px;font-size:11.5px;flex-shrink:0}
+.cgh{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);font-weight:600;background:var(--gold-pale);padding:8px 16px;border-bottom:1px solid var(--gold-border)}
+@media(max-width:640px){.crow{gap:8px;padding:11px 12px}.crow-meta{max-width:130px}.crow .bo{padding:6px 10px}}
 .mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:flex-start;justify-content:center;padding:32px 20px;overflow-y:auto}
 .mo.open{display:flex}
 .mb{background:#fff;border-radius:16px;width:100%;max-width:760px;padding:32px;position:relative;margin:auto}
@@ -400,7 +416,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
           </select>
         </div>
       </div>
-      <div style="flex:1"><div class="cg" id="casamentos-grid"><div class="ld">Carregando...</div></div></div>
+      <div style="flex:1">
+        <div class="cview" id="cview-sel">
+          <button data-v="blocos" onclick="setCView('blocos')">▦ Blocos</button>
+          <button data-v="linhas" onclick="setCView('linhas')">▤ Linhas</button>
+          <button data-v="agrupado" onclick="setCView('agrupado')">🗂 Agrupado</button>
+        </div>
+        <div class="cg" id="casamentos-grid"><div class="ld">Carregando...</div></div>
+      </div>
     </div>
   </div>
 
@@ -2283,7 +2306,59 @@ function casPrecisaAssessora(c){
   const limite=new Date(dataCas);limite.setMonth(limite.getMonth()-8)
   return hoje>=limite
 }
+// Etiqueta de contagem regressiva ("faltam 5 meses", "em 12 dias", "amanhã")
+function cdLabel(c){
+  if(!c.plan_data)return null
+  if(['Realizado','Cancelado'].includes(c.status||'Em andamento'))return null
+  const hoje=new Date();hoje.setHours(0,0,0,0)
+  const d=new Date(c.plan_data+'T00:00:00')
+  if(isNaN(d))return null
+  const dias=Math.round((d-hoje)/86400000)
+  if(dias<0)return null
+  if(dias===0)return 'é hoje! 🎉'
+  if(dias===1)return 'amanhã'
+  if(dias<=45)return 'em '+dias+' dias'
+  const meses=Math.round(dias/30.44)
+  return meses===1?'falta 1 mês':'faltam '+meses+' meses'
+}
+// Assessoras escaladas + iniciais (avatares nas linhas)
+function assessorasDoCas(casId){
+  const ids=(window._escaladasCache||[]).filter(e=>e.casamento_id===casId).map(e=>e.assessora_id)
+  return (assessoras||[]).filter(a=>ids.includes(a.id))
+}
+function iniciais(nome){return (nome||'').trim().split(/\s+/).slice(0,2).map(w=>w[0]||'').join('').toUpperCase()}
+// Cor da bolinha de status na vista Linhas/Agrupado
+function dotColor(c){
+  const st=c.status||'Em andamento'
+  if(st==='Cancelado')return 'var(--red)'
+  if(st==='Realizado')return 'var(--gold)'
+  if(casPrecisaAssessora(c))return '#c47d1a'
+  if(c.viagem_ok)return 'var(--green)'
+  return 'var(--gold)'
+}
+// Etiqueta resumida (alerta tem prioridade sobre Viagem OK) p/ a direita da linha
+function pillResumo(c){
+  if(casPrecisaAssessora(c))return '<span class="tag ta">⏰ Escolher assessora</span>'
+  if(c.viagem_ok)return '<span class="tag tgr">✅ Viagem OK</span>'
+  return '<span style="color:#ccc;font-size:11px">·</span>'
+}
+const _MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
+function mesKey(c){
+  if(!c.plan_data)return {k:'zzzz',label:'Sem data definida'}
+  const p=c.plan_data.split('-')
+  return {k:p[0]+'-'+p[1],label:_MESES[parseInt(p[1],10)-1]+' '+p[0]}
+}
+function setCView(v){
+  window._cView=v
+  try{localStorage.setItem('ww_cview',v)}catch(e){}
+  renderCasamentos()
+}
 function renderCasamentos(){
+  // sincroniza o seletor de vista (Blocos / Linhas / Agrupado)
+  let _v;try{_v=localStorage.getItem('ww_cview')}catch(e){}
+  const view=window._cView||_v||'blocos'
+  window._cView=view
+  document.querySelectorAll('#cview-sel button').forEach(b=>b.classList.toggle('on',b.dataset.v===view))
   const s=(document.getElementById('search-c')?.value||'').toLowerCase()
   const ano=document.getElementById('f-c-ano')?.value||''
   const mes=document.getElementById('f-c-mes')?.value||''
@@ -2330,21 +2405,45 @@ function renderCasamentos(){
   document.getElementById('casamentos-count').textContent=filtered.length+' de '+casamentos.length+' casamento(s)'
   if(!filtered.length){grid.innerHTML='<div class="em"><div class="em-i">💍</div><div class="em-t">Nenhum casamento encontrado</div></div>';return}
   const sc=s=>s==='Realizado'?'tg':s==='Cancelado'?'tr':s==='Planejamento'?'tgb':s==='Produção+Viagem'?'tgr':'tgy'
-  grid.innerHTML=filtered.map(c=>`<div class="card" style="transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,.12)'" onmouseout="this.style.boxShadow=''">
+  const hotelNome=c=>c.local_id?(hoteis.find(h=>h.id===c.local_id)?.nome||'—'):'—'
+  const avs=c=>{const a=assessorasDoCas(c.id);return a.length?a.slice(0,2).map(x=>`<span class="crow-av" title="${(x.nome||'').replace(/"/g,'')}">${iniciais(x.nome)}</span>`).join(''):'<span style="color:#ccc;font-size:11px">—</span>'}
+  const cardHTML=c=>{const cd=cdLabel(c);return `<div class="card" style="transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,.12)'" onmouseout="this.style.boxShadow=''">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
       <div style="font-weight:600;font-size:16px;font-family:'Cormorant Garamond',serif;flex:1;min-width:0;margin-right:8px">${c.nome||'—'}</div>
       <span class="tag ${sc(c.status)}" style="flex-shrink:0">${c.status||'Em andamento'}</span>
     </div>
+    ${cd?`<div style="margin-bottom:12px"><span class="cd-chip">⏳ ${cd}</span></div>`:''}
     <div style="font-size:13px;color:#888;margin-bottom:3px">📍 ${c.destino||'—'}</div>
     <div style="font-size:13px;color:#888;margin-bottom:3px">📅 ${c.plan_data?fmtDate(c.plan_data):'—'}</div>
-    <div style="font-size:13px;color:#888;margin-bottom:12px">🏨 ${c.local_id?hoteis.find(h=>h.id===c.local_id)?.nome||'—':'—'}</div>
+    <div style="font-size:13px;color:#888;margin-bottom:12px">🏨 ${hotelNome(c)}</div>
     ${casPrecisaAssessora(c)?'<div class="tag ta" style="margin-bottom:10px">⏰ Escolher assessora</div>':''}
     ${c.viagem_ok?'<div class="tag tgr" style="margin-bottom:10px">✅ Viagem OK</div>':''}
     <div style="display:flex;gap:8px;margin-top:8px">
       <button class="btn bo" style="flex:1" onclick="openCasamento('${c.id}')">Abrir</button>
       <button class="btn bd" onclick="deleteCasamento('${c.id}')">✕</button>
     </div>
-  </div>`).join('')
+  </div>`}
+  const rowHTML=c=>{const cd=cdLabel(c);return `<div class="crow">
+    <span class="cdot" style="background:${dotColor(c)}"></span>
+    <div style="flex:1;min-width:0"><div class="crow-nm">${c.nome||'—'}</div><div class="crow-meta">📍 ${c.destino||'—'} · 🏨 ${hotelNome(c)}</div></div>
+    <div style="text-align:right;width:104px;flex-shrink:0"><div class="crow-dt">${c.plan_data?fmtDate(c.plan_data):'<span style="color:#bbb">a definir</span>'}</div>${cd?`<div class="crow-cd">⏳ ${cd}</div>`:''}</div>
+    <div style="width:60px;flex-shrink:0;display:flex;gap:3px;justify-content:center">${avs(c)}</div>
+    <div style="flex-shrink:0;min-width:92px;text-align:center">${pillResumo(c)}</div>
+    <button class="btn bo" onclick="openCasamento('${c.id}')">Abrir</button>
+  </div>`}
+  if(view==='linhas'){
+    grid.className=''
+    grid.innerHTML='<div class="lpanel">'+filtered.map(rowHTML).join('')+'</div>'
+  }else if(view==='agrupado'){
+    grid.className=''
+    const arr=[...filtered].sort((a,b)=>{if(!a.plan_data&&!b.plan_data)return 0;if(!a.plan_data)return 1;if(!b.plan_data)return -1;return a.plan_data.localeCompare(b.plan_data)})
+    const order=[],g={}
+    arr.forEach(c=>{const mk=mesKey(c);if(!g[mk.k]){g[mk.k]={label:mk.label,items:[]};order.push(mk.k)}g[mk.k].items.push(c)})
+    grid.innerHTML='<div class="lpanel">'+order.map(k=>`<div class="cgh">${g[k].label}</div>`+g[k].items.map(rowHTML).join('')).join('')+'</div>'
+  }else{
+    grid.className='cg'
+    grid.innerHTML=filtered.map(cardHTML).join('')
+  }
 }
 function openNovoCasamento(){
   casamentoAtual=null
