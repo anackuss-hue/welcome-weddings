@@ -32,6 +32,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
 .tg{background:#fdf3e0;color:var(--gold)}.tgr{background:#e8f5e9;color:var(--green)}
 .tr{background:#fdecea;color:var(--red)}.tgy{background:#f0f0f0;color:#666}.tb{background:#e3f2fd;color:#1565c0}
+.ta{background:#fff4e2;color:#c47d1a;border:1px solid #f3d9a8}
 .mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:flex-start;justify-content:center;padding:32px 20px;overflow-y:auto}
 .mo.open{display:flex}
 .mb{background:#fff;border-radius:16px;width:100%;max-width:760px;padding:32px;position:relative;margin:auto}
@@ -2265,6 +2266,23 @@ document.addEventListener('click',e=>{
     const dd=document.getElementById('f-disponivel-dropdown');if(dd)dd.style.display='none'
   }
 })
+// Alerta "Escolher assessora": dispara quando falta 8 meses ou menos pra data
+// do casamento E ainda não há nenhuma assessora escalada. Some sozinho quando
+// uma assessora é vinculada. Ignora casamentos sem data, Realizados/Cancelados
+// e os que já passaram.
+function casTemAssessora(casId){
+  return (window._escaladasCache||[]).some(e=>e.casamento_id===casId)
+}
+function casPrecisaAssessora(c){
+  if(!c.plan_data)return false
+  if(['Realizado','Cancelado'].includes(c.status||'Em andamento'))return false
+  if(casTemAssessora(c.id))return false
+  const hoje=new Date();hoje.setHours(0,0,0,0)
+  const dataCas=new Date(c.plan_data+'T00:00:00')
+  if(isNaN(dataCas)||dataCas<hoje)return false
+  const limite=new Date(dataCas);limite.setMonth(limite.getMonth()-8)
+  return hoje>=limite
+}
 function renderCasamentos(){
   const s=(document.getElementById('search-c')?.value||'').toLowerCase()
   const ano=document.getElementById('f-c-ano')?.value||''
@@ -2320,6 +2338,7 @@ function renderCasamentos(){
     <div style="font-size:13px;color:#888;margin-bottom:3px">📍 ${c.destino||'—'}</div>
     <div style="font-size:13px;color:#888;margin-bottom:3px">📅 ${c.plan_data?fmtDate(c.plan_data):'—'}</div>
     <div style="font-size:13px;color:#888;margin-bottom:12px">🏨 ${c.local_id?hoteis.find(h=>h.id===c.local_id)?.nome||'—':'—'}</div>
+    ${casPrecisaAssessora(c)?'<div class="tag ta" style="margin-bottom:10px">⏰ Escolher assessora</div>':''}
     ${c.viagem_ok?'<div class="tag tgr" style="margin-bottom:10px">✅ Viagem OK</div>':''}
     <div style="display:flex;gap:8px;margin-top:8px">
       <button class="btn bo" style="flex:1" onclick="openCasamento('${c.id}')">Abrir</button>
