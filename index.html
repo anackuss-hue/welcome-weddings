@@ -49,6 +49,41 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .crow .bo{padding:5px 12px;font-size:11.5px;flex-shrink:0}
 .cgh{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);font-weight:600;background:var(--gold-pale);padding:8px 16px;border-bottom:1px solid var(--gold-border)}
 @media(max-width:640px){.crow{gap:8px;padding:11px 12px}.crow-meta{max-width:130px}.crow .bo{padding:6px 10px}}
+.ck-sec{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:16px}
+.ck-sh{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.ck-st{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600}
+.ck-counts{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.ck-cp{font-size:11px;font-weight:600;border-radius:20px;padding:2px 9px}
+.ck-ok{color:var(--gold)}
+.ck-am{background:#fff4e2;color:#c47d1a;border:1px solid #f3d9a8}
+.ck-rd{background:#fdecea;color:var(--red);border:1px solid #f3c4be}
+.ck-bar{height:7px;border-radius:4px;background:#f0ece2;overflow:hidden;margin:10px 0 14px}
+.ck-bar>i{display:block;height:100%;background:var(--gold);transition:width .2s}
+.ck-it{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid #f5f1e8}
+.ck-it:last-child{border-bottom:0}
+.ck-bx{width:20px;height:20px;border-radius:6px;border:1.5px solid #d9cdb6;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;user-select:none}
+.ck-bx.done{background:var(--green);border-color:var(--green);color:#fff}
+.ck-bx.na{background:#f0f0f0;border-color:#ddd;color:#aaa}
+.ck-tx{flex:1;font-size:13px;min-width:0}
+.ck-tx.done{color:#8a8a8a}
+.ck-tx.na{color:#bbb;text-decoration:line-through}
+.ck-date{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;border-radius:20px;padding:2px 6px 2px 8px;white-space:nowrap;flex-shrink:0}
+.ck-date input{border:0;background:transparent;font-family:'DM Sans',sans-serif;font-size:11px;color:inherit;font-weight:600;cursor:pointer;width:120px;outline:none}
+.ck-date.d-norm{background:#f4f1ea;color:#888}
+.ck-date.d-done{background:#eef4ef;color:#7faa86}
+.ck-date.d-am{background:#fff4e2;color:#c47d1a;border:1px solid #f3d9a8}
+.ck-date.d-rd{background:#fdecea;color:var(--red);border:1px solid #f3c4be}
+.ck-date.d-set{background:transparent;color:#bbb;border:1px dashed #ddd2bc}
+.ck-albl{padding-right:4px}
+.ck-nabadge{font-size:9.5px;color:#aaa;border:1px solid var(--border);border-radius:10px;padding:1px 7px;flex-shrink:0}
+.ck-act{display:flex;gap:9px;flex-shrink:0;opacity:.5}
+.ck-act span{cursor:pointer;font-size:13px}
+.ck-act span:hover{opacity:1;color:var(--gold)}
+.ck-addrow{display:flex;gap:8px;margin-top:12px}
+.ck-addrow input{flex:1;padding:8px 10px;border-radius:8px;border:1px solid var(--border);font-size:12.5px;font-family:'DM Sans',sans-serif;outline:none}
+.ck-addrow .btn{padding:8px 14px;font-size:12.5px;white-space:nowrap}
+.ck-empty{font-size:12.5px;color:#aaa;padding:6px 0}
+@media(max-width:640px){.ck-date input{width:98px}.ck-it{flex-wrap:wrap}.ck-tx{flex-basis:100%;order:-1}}
 .mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:flex-start;justify-content:center;padding:32px 20px;overflow-y:auto}
 .mo.open{display:flex}
 .mb{background:#fff;border-radius:16px;width:100%;max-width:760px;padding:32px;position:relative;margin:auto}
@@ -807,6 +842,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <button class="tab active" onclick="showCTab('plan',this)">📅 Planejamento</button>
       <button class="tab" onclick="showCTab('prod',this)">🎨 Produção</button>
       <button class="tab" onclick="showCTab('viag',this)">✈️ Viagem</button>
+      <button class="tab" onclick="showCTab('atend',this)">📋 Atendimento</button>
       <button class="tab" onclick="showCTab('assess',this)">🏢 Fornecedores</button>
       <button class="tab" onclick="showCTab('anexos-c',this)">📎 Anexos</button>
     </div>
@@ -985,6 +1021,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div class="st" style="margin-bottom:10px">📝 Observações de Viagem</div>
         <textarea id="c-viag-obs" placeholder="Pendências, informações importantes, próximos passos..." style="width:100%;min-height:80px;border-radius:8px;border:1px solid var(--border);padding:10px 12px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;resize:vertical"></textarea>
       </div>
+    </div>
+    <div class="tc" id="tab-atend">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+        <div style="font-size:12.5px;color:var(--muted)">Marque o andamento, defina prazos e adicione itens conforme necessário. Avisos acendem 7 dias antes do prazo.</div>
+        <button class="btn bo" onclick="checkPullBase()" style="white-space:nowrap">↻ Puxar checklist base</button>
+      </div>
+      <div id="checklist-wrap"></div>
     </div>
     <div class="tc" id="tab-assess">
       <div id="forn-cas-section">
@@ -2198,6 +2241,7 @@ function showCTab(tab,btn){
   document.getElementById('tab-'+tab).classList.add('active');if(btn)btn.classList.add('active')
   if(tab==='assess'){renderEscaladas();if(casamentoAtual?.id){loadSolicitacoes(casamentoAtual.id);loadFornecedoresCasamento(casamentoAtual.id)}}
   if(tab==='prod')renderProdAssessoras()
+  if(tab==='atend')renderChecklist()
   if(tab==='anexos-c')renderAnexosUI('anexos-c-content','casamento',casamentoAtual?.id)
   aplicarReadonlyAba(tab)
 }
@@ -2490,6 +2534,7 @@ function clearCasForm(){
   ['c-nome','c-destino','c-data','c-horario','c-hotel','c-pacote','c-extra','c-obs','c-produtora','c-num-assessores','c-datas','c-ultima-reuniao','c-servicos','c-programacao','c-fornecedores','c-prod-status','c-prod-obs','c-transfer','c-passeios-txt','c-hospedagem','c-viag-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
   window._planReunioes=[];window._prodReunioes=[];window._prodEventos=[]
   renderPlanReunioes();renderProdReunioes();renderProdEventos()
+  window._checklist={atend:[],grupo:[]};renderChecklist()
   document.getElementById('c-status').value='Em andamento'
   ;['c-cons-plan','c-cons-prod','c-setor'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
   ;['c-voos','c-transfers','c-passeios','c-vok'].forEach(id=>setTg(id,false))
@@ -2513,6 +2558,7 @@ function fillCasForm(c){
   window._prodReunioes=_parseJsonField(c.prod_reunioes)
   window._prodEventos=_parseJsonField(c.prod_eventos)
   renderPlanReunioes();renderProdReunioes();renderProdEventos()
+  window._checklist=_parseChecklist(c.checklist);renderChecklist()
   s('c-transfer',c.viag_transfer);s('c-passeios-txt',c.viag_passeios);s('c-hospedagem',c.viag_hospedagem);s('c-viag-obs',c.viag_obs)
   setTg('c-voos',c.checklist_voos);setTg('c-transfers',c.checklist_transfers);setTg('c-passeios',c.checklist_passeios);setTg('c-vok',c.viagem_ok)
   setViag('casal',c.viag_casal_status);setViag('barco',c.viag_passeio_barco);setViag('coco',c.viag_coco_bongo)
@@ -2520,7 +2566,7 @@ function fillCasForm(c){
 }
 function getCasData(){
   const v=id=>document.getElementById(id)?.value||''
-  return{nome:v('c-nome'),destino:v('c-destino'),plan_data:v('c-data'),plan_horario:v('c-horario'),local_id:document.getElementById('c-hotel')?.value||null,plan_pacote:v('c-pacote'),plan_extra:v('c-extra'),plan_obs:v('c-obs'),status:v('c-status'),setor:document.getElementById('c-setor')?.value||null,consultora_plan:v('c-cons-plan')||null,consultora_prod:v('c-cons-prod')||null,prod_produtora:v('c-produtora'),prod_num_assessores:v('c-num-assessores'),prod_datas:v('c-datas'),prod_ultima_reuniao:v('c-ultima-reuniao'),prod_servicos:v('c-servicos'),prod_programacao:v('c-programacao'),prod_fornecedores:v('c-fornecedores'),prod_status:v('c-prod-status'),plan_reunioes:JSON.stringify(window._planReunioes||[]),prod_reunioes:JSON.stringify(window._prodReunioes||[]),prod_eventos:JSON.stringify(window._prodEventos||[]),prod_obs:v('c-prod-obs'),viag_transfer:v('c-transfer'),viag_passeios:v('c-passeios-txt'),viag_hospedagem:v('c-hospedagem'),viag_obs:v('c-viag-obs'),checklist_voos:getTg('c-voos'),checklist_transfers:getTg('c-transfers'),checklist_passeios:getTg('c-passeios'),viagem_ok:getTg('c-vok'),viag_casal_status:window._viagSel?.casal||null,viag_passeio_barco:window._viagSel?.barco||null,viag_coco_bongo:window._viagSel?.coco||null}
+  return{nome:v('c-nome'),destino:v('c-destino'),plan_data:v('c-data'),plan_horario:v('c-horario'),local_id:document.getElementById('c-hotel')?.value||null,plan_pacote:v('c-pacote'),plan_extra:v('c-extra'),plan_obs:v('c-obs'),status:v('c-status'),setor:document.getElementById('c-setor')?.value||null,consultora_plan:v('c-cons-plan')||null,consultora_prod:v('c-cons-prod')||null,prod_produtora:v('c-produtora'),prod_num_assessores:v('c-num-assessores'),prod_datas:v('c-datas'),prod_ultima_reuniao:v('c-ultima-reuniao'),prod_servicos:v('c-servicos'),prod_programacao:v('c-programacao'),prod_fornecedores:v('c-fornecedores'),prod_status:v('c-prod-status'),plan_reunioes:JSON.stringify(window._planReunioes||[]),prod_reunioes:JSON.stringify(window._prodReunioes||[]),prod_eventos:JSON.stringify(window._prodEventos||[]),checklist:JSON.stringify(window._checklist||{atend:[],grupo:[]}),prod_obs:v('c-prod-obs'),viag_transfer:v('c-transfer'),viag_passeios:v('c-passeios-txt'),viag_hospedagem:v('c-hospedagem'),viag_obs:v('c-viag-obs'),checklist_voos:getTg('c-voos'),checklist_transfers:getTg('c-transfers'),checklist_passeios:getTg('c-passeios'),viagem_ok:getTg('c-vok'),viag_casal_status:window._viagSel?.casal||null,viag_passeio_barco:window._viagSel?.barco||null,viag_coco_bongo:window._viagSel?.coco||null}
 }
 async function salvarCasamento(){
   const btn=document.getElementById('btn-sc');btn.textContent='Salvando...';btn.disabled=true
@@ -4635,6 +4681,112 @@ async function loadCoordenacao(){
   coordPopulateFilters()
 }
 
+// ===== CHECKLIST DE ATENDIMENTO =====
+const CHECKLIST_BASE={
+  atend:[
+    'Lista de convidados recebida dos noivos',
+    'Lista de convidados incluída na Assessoria VIP',
+    'Lista incluída no Active',
+    'Envio do Save the Date pelo casal',
+    'Início da comunicação automatizada pela Welcome aos convidados',
+    'Prazo final da Campanha Promocional',
+    'Reunião de Alinhamento pós Ação Promocional',
+    'Reserva de data do apartamento do casal'
+  ],
+  grupo:[
+    'Redução do Grupo',
+    'Prazo de fechamento do grupo (envio do Rooming List final para o hotel)',
+    'Primeira redução + ajuste do grupo',
+    'Acompanhamento de tarifa da WedMe pós ação promocional',
+    '2ª redução + ajuste do grupo',
+    '3ª redução + ajuste final do grupo',
+    'Reunião de Alinhamento com as Assessoras do casamento (se houver)',
+    'Grupo fechado com o financeiro',
+    'Grupo 100% pago ao hotel',
+    'Rooming List final enviado ao setor de Controle de Qualidade',
+    'Vouchers enviados a todos os convidados',
+    'Rooming List final enviado ao hotel',
+    'Recebimento da fatura final do casamento pelo hotel',
+    'Finalizar a cortesia do grupo',
+    'Informar se terá convidado fora do grupo e/ou Wedding Pass',
+    'Lua de Mel',
+    'Rooming List final enviado ao casal',
+    'Pagamento da reserva do casal (o que exceder a cortesia)',
+    'Incluir a cortesia do grupo (quando houver)',
+    'Retirada dos contatos do Active – pausa na comunicação',
+    'Envio de mensagem para todos os convidados oferecendo os serviços de extras',
+    'Viagem completa das Assessoras (se houver)'
+  ]
+}
+const CK_SECS=[{k:'atend',icon:'🎯',nome:'Atendimento'},{k:'grupo',icon:'🧳',nome:'Grupo & Hotel'}]
+function _ckId(){return 'ck'+Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function _parseChecklist(val){
+  const o={atend:[],grupo:[]}
+  if(val){try{const p=(typeof val==='string')?JSON.parse(val):val;if(p&&typeof p==='object'){o.atend=Array.isArray(p.atend)?p.atend:[];o.grupo=Array.isArray(p.grupo)?p.grupo:[]}}catch(e){}}
+  ;['atend','grupo'].forEach(k=>o[k]=o[k].map(it=>({id:it.id||_ckId(),txt:it.txt||'',st:['todo','done','na'].includes(it.st)?it.st:'todo',data:it.data||null})))
+  return o
+}
+function ckAlert(it){
+  if(it.st==='done'||it.st==='na'||!it.data)return null
+  const hoje=new Date();hoje.setHours(0,0,0,0)
+  const d=new Date(it.data+'T00:00:00');if(isNaN(d))return null
+  const dias=Math.round((d-hoje)/86400000)
+  if(dias<0)return {cls:'rd',lbl:'atrasado'}
+  if(dias<=7)return {cls:'am',lbl:dias===0?'é hoje':dias===1?'amanhã':'em '+dias+' dias'}
+  return null
+}
+function _ckEsc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function renderChecklist(){
+  const wrap=document.getElementById('checklist-wrap');if(!wrap)return
+  const cl=window._checklist||(window._checklist={atend:[],grupo:[]})
+  let html=''
+  CK_SECS.forEach(sec=>{
+    const items=cl[sec.k]||[]
+    const total=items.length, na=items.filter(i=>i.st==='na').length, done=items.filter(i=>i.st==='done').length
+    const base=total-na, pct=base>0?Math.round(done/base*100):0
+    let soon=0,over=0;items.forEach(i=>{const a=ckAlert(i);if(a){a.cls==='am'?soon++:over++}})
+    html+=`<div class="ck-sec">
+      <div class="ck-sh">
+        <div class="ck-st">${sec.icon} ${sec.nome}</div>
+        <div class="ck-counts"><span class="ck-cp ck-ok">${done}/${base} concluídos</span>${soon?`<span class="ck-cp ck-am">⏰ ${soon} chegando</span>`:''}${over?`<span class="ck-cp ck-rd">⚠️ ${over} atrasado${over>1?'s':''}</span>`:''}</div>
+      </div>
+      <div class="ck-bar"><i style="width:${pct}%"></i></div>
+      <div class="ck-list">`
+    if(!items.length)html+='<div class="ck-empty">Nenhum item ainda — clique em “Puxar checklist base” ou adicione abaixo.</div>'
+    items.forEach(it=>{
+      const a=ckAlert(it)
+      const stc=it.st==='done'?'done':it.st==='na'?'na':''
+      const icon=it.st==='done'?'✓':it.st==='na'?'–':''
+      let dateHtml
+      if(it.st==='na'){dateHtml='<span class="ck-nabadge">N/A</span>'}
+      else{const dcls=it.st==='done'?'d-done':a?('d-'+a.cls):(it.data?'d-norm':'d-set');dateHtml=`<span class="ck-date ${dcls}"><input type="date" value="${it.data||''}" onchange="checkSetData('${sec.k}','${it.id}',this.value)">${a?`<span class="ck-albl">${a.lbl}</span>`:''}</span>`}
+      html+=`<div class="ck-it">
+        <span class="ck-bx ${stc}" onclick="checkCycle('${sec.k}','${it.id}')" title="Clique para alternar: a fazer → feito → N/A">${icon}</span>
+        <span class="ck-tx ${stc}">${_ckEsc(it.txt)}</span>
+        ${dateHtml}
+        <span class="ck-act"><span onclick="checkEdit('${sec.k}','${it.id}')" title="Editar texto">✎</span><span onclick="checkDelete('${sec.k}','${it.id}')" title="Apagar">✕</span></span>
+      </div>`
+    })
+    html+=`</div>
+      <div class="ck-addrow"><input type="text" id="ck-new-${sec.k}" placeholder="Novo item..." onkeydown="if(event.key==='Enter')checkAdd('${sec.k}')"><button class="btn bo" onclick="checkAdd('${sec.k}')">+ Adicionar</button></div>
+    </div>`
+  })
+  wrap.innerHTML=html
+}
+function _ckFind(sec,id){return (window._checklist?.[sec]||[]).find(i=>i.id===id)}
+function checkCycle(sec,id){const it=_ckFind(sec,id);if(!it)return;it.st=it.st==='todo'?'done':it.st==='done'?'na':'todo';renderChecklist()}
+function checkSetData(sec,id,val){const it=_ckFind(sec,id);if(!it)return;it.data=val||null;renderChecklist()}
+function checkEdit(sec,id){const it=_ckFind(sec,id);if(!it)return;const t=prompt('Editar item:',it.txt);if(t!==null&&t.trim()){it.txt=t.trim();renderChecklist()}}
+function checkDelete(sec,id){const arr=window._checklist?.[sec];if(!arr)return;const i=arr.findIndex(x=>x.id===id);if(i<0)return;if(confirm('Apagar este item?')){arr.splice(i,1);renderChecklist()}}
+function checkAdd(sec){const inp=document.getElementById('ck-new-'+sec);if(!inp)return;const t=(inp.value||'').trim();if(!t)return;if(!window._checklist)window._checklist={atend:[],grupo:[]};(window._checklist[sec]=window._checklist[sec]||[]).push({id:_ckId(),txt:t,st:'todo',data:null});inp.value='';renderChecklist();setTimeout(()=>document.getElementById('ck-new-'+sec)?.focus(),0)}
+function checkPullBase(){
+  if(!window._checklist)window._checklist={atend:[],grupo:[]}
+  const tem=window._checklist.atend.length||window._checklist.grupo.length
+  if(tem&&!confirm('Isto vai substituir os itens atuais pela lista base. Continuar?'))return
+  window._checklist={atend:[],grupo:[]}
+  CK_SECS.forEach(sec=>CHECKLIST_BASE[sec.k].forEach(txt=>window._checklist[sec.k].push({id:_ckId(),txt,st:'todo',data:null})))
+  renderChecklist()
+}
 function _parseJsonField(val){
   if(!val)return[]
   if(Array.isArray(val))return val
