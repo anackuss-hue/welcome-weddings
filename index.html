@@ -2568,29 +2568,45 @@ function getCasData(){
   const v=id=>document.getElementById(id)?.value||''
   return{nome:v('c-nome'),destino:v('c-destino'),plan_data:v('c-data'),plan_horario:v('c-horario'),local_id:document.getElementById('c-hotel')?.value||null,plan_pacote:v('c-pacote'),plan_extra:v('c-extra'),plan_obs:v('c-obs'),status:v('c-status'),setor:document.getElementById('c-setor')?.value||null,consultora_plan:v('c-cons-plan')||null,consultora_prod:v('c-cons-prod')||null,prod_produtora:v('c-produtora'),prod_num_assessores:v('c-num-assessores'),prod_datas:v('c-datas'),prod_ultima_reuniao:v('c-ultima-reuniao'),prod_servicos:v('c-servicos'),prod_programacao:v('c-programacao'),prod_fornecedores:v('c-fornecedores'),prod_status:v('c-prod-status'),plan_reunioes:JSON.stringify(window._planReunioes||[]),prod_reunioes:JSON.stringify(window._prodReunioes||[]),prod_eventos:JSON.stringify(window._prodEventos||[]),checklist:JSON.stringify(window._checklist||{atend:[],grupo:[]}),prod_obs:v('c-prod-obs'),viag_transfer:v('c-transfer'),viag_passeios:v('c-passeios-txt'),viag_hospedagem:v('c-hospedagem'),viag_obs:v('c-viag-obs'),checklist_voos:getTg('c-voos'),checklist_transfers:getTg('c-transfers'),checklist_passeios:getTg('c-passeios'),viagem_ok:getTg('c-vok'),viag_casal_status:window._viagSel?.casal||null,viag_passeio_barco:window._viagSel?.barco||null,viag_coco_bongo:window._viagSel?.coco||null}
 }
+// Mostra erro de banco de forma padronizada. Retorna true se houve erro.
+function _dbErro(error,acao){
+  if(!error)return false
+  console.error('Erro ao '+(acao||'salvar')+':',error)
+  alert('Erro ao '+(acao||'salvar')+': '+(error.message||JSON.stringify(error)))
+  return true
+}
 async function salvarCasamento(){
   const btn=document.getElementById('btn-sc');btn.textContent='Salvando...';btn.disabled=true
   const data=getCasData()
   if(!data.nome){alert('Preencha o nome do casal!');btn.textContent='Salvar';btn.disabled=false;return}
-  if(casamentoAtual){
-    const nomeAnterior=casamentoAtual.nome
-    await sb.from('casamentos').update(data).eq('id',casamentoAtual.id)
-    await registrarLog('editou','casamentos',casamentoAtual.id,data.nome,casamentoAtual,data)
-    // Atualiza nome em cascata se mudou
-    if(data.nome!==nomeAnterior){
-      await Promise.all([
-        sb.from('solicitacoes_kanban').update({casamento_nome:data.nome}).eq('casamento_id',casamentoAtual.id),
-        sb.from('casamento_assessoras').update({casamento_nome:data.nome}).eq('casamento_id',casamentoAtual.id),
-        sb.from('casamento_fornecedores').update({casamento_nome:data.nome}).eq('casamento_id',casamentoAtual.id),
-      ])
+  try{
+    if(casamentoAtual){
+      const nomeAnterior=casamentoAtual.nome
+      const{error}=await sb.from('casamentos').update(data).eq('id',casamentoAtual.id)
+      if(error)throw error
+      await registrarLog('editou','casamentos',casamentoAtual.id,data.nome,casamentoAtual,data)
+      // Atualiza nome em cascata se mudou (secundário: não bloqueia o salvamento)
+      if(data.nome!==nomeAnterior){
+        const cascata=await Promise.all([
+          sb.from('solicitacoes_kanban').update({casamento_nome:data.nome}).eq('casamento_id',casamentoAtual.id),
+          sb.from('casamento_assessoras').update({casamento_nome:data.nome}).eq('casamento_id',casamentoAtual.id),
+          sb.from('casamento_fornecedores').update({casamento_nome:data.nome}).eq('casamento_id',casamentoAtual.id),
+        ])
+        const ce=cascata.find(r=>r&&r.error)
+        if(ce)console.warn('Aviso: nome não atualizado em todas as tabelas:',ce.error)
+      }
+    }else{
+      const{data:r,error}=await sb.from('casamentos').insert(data).select()
+      if(error)throw error
+      await registrarLog('criou','casamentos',r?.[0]?.id,data.nome,null,data)
     }
-  }else{
-    const{data:r}=await sb.from('casamentos').insert(data).select()
-    await registrarLog('criou','casamentos',r?.[0]?.id,data.nome,null,data)
+    btn.textContent='Salvar';btn.disabled=false;closeModal('modal-casamento');loadCasamentos()
+  }catch(e){
+    _dbErro(e,'salvar')
+    btn.textContent='Salvar';btn.disabled=false
   }
-  btn.textContent='Salvar';btn.disabled=false;closeModal('modal-casamento');loadCasamentos()
 }
-async function deleteCasamento(id){if(!confirm('Remover?'))return;await sb.from('casamentos').delete().eq('id',id);loadCasamentos()}
+async function deleteCasamento(id){if(!confirm('Remover?'))return;const{error}=await sb.from('casamentos').delete().eq('id',id);if(_dbErro(error,'remover'))return;loadCasamentos()}
 
 // ── ESCALADAS
 async function loadEscaladas(cid){const id=cid||casamentoAtual?.id;if(!id)return;const{data}=await sb.from('casamento_assessoras').select('*,assessora:assessoras(*)').eq('casamento_id',id);escaladas=data||[]}
@@ -2684,7 +2700,8 @@ async function removeEscalada(id){
   if(!confirm('Remover assessora? As solicitações de viagem dela também serão removidas.'))return
   const esc=escaladas.find(e=>e.id===id)
   if(esc&&casamentoAtual?.id)await sb.from('solicitacoes_viagem').delete().eq('casamento_id',casamentoAtual.id).eq('assessora_id',esc.assessora_id)
-  await sb.from('casamento_assessoras').delete().eq('id',id)
+  const{error:_eEsc}=await sb.from('casamento_assessoras').delete().eq('id',id)
+  if(_dbErro(_eEsc,'remover'))return
   renderEscaladas()
 }
 function togglePicker(){pickerOpen=!pickerOpen;renderPickerIfOpen()}
@@ -2856,16 +2873,20 @@ async function salvarAssessora(){
   const btn=document.getElementById('btn-sa');btn.textContent='Salvando...';btn.disabled=true
   const data=getAData()
   if(!data.nome){alert('Preencha o nome!');btn.textContent='Salvar';btn.disabled=false;return}
-  let savedId=assessoraAtual?.id
-  if(assessoraAtual){await sb.from('assessoras').update(data).eq('id',assessoraAtual.id);await registrarLog('editou','assessoras',assessoraAtual.id,data.nome,null,null)}
-  else{const{data:r}=await sb.from('assessoras').insert(data).select();savedId=r?.[0]?.id;await registrarLog('criou','assessoras',savedId,data.nome,null,null)}
-  if(tipoEquipeAtual==='lidera'&&savedId){
-    await sb.from('assessoras').update({lider_equipe_id:null}).eq('lider_equipe_id',savedId)
-    if(membrosEquipe.length)for(const mid of membrosEquipe)await sb.from('assessoras').update({lider_equipe_id:savedId,possui_equipe:false}).eq('id',mid)
+  try{
+    let savedId=assessoraAtual?.id
+    if(assessoraAtual){const{error}=await sb.from('assessoras').update(data).eq('id',assessoraAtual.id);if(error)throw error;await registrarLog('editou','assessoras',assessoraAtual.id,data.nome,null,null)}
+    else{const{data:r,error}=await sb.from('assessoras').insert(data).select();if(error)throw error;savedId=r?.[0]?.id;await registrarLog('criou','assessoras',savedId,data.nome,null,null)}
+    if(tipoEquipeAtual==='lidera'&&savedId){
+      await sb.from('assessoras').update({lider_equipe_id:null}).eq('lider_equipe_id',savedId)
+      if(membrosEquipe.length)for(const mid of membrosEquipe)await sb.from('assessoras').update({lider_equipe_id:savedId,possui_equipe:false}).eq('id',mid)
+    }
+    btn.textContent='Salvar';btn.disabled=false;closeModal('modal-assessora');loadAssessoras()
+  }catch(e){
+    _dbErro(e,'salvar');btn.textContent='Salvar';btn.disabled=false
   }
-  btn.textContent='Salvar';btn.disabled=false;closeModal('modal-assessora');loadAssessoras()
 }
-async function deleteAssessora(id){if(!confirm('Remover?'))return;await sb.from('assessoras').delete().eq('id',id);loadAssessoras()}
+async function deleteAssessora(id){if(!confirm('Remover?'))return;const{error}=await sb.from('assessoras').delete().eq('id',id);if(_dbErro(error,'remover'))return;loadAssessoras()}
 async function renderHistorico(){
   const con=document.getElementById('historico-content')
   if(!assessoraAtual){con.innerHTML='<div class="em"><div class="em-t">Salve a assessora primeiro</div></div>';return}
@@ -3071,7 +3092,7 @@ async function salvarHotel(){
     btn.textContent='Salvar';btn.disabled=false
   }
 }
-async function deleteHotel(id){if(!confirm('Remover?'))return;await sb.from('locais').delete().eq('id',id);loadHoteis()}
+async function deleteHotel(id){if(!confirm('Remover?'))return;const{error}=await sb.from('locais').delete().eq('id',id);if(_dbErro(error,'remover'))return;loadHoteis()}
 
 async function renderHotelHistorico(){
   const con=document.getElementById('hotel-historico-content');if(!con)return
@@ -3218,7 +3239,7 @@ async function loadSolicitacoes(casId){
     </div>`
   }).join('')
 }
-async function removerSolicitacao(id){if(!confirm('Remover esta solicitação?'))return;await sb.from('solicitacoes_viagem').delete().eq('id',id);loadSolicitacoes(casamentoAtual?.id)}
+async function removerSolicitacao(id){if(!confirm('Remover esta solicitação?'))return;const{error}=await sb.from('solicitacoes_viagem').delete().eq('id',id);if(_dbErro(error,'remover'))return;loadSolicitacoes(casamentoAtual?.id)}
 function abrirSolicitacao(escaladaId){
   const e=escaladas.find(x=>x.id===escaladaId);if(!e)return
   solAssessoraAtual=e
@@ -3252,7 +3273,8 @@ async function salvarSolicitacao(){
   const nome1=solAssessoraAtual?.assessora?.nome||'?'
   const nomeCombinado=esc2?`${nome1} + ${esc2.assessora?.nome||'?'}`:nome1
   const data={casamento_id:casamentoAtual?.id,casamento_nome:casamentoAtual?.nome,assessora_id:solAssessoraAtual?.assessora_id,assessora_nome:solAssessoraAtual?.assessora?.nome,data_chegada:dataChegada,hora_chegada:document.getElementById('sol-hora-chegada').value||null,data_saida:dataSaida,hora_saida:document.getElementById('sol-hora-saida').value||null,cidade_saida:document.getElementById('sol-cidade-saida').value||null,precisa_passagem:solCards.passagem,precisa_hotel:solCards.hotel,precisa_transfer:solCards.transfer,obs:document.getElementById('sol-obs').value,solicitado_por:usuarioAtual?.nome,status:'pendente'}
-  await sb.from('solicitacoes_viagem').insert(data)
+  const{error:_eSol}=await sb.from('solicitacoes_viagem').insert(data)
+  if(_eSol){_dbErro(_eSol,'enviar solicitação');btn.textContent='✈️ Enviar Solicitação';btn.disabled=false;return}
   // Se houver 2ª assessora, registra a viagem dela também (registro individual por assessora)
   if(esc2){
     await sb.from('solicitacoes_viagem').insert({...data,assessora_id:esc2.assessora_id,assessora_nome:esc2.assessora?.nome})
@@ -3346,11 +3368,12 @@ async function salvarUsuario(){
       const{data:sd,error:se}=await sb.auth.signUp({email,password:senha})
       if(se){alert('Erro ao criar usuário: '+se.message);btn.textContent='Salvar';btn.disabled=false;return}
       const uid=sd?.user?.id
-      if(uid)await sb.from('usuarios').insert({id:uid,nome,email,setor,ativo})
-    }else{await sb.from('usuarios').insert({id:ad.user.id,nome,email,setor,ativo})}
+      if(uid){const{error:ie}=await sb.from('usuarios').insert({id:uid,nome,email,setor,ativo});if(ie){_dbErro(ie,'salvar usuário');btn.textContent='Salvar';btn.disabled=false;return}}
+    }else{const{error:ie}=await sb.from('usuarios').insert({id:ad.user.id,nome,email,setor,ativo});if(ie){_dbErro(ie,'salvar usuário');btn.textContent='Salvar';btn.disabled=false;return}}
     await registrarLog('criou usuário','usuarios',null,nome,null,{nome,email,setor})
   }else{
-    await sb.from('usuarios').update({nome,setor,ativo}).eq('id',usuarioEditando.id)
+    const{error:ue}=await sb.from('usuarios').update({nome,setor,ativo}).eq('id',usuarioEditando.id)
+    if(ue){_dbErro(ue,'salvar usuário');btn.textContent='Salvar';btn.disabled=false;return}
     await registrarLog('editou usuário','usuarios',usuarioEditando.id,nome,null,{nome,setor,ativo})
   }
   btn.textContent='Salvar';btn.disabled=false;closeModal('modal-usuario');loadUsuarios()
@@ -3424,7 +3447,7 @@ async function adicionarCasHotel(hotelId){
   await sb.from('casamento_hoteis').insert({casamento_id:casamentoAtual.id,hotel_id:hotelId})
   hotelPickerOpen=false;loadCasHoteis(casamentoAtual.id)
 }
-async function removerCasHotel(id){await sb.from('casamento_hoteis').delete().eq('id',id);loadCasHoteis(casamentoAtual?.id)}
+async function removerCasHotel(id){const{error}=await sb.from('casamento_hoteis').delete().eq('id',id);if(_dbErro(error,'remover'))return;loadCasHoteis(casamentoAtual?.id)}
 
 // ══ INDISPONIBILIDADES ══
 async function renderIndisponibilidades(){
@@ -3453,7 +3476,8 @@ async function salvarIndisponibilidade(){
   if(!inicio||!fim){alert('Preencha as datas!');return}
   if(fim<inicio){alert('A data fim deve ser após a data início!');return}
   const btn=event.target;btn.textContent='Salvando...';btn.disabled=true
-  await sb.from('assessora_indisponibilidades').insert({assessora_id:assessoraAtual.id,data_inicio:inicio,data_fim:fim,motivo:motivo||null})
+  const{error:_eInd}=await sb.from('assessora_indisponibilidades').insert({assessora_id:assessoraAtual.id,data_inicio:inicio,data_fim:fim,motivo:motivo||null})
+  if(_eInd){_dbErro(_eInd,'salvar');btn.textContent='+ Registrar Período';btn.disabled=false;return}
   if(!indispCache[assessoraAtual.id])indispCache[assessoraAtual.id]=[]
   indispCache[assessoraAtual.id].push({data_inicio:inicio,data_fim:fim})
   document.getElementById('a-indisp-inicio').value=''
@@ -3464,7 +3488,8 @@ async function salvarIndisponibilidade(){
 }
 async function deletarIndisponibilidade(id){
   if(!confirm('Remover este período?'))return
-  const{data:removed}=await sb.from('assessora_indisponibilidades').delete().eq('id',id).select()
+  const{data:removed,error}=await sb.from('assessora_indisponibilidades').delete().eq('id',id).select()
+  if(_dbErro(error,'remover'))return
   if(assessoraAtual?.id&&removed?.[0]){
     const r=removed[0]
     indispCache[assessoraAtual.id]=(indispCache[assessoraAtual.id]||[]).filter(p=>!(p.data_inicio===r.data_inicio&&p.data_fim===r.data_fim))
@@ -3573,7 +3598,8 @@ async function deletarAnexo(id,url,containerId,tipo,referenciaId){
   // Extrai path do storage a partir da URL
   const match=url.match(/\/storage\/v1\/object\/public\/anexos\/(.+)/)
   if(match)await sb.storage.from(BUCKET).remove([decodeURIComponent(match[1])])
-  await sb.from('anexos').delete().eq('id',id)
+  const{error}=await sb.from('anexos').delete().eq('id',id)
+  if(_dbErro(error,'remover anexo'))return
   carregarAnexos(containerId,tipo,referenciaId)
 }
 
@@ -3714,15 +3740,16 @@ async function salvarFornecedor(){
   const tipo=document.getElementById('forn-tipo').value
   if(!nome||!tipo){alert('Preencha nome e tipo!');btn.textContent='Salvar';btn.disabled=false;return}
   const data={nome,tipo,cidade:document.getElementById('forn-cidade').value||null,telefone:document.getElementById('forn-tel').value||null,email:document.getElementById('forn-email').value||null,instagram:document.getElementById('forn-instagram').value||null,site:document.getElementById('forn-site').value||null,obs:document.getElementById('forn-obs').value||null,data_nascimento:document.getElementById('forn-nasc').value||null,pais:document.getElementById('forn-pais').value||null,localizacao_secundaria:document.getElementById('forn-loc-sec').value||null,responsavel:document.getElementById('forn-responsavel').value||null,faz_destination:_fornToggles.faz_destination||false,favorito:_fornToggles.favorito,blacklist:_fornToggles.blacklist,ja_trabalhamos:_fornToggles.ja_trabalhamos,status_indicacao:document.getElementById('forn-status-indicacao').value||null,motivo_nao_indicacao:document.getElementById('forn-motivo').value||null}
-  if(fornecedorAtual)await sb.from('fornecedores').update(data).eq('id',fornecedorAtual.id)
-  else await sb.from('fornecedores').insert(data)
+  if(fornecedorAtual){const{error}=await sb.from('fornecedores').update(data).eq('id',fornecedorAtual.id);if(error){_dbErro(error,'salvar');btn.textContent='Salvar';btn.disabled=false;return}}
+  else{const{error}=await sb.from('fornecedores').insert(data);if(error){_dbErro(error,'salvar');btn.textContent='Salvar';btn.disabled=false;return}}
   btn.textContent='Salvar';btn.disabled=false
   closeModal('modal-fornecedor');loadFornecedores()
 }
 
 async function deletarFornecedor(id){
   if(!confirm('Remover este fornecedor?'))return
-  await sb.from('fornecedores').delete().eq('id',id)
+  const{error}=await sb.from('fornecedores').delete().eq('id',id)
+  if(_dbErro(error,'remover'))return
   loadFornecedores()
 }
 
@@ -3971,7 +3998,8 @@ async function salvarKanbanCard(){
   const novaPri=kanbanCardAtual._priTemp||'media'
   const novoNome=document.getElementById('kc-nome-edit').value.trim()
   const novoTipo=document.getElementById('kc-tipo').value||kanbanCardAtual.tipo
-  await sb.from('solicitacoes_kanban').update({coluna:novaColuna,solicitacao:novaSol,prioridade:novaPri,convidado_nome:novoNome||null,tipo:novoTipo}).eq('id',kanbanCardAtual.id)
+  const{error:_eKC}=await sb.from('solicitacoes_kanban').update({coluna:novaColuna,solicitacao:novaSol,prioridade:novaPri,convidado_nome:novoNome||null,tipo:novoTipo}).eq('id',kanbanCardAtual.id)
+  if(_dbErro(_eKC,'salvar'))return
   // Notifica o solicitante se a coluna mudou
   if(novaColuna!==kanbanCardAtual.coluna&&kanbanCardAtual.criado_por){
     const colLabel=getColunasAtivas(kanbanCardAtual.responsavel).find(c=>c.id===novaColuna)?.label||novaColuna
@@ -4065,7 +4093,8 @@ async function toggleCheck(id,feito){
 }
 
 async function deletarCheck(id){
-  await sb.from('kanban_checklist').delete().eq('id',id)
+  const{error}=await sb.from('kanban_checklist').delete().eq('id',id)
+  if(_dbErro(error,'remover'))return
   carregarChecklist(kanbanCardAtual.id)
 }
 
@@ -4111,7 +4140,8 @@ async function carregarNotasKanban(cardId){
 
 async function excluirNota(id){
   if(!confirm('Excluir esta mensagem?'))return
-  await sb.from('kanban_notas').delete().eq('id',Number(id))
+  const{error}=await sb.from('kanban_notas').delete().eq('id',Number(id))
+  if(_dbErro(error,'excluir'))return
   carregarNotasKanban(kanbanCardAtual.id)
 }
 
@@ -4137,14 +4167,16 @@ async function salvarEdicaoNota(id){
   if(!ta)return
   const txt=ta.value.trim()
   if(!txt)return
-  await sb.from('kanban_notas').update({texto:txt}).eq('id',Number(id))
+  const{error}=await sb.from('kanban_notas').update({texto:txt}).eq('id',Number(id))
+  if(_dbErro(error,'salvar'))return
   carregarNotasKanban(kanbanCardAtual.id)
 }
 
 async function adicionarNota(){
   const inp=document.getElementById('kc-nota-input')
   const txt=inp.value.trim();if(!txt||!kanbanCardAtual)return
-  await sb.from('kanban_notas').insert({card_id:kanbanCardAtual.id,texto:txt,criado_por:usuarioAtual?.nome})
+  const{error}=await sb.from('kanban_notas').insert({card_id:kanbanCardAtual.id,texto:txt,criado_por:usuarioAtual?.nome})
+  if(_dbErro(error,'enviar nota'))return
   // Notifica o solicitante
   if(kanbanCardAtual.criado_por&&kanbanCardAtual.criado_por!==usuarioAtual?.nome){
     const cardNome=kanbanCardAtual.convidado_nome?`${kanbanCardAtual.convidado_nome} — ${kanbanCardAtual.casamento_nome}`:kanbanCardAtual.casamento_nome
@@ -4165,7 +4197,8 @@ async function uploadAnexoKanban(input){
 
 async function deletarKanbanCard(){
   if(!kanbanCardAtual||!confirm('Remover esta solicitação?'))return
-  await sb.from('solicitacoes_kanban').delete().eq('id',kanbanCardAtual.id)
+  const{error}=await sb.from('solicitacoes_kanban').delete().eq('id',kanbanCardAtual.id)
+  if(_dbErro(error,'remover'))return
   closeModal('modal-kanban-card');loadKanban()
 }
 
@@ -4190,7 +4223,7 @@ async function salvarNovoKanban(){
   const casEl=document.getElementById('kn-casamento')
   const casId=casEl?.value||null
   const casNome=casEl?.options[casEl.selectedIndex]?.dataset.nome||''
-  await sb.from('solicitacoes_kanban').insert({
+  const{error:_eKN}=await sb.from('solicitacoes_kanban').insert({
     tipo:document.getElementById('kn-tipo').value,
     coluna:document.getElementById('kn-coluna').value,
     responsavel:document.getElementById('kn-resp').value,
@@ -4198,6 +4231,7 @@ async function salvarNovoKanban(){
     solicitacao:document.getElementById('kn-sol').value,
     criado_por:usuarioAtual?.nome
   })
+  if(_eKN){_dbErro(_eKN,'salvar');btn.textContent='Salvar';btn.disabled=false;return}
   btn.textContent='Salvar';btn.disabled=false
   closeModal('modal-kanban-novo');loadKanban()
 }
@@ -4302,7 +4336,8 @@ async function salvarColunas(){
   // Deleta antigas e insere novas
   await sb.from('kanban_colunas').delete().eq('responsavel',tab)
   const rows=colunasEditando.map((c,i)=>({responsavel:tab,coluna_id:c.id,label:c.label,ordem:i}))
-  await sb.from('kanban_colunas').insert(rows)
+  const{error:_eCol}=await sb.from('kanban_colunas').insert(rows)
+  if(_eCol){_dbErro(_eCol,'salvar colunas');if(btn){btn.textContent='Salvar';btn.disabled=false}return}
   // Atualiza local
   KB_COLUNAS_CUSTOM[tab]=colunasEditando.map(c=>({...c}))
   if(btn){btn.textContent='Salvar';btn.disabled=false}
@@ -4459,7 +4494,7 @@ function abrirNovoPacote(){
 async function salvarPacote(){
   if(!hotelAtual?.id)return
   const btn=document.getElementById('btn-pac');btn.textContent='Salvando...';btn.disabled=true
-  await sb.from('local_pacotes').insert({
+  const{error:_ePac}=await sb.from('local_pacotes').insert({
     local_id:hotelAtual.id,
     nome:document.getElementById('pac-nome')?.value,
     periodo:document.getElementById('pac-periodo')?.value,
@@ -4469,6 +4504,7 @@ async function salvarPacote(){
     catering:document.getElementById('pac-catering')?.value,
     observacoes:document.getElementById('pac-obs')?.value
   })
+  if(_ePac){_dbErro(_ePac,'salvar pacote');btn.textContent='Salvar';btn.disabled=false;return}
   btn.textContent='Salvar';btn.disabled=false
   closeModal('modal-pacote')
   carregarPacotes(hotelAtual.id)
@@ -4476,7 +4512,8 @@ async function salvarPacote(){
 
 async function deletarPacote(id){
   if(!confirm('Remover este pacote?'))return
-  await sb.from('local_pacotes').delete().eq('id',id)
+  const{error}=await sb.from('local_pacotes').delete().eq('id',id)
+  if(_dbErro(error,'remover'))return
   carregarPacotes(hotelAtual?.id)
 }
 
