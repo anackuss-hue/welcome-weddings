@@ -1908,6 +1908,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 <script>
 const{createClient}=supabase
 function fmtDate(d){if(!d)return'—';const[y,m,day]=d.split('-');return`${day}/${m}/${y}`}
+// Blinda texto digitado pelo usuário antes de jogar no HTML (evita quebra visual e injeção)
+function esc(s){return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
 const sb=createClient('https://yrnlfarricrhtfomwynd.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlybmxmYXJyaWNyaHRmb213eW5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczOTIxODksImV4cCI6MjA5Mjk2ODE4OX0.Ad4awFjQ9vcDqNyBbWycgv0rvpc3DOz4pPTi41nSp8w')
 
 let casamentos=[],assessoras=[],hoteis=[],casamentoAtual=null,assessoraAtual=null,hotelAtual=null
@@ -2223,15 +2225,15 @@ function addMembro(id){if(!id)return;const a=assessoras.find(x=>x.id===id);if(!a
 function removeMembro(id){membrosEquipe=membrosEquipe.filter(x=>x!==id);renderMembros()}
 function renderMembros(){
   const list=document.getElementById('membros-list');if(!list)return
-  list.innerHTML=membrosEquipe.map(id=>{const a=assessoras.find(x=>x.id===id);return`<span style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;background:var(--gold-pale);border:1px solid var(--gold-border);font-size:12px;font-weight:500">${a?.nome||'?'}<span onclick="removeMembro('${id}')" style="cursor:pointer;color:#999;font-size:14px;line-height:1;min-width:24px;text-align:center">✕</span></span>`}).join('')
+  list.innerHTML=membrosEquipe.map(id=>{const a=assessoras.find(x=>x.id===id);return`<span style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;background:var(--gold-pale);border:1px solid var(--gold-border);font-size:12px;font-weight:500">${esc(a?.nome||'?')}<span onclick="removeMembro('${id}')" style="cursor:pointer;color:#999;font-size:14px;line-height:1;min-width:24px;text-align:center">✕</span></span>`}).join('')
   const sel=document.getElementById('a-add-membro');if(!sel)return
   const opts=assessoras.filter(a=>a.id!==assessoraAtual?.id&&!membrosEquipe.includes(a.id))
-  sel.innerHTML='<option value="">+ Adicionar membro...</option>'+opts.map(a=>`<option value="${a.id}">${a.nome}</option>`).join('')
+  sel.innerHTML='<option value="">+ Adicionar membro...</option>'+opts.map(a=>`<option value="${a.id}">${esc(a.nome)}</option>`).join('')
 }
 function populateLiderSelect(){
   const sel=document.getElementById('a-lider-equipe');if(!sel)return
   const opts=assessoras.filter(a=>a.id!==assessoraAtual?.id&&a.possui_equipe)
-  sel.innerHTML='<option value="">Selecionar líder...</option>'+opts.map(a=>`<option value="${a.id}">${a.nome}${a.nome_equipe?' ('+a.nome_equipe+')':''}</option>`).join('')
+  sel.innerHTML='<option value="">Selecionar líder...</option>'+opts.map(a=>`<option value="${a.id}">${esc(a.nome)}${a.nome_equipe?' ('+esc(a.nome_equipe)+')':''}</option>`).join('')
 }
 
 // ── ABAS
@@ -2307,7 +2309,7 @@ function filtrarDropdownDisp(q){
   const lista=window._casamentosFuturos||[]
   const filtrados=q?lista.filter(c=>c.nome?.toLowerCase().includes(q.toLowerCase())||c.destino?.toLowerCase().includes(q.toLowerCase())):lista
   if(!filtrados.length){dd.innerHTML='<div style="padding:10px 12px;font-size:12px;color:#aaa">Nenhum encontrado</div>';dd.style.display='block';return}
-  dd.innerHTML=filtrados.map(c=>`<div onclick="selecionarCasamentoDisp('${c.id}','${(c.nome||'').replace(/'/g,"\\'")}','${fmtDate(c.plan_data)}')" style="padding:9px 12px;font-size:12px;cursor:pointer;border-bottom:1px solid #f5f0e8" onmouseover="this.style.background='var(--gold-pale)'" onmouseout="this.style.background=''"><div style="font-weight:600;color:var(--text)">${c.nome||'—'}</div><div style="font-size:11px;color:#aaa;margin-top:1px">📅 ${fmtDate(c.plan_data)}${c.destino?' · '+c.destino:''}</div></div>`).join('')
+  dd.innerHTML=filtrados.map(c=>`<div onclick="selecionarCasamentoDisp('${c.id}','${(c.nome||'').replace(/'/g,"\\'")}','${fmtDate(c.plan_data)}')" style="padding:9px 12px;font-size:12px;cursor:pointer;border-bottom:1px solid #f5f0e8" onmouseover="this.style.background='var(--gold-pale)'" onmouseout="this.style.background=''"><div style="font-weight:600;color:var(--text)">${esc(c.nome||'—')}</div><div style="font-size:11px;color:#aaa;margin-top:1px">📅 ${fmtDate(c.plan_data)}${c.destino?' · '+esc(c.destino):''}</div></div>`).join('')
   dd.style.display='block'
 }
 async function selecionarCasamentoDisp(id,nome,data){
@@ -2449,15 +2451,15 @@ function renderCasamentos(){
   document.getElementById('casamentos-count').textContent=filtered.length+' de '+casamentos.length+' casamento(s)'
   if(!filtered.length){grid.innerHTML='<div class="em"><div class="em-i">💍</div><div class="em-t">Nenhum casamento encontrado</div></div>';return}
   const sc=s=>s==='Realizado'?'tg':s==='Cancelado'?'tr':s==='Planejamento'?'tgb':s==='Produção+Viagem'?'tgr':'tgy'
-  const hotelNome=c=>c.local_id?(hoteis.find(h=>h.id===c.local_id)?.nome||'—'):'—'
-  const avs=c=>{const a=assessorasDoCas(c.id);return a.length?a.slice(0,2).map(x=>`<span class="crow-av" title="${(x.nome||'').replace(/"/g,'')}">${iniciais(x.nome)}</span>`).join(''):'<span style="color:#ccc;font-size:11px">—</span>'}
+  const hotelNome=c=>esc(c.local_id?(hoteis.find(h=>h.id===c.local_id)?.nome||'—'):'—')
+  const avs=c=>{const a=assessorasDoCas(c.id);return a.length?a.slice(0,2).map(x=>`<span class="crow-av" title="${esc(x.nome)}">${esc(iniciais(x.nome))}</span>`).join(''):'<span style="color:#ccc;font-size:11px">—</span>'}
   const cardHTML=c=>{const cd=cdLabel(c);return `<div class="card" style="transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,.12)'" onmouseout="this.style.boxShadow=''">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
-      <div style="font-weight:600;font-size:16px;font-family:'Cormorant Garamond',serif;flex:1;min-width:0;margin-right:8px">${c.nome||'—'}</div>
+      <div style="font-weight:600;font-size:16px;font-family:'Cormorant Garamond',serif;flex:1;min-width:0;margin-right:8px">${esc(c.nome||'—')}</div>
       <span class="tag ${sc(c.status)}" style="flex-shrink:0">${c.status||'Em andamento'}</span>
     </div>
     ${cd?`<div style="margin-bottom:12px"><span class="cd-chip">⏳ ${cd}</span></div>`:''}
-    <div style="font-size:13px;color:#888;margin-bottom:3px">📍 ${c.destino||'—'}</div>
+    <div style="font-size:13px;color:#888;margin-bottom:3px">📍 ${esc(c.destino||'—')}</div>
     <div style="font-size:13px;color:#888;margin-bottom:3px">📅 ${c.plan_data?fmtDate(c.plan_data):'—'}</div>
     <div style="font-size:13px;color:#888;margin-bottom:12px">🏨 ${hotelNome(c)}</div>
     ${casPrecisaAssessora(c)?'<div class="tag ta" style="margin-bottom:10px">⏰ Escolher assessora</div>':''}
@@ -2469,7 +2471,7 @@ function renderCasamentos(){
   </div>`}
   const rowHTML=c=>{const cd=cdLabel(c);return `<div class="crow">
     <span class="cdot" style="background:${dotColor(c)}"></span>
-    <div style="flex:1;min-width:0"><div class="crow-nm">${c.nome||'—'}</div><div class="crow-meta">📍 ${c.destino||'—'} · 🏨 ${hotelNome(c)}</div></div>
+    <div style="flex:1;min-width:0"><div class="crow-nm">${esc(c.nome||'—')}</div><div class="crow-meta">📍 ${esc(c.destino||'—')} · 🏨 ${hotelNome(c)}</div></div>
     <div style="text-align:right;width:104px;flex-shrink:0"><div class="crow-dt">${c.plan_data?fmtDate(c.plan_data):'<span style="color:#bbb">a definir</span>'}</div>${cd?`<div class="crow-cd">⏳ ${cd}</div>`:''}</div>
     <div style="width:60px;flex-shrink:0;display:flex;gap:3px;justify-content:center">${avs(c)}</div>
     <div style="flex-shrink:0;min-width:92px;text-align:center">${pillResumo(c)}</div>
@@ -2501,13 +2503,13 @@ function openNovoCasamento(){
   clearCasForm()
   // Popula select de hoteis
   const selH=document.getElementById('c-hotel')
-  if(selH)selH.innerHTML='<option value="">Selecionar local...</option>'+hoteis.map(h=>`<option value="${h.id}">${h.nome}${h.cidade?' — '+h.cidade:''}</option>`).join('')
+  if(selH)selH.innerHTML='<option value="">Selecionar local...</option>'+hoteis.map(h=>`<option value="${h.id}">${esc(h.nome)}${h.cidade?' — '+esc(h.cidade):''}</option>`).join('')
   populateConsultorasSelect()
   document.getElementById('modal-casamento').classList.add('open')
 }
 async function populateConsultorasSelect(){
   const{data}=await sb.from('usuarios').select('id,nome').order('nome',{ascending:true})
-  const opts='<option value="">Selecionar...</option>'+(data||[]).map(u=>`<option value="${u.nome}">${u.nome}</option>`).join('')
+  const opts='<option value="">Selecionar...</option>'+(data||[]).map(u=>`<option value="${u.nome}">${esc(u.nome)}</option>`).join('')
   ;['c-cons-plan','c-cons-prod'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=opts})
 }
 async function openCasamento(id){
@@ -2546,7 +2548,7 @@ function fillCasForm(c){
   s('c-nome',c.nome);s('c-destino',c.destino);s('c-data',c.plan_data);s('c-horario',c.plan_horario)
   // Popula select de hoteis
   const selH=document.getElementById('c-hotel')
-  if(selH){selH.innerHTML='<option value="">Selecionar local...</option>'+hoteis.map(h=>`<option value="${h.id}">${h.nome}${h.cidade?' — '+h.cidade:''}</option>`).join('');if(c.local_id)selH.value=c.local_id}
+  if(selH){selH.innerHTML='<option value="">Selecionar local...</option>'+hoteis.map(h=>`<option value="${h.id}">${esc(h.nome)}${h.cidade?' — '+esc(h.cidade):''}</option>`).join('');if(c.local_id)selH.value=c.local_id}
   s('c-pacote',c.plan_pacote);s('c-extra',c.plan_extra);s('c-obs',c.plan_obs)
   s('c-status',c.status);const _csetor=document.getElementById('c-setor');if(_csetor)_csetor.value=c.setor||'';s('c-produtora',c.prod_produtora);s('c-num-assessores',c.prod_num_assessores)
   s('c-cons-plan',c.consultora_plan||'');s('c-cons-prod',c.consultora_prod||'')
@@ -2728,7 +2730,7 @@ function renderPickerIfOpen(){
     return true
   })
   if(!disp.length){con.innerHTML='<div class="pl"><div style="text-align:center;color:#888;font-size:13px">Nenhuma disponível para esta data</div></div>';return}
-  con.innerHTML=`<div class="pl"><div style="font-weight:700;color:var(--gold);margin-bottom:12px;font-size:13px">Selecionar Assessora${dataCas?' — disponíveis em '+fmtDate(dataCas):''}</div>${disp.map(a=>`<div class="pi"><div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0"><div class="av" style="width:32px;height:32px;font-size:14px;flex-shrink:0">${a.nome[0]}</div><div style="min-width:0"><span style="font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block">${a.nome}</span><span style="font-size:12px;color:#888">${a.cidade||''}</span></div></div><button class="btn bg bsm" style="flex-shrink:0" onclick="escalarA('${a.id}','${(a.cidade||'').replace(/'/g,"\\'")}')">Escalar</button></div>`).join('')}<button class="btn bo bsm" style="margin-top:12px" onclick="togglePicker()">Cancelar</button></div>`
+  con.innerHTML=`<div class="pl"><div style="font-weight:700;color:var(--gold);margin-bottom:12px;font-size:13px">Selecionar Assessora${dataCas?' — disponíveis em '+fmtDate(dataCas):''}</div>${disp.map(a=>`<div class="pi"><div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0"><div class="av" style="width:32px;height:32px;font-size:14px;flex-shrink:0">${esc(a.nome[0])}</div><div style="min-width:0"><span style="font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block">${esc(a.nome)}</span><span style="font-size:12px;color:#888">${esc(a.cidade||'')}</span></div></div><button class="btn bg bsm" style="flex-shrink:0" onclick="escalarA('${a.id}','${(a.cidade||'').replace(/'/g,"\\'")}')">Escalar</button></div>`).join('')}<button class="btn bo bsm" style="margin-top:12px" onclick="togglePicker()">Cancelar</button></div>`
 }
 async function escalarA(aid,cidade){
   if(!casamentoAtual?.id)return
@@ -2804,9 +2806,9 @@ function renderAssessoras(){
     const scoreBg=a._media>=3.5?'#e8f5e9':a._media>=2.5?'#e3f2fd':a._media>=1.5?'#fff3e0':a._media?'#fdecea':null
     const alertaPassCard=docAlertHTML(a.passaporte_validade,'Passaporte')
     const alertaVistoCard=docAlertHTML(a.visto_validade,'Visto')
-    return`<div class="card" style="transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,.12)'" onmouseout="this.style.boxShadow=''"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px"><div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0"><div class="av">${a.nome[0]}</div><div style="min-width:0"><div style="font-weight:600;font-size:15px;font-family:'Cormorant Garamond',serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.nome}</div><div style="font-size:12px;color:#888;margin-top:2px">📍 ${a.cidade||'—'}</div></div></div>
+    return`<div class="card" style="transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,.12)'" onmouseout="this.style.boxShadow=''"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px"><div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0"><div class="av">${esc(a.nome[0])}</div><div style="min-width:0"><div style="font-weight:600;font-size:15px;font-family:'Cormorant Garamond',serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.nome)}</div><div style="font-size:12px;color:#888;margin-top:2px">📍 ${esc(a.cidade||'—')}</div></div></div>
     <div style="text-align:right;flex-shrink:0;margin-left:8px">${a.blacklist?'<span class="tag tr" style="display:block;margin-bottom:4px">Blacklist</span>':''}${scoreLabel?`<span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:${scoreBg};color:${scoreColor};display:inline-block">${scoreIcon} ${scoreLabel}</span>`:''}${a._notas?.length?`<div style="font-size:10px;color:#aaa;margin-top:2px">${a._notas.length} aval.</div>`:''}</div>
-    </div>${alertaPassCard||alertaVistoCard?`<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px">${alertaPassCard}${alertaVistoCard}</div>`:''}<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">${a.hierarquia?`<span class="tag tg">${a.hierarquia}</span>`:''}${a.camiseta_montagem?'<span class="tag tgy">👕 Camiseta</span>':''}${a.ingles?'<span class="tag tb"><img src="https://flagcdn.com/w20/gb.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Inglês</span>':''}${a.espanhol?'<span class="tag tb"><img src="https://flagcdn.com/w20/es.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Espanhol</span>':''}${a.frances?'<span class="tag tb"><img src="https://flagcdn.com/w20/fr.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Francês</span>':''}${a.italiano?'<span class="tag tb"><img src="https://flagcdn.com/w20/it.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Italiano</span>':''}${a.possui_equipe?`<span class="tag tgr">👑 ${a.nome_equipe||'Tem Equipe'}</span>`:''}${a.lider_equipe_id&&!a.possui_equipe?`<span class="tag tb">👥 Membro de Equipe</span>`:''}${a.indicamos?'<span class="tag tgr">⭐ Indicamos</span>':''}${a.fala_camera?'<span class="tag tgy">📷 Câmera</span>':''}${a.febre_amarela?'<span class="tag tgr">💉 FY</span>':''}</div><div style="display:flex;gap:8px"><button class="btn bo" style="flex:1" onclick="openAssessora('${a.id}')">${window._podeEditarAssessoras?"Ver / Editar":"👁️ Visualizar"}</button><button class="btn bd" onclick="deleteAssessora('${a.id}')">✕</button></div></div>`
+    </div>${alertaPassCard||alertaVistoCard?`<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px">${alertaPassCard}${alertaVistoCard}</div>`:''}<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">${a.hierarquia?`<span class="tag tg">${a.hierarquia}</span>`:''}${a.camiseta_montagem?'<span class="tag tgy">👕 Camiseta</span>':''}${a.ingles?'<span class="tag tb"><img src="https://flagcdn.com/w20/gb.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Inglês</span>':''}${a.espanhol?'<span class="tag tb"><img src="https://flagcdn.com/w20/es.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Espanhol</span>':''}${a.frances?'<span class="tag tb"><img src="https://flagcdn.com/w20/fr.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Francês</span>':''}${a.italiano?'<span class="tag tb"><img src="https://flagcdn.com/w20/it.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Italiano</span>':''}${a.possui_equipe?`<span class="tag tgr">👑 ${esc(a.nome_equipe||'Tem Equipe')}</span>`:''}${a.lider_equipe_id&&!a.possui_equipe?`<span class="tag tb">👥 Membro de Equipe</span>`:''}${a.indicamos?'<span class="tag tgr">⭐ Indicamos</span>':''}${a.fala_camera?'<span class="tag tgy">📷 Câmera</span>':''}${a.febre_amarela?'<span class="tag tgr">💉 FY</span>':''}</div><div style="display:flex;gap:8px"><button class="btn bo" style="flex:1" onclick="openAssessora('${a.id}')">${window._podeEditarAssessoras?"Ver / Editar":"👁️ Visualizar"}</button><button class="btn bd" onclick="deleteAssessora('${a.id}')">✕</button></div></div>`
   }).join('')
 }
 function openNovaAssessora(){
@@ -3006,7 +3008,7 @@ function renderHoteis(){
   if(!filtered.length){grid.innerHTML='<div class="em"><div class="em-i">🏨</div><div class="em-t">Nenhum hotel encontrado</div></div>';return}
   grid.innerHTML=filtered.map(h=>`<div class="card" style="transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,.12)'" onmouseout="this.style.boxShadow=''">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
-      <div style="min-width:0;flex:1;margin-right:8px"><div style="font-weight:600;font-size:15px;font-family:'Cormorant Garamond',serif;margin-bottom:2px">${h.favorito?'⭐ ':' '}${h.nome}</div><div style="font-size:12px;color:#888">📍 ${[h.cidade,h.pais,h.regiao].filter(Boolean).join(' · ')}</div></div>
+      <div style="min-width:0;flex:1;margin-right:8px"><div style="font-weight:600;font-size:15px;font-family:'Cormorant Garamond',serif;margin-bottom:2px">${h.favorito?'⭐ ':' '}${esc(h.nome)}</div><div style="font-size:12px;color:#888">📍 ${esc([h.cidade,h.pais,h.regiao].filter(Boolean).join(' · '))}</div></div>
       ${h._num_casamentos?`<span style="font-size:11px;font-weight:600;color:var(--gold);background:var(--gold-pale);padding:3px 8px;border-radius:20px;border:1px solid var(--gold-border);white-space:nowrap;flex-shrink:0">💍 ${h._num_casamentos} casam.</span>`:''}
     </div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">${h.blacklist_local?'<span class="tag tr">🚫 Blacklist</span>':''}${h.status_indicacao==='ja_indicamos'?'<span class="tag tgr">✅ Indicamos</span>':h.status_indicacao==='nao_indicamos'?'<span class="tag tgr">⭐ Nunca trab. — Indicamos</span>':h.status_indicacao==='ja_nao_indicamos'?'<span class="tag tr">⚠️ Não indicamos</span>':h.status_indicacao==='nao_nao_indicamos'?'<span class="tag tr">🚫 Não indicamos</span>':''}${h.ambiente?`<span class="tag tb">${h.ambiente}</span>`:''}${h.tipo?`<span class="tag tg">${h.tipo}</span>`:''}${h.regime_select?`<span class="tag tgy">${h.regime_select}</span>`:''}${h.q_spa==='sim'?'<span class="tag tgr">💆 Spa</span>':''}${h.q_criancas==='sim'?'<span class="tag tgr">👶 Kids</span>':''}${h.q_parque==='sim'?'<span class="tag tb">🌊 Aquapark</span>':''}${h.q_cassino==='sim'?'<span class="tag tgy">🎰 Cassino</span>':''}${h.visto_necessario?'<span class="tag tr">🛂 Visto</span>':''}${h.distancia_aeroporto?`<span class="tag tgy">✈️ até ${h.distancia_aeroporto}km</span>`:''}</div>${h.valor_casamento?`<div style="font-size:12px;color:#888;margin-bottom:10px">💍 ${h.valor_casamento}</div>`:''}<div style="display:flex;gap:8px"><button class="btn bo" style="flex:1" onclick="openHotel('${h.id}')">${window._podeEditarLocais?"Ver / Editar":"👁️ Visualizar"}</button><button class="btn bd" onclick="deleteHotel('${h.id}')">✕</button></div></div>`).join('')
@@ -3109,8 +3111,8 @@ async function renderHotelHistorico(){
       <div style="display:flex;align-items:center;gap:10px">
         <div class="hdot"></div>
         <div>
-          <div style="font-weight:600;font-size:14px;font-family:'Cormorant Garamond',serif">${c.nome||'—'}</div>
-          <div style="font-size:12px;color:#888;margin-top:2px">${c.plan_data?'📅 '+fmtDate(c.plan_data):''}${c.destino?' · '+c.destino:''}</div>
+          <div style="font-weight:600;font-size:14px;font-family:'Cormorant Garamond',serif">${esc(c.nome||'—')}</div>
+          <div style="font-size:12px;color:#888;margin-top:2px">${c.plan_data?'📅 '+fmtDate(c.plan_data):''}${c.destino?' · '+esc(c.destino):''}</div>
         </div>
       </div>
       <span class="tag ${c.status==='Realizado'||c.status==='Concluído'?'tg':c.status==='Cancelado'?'tr':c.status==='Planejamento'?'tgb':c.status==='Produção+Viagem'?'tgr':'tgy'}">${c.status||'Em andamento'}</span>${c.setor?`<span class="tag" style="background:${c.setor==='Planejamento'?'#e3f2fd':'#fff3e0'};color:${c.setor==='Planejamento'?'#1565c0':'#e65100'}">${c.setor==='Planejamento'?'📋':'🎨✈️'} ${c.setor}</span>`:''}${c.consultora_plan?`<span class="tag" style="background:#f0f0f0;color:#666">📋 ${c.consultora_plan}</span>`:''}${c.consultora_prod?`<span class="tag" style="background:#fdf3e0;color:var(--gold)">🎨 ${c.consultora_prod}</span>`:''}
@@ -3330,7 +3332,7 @@ function renderUsuarios(){
   if(!usuariosList.length){grid.innerHTML='<div class="em"><div class="em-i">👤</div><div class="em-t">Nenhum usuário cadastrado</div></div>';return}
   const setorIcon={admin:'👑',planejamento:'📋',viagem:'✈️',producao:'🎨',visualizacao:'👁️'}
   const setorNome={admin:'Admin',planejamento:'Planejamento',viagem:'Viagem',producao:'Produção',visualizacao:'Visualização'}
-  grid.innerHTML=usuariosList.map(u=>`<div class="card" style="${!u.ativo?'opacity:.6':''}"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><div class="av">${u.nome[0]}</div><div style="min-width:0"><div style="font-weight:600;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u.nome}</div><div style="font-size:12px;color:#888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u.email}</div></div></div><div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap"><span class="tag tg">${setorIcon[u.setor]||'👤'} ${setorNome[u.setor]||u.setor}</span>${!u.ativo?'<span class="tag tr">Inativo</span>':'<span class="tag tgr">Ativo</span>'}${u.id===usuarioAtual?.id?'<span class="tag tb">Você</span>':''}</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn bo" style="flex:1" onclick="editarUsuario('${u.id}')">Editar</button><button class="btn bo" style="color:#1565c0;border-color:#1565c0" onclick="abrirRedefinirSenha('${u.id}','${u.nome.replace(/'/g,"\\'")}')">🔑</button>${u.id!==usuarioAtual?.id?`<button class="btn bo" style="color:${u.ativo?'var(--red)':'var(--green)'};border-color:${u.ativo?'var(--red)':'var(--green)'}" onclick="toggleUsuario('${u.id}',${u.ativo})">${u.ativo?'Desativar':'Ativar'}</button>`:''}</div></div>`).join('')
+  grid.innerHTML=usuariosList.map(u=>`<div class="card" style="${!u.ativo?'opacity:.6':''}"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><div class="av">${esc(u.nome[0])}</div><div style="min-width:0"><div style="font-weight:600;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(u.nome)}</div><div style="font-size:12px;color:#888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(u.email)}</div></div></div><div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap"><span class="tag tg">${setorIcon[u.setor]||'👤'} ${setorNome[u.setor]||u.setor}</span>${!u.ativo?'<span class="tag tr">Inativo</span>':'<span class="tag tgr">Ativo</span>'}${u.id===usuarioAtual?.id?'<span class="tag tb">Você</span>':''}</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn bo" style="flex:1" onclick="editarUsuario('${u.id}')">Editar</button><button class="btn bo" style="color:#1565c0;border-color:#1565c0" onclick="abrirRedefinirSenha('${u.id}','${u.nome.replace(/'/g,"\\'")}')">🔑</button>${u.id!==usuarioAtual?.id?`<button class="btn bo" style="color:${u.ativo?'var(--red)':'var(--green)'};border-color:${u.ativo?'var(--red)':'var(--green)'}" onclick="toggleUsuario('${u.id}',${u.ativo})">${u.ativo?'Desativar':'Ativar'}</button>`:''}</div></div>`).join('')
 }
 function openNovoUsuario(){
   usuarioEditando=null
@@ -3412,7 +3414,7 @@ async function loadCasHoteis(casId){
 function renderCasHoteis(){
   const list=document.getElementById('c-hoteis-list');if(!list)return
   if(!casHoteis.length){list.innerHTML='<div style="font-size:13px;color:#aaa;padding:8px 0">Nenhum hotel selecionado ainda</div>';return}
-  list.innerHTML=casHoteis.map(ch=>`<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:8px;margin-bottom:8px"><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${ch.hotel?.nome||'—'}</div><div style="font-size:11px;color:#888">${[ch.hotel?.cidade,ch.hotel?.pais].filter(Boolean).join(' · ')}</div></div><button class="btn bd bsm" onclick="removerCasHotel('${ch.id}')">✕</button></div>`).join('')
+  list.innerHTML=casHoteis.map(ch=>`<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:8px;margin-bottom:8px"><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(ch.hotel?.nome||'—')}</div><div style="font-size:11px;color:#888">${esc([ch.hotel?.cidade,ch.hotel?.pais].filter(Boolean).join(' · '))}</div></div><button class="btn bd bsm" onclick="removerCasHotel('${ch.id}')">✕</button></div>`).join('')
 }
 async function renderLinkArea(casId){
   const area=document.getElementById('c-link-area');if(!area)return
@@ -3434,13 +3436,13 @@ function toggleHotelPicker(){
   const selecionados=casHoteis.map(ch=>ch.hotel?.id)
   const disponiveis=hoteis.filter(h=>!selecionados.includes(h.id))
   if(!disponiveis.length){picker.innerHTML='<div style="font-size:13px;color:#aaa;padding:8px">Todos os locais já foram adicionados</div>';return}
-  picker.innerHTML=`<div style="border:2px dashed var(--gold);border-radius:10px;background:var(--gold-pale);padding:16px;margin-top:8px"><input placeholder="Buscar local..." oninput="filtrarPickerHotel(this.value)" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--gold-border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:10px"><div id="c-picker-list" style="max-height:250px;overflow-y:auto">${disponiveis.map(h=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gold-border)"><div style="flex:1;min-width:0;margin-right:8px"><span style="font-weight:600;font-size:13px">${h.nome}</span><span style="font-size:12px;color:#888;margin-left:6px">${[h.cidade,h.pais].filter(Boolean).join(' · ')}</span></div><button class="btn bg bsm" style="flex-shrink:0" onclick="adicionarCasHotel('${h.id}')">+ Adicionar</button></div>`).join('')}</div><button class="btn bo bsm" style="margin-top:10px" onclick="toggleHotelPicker()">Fechar</button></div>`
+  picker.innerHTML=`<div style="border:2px dashed var(--gold);border-radius:10px;background:var(--gold-pale);padding:16px;margin-top:8px"><input placeholder="Buscar local..." oninput="filtrarPickerHotel(this.value)" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--gold-border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:10px"><div id="c-picker-list" style="max-height:250px;overflow-y:auto">${disponiveis.map(h=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gold-border)"><div style="flex:1;min-width:0;margin-right:8px"><span style="font-weight:600;font-size:13px">${esc(h.nome)}</span><span style="font-size:12px;color:#888;margin-left:6px">${esc([h.cidade,h.pais].filter(Boolean).join(' · '))}</span></div><button class="btn bg bsm" style="flex-shrink:0" onclick="adicionarCasHotel('${h.id}')">+ Adicionar</button></div>`).join('')}</div><button class="btn bo bsm" style="margin-top:10px" onclick="toggleHotelPicker()">Fechar</button></div>`
 }
 function filtrarPickerHotel(q){
   const list=document.getElementById('c-picker-list');if(!list)return
   const selecionados=casHoteis.map(ch=>ch.hotel?.id)
   const filtrados=hoteis.filter(h=>!selecionados.includes(h.id)&&(!q||h.nome?.toLowerCase().includes(q.toLowerCase())||h.cidade?.toLowerCase().includes(q.toLowerCase())))
-  list.innerHTML=filtrados.map(h=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gold-border)"><div style="flex:1;min-width:0;margin-right:8px"><span style="font-weight:600;font-size:13px">${h.nome}</span></div><button class="btn bg bsm" style="flex-shrink:0" onclick="adicionarCasHotel('${h.id}')">+ Adicionar</button></div>`).join('')||'<div style="font-size:13px;color:#aaa;padding:8px">Nenhum resultado</div>'
+  list.innerHTML=filtrados.map(h=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gold-border)"><div style="flex:1;min-width:0;margin-right:8px"><span style="font-weight:600;font-size:13px">${esc(h.nome)}</span></div><button class="btn bg bsm" style="flex-shrink:0" onclick="adicionarCasHotel('${h.id}')">+ Adicionar</button></div>`).join('')||'<div style="font-size:13px;color:#aaa;padding:8px">Nenhum resultado</div>'
 }
 async function adicionarCasHotel(hotelId){
   if(!casamentoAtual?.id)return
@@ -3548,8 +3550,8 @@ async function carregarAnexos(containerId,tipo,referenciaId){
   list.innerHTML=data.map(a=>`<div class="anexo-item">
     <div class="anexo-icon" style="background:var(--gold-pale)">${anexoIcone(a.tipo_arquivo)}</div>
     <div style="flex:1;min-width:0">
-      <div style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.nome}</div>
-      <div style="font-size:11px;color:#aaa;margin-top:1px">${formatBytes(a.tamanho)}${a.criado_por?' · '+a.criado_por:''} · ${new Date(a.created_at).toLocaleDateString('pt-BR')}</div>
+      <div style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.nome)}</div>
+      <div style="font-size:11px;color:#aaa;margin-top:1px">${formatBytes(a.tamanho)}${a.criado_por?' · '+esc(a.criado_por):''} · ${new Date(a.created_at).toLocaleDateString('pt-BR')}</div>
     </div>
     <div style="display:flex;gap:6px;flex-shrink:0">
       <a href="${a.url}" target="_blank" style="padding:5px 12px;border-radius:7px;font-size:12px;font-weight:600;background:var(--gold-pale);color:var(--gold);border:1px solid var(--gold-border);text-decoration:none;display:inline-flex;align-items:center">Abrir</a>
@@ -3680,12 +3682,12 @@ function renderFornecedores(){
   const ti={Assessora:'👩',Celebrante:'🎤','Fotógrafo':'📷',Videomaker:'🎬',DJ:'🎧','Cabelo e Maquiagem':'💄'}
   grid.innerHTML=filtered.map(f=>`<div class="card">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
-      <div><div style="font-size:16px;font-weight:600;font-family:'Cormorant Garamond',serif">${f.nome}</div>
-      <div style="font-size:12px;color:var(--muted);margin-top:3px">${ti[f.tipo]||'🏢'} ${f.tipo}${f.cidade?' · '+f.cidade:''}${f.pais?' · '+f.pais:''}${f.faz_destination?' · ✈️ Destination':''}</div></div>
+      <div><div style="font-size:16px;font-weight:600;font-family:'Cormorant Garamond',serif">${esc(f.nome)}</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:3px">${ti[f.tipo]||'🏢'} ${esc(f.tipo)}${f.cidade?' · '+esc(f.cidade):''}${f.pais?' · '+esc(f.pais):''}${f.faz_destination?' · ✈️ Destination':''}</div></div>
       <button class="btn bd bsm" onclick="deletarFornecedor('${f.id}')">✕</button>
     </div>
-    ${f.telefone?`<div style="font-size:12px;color:var(--muted)">📞 ${f.telefone}</div>`:''}
-    ${f.email?`<div style="font-size:12px;color:var(--muted)">✉️ ${f.email}</div>`:''}
+    ${f.telefone?`<div style="font-size:12px;color:var(--muted)">📞 ${esc(f.telefone)}</div>`:''}
+    ${f.email?`<div style="font-size:12px;color:var(--muted)">✉️ ${esc(f.email)}</div>`:''}
     <button class="btn bo" style="width:100%;margin-top:12px" onclick="openFornecedor('${f.id}')">Ver / Editar</button>
   </div>`).join('')
 }
@@ -3805,7 +3807,7 @@ function populateFormCasamentos(){
   const futuros=casamentos.filter(c=>c.plan_data>=hoje&&c.status!=='Cancelado').sort((a,b)=>a.plan_data.localeCompare(b.plan_data))
   ;['form-cong-casamento','form-pass-casamento'].forEach(id=>{
     const sel=document.getElementById(id);if(!sel)return
-    sel.innerHTML='<option value="">Selecionar casamento...</option>'+futuros.map(c=>`<option value="${c.id}" data-nome="${c.nome}">${c.nome}${c.plan_data?' — '+fmtDate(c.plan_data):''}</option>`).join('')
+    sel.innerHTML='<option value="">Selecionar casamento...</option>'+futuros.map(c=>`<option value="${c.id}" data-nome="${esc(c.nome)}">${esc(c.nome)}${c.plan_data?' — '+fmtDate(c.plan_data):''}</option>`).join('')
   })
 }
 
@@ -3922,14 +3924,14 @@ function renderKanbanCard(k){
       ${tipoTag}
       <span style="font-size:13px" title="${k.prioridade||'media'}">${k.prioridade==='alta'?'🔴':k.prioridade==='baixa'?'🟢':'🟡'}</span>
     </div>
-    <div class="kb-card-name">${nome}</div>
-    ${k.tipo==='viagem_assessora'&&kbCidadesOrigem(k)?`<div style="font-size:11px;color:var(--muted);margin-top:2px">📍 Origem: ${kbCidadesOrigem(k)}</div>`:''}
-    ${tags.length?`<div class="kb-tags">${tags.map(t=>`<span class="kb-tag">${t}</span>`).join('')}</div>`:''}
+    <div class="kb-card-name">${esc(nome)}</div>
+    ${k.tipo==='viagem_assessora'&&kbCidadesOrigem(k)?`<div style="font-size:11px;color:var(--muted);margin-top:2px">📍 Origem: ${esc(kbCidadesOrigem(k))}</div>`:''}
+    ${tags.length?`<div class="kb-tags">${tags.map(t=>`<span class="kb-tag">${esc(t)}</span>`).join('')}</div>`:''}
     <div class="kb-card-meta">
       <span class="kb-date">${dt}</span>
       ${solicitante
-        ? `<div style="display:flex;align-items:center;gap:5px;min-width:0"><span style="font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:95px">${solicitante}</span><div class="kb-avatar" title="Solicitado por ${solicitante}">${avatar}</div></div>`
-        : `<div class="kb-avatar">${avatar}</div>`}
+        ? `<div style="display:flex;align-items:center;gap:5px;min-width:0"><span style="font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:95px">${esc(solicitante)}</span><div class="kb-avatar" title="Solicitado por ${esc(solicitante)}">${esc(avatar)}</div></div>`
+        : `<div class="kb-avatar">${esc(avatar)}</div>`}
     </div>
   </div>`
 }
@@ -3956,19 +3958,19 @@ async function openKanbanCard(id){
   const det=document.getElementById('kc-detalhes')
   let html=''
   // Fornecedor/Assessora
-  if(k.assessora_nome)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">${k.tipo==='viagem_fornecedor'?'Fornecedor':'Assessora'}</span><div style="font-size:13px;margin-top:2px">🏢 ${k.assessora_nome}</div></div>`
+  if(k.assessora_nome)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">${k.tipo==='viagem_fornecedor'?'Fornecedor':'Assessora'}</span><div style="font-size:13px;margin-top:2px">🏢 ${esc(k.assessora_nome)}</div></div>`
   // Cidade de origem da(s) assessora(s)
-  {const co=kbCidadesOrigem(k);if(co)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">Cidade de Origem</span><div style="font-size:13px;margin-top:2px">📍 ${co}</div></div>`}
+  {const co=kbCidadesOrigem(k);if(co)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">Cidade de Origem</span><div style="font-size:13px;margin-top:2px">📍 ${esc(co)}</div></div>`}
   // Casamento
-  if(k.casamento_nome)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">Casamento</span><div style="font-size:13px;margin-top:2px">💒 ${k.casamento_nome}</div></div>`
+  if(k.casamento_nome)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">Casamento</span><div style="font-size:13px;margin-top:2px">💒 ${esc(k.casamento_nome)}</div></div>`
   // Período e horários
   if(k.periodo_de||k.periodo_ate)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">Período</span><div style="font-size:13px;margin-top:4px;display:grid;grid-template-columns:1fr 1fr;gap:6px">
     <div style="background:#fff;border:1px solid var(--border);border-radius:7px;padding:6px 10px"><div style="font-size:10px;color:var(--muted)">CHEGADA</div><div>${fmtDate(k.periodo_de)}</div>${k.hora_chegada?`<div style="font-size:12px;color:var(--gold)">⏰ ${k.hora_chegada.slice(0,5)}</div>`:''}</div>
     <div style="background:#fff;border:1px solid var(--border);border-radius:7px;padding:6px 10px"><div style="font-size:10px;color:var(--muted)">SAÍDA</div><div>${fmtDate(k.periodo_ate)}</div>${k.hora_saida?`<div style="font-size:12px;color:var(--gold)">⏰ ${k.hora_saida.slice(0,5)}</div>`:''}</div>
   </div></div>`
-  if(k.cidade_saida)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">Cidade de Saída</span><div style="font-size:13px;margin-top:2px">✈️ ${k.cidade_saida}</div></div>`
-  if(k.servicos)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">Serviços Solicitados</span><div style="font-size:13px;margin-top:2px">${k.servicos}</div></div>`
-  if(k.convidado_nome)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">Convidado</span><div style="font-size:13px;margin-top:2px">${k.convidado_nome}${k.convidado_telefone?' · '+k.convidado_telefone:''}</div></div>`
+  if(k.cidade_saida)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">Cidade de Saída</span><div style="font-size:13px;margin-top:2px">✈️ ${esc(k.cidade_saida)}</div></div>`
+  if(k.servicos)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">Serviços Solicitados</span><div style="font-size:13px;margin-top:2px">${esc(k.servicos)}</div></div>`
+  if(k.convidado_nome)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">Convidado</span><div style="font-size:13px;margin-top:2px">${esc(k.convidado_nome)}${k.convidado_telefone?' · '+esc(k.convidado_telefone):''}</div></div>`
   det.innerHTML=html||'<div style="font-size:12px;color:var(--muted)">Sem detalhes adicionais</div>'
   document.getElementById('kc-sol-edit').value=k.solicitacao||''
   // Logística para viagem
@@ -4074,7 +4076,7 @@ async function carregarChecklist(cardId){
   document.getElementById('kc-check-progress').textContent=total?`${feitos}/${total} concluídas`:''
   con.innerHTML=(data||[]).map(c=>`<div class="kc-check-item${c.feito?' feito':''}" id="chi-${c.id}">
     <input type="checkbox" class="kc-check-cb" ${c.feito?'checked':''} onchange="toggleCheck('${c.id}',this.checked)">
-    <span class="kc-check-txt">${c.texto}</span>
+    <span class="kc-check-txt">${esc(c.texto)}</span>
     <button class="kc-check-del" onclick="deletarCheck('${c.id}')">✕</button>
   </div>`).join('')||'<div style="font-size:12px;color:var(--muted);padding:8px 0">Nenhuma tarefa ainda</div>'
 }
@@ -4112,7 +4114,7 @@ async function carregarNotasKanban(cardId){
     </div>`:''
     return`<div class="kc-nota-item ${mine?'mine':'theirs'}" id="nota-${n.id}" data-texto="${encodeURIComponent(n.texto)}">
       ${acoes}
-      <div class="kc-nota-bubble" id="nota-bubble-${n.id}">${n.texto.replace(/\n/g,'<br>')}</div>
+      <div class="kc-nota-bubble" id="nota-bubble-${n.id}">${esc(n.texto).replace(/\n/g,'<br>')}</div>
       <div class="kc-nota-meta">${mine?'':n.criado_por+' · '}${hora}</div>
     </div>`
   }).join('')||'<div style="font-size:12px;color:var(--muted);padding:8px 0;text-align:center">Nenhuma mensagem ainda</div>'
@@ -4214,7 +4216,7 @@ function openNovaKanban(coluna){
   if(sel){
     const hoje=new Date().toISOString().split('T')[0]
     const futuros=casamentos.filter(c=>c.plan_data>=hoje).sort((a,b)=>a.plan_data.localeCompare(b.plan_data))
-    sel.innerHTML='<option value="">Selecionar...</option>'+futuros.map(c=>`<option value="${c.id}" data-nome="${c.nome}">${c.nome}</option>`).join('')
+    sel.innerHTML='<option value="">Selecionar...</option>'+futuros.map(c=>`<option value="${c.id}" data-nome="${esc(c.nome)}">${esc(c.nome)}</option>`).join('')
   }
 }
 
@@ -4541,8 +4543,8 @@ function renderPlanReunioes(){
     <div style="width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:6px"></div>
     <div style="flex:1">
       <div style="font-size:12px;font-weight:600;color:var(--text)">${r.data}${r.horario?' às '+r.horario:''}</div>
-      <div style="font-size:13px;color:var(--text);margin-top:2px">${r.assunto}</div>
-      ${r.registrado_por?`<div style="font-size:11px;color:var(--gold);margin-top:2px">por ${r.registrado_por}</div>`:''}
+      <div style="font-size:13px;color:var(--text);margin-top:2px">${esc(r.assunto)}</div>
+      ${r.registrado_por?`<div style="font-size:11px;color:var(--gold);margin-top:2px">por ${esc(r.registrado_por)}</div>`:''}
     </div>
     <button onclick="planDeleteReuniao(${i})" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:14px;padding:0 4px">✕</button>
   </div>`).join('')
@@ -4580,8 +4582,8 @@ function renderProdReunioes(){
     <div style="width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:6px"></div>
     <div style="flex:1">
       <div style="font-size:12px;font-weight:600;color:var(--text)">${r.data}${r.horario?' às '+r.horario:''}</div>
-      <div style="font-size:13px;color:var(--text);margin-top:2px">${r.assunto}</div>
-      ${r.registrado_por?`<div style="font-size:11px;color:var(--gold);margin-top:2px">por ${r.registrado_por}</div>`:''}
+      <div style="font-size:13px;color:var(--text);margin-top:2px">${esc(r.assunto)}</div>
+      ${r.registrado_por?`<div style="font-size:11px;color:var(--gold);margin-top:2px">por ${esc(r.registrado_por)}</div>`:''}
     </div>
     <button onclick="prodDeleteReuniao(${i})" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:14px;padding:0 4px">✕</button>
   </div>`).join('')
@@ -4593,7 +4595,7 @@ function renderProdEventos(){
   if(!el)return
   if(!list.length){el.innerHTML='<div style="font-size:12px;color:#aaa;padding:8px 0">Nenhum evento adicionado ainda.</div>';return}
   el.innerHTML=list.map((e,i)=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:8px;margin-bottom:6px">
-    <span style="font-size:13px;flex:1"><strong style="color:var(--gold)">${e.data}${e.horario?' às '+e.horario:''}</strong> — ${e.desc}</span>
+    <span style="font-size:13px;flex:1"><strong style="color:var(--gold)">${e.data}${e.horario?' às '+e.horario:''}</strong> — ${esc(e.desc)}</span>
     <button onclick="prodDeleteEvento(${i})" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:14px;padding:0 4px">✕</button>
   </div>`).join('')
 }
@@ -4929,7 +4931,7 @@ function coordRenderCasamentos(data,ano){
     <tbody>${filtered.length===0?`<tr><td colspan="8" style="text-align:center;padding:40px;color:#aaa">Nenhum resultado.</td></tr>`:filtered.map(c=>`<tr onclick="coordOpenModal(${JSON.stringify(c).replace(/"/g,'&quot;')},'cas')">
       <td><div style="font-size:13px;font-weight:600">${c.casal}</div>${c.convidados>0?`<div style="font-size:11px;color:#aaa">${c.convidados} conv.</div>`:''}</td>
       <td style="font-size:12px;color:var(--muted);white-space:nowrap">${c.data?coordFmtDate(c.data):c.ano||'—'}</td>
-      <td><span style="font-size:12px;color:var(--muted)">${coordFlag(c.destino)} ${c.destino||'—'}</span><div style="font-size:11px;color:#aaa">${c.local||''}</div></td>
+      <td><span style="font-size:12px;color:var(--muted)">${coordFlag(c.destino)} ${esc(c.destino||'—')}</span><div style="font-size:11px;color:#aaa">${c.local||''}</div></td>
       <td>${coordPlannerChip(c.produtora)}</td>
       <td>${coordStatusBadge(c.status)}</td>
       <td>${coordFornPills(c.fornecedores)}</td>
@@ -4949,7 +4951,7 @@ function coordRenderPlanejamento(){
       <thead><tr><th>Casal</th><th>Destino / Hotel</th><th>Data interesse</th><th>Convidados</th><th>Responsável</th><th>Status</th><th>Reuniões</th><th>Em andamento</th></tr></thead>
       <tbody>${filteredP.map(c=>`<tr onclick="coordOpenModal(${JSON.stringify(c).replace(/"/g,'&quot;')},'plan')">
         <td style="font-size:13px;font-weight:600">${c.casal}</td>
-        <td><span style="font-size:12px;color:var(--muted)">${coordFlag(c.destino)} ${c.destino||'—'}</span><div style="font-size:11px;color:#aaa">${c.hotel||''}</div></td>
+        <td><span style="font-size:12px;color:var(--muted)">${coordFlag(c.destino)} ${esc(c.destino||'—')}</span><div style="font-size:11px;color:#aaa">${c.hotel||''}</div></td>
         <td style="font-size:12px;color:var(--muted)">${c.data_interesse||'—'}</td>
         <td style="font-size:12px;color:var(--muted)">${c.convidados||'—'}</td>
         <td>${coordPlannerChip(c.responsavel)}</td>
@@ -4963,7 +4965,7 @@ function coordRenderPlanejamento(){
     <table class="coord-tbl"><thead><tr><th>Casal</th><th>Destino</th><th>Convidados</th><th>Responsável</th><th>Em andamento</th></tr></thead>
     <tbody>${coordDistratos.map(c=>`<tr onclick="coordOpenModal(${JSON.stringify(c).replace(/"/g,'&quot;')},'dist')">
       <td style="font-size:13px;font-weight:600">${c.casal}</td>
-      <td><span style="font-size:12px;color:var(--muted)">${coordFlag(c.destino)} ${c.destino||'—'}</span></td>
+      <td><span style="font-size:12px;color:var(--muted)">${coordFlag(c.destino)} ${esc(c.destino||'—')}</span></td>
       <td style="font-size:12px;color:var(--muted)">${c.convidados||'—'}</td>
       <td>${coordPlannerChip(c.responsavel)}</td>
       <td style="font-size:11px;color:var(--muted)">${c.andamento||''}</td>
@@ -5009,7 +5011,7 @@ function coordRenderProducao(){
             </div>
             <div style="flex:1;min-width:0">
               <div style="font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px">${c.casal} ${prazo.txt?`<span class="${prazo.badge}">${prazo.txt}</span>`:''}</div>
-              <div style="font-size:11px;color:#aaa">${coordFlag(c.destino)} ${c.destino||''} · ${c.local||''}</div>
+              <div style="font-size:11px;color:#aaa">${coordFlag(c.destino)} ${esc(c.destino||'')} · ${c.local||''}</div>
             </div>
             <div style="font-size:11px;color:#aaa;text-align:center;min-width:80px"><div style="font-size:10px;color:#ccc;margin-bottom:2px">Assessor</div><div style="font-weight:500;color:${c.assessor&&!['n/a','a definir'].includes(c.assessor?.toLowerCase())?'#1a1a1a':'#ccc'}">${c.assessor||'—'}</div></div>
             ${coordFornPills(forn)}
@@ -5027,13 +5029,13 @@ function coordRenderProducao(){
               </div>
               <div>
                 <div class="coord-detail-label">Fornecedores (${fornChk}/${forn.length})</div>
-                ${forn.length===0?`<div style="font-size:12px;color:#a81a1a">⚠ Nenhum fornecedor</div>`:forn.map(f=>`<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px"><div style="width:14px;height:14px;border-radius:3px;background:${f.checked?'#1a6f4a':'#eee'};border:1.5px solid ${f.checked?'#1a6f4a':'#ccc'};display:flex;align-items:center;justify-content:center;flex-shrink:0">${f.checked?'<i class="ti ti-check" style="font-size:9px;color:#fff"></i>':''}</div><span style="font-size:12px;${f.checked?'color:#aaa;text-decoration:line-through':''}">${f.nome}</span></div>`).join('')}
+                ${forn.length===0?`<div style="font-size:12px;color:#a81a1a">⚠ Nenhum fornecedor</div>`:forn.map(f=>`<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px"><div style="width:14px;height:14px;border-radius:3px;background:${f.checked?'#1a6f4a':'#eee'};border:1.5px solid ${f.checked?'#1a6f4a':'#ccc'};display:flex;align-items:center;justify-content:center;flex-shrink:0">${f.checked?'<i class="ti ti-check" style="font-size:9px;color:#fff"></i>':''}</div><span style="font-size:12px;${f.checked?'color:#aaa;text-decoration:line-through':''}">${esc(f.nome)}</span></div>`).join('')}
               </div>
               <div>
                 <div class="coord-detail-label">Reuniões de Planejamento (${(c.reunioes_plan||[]).length})</div>
-                ${(c.reunioes_plan||[]).length===0?`<div style="font-size:12px;color:#aaa">Nenhuma</div>`:c.reunioes_plan.map(r=>`<div style="margin-bottom:8px"><div style="font-size:10px;color:#aaa">${r.data}${r.horario?' às '+r.horario:''}</div><div style="font-size:12px">${r.assunto}</div>${r.registrado_por?`<div style="font-size:10px;color:var(--gold)">por ${r.registrado_por}</div>`:''}</div>`).join('')}
+                ${(c.reunioes_plan||[]).length===0?`<div style="font-size:12px;color:#aaa">Nenhuma</div>`:c.reunioes_plan.map(r=>`<div style="margin-bottom:8px"><div style="font-size:10px;color:#aaa">${r.data}${r.horario?' às '+r.horario:''}</div><div style="font-size:12px">${esc(r.assunto)}</div>${r.registrado_por?`<div style="font-size:10px;color:var(--gold)">por ${esc(r.registrado_por)}</div>`:''}</div>`).join('')}
                 <div class="coord-detail-label" style="margin-top:12px">Reuniões de Produção (${(c.reunioes_prod||[]).length})</div>
-                ${(c.reunioes_prod||[]).length===0?`<div style="font-size:12px;color:#aaa">Nenhuma</div>`:c.reunioes_prod.map(r=>`<div style="margin-bottom:8px"><div style="font-size:10px;color:#aaa">${r.data}${r.horario?' às '+r.horario:''}</div><div style="font-size:12px">${r.assunto}</div>${r.registrado_por?`<div style="font-size:10px;color:var(--gold)">por ${r.registrado_por}</div>`:''}</div>`).join('')}
+                ${(c.reunioes_prod||[]).length===0?`<div style="font-size:12px;color:#aaa">Nenhuma</div>`:c.reunioes_prod.map(r=>`<div style="margin-bottom:8px"><div style="font-size:10px;color:#aaa">${r.data}${r.horario?' às '+r.horario:''}</div><div style="font-size:12px">${esc(r.assunto)}</div>${r.registrado_por?`<div style="font-size:10px;color:var(--gold)">por ${esc(r.registrado_por)}</div>`:''}</div>`).join('')}
               </div>
             </div>
           </div>`:''}
@@ -5093,7 +5095,7 @@ function coordBuildTab(){
       </div>
       ${flist.map((f,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;cursor:pointer;transition:background .15s" onmouseover="this.style.background='#f7f4ef'" onmouseout="this.style.background=''" onclick="coordToggleForn(${i})">
         <div style="width:16px;height:16px;border-radius:4px;border:1.5px solid ${f.checked?'var(--gold)':'#ccc'};background:${f.checked?'var(--gold)':'#fff'};display:flex;align-items:center;justify-content:center;flex-shrink:0">${f.checked?'<i class="ti ti-check" style="font-size:10px;color:#fff"></i>':''}</div>
-        <span style="font-size:13px;${f.checked?'color:#aaa;text-decoration:line-through':''}">${f.nome}</span>
+        <span style="font-size:13px;${f.checked?'color:#aaa;text-decoration:line-through':''}">${esc(f.nome)}</span>
       </div>`).join('')}
       <div style="margin-top:16px;padding-top:14px;border-top:1px solid #f0ebe2">
         <div style="font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Adicionar fornecedor</div>
@@ -5114,8 +5116,8 @@ function coordBuildTab(){
         <div style="width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:5px"></div>
         <div style="flex:1">
           <div style="font-size:12px;font-weight:600">${r.data}${r.horario?` às ${r.horario}`:''}</div>
-          <div style="font-size:13px;margin-top:2px">${r.assunto}</div>
-          ${r.registrado_por?`<div style="font-size:11px;color:var(--gold);margin-top:2px">por ${r.registrado_por}</div>`:''}
+          <div style="font-size:13px;margin-top:2px">${esc(r.assunto)}</div>
+          ${r.registrado_por?`<div style="font-size:11px;color:var(--gold);margin-top:2px">por ${esc(r.registrado_por)}</div>`:''}
         </div>
         <button onclick="coordDeleteReuniao(${i})" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:14px"><i class="ti ti-x"></i></button>
       </div>`).join('')}
