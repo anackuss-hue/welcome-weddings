@@ -1007,19 +1007,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div id="viag-assess-resumo"><div style="font-size:13px;color:var(--muted)">—</div></div>
       </div>
 
-      <!-- Detalhes da Viagem -->
-      <div class="sec" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--gold-border)">
-        <div class="st" style="margin-bottom:14px">🧳 Detalhes da Viagem</div>
-        <div class="f" style="margin-bottom:10px"><label>🚐 Transfer</label><input id="c-transfer" placeholder="Ex: Transfer aeroporto ↔ hotel confirmado com fornecedor X..."></div>
-        <div class="f" style="margin-bottom:10px"><label>🏨 Hospedagem</label><textarea id="c-hospedagem" placeholder="Hotel, quartos bloqueados, datas de check-in/check-out, upgrades..." style="min-height:70px"></textarea></div>
-        <div class="f"><label>🗺️ Passeios</label><textarea id="c-passeios-txt" placeholder="Passeios programados para o casal e convidados..." style="min-height:70px"></textarea></div>
-      </div>
-
-      <!-- Observações -->
-      <div class="sec" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--gold-border)">
-        <div class="st" style="margin-bottom:10px">📝 Observações de Viagem</div>
-        <textarea id="c-viag-obs" placeholder="Pendências, informações importantes, próximos passos..." style="width:100%;min-height:80px;border-radius:8px;border:1px solid var(--border);padding:10px 12px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;resize:vertical"></textarea>
-      </div>
+      <!-- Checklist de Atendimento -->
       <div class="sec" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--gold-border)">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px">
           <div class="st" style="margin:0">📋 Checklist de Atendimento</div>
@@ -2533,7 +2521,7 @@ async function openCasamento(id){
   setTimeout(()=>aplicarReadonlyAba('plan'),100)
 }
 function clearCasForm(){
-  ['c-nome','c-destino','c-data','c-horario','c-hotel','c-pacote','c-extra','c-obs','c-produtora','c-num-assessores','c-datas','c-ultima-reuniao','c-servicos','c-programacao','c-fornecedores','c-prod-status','c-prod-obs','c-transfer','c-passeios-txt','c-hospedagem','c-viag-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
+  ['c-nome','c-destino','c-data','c-horario','c-hotel','c-pacote','c-extra','c-obs','c-produtora','c-num-assessores','c-datas','c-ultima-reuniao','c-servicos','c-programacao','c-fornecedores','c-prod-status','c-prod-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
   window._planReunioes=[];window._prodReunioes=[];window._prodEventos=[]
   renderPlanReunioes();renderProdReunioes();renderProdEventos()
   window._checklist={atend:[],grupo:[]};renderChecklist()
@@ -2561,14 +2549,13 @@ function fillCasForm(c){
   window._prodEventos=_parseJsonField(c.prod_eventos)
   renderPlanReunioes();renderProdReunioes();renderProdEventos()
   window._checklist=_parseChecklist(c.checklist);renderChecklist()
-  s('c-transfer',c.viag_transfer);s('c-passeios-txt',c.viag_passeios);s('c-hospedagem',c.viag_hospedagem);s('c-viag-obs',c.viag_obs)
   setTg('c-voos',c.checklist_voos);setTg('c-transfers',c.checklist_transfers);setTg('c-passeios',c.checklist_passeios);setTg('c-vok',c.viagem_ok)
   setViag('casal',c.viag_casal_status);setViag('barco',c.viag_passeio_barco);setViag('coco',c.viag_coco_bongo)
   if(c.id)loadViagResumoAssessora(c.id)
 }
 function getCasData(){
   const v=id=>document.getElementById(id)?.value||''
-  return{nome:v('c-nome'),destino:v('c-destino'),plan_data:v('c-data'),plan_horario:v('c-horario'),local_id:document.getElementById('c-hotel')?.value||null,plan_pacote:v('c-pacote'),plan_extra:v('c-extra'),plan_obs:v('c-obs'),status:v('c-status'),setor:document.getElementById('c-setor')?.value||null,consultora_plan:v('c-cons-plan')||null,consultora_prod:v('c-cons-prod')||null,prod_produtora:v('c-produtora'),prod_num_assessores:v('c-num-assessores'),prod_datas:v('c-datas'),prod_ultima_reuniao:v('c-ultima-reuniao'),prod_servicos:v('c-servicos'),prod_programacao:v('c-programacao'),prod_fornecedores:v('c-fornecedores'),prod_status:v('c-prod-status'),plan_reunioes:JSON.stringify(window._planReunioes||[]),prod_reunioes:JSON.stringify(window._prodReunioes||[]),prod_eventos:JSON.stringify(window._prodEventos||[]),checklist:JSON.stringify(window._checklist||{atend:[],grupo:[]}),prod_obs:v('c-prod-obs'),viag_transfer:v('c-transfer'),viag_passeios:v('c-passeios-txt'),viag_hospedagem:v('c-hospedagem'),viag_obs:v('c-viag-obs'),checklist_voos:getTg('c-voos'),checklist_transfers:getTg('c-transfers'),checklist_passeios:getTg('c-passeios'),viagem_ok:getTg('c-vok'),viag_casal_status:window._viagSel?.casal||null,viag_passeio_barco:window._viagSel?.barco||null,viag_coco_bongo:window._viagSel?.coco||null}
+  return{nome:v('c-nome'),destino:v('c-destino'),plan_data:v('c-data'),plan_horario:v('c-horario'),local_id:document.getElementById('c-hotel')?.value||null,plan_pacote:v('c-pacote'),plan_extra:v('c-extra'),plan_obs:v('c-obs'),status:v('c-status'),setor:document.getElementById('c-setor')?.value||null,consultora_plan:v('c-cons-plan')||null,consultora_prod:v('c-cons-prod')||null,prod_produtora:v('c-produtora'),prod_num_assessores:v('c-num-assessores'),prod_datas:v('c-datas'),prod_ultima_reuniao:v('c-ultima-reuniao'),prod_servicos:v('c-servicos'),prod_programacao:v('c-programacao'),prod_fornecedores:v('c-fornecedores'),prod_status:v('c-prod-status'),plan_reunioes:JSON.stringify(window._planReunioes||[]),prod_reunioes:JSON.stringify(window._prodReunioes||[]),prod_eventos:JSON.stringify(window._prodEventos||[]),checklist:JSON.stringify(window._checklist||{atend:[],grupo:[]}),prod_obs:v('c-prod-obs'),checklist_voos:getTg('c-voos'),checklist_transfers:getTg('c-transfers'),checklist_passeios:getTg('c-passeios'),viagem_ok:getTg('c-vok'),viag_casal_status:window._viagSel?.casal||null,viag_passeio_barco:window._viagSel?.barco||null,viag_coco_bongo:window._viagSel?.coco||null}
 }
 // Mostra erro de banco de forma padronizada. Retorna true se houve erro.
 function _dbErro(error,acao){
