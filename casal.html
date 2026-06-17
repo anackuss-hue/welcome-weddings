@@ -7,101 +7,113 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--gold:#b8965a;--gold-light:#d4af7a;--gold-pale:#fdf8f0;--gold-border:#f0e8d0;--white:#fff;--bg:#f7f4ef;--text:#1a1a1a;--muted:#888;--border:#e8e0d4;--red:#c0392b;--green:#2e7d32}
+:root{--gold:#b8965a;--gold-light:#d4af7a;--gold-pale:#fdf8f0;--gold-border:#f0e8d0;--gold-soft:#bcae93;--white:#fff;--bg:#f4f1ec;--text:#272320;--ink:#272320;--ink2:#5c5145;--muted:#9b9286;--border:#ece6db;--line:#ece6db;--red:#c0392b;--green:#b8965a}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
 
 /* HEADER */
-.header{background:var(--white);border-bottom:1px solid var(--border);padding:20px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
-.logo .w1{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--gold);letter-spacing:3px;text-transform:uppercase}
-.logo .w2{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--text);letter-spacing:3px;text-transform:uppercase}
+.header{background:#fff;border-bottom:1px solid var(--line);padding:18px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.logo .w1{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;color:var(--gold);letter-spacing:3px;text-transform:uppercase}
+.logo .w2{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;color:var(--ink);letter-spacing:3px;text-transform:uppercase}
 .logo .ws{font-size:9px;letter-spacing:2px;color:var(--muted);margin-top:2px;text-transform:uppercase}
-.header-right{font-size:12px;color:var(--muted);text-align:right}
-.header-right strong{display:block;font-size:13px;color:var(--text)}
+.header-right{font-size:11px;color:var(--muted);text-align:right;letter-spacing:.3px}
+.header-right strong{display:block;font-size:12px;color:var(--ink);font-weight:600}
 
 /* HERO */
-.hero{background:linear-gradient(135deg,#1a1a1a 0%,#2d2417 50%,#1a1a1a 100%);padding:60px 40px;text-align:center;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23b8965a' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
-.hero-tag{display:inline-block;padding:4px 16px;border-radius:20px;background:rgba(184,150,90,.2);color:var(--gold);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;border:1px solid rgba(184,150,90,.3)}
-.hero h1{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:#fff;margin-bottom:12px;letter-spacing:1px}
-.hero h1 em{font-style:italic;color:var(--gold)}
-.hero p{font-size:14px;color:rgba(255,255,255,.6);max-width:500px;margin:0 auto;line-height:1.7}
+.hero{background:#fbf9f5;border-bottom:1px solid var(--line);padding:54px 40px 48px;text-align:center}
+.eyebrow{font-size:10px;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:14px}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:400;color:var(--ink);line-height:1.12;letter-spacing:.5px}
+.hero h1 em{font-style:italic;color:var(--ink2)}
+.hrule{width:46px;height:2px;background:var(--gold);margin:20px auto 16px}
+.hero p{font-size:13.5px;color:var(--muted);max-width:460px;margin:0 auto;line-height:1.65}
 
 /* MAIN */
 .main{padding:40px}
-.layout{display:flex;gap:24px;align-items:flex-start}
+.layout{display:flex;gap:28px;align-items:flex-start}
+
+/* INSPIRATIONS */
+.insp-card{background:var(--card,#fff);border:1px solid var(--line);border-radius:6px;padding:34px 36px 38px}
+.insp-eyebrow{font-size:10px;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:12px}
+.insp-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:400;letter-spacing:.4px;line-height:1.05}
+.insp-title em{font-style:italic;color:var(--ink2)}
+.insp-rule{height:1px;background:var(--line);margin:20px 0 22px}
+.insp-lead{font-size:13px;color:var(--muted);line-height:1.6;max-width:440px;margin-bottom:24px}
+.drop{border:1px solid #e6dfd1;border-radius:5px;padding:30px 20px;text-align:center;cursor:pointer;transition:.15s;background:#fff}
+.drop:hover{background:#fcfaf5;border-color:#d8cbb0}
+.drop svg{display:block;margin:0 auto 12px}
+.drop-title{font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#3a352e}
+.drop-sub{font-size:11.5px;color:#ada495;margin-top:5px}
+.insp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:11px}
+.ph{position:relative;aspect-ratio:1;border-radius:3px;overflow:hidden;border:1px solid var(--line);background:#f0ebe2}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.phx{position:absolute;top:7px;right:7px;width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.9);border:1px solid #e6dfd1;display:flex;align-items:center;justify-content:center;cursor:pointer}
 
 /* FILTER PANEL */
-.fpanel{width:220px;flex-shrink:0;background:var(--white);border-radius:12px;border:1px solid var(--border);padding:20px;position:sticky;top:88px;max-height:calc(100vh - 110px);overflow-y:auto}
-.fp-title{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px}
-.fp-sec{margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
-.fp-sec-t{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
-.fl{display:flex;align-items:center;gap:8px;font-size:12px;color:#555;cursor:pointer;padding:4px 0}
+.fpanel{width:230px;flex-shrink:0;background:#fff;border-radius:6px;border:1px solid var(--line);padding:22px;position:sticky;top:84px;max-height:calc(100vh - 104px);overflow-y:auto}
+.fp-title{font-size:10px;font-weight:600;color:var(--gold);letter-spacing:2.5px;text-transform:uppercase}
+.fp-sec{margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+.fp-sec-t{font-size:9.5px;font-weight:600;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px}
+.fl{display:flex;align-items:center;gap:9px;font-size:12px;color:#6a6256;cursor:pointer;padding:4px 0}
 .fl input[type=checkbox]{accent-color:var(--gold);width:14px;height:14px;cursor:pointer;flex-shrink:0}
 
-/* CARDS */
-.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;flex:1}
-.card{background:var(--white);border-radius:16px;border:1px solid var(--border);overflow:hidden;transition:box-shadow .2s,transform .2s;cursor:pointer}
-.card:hover{box-shadow:0 8px 32px rgba(184,150,90,.15);transform:translateY(-2px)}
-.card-header{background:linear-gradient(135deg,#1a1a1a,#2d2417);padding:20px;position:relative}
-.card-flag{position:absolute;top:12px;right:12px;font-size:20px}
-.card-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:#fff;margin-bottom:4px}
-.card-loc{font-size:12px;color:rgba(255,255,255,.6)}
-.card-body{padding:16px}
-.card-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
-.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
-.tg{background:#fdf3e0;color:var(--gold)}.tgr{background:#e8f5e9;color:var(--green)}
-.tb{background:#e3f2fd;color:#1565c0}.tgy{background:#f0f0f0;color:#666}
-.card-info{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
-.card-info-row{display:flex;justify-content:space-between;align-items:center;font-size:12px}
-.card-info-label{color:var(--muted)}
-.card-info-value{font-weight:600;color:var(--text)}
-.btn-ver{width:100%;padding:10px;border-radius:8px;background:var(--gold);color:#fff;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s}
-.btn-ver:hover{background:var(--gold-light)}
+/* HOTEL CARDS */
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;flex:1}
+.card{background:#fff;border:1px solid var(--line);border-radius:5px;overflow:hidden;cursor:pointer;transition:.18s}
+.card:hover{box-shadow:0 6px 22px rgba(120,100,60,.08);transform:translateY(-2px)}
+.hcard-top{padding:18px 18px 0}
+.hname{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;line-height:1.15;margin-bottom:6px;color:var(--ink)}
+.hloc{display:flex;align-items:center;gap:5px;font-size:11.5px;color:#a39a8c}
+.htags{display:flex;flex-wrap:wrap;gap:6px;padding:14px 18px 0}
+.chip{font-size:10px;font-weight:600;letter-spacing:.4px;padding:3px 10px;border-radius:3px;border:1px solid #e3dcce;color:#8a7d63;background:#fff}
+.hfoot{display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding:14px 18px;border-top:1px solid #f1ece2}
+.hprice small{display:block;font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:#b3aa9b;margin-bottom:2px}
+.hprice b{font-size:13px;font-weight:600;color:#3a352e}
+.vd{font-size:11.5px;font-weight:600;letter-spacing:.5px;color:var(--gold);white-space:nowrap}
 
 /* MODAL */
-.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:flex-start;justify-content:center;padding:32px 20px;overflow-y:auto}
+.mo{display:none;position:fixed;inset:0;background:rgba(40,35,30,.42);z-index:1000;align-items:flex-start;justify-content:center;padding:32px 20px;overflow-y:auto}
 .mo.open{display:flex}
-.mb{background:#fff;border-radius:16px;width:100%;max-width:760px;padding:0;position:relative;margin:auto;overflow:hidden}
-.mb-hero{background:linear-gradient(135deg,#1a1a1a,#2d2417);padding:28px 32px}
-.mb-hero-name{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:#fff;margin-bottom:4px}
-.mb-hero-loc{font-size:13px;color:rgba(255,255,255,.6)}
-.mb-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.1);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
-.mb-body{padding:28px 32px}
-.atabs{display:flex;gap:0;border-bottom:2px solid var(--border);overflow-x:auto;margin-bottom:24px}
-.atab{padding:10px 16px;font-size:11px;font-weight:700;cursor:pointer;border:none;background:transparent;color:#aaa;font-family:'DM Sans',sans-serif;transition:all .15s;border-bottom:2px solid transparent;margin-bottom:-2px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.mb{background:#fff;border-radius:8px;width:100%;max-width:760px;position:relative;margin:auto;overflow:hidden;border:1px solid var(--line)}
+.mb-hero{background:#fbf9f5;border-bottom:1px solid var(--line);padding:30px 32px;position:relative}
+.mb-hero-name{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.mb-hero-loc{font-size:12.5px;color:var(--muted)}
+.mb-close{position:absolute;top:16px;right:16px;background:#fff;border:1px solid var(--line);color:#7a7060;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center}
+.mb-close:hover{background:#f4f1ec}
+.mb-body{padding:26px 32px 30px}
+.atabs{display:flex;gap:0;border-bottom:1px solid var(--line);overflow-x:auto;margin-bottom:24px}
+.atab{padding:10px 16px;font-size:10.5px;font-weight:600;cursor:pointer;border:none;background:transparent;color:#b0a896;font-family:'DM Sans',sans-serif;transition:all .15s;border-bottom:2px solid transparent;margin-bottom:-1px;letter-spacing:1.2px;text-transform:uppercase;white-space:nowrap}
 .atab:hover{color:var(--gold)}.atab.active{color:var(--gold);border-bottom-color:var(--gold)}
 .atc{display:none}.atc.active{display:block}
 .sec{margin-bottom:20px}
-.st{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--gold-border)}
-.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.info-item{background:var(--gold-pale);border-radius:8px;padding:12px}
-.info-item label{display:block;font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px}
-.info-item span{font-size:13px;font-weight:500;color:var(--text)}
-.toggle-display{display:flex;align-items:center;gap:8px;padding:8px 0}
-.td-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.td-dot.on{background:var(--green)}.td-dot.off{background:#ddd}
-.td-label{font-size:13px;color:#555}
-.link-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;background:var(--gold-pale);color:var(--gold);border:1px solid var(--gold-border);font-size:12px;font-weight:600;text-decoration:none;transition:all .15s;cursor:pointer}
-.link-btn:hover{background:var(--gold);color:#fff}
+.st{font-size:10px;font-weight:600;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.info-item{background:#faf8f3;border:1px solid var(--line);border-radius:4px;padding:11px 12px}
+.info-item label{display:block;font-size:9.5px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.info-item span{font-size:13px;font-weight:500;color:var(--ink)}
+.toggle-display{display:flex;align-items:center;gap:8px;padding:7px 0}
+.td-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.td-dot.on{background:var(--gold)}.td-dot.off{background:#ddd6c8}
+.td-label{font-size:12.5px;color:#6a6256}
+.link-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 15px;border-radius:4px;background:#fff;color:var(--gold);border:1px solid #e3dcce;font-size:11.5px;font-weight:600;text-decoration:none;transition:all .15s;cursor:pointer}
+.link-btn:hover{background:var(--gold);color:#fff;border-color:var(--gold)}
 
 /* EMPTY */
-.em{text-align:center;padding:80px 20px;color:var(--muted)}
-.em-i{font-size:48px;margin-bottom:16px}
-.em-t{font-size:15px}
-.ld{text-align:center;padding:60px;color:var(--muted);font-size:14px}
+.em{text-align:center;padding:70px 20px;color:var(--muted)}
+.em-i{font-size:32px;margin-bottom:14px;opacity:.5}
+.em-t{font-size:14px}
+.ld{text-align:center;padding:60px;color:var(--muted);font-size:13px}
 
 /* RESPONSIVE */
 @media(max-width:768px){
-  .header{padding:16px 20px}
-  .hero{padding:40px 20px}
+  .header{padding:14px 18px}
+  .hero{padding:38px 20px 34px}
   .hero h1{font-size:28px}
-  .main{padding:20px 16px}
+  .main{padding:22px 16px}
   .layout{flex-direction:column}
   .fpanel{width:100%;position:static;max-height:none}
-  .cg{grid-template-columns:1fr}
-  .mb{margin:0}
-  .mb-body{padding:20px 16px}
+  .insp-card{padding:26px 20px 30px}
+  .cg{grid-template-columns:1fr 1fr}
+  .mb-body{padding:20px 18px}
   .info-grid{grid-template-columns:1fr}
 }
 </style>
@@ -115,29 +127,32 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="ws">Destination Weddings</div>
   </div>
   <div class="header-right">
-    <strong>Nossos Destinos</strong>
-    Explore e inspire-se ✨
+    <strong>Welcome Weddings</strong>
+    Curadoria para o seu destino
   </div>
 </div>
 
 <div class="hero">
-  <div class="hero-tag">Destination Wedding</div>
+  <div class="eyebrow">Destination Wedding</div>
   <h1>Encontre o cenário perfeito<br>para o seu <em>grande dia</em></h1>
-  <p>Explore nossa coleção de hotéis e resorts cuidadosamente selecionados para tornar o seu casamento inesquecível.</p>
+  <div class="hrule"></div>
+  <p>Uma coleção de hotéis e resorts escolhidos a dedo para tornar o seu casamento inesquecível.</p>
 </div>
 
 <div class="main">
-  <div id="insp-section" style="display:none;margin-bottom:32px">
-    <div style="background:var(--white);border:1px solid var(--border);border-radius:16px;padding:24px">
-      <div style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;margin-bottom:4px">💡 Nossas Inspirações</div>
-      <div style="font-size:13px;color:var(--muted);margin-bottom:16px">Enviem aqui fotos de referência do casamento dos sonhos de vocês — decoração, flores, mesa, vestido... tudo que inspirar! ✨</div>
-      <div id="insp-upload-area" onclick="document.getElementById('insp-file')?.click()" ondragover="event.preventDefault();this.style.background='#faf2e2'" ondragleave="this.style.background='var(--gold-pale)'" ondrop="event.preventDefault();this.style.background='var(--gold-pale)';uploadInspiracoes(event.dataTransfer.files)" style="border:2px dashed var(--gold-border);border-radius:12px;background:var(--gold-pale);padding:28px;text-align:center;cursor:pointer;transition:background .15s">
+  <div id="insp-section" style="display:none;margin-bottom:36px">
+    <div class="insp-card">
+      <div class="insp-eyebrow">Welcome Weddings</div>
+      <div class="insp-title">Nossas <em>Inspirações</em></div>
+      <div class="insp-rule"></div>
+      <div class="insp-lead">Reúnam aqui as fotos que inspiram o casamento de vocês — decoração, flores, mesa, vestido. Tudo que sonharam, num lugar só.</div>
+      <div id="insp-upload-area" class="drop" onclick="document.getElementById('insp-file')?.click()" ondragover="event.preventDefault();this.style.background='#faf6ee'" ondragleave="this.style.background=''" ondrop="event.preventDefault();this.style.background='';uploadInspiracoes(event.dataTransfer.files)">
         <input type="file" id="insp-file" multiple accept="image/*" style="display:none" onchange="uploadInspiracoes(this.files)">
-        <div style="font-size:32px;margin-bottom:8px">📷</div>
-        <div style="font-size:14px;font-weight:600;color:var(--gold);margin-bottom:4px">Clique ou arraste fotos aqui</div>
-        <div style="font-size:11px;color:#aaa">Imagens até 10MB cada</div>
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#b8965a" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="1.5"/><circle cx="8.5" cy="10" r="1.6"/><path d="M21 15l-4.5-4.5L6 19"/></svg>
+        <div class="drop-title">Adicionar fotos</div>
+        <div class="drop-sub">Clique ou arraste as imagens aqui — até 10 MB cada</div>
       </div>
-      <div id="insp-grid" style="margin-top:16px"></div>
+      <div id="insp-grid" style="margin-top:18px"></div>
     </div>
   </div>
   <div class="layout">
@@ -162,19 +177,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
       <div class="fp-sec">
         <div class="fp-sec-t">Ambiente</div>
-        <label class="fl"><input type="checkbox" id="fh-amb-praia" onchange="renderHoteis()"> 🏖️ Praia</label>
-        <label class="fl"><input type="checkbox" id="fh-amb-montanha" onchange="renderHoteis()"> ⛰️ Montanha</label>
-        <label class="fl"><input type="checkbox" id="fh-amb-campo" onchange="renderHoteis()"> 🌿 Campo / Fazenda</label>
-        <label class="fl"><input type="checkbox" id="fh-amb-cidade" onchange="renderHoteis()"> 🏙️ Cidade</label>
-        <label class="fl"><input type="checkbox" id="fh-amb-lago" onchange="renderHoteis()"> 🏞️ Lago / Rio</label>
-        <label class="fl"><input type="checkbox" id="fh-amb-vinhedo" onchange="renderHoteis()"> 🍷 Vinhedo</label>
+        <label class="fl"><input type="checkbox" id="fh-amb-praia" onchange="renderHoteis()"> Praia</label>
+        <label class="fl"><input type="checkbox" id="fh-amb-montanha" onchange="renderHoteis()"> Montanha</label>
+        <label class="fl"><input type="checkbox" id="fh-amb-campo" onchange="renderHoteis()"> Campo / Fazenda</label>
+        <label class="fl"><input type="checkbox" id="fh-amb-cidade" onchange="renderHoteis()"> Cidade</label>
+        <label class="fl"><input type="checkbox" id="fh-amb-lago" onchange="renderHoteis()"> Lago / Rio</label>
+        <label class="fl"><input type="checkbox" id="fh-amb-vinhedo" onchange="renderHoteis()"> Vinhedo</label>
       </div>
 
       <div class="fp-sec">
         <div class="fp-sec-t">Logística</div>
-        <label class="fl"><input type="checkbox" id="fh-voo-direto" onchange="renderHoteis()"> ✈️ Voo direto disponível</label>
-        <label class="fl"><input type="checkbox" id="fh-transfer" onchange="renderHoteis()"> 🚌 Transfer incluso</label>
-        <label class="fl"><input type="checkbox" id="fh-hosp-local" onchange="renderHoteis()"> 🏨 Hospedagem no local</label>
+        <label class="fl"><input type="checkbox" id="fh-voo-direto" onchange="renderHoteis()"> Voo direto disponível</label>
+        <label class="fl"><input type="checkbox" id="fh-transfer" onchange="renderHoteis()"> Transfer incluso</label>
+        <label class="fl"><input type="checkbox" id="fh-hosp-local" onchange="renderHoteis()"> Hospedagem no local</label>
       </div>
 
       <div class="fp-sec">
@@ -215,10 +230,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     </div>
     <div class="mb-body">
       <div class="atabs">
-        <button class="atab active" onclick="showTab('geral',this)">🏨 Geral</button>
-        <button class="atab" onclick="showTab('espec',this)">✨ Estrutura</button>
-        <button class="atab" onclick="showTab('valores',this)">💰 Valores</button>
-        <button class="atab" onclick="showTab('casamento',this)">💍 Casamentos</button>
+        <button class="atab active" onclick="showTab('geral',this)">Geral</button>
+        <button class="atab" onclick="showTab('espec',this)">Estrutura</button>
+        <button class="atab" onclick="showTab('valores',this)">Valores</button>
+        <button class="atab" onclick="showTab('casamento',this)">Casamentos</button>
       </div>
 
       <div class="atc active" id="atab-geral">
@@ -274,6 +289,11 @@ async function loadHoteisPersonalizados(token){
   // Buscar hotéis selecionados
   const{data}=await sb.from('casamento_hoteis').select('hotel:locais(*)').eq('casamento_id',cas.id)
   hoteis=(data||[]).map(d=>d.hotel).filter(Boolean)
+  // Sem hotéis selecionados: esconde o bloco de hotéis, mostra só as inspirações
+  const layout=document.querySelector('.layout')
+  if(layout)layout.style.display=hoteis.length?'flex':'none'
+  const heroP=document.querySelector('.hero p')
+  if(!hoteis.length&&heroP)heroP.textContent='Compartilhe abaixo as inspirações do casamento dos sonhos de vocês.'
   renderHoteis()
 }
 
@@ -334,26 +354,19 @@ function renderHoteis(){
   })
   document.getElementById('resultado-count').textContent=filtered.length+' hotel(is) encontrado(s)'
   const grid=document.getElementById('hoteis-grid')
-  if(!filtered.length){grid.innerHTML='<div class="em"><div class="em-i">🏨</div><div class="em-t">Nenhum hotel encontrado com esses filtros</div></div>';return}
-  const flagPais=p=>{const f={'México':'🇲🇽','Brasil':'🇧🇷','República Dominicana':'🇩🇴','Cuba':'🇨🇺','Jamaica':'🇯🇲','Portugal':'🇵🇹','Espanha':'🇪🇸','Itália':'🇮🇹','França':'🇫🇷','Grécia':'🇬🇷','Turquia':'🇹🇷','Maldivas':'🇲🇻','Japão':'🇯🇵','Tailândia':'🇹🇭','Bali':'🇮🇩'};return f[p]||'🌍'}
+  if(!filtered.length){grid.innerHTML='<div class="em"><div class="em-t">Nenhum hotel encontrado com esses filtros</div></div>';return}
   grid.innerHTML=filtered.map(h=>`
     <div class="card" onclick="openHotel('${h.id}')">
-      <div class="card-header">
-        <div class="card-flag">${flagPais(h.pais)}</div>
-        <div class="card-name">${h.nome}</div>
-        <div class="card-loc">📍 ${[h.cidade,h.pais,h.regiao].filter(Boolean).join(' · ')}</div>
+      <div class="hcard-top">
+        <div class="hname">${h.nome}</div>
+        <div class="hloc"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#bcae93" stroke-width="1.6"><path d="M12 21s-7-6.5-7-11a7 7 0 0114 0c0 4.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>${[h.cidade,h.pais,h.regiao].filter(Boolean).join(' · ')}</div>
       </div>
-      <div class="card-body">
-        <div class="card-tags">
-          ${h.ambiente?`<span class="tag tb">${h.ambiente}</span>`:''}${h.tipo?`<span class="tag tg">${h.tipo}</span>`:''}
-          ${h.por_do_sol?'<span class="tag tg">🌅 Pôr do Sol</span>':''}
-          ${h.spa?'<span class="tag tgr">💆 Spa</span>':''}
-          ${h.aceita_criancas?'<span class="tag tgr">👶 Kids</span>':''}
-          ${h.parque_aquatico?'<span class="tag tb">🌊 Aquapark</span>':''}
-          ${h.cassino?'<span class="tag tgy">🎰 Cassino</span>':''}
-        </div>
-        ${h.valor_diaria?`<div class="card-info"><div class="card-info-row"><span class="card-info-label">Diária casal</span><span class="card-info-value">${h.valor_diaria.split('(')[0].trim()}</span></div></div>`:''}
-        <button class="btn-ver">Ver detalhes →</button>
+      <div class="htags">
+        ${h.tipo?`<span class="chip">${h.tipo}</span>`:''}${h.ambiente?`<span class="chip">${h.ambiente}</span>`:''}${h.por_do_sol?'<span class="chip">Pôr do sol</span>':''}${h.spa?'<span class="chip">Spa</span>':''}${h.aceita_criancas?'<span class="chip">Aceita crianças</span>':''}${h.parque_aquatico?'<span class="chip">Parque aquático</span>':''}${h.cassino?'<span class="chip">Cassino</span>':''}
+      </div>
+      <div class="hfoot">
+        ${h.valor_diaria?`<div class="hprice"><small>Diária casal</small><b>${h.valor_diaria.split('(')[0].trim()}</b></div>`:'<span></span>'}
+        <span class="vd">Ver detalhes →</span>
       </div>
     </div>`).join('')
 }
@@ -361,10 +374,10 @@ function renderHoteis(){
 function openHotel(id){
   const h=hoteis.find(x=>x.id===id);if(!h)return
   document.getElementById('mh-nome').textContent=h.nome
-  document.getElementById('mh-loc').textContent=['📍',h.cidade,h.pais,h.regiao].filter(Boolean).join(' · ')
+  document.getElementById('mh-loc').textContent=[h.cidade,h.pais,h.regiao].filter(Boolean).join(' · ')
   // Tags
   const tags=document.getElementById('mh-tags')
-  tags.innerHTML=[h.tipo?`<span style="padding:4px 12px;border-radius:20px;background:rgba(184,150,90,.2);color:var(--gold);font-size:11px;font-weight:600">${h.tipo}</span>`:'',h.por_do_sol?'<span style="padding:4px 12px;border-radius:20px;background:rgba(184,150,90,.2);color:var(--gold);font-size:11px;font-weight:600">🌅 Pôr do Sol</span>':'',h.spa?'<span style="padding:4px 12px;border-radius:20px;background:rgba(46,125,50,.2);color:#2e7d32;font-size:11px;font-weight:600">💆 Spa</span>':''].filter(Boolean).join('')
+  tags.innerHTML=[h.tipo?`<span class="chip">${h.tipo}</span>`:'',h.ambiente?`<span class="chip">${h.ambiente}</span>`:'',h.por_do_sol?'<span class="chip">Pôr do sol</span>':'',h.spa?'<span class="chip">Spa</span>':''].filter(Boolean).join('')
 
   // Aba Geral
   const ig=document.getElementById('info-geral')
@@ -375,7 +388,7 @@ function openHotel(id){
   // Aba Estrutura
   const ia=document.getElementById('info-alim')
   ia.innerHTML=[['Regime',h.regime],['Restaurantes no Total',h.restaurantes_total],['Bares no Total',h.bares_total],['Restaurantes Buffet',h.restaurantes_buffet],['Restaurantes à La Carte',h.restaurantes_carte],['Restaurantes All Inclusive',h.restaurantes_ai],['Bares All Inclusive',h.bares_ai]].filter(x=>x[1]).map(x=>`<div class="info-item"><label>${x[0]}</label><span>${x[1]}</span></div>`).join('')
-  const comod=[['✈️ Voo Direto',h.voo_direto],['🚌 Transfer Incluso',h.transfer_incluso],['🏨 Hospedagem no Local',h.tem_hospedagem],['Frigobar',h.frigobar],['Room Service',h.room_service],['Bar Pago',h.bar_pago],['Restaurante Pago',h.restaurante_pago],['Área Kids',h.area_kids],['Parque Aquático',h.parque_aquatico],['Pub/Disco',h.pub_disco],['Cassino',h.cassino],['Spa',h.spa],['Wi-Fi',h.wifi],['Aceita Crianças',h.aceita_criancas],['Aceita Pets',h.aceita_pets]]
+  const comod=[['Voo Direto',h.voo_direto],['Transfer Incluso',h.transfer_incluso],['Hospedagem no Local',h.tem_hospedagem],['Frigobar',h.frigobar],['Room Service',h.room_service],['Bar Pago',h.bar_pago],['Restaurante Pago',h.restaurante_pago],['Área Kids',h.area_kids],['Parque Aquático',h.parque_aquatico],['Pub/Disco',h.pub_disco],['Cassino',h.cassino],['Spa',h.spa],['Wi-Fi',h.wifi],['Aceita Crianças',h.aceita_criancas],['Aceita Pets',h.aceita_pets]]
   document.getElementById('info-comod').innerHTML=comod.map(([l,v])=>`<div class="toggle-display"><div class="td-dot ${v?'on':'off'}"></div><span class="td-label">${l}</span></div>`).join('')
 
   // Aba Valores
@@ -408,8 +421,8 @@ async function carregarInspiracoesCasal(){
   const grid=document.getElementById('insp-grid');if(!grid)return
   const{data,error}=await sb.from('casamento_inspiracoes').select('*').eq('casamento_id',casalCasamento.id).order('created_at',{ascending:false})
   if(error){grid.innerHTML='<div style="font-size:12px;color:#c0392b">Não foi possível carregar as fotos agora.</div>';return}
-  if(!data||!data.length){grid.innerHTML='<div style="font-size:12px;color:#aaa">Nenhuma foto ainda — envie a primeira! ✨</div>';return}
-  grid.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px">'+data.map(i=>`<div style="position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--border);aspect-ratio:1;background:#f0ece2"><img src="${i.url}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block"><div onclick="removerInspiracao('${i.id}','${(i.storage_path||'').replace(/'/g,"\\'")}')" title="Remover" style="position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.5);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer">✕</div></div>`).join('')+'</div>'
+  if(!data||!data.length){grid.innerHTML='<div style="font-size:12px;color:#aaa">Nenhuma foto ainda. Envie a primeira.</div>';return}
+  grid.innerHTML='<div class="insp-grid">'+data.map(i=>`<div class="ph"><img src="${i.url}" loading="lazy"><div class="phx" onclick="removerInspiracao('${i.id}','${(i.storage_path||'').replace(/'/g,"\\'")}')" title="Remover"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#7a7060" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></div></div>`).join('')+'</div>'
 }
 
 async function uploadInspiracoes(files){
