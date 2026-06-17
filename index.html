@@ -958,11 +958,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div style="font-size:12px;color:var(--muted);margin-bottom:12px">Fotos de referência enviadas pelo casal no portal dele. Clique para ampliar.</div>
         <div id="prod-link-area" style="display:none;margin-bottom:14px;padding:14px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:10px">
           <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1px;margin-bottom:4px">🔗 LINK PARA O CASAL</div>
-          <div style="font-size:11px;color:var(--muted);margin-bottom:8px">Envie pro casal adicionar as fotos de inspiração (é a mesma página dos hotéis).</div>
-          <div style="display:flex;gap:8px;align-items:center">
-            <input id="prod-link-input" readonly style="flex:1;padding:8px 12px;border-radius:8px;border:1px solid var(--gold-border);font-size:12px;font-family:'DM Sans',sans-serif;background:#fff;color:var(--gold)">
-            <button class="btn bg bsm" onclick="copiarLinkProd()">Copiar</button>
-          </div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:10px">Envie pro casal adicionar as fotos de inspiração (é a mesma página dos hotéis).</div>
+          <div id="prod-link-body"></div>
         </div>
         <div id="insp-mural"><div style="font-size:13px;color:#aaa">—</div></div>
       </div>
@@ -3613,22 +3610,34 @@ async function carregarInspiracoes(casId){
   mural.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px">'+data.map(i=>`<a href="${esc(i.url)}" target="_blank" style="display:block;border-radius:10px;overflow:hidden;border:1px solid var(--border);aspect-ratio:1;background:#f0ece2"><img src="${esc(i.url)}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block"></a>`).join('')+'</div>'
 }
 
-// Link do casal exibido na aba Produção — aparece com o casamento salvo (não depende de hotel)
-async function mostrarLinkProd(casId){
-  const area=document.getElementById('prod-link-area');if(!area)return
+// Link do casal na aba Produção — botão "Gerar" se ainda não existe; senão mostra o link
+function mostrarLinkProd(casId){
+  const area=document.getElementById('prod-link-area');const body=document.getElementById('prod-link-body')
+  if(!area||!body)return
   if(!casId){area.style.display='none';return}
+  area.style.display='block'
+  const token=casamentoAtual?.link_token
+  if(token){
+    const link=`${window.location.origin}/casal.html?c=${token}`
+    body.innerHTML=`<div style="display:flex;gap:8px;align-items:center"><input id="prod-link-input" readonly value="${esc(link)}" style="flex:1;padding:8px 12px;border-radius:8px;border:1px solid var(--gold-border);font-size:12px;font-family:'DM Sans',sans-serif;background:#fff;color:var(--gold)"><button class="btn bg bsm" onclick="copiarLinkProd()">Copiar</button></div>`
+  }else{
+    body.innerHTML=`<button class="btn bg bsm" onclick="gerarLinkProd('${casId}')">🔗 Gerar link para o casal</button>`
+  }
+}
+async function gerarLinkProd(casId){
+  if(!casId)return
   let token=casamentoAtual?.link_token
   if(!token){
     token=Math.random().toString(36).substring(2,10).toUpperCase()
     const{error}=await sb.from('casamentos').update({link_token:token}).eq('id',casId)
-    if(error){area.style.display='none';return}
+    if(_dbErro(error,'gerar o link'))return
     if(casamentoAtual)casamentoAtual.link_token=token
   }
-  document.getElementById('prod-link-input').value=`${window.location.origin}/casal.html?c=${token}`
-  area.style.display='block'
+  mostrarLinkProd(casId)
 }
 function copiarLinkProd(){
-  const input=document.getElementById('prod-link-input');input.select();document.execCommand('copy')
+  const input=document.getElementById('prod-link-input');if(!input)return
+  input.select();document.execCommand('copy')
   const btn=event.target;btn.textContent='Copiado!';setTimeout(()=>btn.textContent='Copiar',2000)
 }
 
