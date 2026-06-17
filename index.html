@@ -949,6 +949,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <textarea id="c-prod-obs" placeholder="Status atual, pendências, próximos passos..." style="width:100%;min-height:80px;border-radius:8px;border:1px solid var(--border);padding:10px 12px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;resize:vertical"></textarea>
       </div>
 
+      <!-- Inspirações do Casal (somente leitura) -->
+      <div class="sec" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--gold-border)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div class="st" style="margin-bottom:0">💡 Inspirações do Casal</div>
+          <span id="insp-count" style="font-size:12px;color:var(--muted)"></span>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:12px">Fotos de referência enviadas pelo casal no portal dele. Clique para ampliar.</div>
+        <div id="insp-mural"><div style="font-size:13px;color:#aaa">—</div></div>
+      </div>
+
       <div id="prod-assess-preview"></div>
     </div>
     <div class="tc" id="tab-viag">
@@ -2230,7 +2240,7 @@ function showCTab(tab,btn){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'))
   document.getElementById('tab-'+tab).classList.add('active');if(btn)btn.classList.add('active')
   if(tab==='assess'){renderEscaladas();if(casamentoAtual?.id){loadSolicitacoes(casamentoAtual.id);loadFornecedoresCasamento(casamentoAtual.id)}}
-  if(tab==='prod')renderProdAssessoras()
+  if(tab==='prod'){renderProdAssessoras();carregarInspiracoes(casamentoAtual?.id)}
   if(tab==='viag')renderChecklist()
   if(tab==='anexos-c')renderAnexosUI('anexos-c-content','casamento',casamentoAtual?.id)
   aplicarReadonlyAba(tab)
@@ -3580,6 +3590,19 @@ async function uploadAnexos(files,containerId,tipo,referenciaId){
     area.onclick=()=>document.getElementById('file-input-'+containerId)?.click()
   }
   carregarAnexos(containerId,tipo,referenciaId)
+}
+
+// Inspirações do Casal — mural só leitura na aba Produção (o casal envia pelo portal dele)
+async function carregarInspiracoes(casId){
+  const mural=document.getElementById('insp-mural');const cnt=document.getElementById('insp-count')
+  if(!mural)return
+  if(!casId){mural.innerHTML='<div style="font-size:13px;color:#aaa">Salve o casamento primeiro — depois as fotos enviadas pelo casal aparecem aqui.</div>';if(cnt)cnt.textContent='';return}
+  mural.innerHTML='<div style="font-size:13px;color:#aaa">Carregando...</div>'
+  const{data,error}=await sb.from('casamento_inspiracoes').select('*').eq('casamento_id',casId).order('created_at',{ascending:false})
+  if(error){mural.innerHTML='<div style="font-size:13px;color:#aaa">Não foi possível carregar as inspirações.</div>';if(cnt)cnt.textContent='';return}
+  if(!data||!data.length){mural.innerHTML='<div style="font-size:13px;color:#aaa">O casal ainda não enviou inspirações.</div>';if(cnt)cnt.textContent='';return}
+  if(cnt)cnt.textContent=data.length+' foto(s)'
+  mural.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px">'+data.map(i=>`<a href="${esc(i.url)}" target="_blank" style="display:block;border-radius:10px;overflow:hidden;border:1px solid var(--border);aspect-ratio:1;background:#f0ece2"><img src="${esc(i.url)}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block"></a>`).join('')+'</div>'
 }
 
 async function deletarAnexo(id,url,containerId,tipo,referenciaId){
