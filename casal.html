@@ -127,6 +127,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 </div>
 
 <div class="main">
+  <div id="insp-section" style="display:none;margin-bottom:32px">
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:16px;padding:24px">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;margin-bottom:4px">💡 Nossas Inspirações</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:16px">Enviem aqui fotos de referência do casamento dos sonhos de vocês — decoração, flores, mesa, vestido... tudo que inspirar! ✨</div>
+      <div id="insp-upload-area" onclick="document.getElementById('insp-file')?.click()" ondragover="event.preventDefault();this.style.background='#faf2e2'" ondragleave="this.style.background='var(--gold-pale)'" ondrop="event.preventDefault();this.style.background='var(--gold-pale)';uploadInspiracoes(event.dataTransfer.files)" style="border:2px dashed var(--gold-border);border-radius:12px;background:var(--gold-pale);padding:28px;text-align:center;cursor:pointer;transition:background .15s">
+        <input type="file" id="insp-file" multiple accept="image/*" style="display:none" onchange="uploadInspiracoes(this.files)">
+        <div style="font-size:32px;margin-bottom:8px">📷</div>
+        <div style="font-size:14px;font-weight:600;color:var(--gold);margin-bottom:4px">Clique ou arraste fotos aqui</div>
+        <div style="font-size:11px;color:#aaa">Imagens até 10MB cada</div>
+      </div>
+      <div id="insp-grid" style="margin-top:16px"></div>
+    </div>
+  </div>
   <div class="layout">
 
     <div class="fpanel">
@@ -238,7 +251,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 const{createClient}=supabase
 const sb=createClient('https://yrnlfarricrhtfomwynd.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlybmxmYXJyaWNyaHRmb213eW5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczOTIxODksImV4cCI6MjA5Mjk2ODE4OX0.Ad4awFjQ9vcDqNyBbWycgv0rvpc3DOz4pPTi41nSp8w')
 
-let hoteis=[],paisChips=[],tokenMode=false
+let hoteis=[],paisChips=[],tokenMode=false,casalCasamento=null
 
 document.addEventListener('DOMContentLoaded',()=>{
   const params=new URLSearchParams(window.location.search)
@@ -252,6 +265,9 @@ async function loadHoteisPersonalizados(token){
   const{data:cas}=await sb.from('casamentos').select('id,nome').eq('link_token',token).single()
   if(!cas){loadHoteis();return}
   tokenMode=true
+  casalCasamento=cas
+  const isec=document.getElementById('insp-section');if(isec)isec.style.display='block'
+  carregarInspiracoesCasal()
   // Atualizar hero com nome do casal
   const h1=document.querySelector('.hero h1')
   if(h1)h1.innerHTML=`Uma seleção especial<br>para <em>${cas.nome}</em>`
@@ -385,6 +401,45 @@ function showTab(tab,btn){
   document.getElementById('atab-'+tab).classList.add('active');if(btn)btn.classList.add('active')
 }
 function closeModal(){document.getElementById('modal-hotel').classList.remove('open')}
+
+// ===== Inspirações do Casal (fotos) =====
+async function carregarInspiracoesCasal(){
+  if(!casalCasamento)return
+  const grid=document.getElementById('insp-grid');if(!grid)return
+  const{data,error}=await sb.from('casamento_inspiracoes').select('*').eq('casamento_id',casalCasamento.id).order('created_at',{ascending:false})
+  if(error){grid.innerHTML='<div style="font-size:12px;color:#c0392b">Não foi possível carregar as fotos agora.</div>';return}
+  if(!data||!data.length){grid.innerHTML='<div style="font-size:12px;color:#aaa">Nenhuma foto ainda — envie a primeira! ✨</div>';return}
+  grid.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px">'+data.map(i=>`<div style="position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--border);aspect-ratio:1;background:#f0ece2"><img src="${i.url}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block"><div onclick="removerInspiracao('${i.id}','${(i.storage_path||'').replace(/'/g,"\\'")}')" title="Remover" style="position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.5);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer">✕</div></div>`).join('')+'</div>'
+}
+
+async function uploadInspiracoes(files){
+  if(!casalCasamento){alert('Link inválido — recarregue a página.');return}
+  if(!files||!files.length)return
+  const area=document.getElementById('insp-upload-area')
+  const orig=area?area.innerHTML:''
+  if(area){area.innerHTML='<div style="font-size:14px;color:var(--gold);font-weight:600">⏳ Enviando '+files.length+' foto(s)...</div>';area.style.pointerEvents='none'}
+  for(const file of files){
+    if(!file.type.startsWith('image/')){alert(file.name+' não é uma imagem, pulando...');continue}
+    if(file.size>10*1024*1024){alert(file.name+' é maior que 10MB, pulando...');continue}
+    const ext=file.name.split('.').pop()
+    const path=`inspiracoes/${casalCasamento.id}/${Date.now()}-${Math.random().toString(36).substring(2,8)}.${ext}`
+    const{error:upErr}=await sb.storage.from('anexos').upload(path,file,{upsert:false})
+    if(upErr){alert('Erro ao enviar '+file.name+': '+upErr.message);continue}
+    const{data:urlData}=sb.storage.from('anexos').getPublicUrl(path)
+    const{error:insErr}=await sb.from('casamento_inspiracoes').insert({casamento_id:casalCasamento.id,url:urlData.publicUrl,storage_path:path})
+    if(insErr)alert('Erro ao salvar '+file.name+': '+insErr.message)
+  }
+  if(area){area.innerHTML=orig;area.style.pointerEvents=''}
+  carregarInspiracoesCasal()
+}
+
+async function removerInspiracao(id,path){
+  if(!confirm('Remover esta foto das inspirações?'))return
+  if(path){try{await sb.storage.from('anexos').remove([path])}catch(e){}}
+  const{error}=await sb.from('casamento_inspiracoes').delete().eq('id',id)
+  if(error){alert('Erro ao remover: '+error.message);return}
+  carregarInspiracoesCasal()
+}
 </script>
 </body>
 </html>
