@@ -119,6 +119,20 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
 .gi:last-child,.gr:last-child{border-bottom:0}
 .gil,.grk{color:var(--muted)}
 .giv,.grv{color:var(--text);font-weight:500;text-align:right}
+.brief-src{font-size:11px;color:var(--muted);background:var(--surface2);border:1px solid var(--line);border-radius:8px;padding:9px 12px;margin-bottom:16px}
+.acc{border:1px solid var(--line);border-radius:10px;margin-bottom:9px;overflow:hidden}
+.acc-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 15px;cursor:pointer;background:var(--surface2)}
+.acc-t{font-size:10.5px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--gold)}
+.acc-r{display:flex;align-items:center;gap:9px}
+.acc-c{font-size:11px;color:var(--muted)}
+.acc-chev{transition:transform .15s;color:var(--muted)}
+.acc.open .acc-chev{transform:rotate(180deg)}
+.acc-b{display:none;padding:4px 15px 11px}
+.acc.open .acc-b{display:block}
+.qa{padding:9px 0;border-bottom:1px solid var(--line2)}
+.qa:last-child{border-bottom:0}
+.qa-q{font-size:11px;color:var(--muted);margin:0 0 3px}
+.qa-a{font-size:13px;color:var(--text);line-height:1.45;margin:0}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
 .f{margin-bottom:14px}
@@ -865,6 +879,7 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
     <div class="mh"><div class="mt" id="mc-title">Novo Casamento</div><button class="mcl" onclick="closeModal('modal-casamento')">✕</button></div>
     <div class="tabs" id="c-tabs" style="display:none">
       <button class="tab active" onclick="showCTab('geral',this)">Geral</button>
+      <button class="tab" onclick="showCTab('brief',this)">Briefing</button>
       <button class="tab" onclick="showCTab('plan',this)">Planejamento</button>
       <button class="tab" onclick="showCTab('prod',this)">Produção</button>
       <button class="tab" onclick="showCTab('viag',this)">Viagem</button>
@@ -906,6 +921,7 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
       <p class="grp-sec" style="margin-top:22px">Observações sobre o casal</p>
       <div id="g-d-obs" style="white-space:pre-wrap;color:var(--text);font-size:13px;line-height:1.5">—</div>
     </div>
+    <div class="tc" id="tab-brief"><div id="brief-content"></div></div>
     <div class="tc" id="tab-plan">
       <p class="grp-sec">Dados do casamento</p>
       <div class="g2">
@@ -2062,6 +2078,7 @@ function verificarPermissaoAba(aba){
   const s=usuarioAtual?.setor
   if(s==='admin')return true
   if(aba==='geral')return s==='planejamento'
+  if(aba==='brief')return true
   if(aba==='plan')return s==='planejamento'
   if(aba==='prod')return s==='producao'
   if(aba==='viag')return s==='viagem'
@@ -2301,6 +2318,7 @@ function showCTab(tab,btn){
   if(tab==='prod'){renderProdAssessoras();carregarInspiracoes(casamentoAtual?.id);mostrarLinkProd(casamentoAtual?.id)}
   if(tab==='viag')renderChecklist()
   if(tab==='geral')renderGeral()
+  if(tab==='brief')renderBriefing()
   if(tab==='anexos-c')renderAnexosUI('anexos-c-content','casamento',casamentoAtual?.id)
   aplicarReadonlyAba(tab)
 }
@@ -2660,6 +2678,24 @@ function renderGeral(){
     if(lEl){const tok=casamentoAtual&&casamentoAtual.link_token;lEl.innerHTML=tok?'<span style="cursor:pointer;color:var(--gold);font-weight:600" onclick="copyGeralLink()">Copiar link</span>':'\u2014'}
   }catch(e){console.warn('renderGeral',e)}
 }
+function renderBriefing(){
+  const box=document.getElementById('brief-content');if(!box)return
+  let b=casamentoAtual&&casamentoAtual.briefing
+  if(typeof b==='string'){try{b=JSON.parse(b)}catch(e){b=null}}
+  if(!b||!b.grupos||!b.grupos.length){box.innerHTML='<div style="text-align:center;padding:34px 16px;color:var(--muted);font-size:13px;line-height:1.6">Este casal ainda não respondeu o questionário.<br>Quando o formulário for enviado, as respostas aparecem aqui.</div>';return}
+  const rec=b.recebido_em?_dataBR(b.recebido_em):''
+  let html='<div class="brief-src">Respostas do questionário do casal'+(rec?' \u00b7 recebido em '+esc(rec):'')+' \u00b7 somente leitura</div>'
+  const chev='<svg class="acc-chev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>'
+  ;(b.grupos||[]).forEach((g,gi)=>{
+    const itens=(g.itens||[]).filter(it=>it&&it.a!=null&&String(it.a).trim()!=='')
+    if(!itens.length)return
+    html+='<div class="acc" id="acc-'+gi+'"><div class="acc-h" onclick="briefToggle('+gi+')"><span class="acc-t">'+esc(g.titulo||'\u2014')+'</span><span class="acc-r"><span class="acc-c">'+itens.length+'</span>'+chev+'</span></div><div class="acc-b">'
+    itens.forEach(it=>{html+='<div class="qa"><p class="qa-q">'+esc(it.q||'')+'</p><p class="qa-a">'+esc(String(it.a||'')).replace(/\n/g,'<br>')+'</p></div>'})
+    html+='</div></div>'
+  })
+  box.innerHTML=html
+}
+function briefToggle(i){const a=document.getElementById('acc-'+i);if(a)a.classList.toggle('open')}
 // Mostra erro de banco de forma padronizada. Retorna true se houve erro.
 function _dbErro(error,acao){
   if(!error)return false
