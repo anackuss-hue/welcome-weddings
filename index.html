@@ -108,6 +108,17 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
 .tab:hover{color:var(--gold)}
 .tab.active{background:transparent;color:var(--gold);border-bottom-color:var(--gold);font-weight:600}
 .tc{display:none}.tc.active{display:block}
+.grp-sec{font-size:10px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--gold);margin:0 0 13px;padding-bottom:7px;border-bottom:1px solid var(--gold-border)}
+.g-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:22px}
+.g-mc{background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:11px 12px}
+.g-ml{font-size:9px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.g-mv{font-size:15px;font-weight:600;color:var(--text)}
+.g-mpill{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px;background:var(--gold-pale);color:var(--gold);border:1px solid var(--gold-border)}
+.g-info,.g-recap{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.gi,.gr{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line2);font-size:12.5px}
+.gi:last-child,.gr:last-child{border-bottom:0}
+.gil,.grk{color:var(--muted)}
+.giv,.grv{color:var(--text);font-weight:500;text-align:right}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
 .f{margin-bottom:14px}
@@ -853,41 +864,64 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
   <div class="mb">
     <div class="mh"><div class="mt" id="mc-title">Novo Casamento</div><button class="mcl" onclick="closeModal('modal-casamento')">✕</button></div>
     <div class="tabs" id="c-tabs" style="display:none">
-      <button class="tab active" onclick="showCTab('plan',this)">Planejamento</button>
+      <button class="tab active" onclick="showCTab('geral',this)">Geral</button>
+      <button class="tab" onclick="showCTab('plan',this)">Planejamento</button>
       <button class="tab" onclick="showCTab('prod',this)">Produção</button>
       <button class="tab" onclick="showCTab('viag',this)">Viagem</button>
       <button class="tab" onclick="showCTab('assess',this)">Fornecedores</button>
       <button class="tab" onclick="showCTab('anexos-c',this)">Anexos</button>
     </div>
-    <div class="tc active" id="tab-plan">
+    <div class="tc active" id="tab-geral">
+      <div class="g-metrics">
+        <div class="g-mc"><div class="g-ml">Status</div><div id="g-m-status">—</div></div>
+        <div class="g-mc"><div class="g-ml">Faltam</div><div class="g-mv" id="g-m-dias">—</div></div>
+        <div class="g-mc"><div class="g-ml">Viagem</div><div class="g-mv" id="g-m-viagem" style="font-size:13px;color:var(--muted)">—</div></div>
+        <div class="g-mc"><div class="g-ml">Checklist</div><div class="g-mv" id="g-m-check">—</div></div>
+      </div>
+      <p class="grp-sec">Dados do casamento</p>
+      <div class="g-info">
+        <div class="gi"><span class="gil">Nome do casal</span><span class="giv" id="g-d-nome">—</span></div>
+        <div class="gi"><span class="gil">Destino</span><span class="giv" id="g-d-destino">—</span></div>
+        <div class="gi"><span class="gil">Data</span><span class="giv" id="g-d-data">—</span></div>
+        <div class="gi"><span class="gil">Horário</span><span class="giv" id="g-d-horario">—</span></div>
+        <div class="gi"><span class="gil">Local</span><span class="giv" id="g-d-local">—</span></div>
+        <div class="gi"><span class="gil">Pacote</span><span class="giv" id="g-d-pacote">—</span></div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:8px">Esses dados são editados na aba Planejamento.</div>
+      <p class="grp-sec" style="margin-top:22px">Status &amp; setor</p>
+      <div class="g2">
+        <div class="f"><label>Status</label><select id="c-status"><option>Em andamento</option><option>Realizado</option><option>Cancelado</option></select></div>
+        <div class="f"><label>Setor</label><select id="c-setor"><option value="">Selecionar setor...</option><option value="Planejamento">Planejamento</option><option value="Produção+Viagem">Produção + Viagem</option></select></div>
+      </div>
+      <p class="grp-sec" style="margin-top:22px">Resumo das fases</p>
+      <div class="g-recap">
+        <div class="gr"><span class="grk">Consultora planejamento</span><span class="grv" id="g-r-consplan">—</span></div>
+        <div class="gr"><span class="grk">Consultora produção</span><span class="grv" id="g-r-consprod">—</span></div>
+        <div class="gr"><span class="grk">Reuniões</span><span class="grv" id="g-r-reunioes">—</span></div>
+        <div class="gr"><span class="grk">Hotéis recomendados</span><span class="grv" id="g-r-hoteis">—</span></div>
+        <div class="gr"><span class="grk">Inspirações do casal</span><span class="grv" id="g-r-insp">—</span></div>
+        <div class="gr"><span class="grk">Fornecedores</span><span class="grv" id="g-r-forn">—</span></div>
+        <div class="gr"><span class="grk">Link do casal</span><span class="grv" id="g-r-link">—</span></div>
+      </div>
+      <p class="grp-sec" style="margin-top:22px">Observações sobre o casal</p>
+      <div id="g-d-obs" style="white-space:pre-wrap;color:var(--text);font-size:13px;line-height:1.5">—</div>
+    </div>
+    <div class="tc" id="tab-plan">
+      <p class="grp-sec">Dados do casamento</p>
       <div class="g2">
         <div class="f"><label>Nome do Casal</label><input id="c-nome" placeholder="Ex: Ana & João"></div>
         <div class="f"><label>Destino</label><input id="c-destino"></div>
         <div class="f"><label>Data do Casamento</label><input id="c-data" type="date"></div>
         <div class="f"><label>Horário da Cerimônia</label><input id="c-horario" type="time"></div>
-        <div class="f"><label>Local</label><select id="c-hotel" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none"><option value="">Selecionar local...</option></select></div>
+        <div class="f"><label>Local</label><select id="c-hotel"><option value="">Selecionar local...</option></select></div>
         <div class="f"><label>Pacote com o Hotel</label><input id="c-pacote"></div>
-        <div class="f"><label>Status</label>
-          <select id="c-status" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
-            <option>Em andamento</option><option>Realizado</option><option>Cancelado</option>
-          </select>
-        </div>
-        <div class="f"><label>Setor</label>
-          <select id="c-setor" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
-            <option value="">Selecionar setor...</option>
-            <option value="Planejamento">📋 Planejamento</option>
-            <option value="Produção+Viagem">🎨✈️ Produção + Viagem</option>
-          </select>
-        </div>
-        <div class="f"><label>Consultora Planejamento</label>
-          <select id="c-cons-plan" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none"><option value="">Selecionar...</option></select>
-        </div>
-        <div class="f"><label>Consultora Produção</label>
-          <select id="c-cons-prod" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ddd;font-size:13px;font-family:'DM Sans',sans-serif;outline:none"><option value="">Selecionar...</option></select>
-        </div>
+      </div>
+      <p class="grp-sec" style="margin-top:22px">Equipe &amp; observações</p>
+      <div class="g2">
+        <div class="f"><label>Consultora Planejamento</label><select id="c-cons-plan"><option value="">Selecionar...</option></select></div>
         <div class="f"><label>Extra</label><input id="c-extra"></div>
       </div>
-      <div class="f"><label>Observações sobre o Casal</label><textarea id="c-obs"></textarea></div>
+      <div class="f" style="margin-top:13px"><label>Observações sobre o Casal</label><textarea id="c-obs"></textarea></div>
 
       <!-- Reuniões de Planejamento -->
       <div class="sec" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--gold-border)">
@@ -923,6 +957,8 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
       </div>
     </div>
     <div class="tc" id="tab-prod">
+      <p class="grp-sec">Equipe de produção</p>
+      <div class="f" style="max-width:340px;margin-bottom:22px"><label>Consultora Produção</label><select id="c-cons-prod"><option value="">Selecionar...</option></select></div>
 
       <!-- Reuniões -->
       <div class="sec">
@@ -2025,6 +2061,7 @@ function aplicarPermissoes(){
 function verificarPermissaoAba(aba){
   const s=usuarioAtual?.setor
   if(s==='admin')return true
+  if(aba==='geral')return s==='planejamento'
   if(aba==='plan')return s==='planejamento'
   if(aba==='prod')return s==='producao'
   if(aba==='viag')return s==='viagem'
@@ -2263,6 +2300,7 @@ function showCTab(tab,btn){
   if(tab==='assess'){renderEscaladas();if(casamentoAtual?.id){loadSolicitacoes(casamentoAtual.id);loadFornecedoresCasamento(casamentoAtual.id)}}
   if(tab==='prod'){renderProdAssessoras();carregarInspiracoes(casamentoAtual?.id);mostrarLinkProd(casamentoAtual?.id)}
   if(tab==='viag')renderChecklist()
+  if(tab==='geral')renderGeral()
   if(tab==='anexos-c')renderAnexosUI('anexos-c-content','casamento',casamentoAtual?.id)
   aplicarReadonlyAba(tab)
 }
@@ -2273,7 +2311,7 @@ function aplicarReadonlyAba(tab){
   tabEl.querySelectorAll('input,select,textarea').forEach(el=>{el.disabled=!pode;el.style.background=pode?'':'var(--surface2)';el.style.color=pode?'':'#aaa';el.style.cursor=pode?'':'not-allowed'})
   tabEl.querySelectorAll('.tr-row,.ro-opt').forEach(el=>{el.style.pointerEvents=pode?'':'none';el.style.opacity=pode?'':'0.5'})
   const btnSalvar=document.getElementById('btn-sc')
-  if(btnSalvar){const algumaPode=['plan','prod','viag','assess'].some(t=>verificarPermissaoAba(t));btnSalvar.style.display=algumaPode?'':'none'}
+  if(btnSalvar){const algumaPode=['geral','plan','prod','viag','assess'].some(t=>verificarPermissaoAba(t));btnSalvar.style.display=algumaPode?'':'none'}
 }
 function showATab(tab,btn){
   document.querySelectorAll('#modal-assessora .atc').forEach(t=>t.classList.remove('active'))
@@ -2538,22 +2576,24 @@ async function openCasamento(id){
   document.getElementById('c-tabs').style.display='flex'
   document.querySelectorAll('.tc').forEach(t=>t.classList.remove('active'))
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'))
-  document.getElementById('tab-plan').classList.add('active')
+  document.getElementById('tab-geral').classList.add('active')
   document.querySelector('.tab').classList.add('active')
   fillCasForm(c);await loadEscaladas(id)
   loadFornecedoresCasamento(id)
   populateConsultorasSelect().then(()=>{
     document.getElementById('c-cons-plan').value=c.consultora_plan||''
     document.getElementById('c-cons-prod').value=c.consultora_prod||''
+    renderGeral()
   })
   document.getElementById('modal-casamento').classList.add('open')
   document.getElementById('c-hoteis-section').style.display='block'
   loadCasHoteis(id)
-  setTimeout(()=>aplicarReadonlyAba('plan'),100)
+  carregarInspiracoes(id)
+  setTimeout(()=>{aplicarReadonlyAba('geral');renderGeral()},100)
 }
 function clearCasForm(){
   ['c-nome','c-destino','c-data','c-horario','c-hotel','c-pacote','c-extra','c-obs','c-produtora','c-num-assessores','c-datas','c-ultima-reuniao','c-servicos','c-programacao','c-fornecedores','c-prod-status','c-prod-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
-  window._planReunioes=[];window._prodReunioes=[];window._prodEventos=[]
+  window._planReunioes=[];window._prodReunioes=[];window._prodEventos=[];window._inspCount=0;window._fornCount=0
   renderPlanReunioes();renderProdReunioes();renderProdEventos()
   window._checklist={atend:[],grupo:[]};renderChecklist()
   document.getElementById('c-status').value='Em andamento'
@@ -2587,6 +2627,38 @@ function fillCasForm(c){
 function getCasData(){
   const v=id=>document.getElementById(id)?.value||''
   return{nome:v('c-nome'),destino:v('c-destino'),plan_data:v('c-data'),plan_horario:v('c-horario'),local_id:document.getElementById('c-hotel')?.value||null,plan_pacote:v('c-pacote'),plan_extra:v('c-extra'),plan_obs:v('c-obs'),status:v('c-status'),setor:document.getElementById('c-setor')?.value||null,consultora_plan:v('c-cons-plan')||null,consultora_prod:v('c-cons-prod')||null,prod_produtora:v('c-produtora'),prod_num_assessores:v('c-num-assessores'),prod_datas:v('c-datas'),prod_ultima_reuniao:v('c-ultima-reuniao'),prod_servicos:v('c-servicos'),prod_programacao:v('c-programacao'),prod_fornecedores:v('c-fornecedores'),prod_status:v('c-prod-status'),plan_reunioes:JSON.stringify(window._planReunioes||[]),prod_reunioes:JSON.stringify(window._prodReunioes||[]),prod_eventos:JSON.stringify(window._prodEventos||[]),checklist:JSON.stringify(window._checklist||{atend:[],grupo:[]}),prod_obs:v('c-prod-obs'),checklist_voos:getTg('c-voos'),checklist_transfers:getTg('c-transfers'),checklist_passeios:getTg('c-passeios'),viagem_ok:getTg('c-vok'),viag_casal_status:window._viagSel?.casal||null,viag_passeio_barco:window._viagSel?.barco||null,viag_coco_bongo:window._viagSel?.coco||null}
+}
+function _selTxt(id){const el=document.getElementById(id);if(!el||el.value==='')return '';const o=el.options&&el.options[el.selectedIndex];return o?o.text:el.value}
+function _dataBR(v){if(!v)return '';const x=String(v).split('-');return x.length===3?x[2]+'/'+x[1]+'/'+x[0]:v}
+function _geralRefresh(){const t=document.getElementById('tab-geral');if(t&&t.classList.contains('active'))renderGeral()}
+function copyGeralLink(){const t=casamentoAtual&&casamentoAtual.link_token;if(!t)return;const u=location.origin+'/casal.html?c='+t;if(navigator.clipboard)navigator.clipboard.writeText(u);alert('Link copiado!')}
+function renderGeral(){
+  try{
+    const g=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=(v==null||v==='')?'\u2014':v}
+    g('g-d-nome',document.getElementById('c-nome')?.value)
+    g('g-d-destino',document.getElementById('c-destino')?.value)
+    g('g-d-data',_dataBR(document.getElementById('c-data')?.value))
+    g('g-d-horario',document.getElementById('c-horario')?.value)
+    g('g-d-local',_selTxt('c-hotel'))
+    g('g-d-pacote',document.getElementById('c-pacote')?.value)
+    g('g-d-obs',document.getElementById('c-obs')?.value)
+    const st=document.getElementById('c-status')?.value||''
+    const sEl=document.getElementById('g-m-status');if(sEl)sEl.innerHTML=st?'<span class="g-mpill">'+esc(st)+'</span>':'\u2014'
+    const dv=document.getElementById('c-data')?.value
+    const dEl=document.getElementById('g-m-dias')
+    if(dEl){if(dv){const diff=Math.ceil((new Date(dv+'T00:00:00')-new Date(new Date().toDateString()))/86400000);dEl.textContent=diff>0?diff+' dias':diff===0?'hoje':'realizado'}else dEl.textContent='\u2014'}
+    const vEl=document.getElementById('g-m-viagem');if(vEl)vEl.textContent=getTg('c-vok')?'Confirmada':((window._viagSel&&window._viagSel.casal)||'Em andamento')
+    let tot=0,done=0;['atend','grupo'].forEach(k=>{((window._checklist&&window._checklist[k])||[]).forEach(i=>{if(i.st!=='na'){tot++;if(i.st==='done')done++}})})
+    g('g-m-check',tot?Math.round(done/tot*100)+'%':'0%')
+    g('g-r-consplan',_selTxt('c-cons-plan'))
+    g('g-r-consprod',_selTxt('c-cons-prod'))
+    g('g-r-reunioes',((window._planReunioes||[]).length)+' planejamento \u00b7 '+((window._prodReunioes||[]).length)+' produção')
+    g('g-r-hoteis',(typeof casHoteis!=='undefined'?casHoteis.length:0))
+    g('g-r-insp',(window._inspCount!=null?window._inspCount+' fotos':'\u2014'))
+    g('g-r-forn',(window._fornCount!=null?window._fornCount:'\u2014'))
+    const lEl=document.getElementById('g-r-link')
+    if(lEl){const tok=casamentoAtual&&casamentoAtual.link_token;lEl.innerHTML=tok?'<span style="cursor:pointer;color:var(--gold);font-weight:600" onclick="copyGeralLink()">Copiar link</span>':'\u2014'}
+  }catch(e){console.warn('renderGeral',e)}
 }
 // Mostra erro de banco de forma padronizada. Retorna true se houve erro.
 function _dbErro(error,acao){
@@ -2637,6 +2709,7 @@ async function loadFornecedoresCasamento(casId){
   const{data:fornData}=await sb.from('casamento_fornecedores').select('*,fornecedor:fornecedores(id,nome,tipo,telefone)').eq('casamento_id',casId).order('created_at',{ascending:false})
   // Busca assessoras escaladas
   const{data:assessData}=await sb.from('casamento_assessoras').select('*,assessora:assessoras(id,nome,cidade)').eq('casamento_id',casId).order('created_at',{ascending:false})
+  window._fornCount=(fornData?.length||0);_geralRefresh()
   const ti={Assessora:'👩',Celebrante:'🎤','Fotógrafo':'📷',Videomaker:'🎬',DJ:'🎧','Cabelo e Maquiagem':'💄'}
   const stTag=(st,emoji,label)=>st?`<span class="tag ${st==='emitido'?'tg':st==='pendente'?'tr':'tgy'}">${emoji} ${st==='emitido'?label+' ✓':st==='pendente'?label+' pendente':label+' n/a'}</span>`:''
 
@@ -3427,7 +3500,7 @@ async function toggleUsuario(id,ativo){
 let casHoteis=[], hotelPickerOpen=false
 async function loadCasHoteis(casId){
   const{data}=await sb.from('casamento_hoteis').select('*,hotel:locais(id,nome,cidade,pais,regiao,tipo,ambiente,por_do_sol,spa,aceita_criancas)').eq('casamento_id',casId)
-  casHoteis=data||[];renderCasHoteis();renderLinkArea(casId)
+  casHoteis=data||[];renderCasHoteis();renderLinkArea(casId);_geralRefresh()
 }
 function renderCasHoteis(){
   const list=document.getElementById('c-hoteis-list');if(!list)return
@@ -3621,8 +3694,8 @@ async function carregarInspiracoes(casId){
   mural.innerHTML='<div style="font-size:13px;color:var(--muted)">Carregando...</div>'
   const{data,error}=await sb.from('casamento_inspiracoes').select('*').eq('casamento_id',casId).order('created_at',{ascending:false})
   if(error){mural.innerHTML='<div style="font-size:13px;color:var(--muted)">Não foi possível carregar as inspirações.</div>';if(cnt)cnt.textContent='';return}
-  if(!data||!data.length){mural.innerHTML='<div style="font-size:13px;color:var(--muted)">O casal ainda não enviou inspirações.</div>';if(cnt)cnt.textContent='';return}
-  if(cnt)cnt.textContent=data.length+' foto(s)'
+  if(!data||!data.length){mural.innerHTML='<div style="font-size:13px;color:var(--muted)">O casal ainda não enviou inspirações.</div>';if(cnt)cnt.textContent='';window._inspCount=0;_geralRefresh();return}
+  if(cnt)cnt.textContent=data.length+' foto(s)';window._inspCount=data.length;_geralRefresh()
   mural.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px">'+data.map(i=>`<a href="${esc(i.url)}" target="_blank" style="display:block;border-radius:10px;overflow:hidden;border:1px solid var(--border);aspect-ratio:1;background:var(--surface2)"><img src="${esc(i.url)}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block"></a>`).join('')+'</div>'
 }
 
