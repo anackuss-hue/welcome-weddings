@@ -160,43 +160,43 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
 .quad-opt.sel-nv{border-color:#888;background:#f0f0f0;color:#666;font-weight:600}
 .quad-opt.sel-na{border-color:#b8965a;background:var(--gold-pale);color:var(--gold);font-weight:600}
 .quad-item{margin-bottom:14px}
-.quad-item label{display:block;font-size:11px;font-weight:700;color:#666;margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase}
+.quad-item label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase}
 .coord-snav{padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
 .coord-snav:hover{color:var(--gold)}.coord-snav.active{color:var(--gold);border-bottom-color:var(--gold);font-weight:600}
 .coord-stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px}
-.coord-stat{background:var(--white);border-radius:12px;border:1px solid var(--border);padding:16px 18px}
+.coord-stat{background:var(--white);border-radius:8px;border:1px solid var(--border);padding:16px 18px}
 .coord-stat-label{font-size:11px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
 .coord-stat-val{font-size:28px;font-weight:700;font-family:'Cormorant Garamond',serif;line-height:1}
-.coord-stat-sub{font-size:11px;color:#bbb;margin-top:5px}
-.coord-tbl-card{background:var(--white);border-radius:12px;border:1px solid var(--border);overflow:hidden;margin-bottom:20px}
-.coord-tbl-header{padding:14px 18px;border-bottom:1px solid #f0ebe2;font-weight:600;font-size:14px;display:flex;align-items:center;gap:8px}
+.coord-stat-sub{font-size:11px;color:var(--muted);margin-top:5px}
+.coord-tbl-card{background:var(--white);border-radius:8px;border:1px solid var(--border);overflow:hidden;margin-bottom:20px}
+.coord-tbl-header{padding:14px 18px;border-bottom:1px solid var(--line);font-weight:600;font-size:14px;display:flex;align-items:center;gap:8px}
 .coord-tbl{width:100%;border-collapse:collapse}
-.coord-tbl th{font-size:11px;color:var(--muted);font-weight:600;text-align:left;padding:10px 16px;border-bottom:1px solid #f0ebe2;background:#faf8f4;white-space:nowrap;text-transform:uppercase;letter-spacing:.05em}
-.coord-tbl td{padding:11px 16px;border-bottom:1px solid #f7f4ef;vertical-align:middle;font-size:13px}
+.coord-tbl th{font-size:11px;color:var(--muted);font-weight:600;text-align:left;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--surface2);white-space:nowrap;text-transform:uppercase;letter-spacing:.05em}
+.coord-tbl td{padding:11px 16px;border-bottom:1px solid var(--line2);vertical-align:middle;font-size:13px}
 .coord-tbl tbody tr:last-child td{border-bottom:none}
 .coord-tbl tbody tr{cursor:pointer;transition:background .15s}
-.coord-tbl tbody tr:hover td{background:#faf8f4}
+.coord-tbl tbody tr:hover td{background:var(--surface2)}
 .coord-badge{display:inline-block;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap}
 .cb-green{background:#e6f4ea;color:#1e7e34}.cb-amber{background:#fff3cd;color:#856404}
 .cb-red{background:#fde8e8;color:#a81a1a}.cb-blue{background:#e8f0fd;color:#1a4fa8}
-.cb-purple{background:#f5e8fd;color:#6f1aa8}.cb-gray{background:#f0ebe2;color:#666}
+.cb-purple{background:#f5e8fd;color:#6f1aa8}.cb-gray{background:var(--surface2);color:var(--muted);border:1px solid var(--line)}
 .cb-hotel{background:#fff0e0;color:#8b5000}
-.coord-prog-bar{height:4px;background:#f0ebe2;border-radius:4px;overflow:hidden;width:60px;display:inline-block}
+.coord-prog-bar{height:4px;background:var(--line);border-radius:4px;overflow:hidden;width:60px;display:inline-block}
 .coord-prog-fill{height:100%;border-radius:4px}
 .coord-group-header{display:flex;align-items:center;gap:10px;margin:20px 0 10px}
-.coord-expand-row{cursor:pointer;transition:background .15s;border-bottom:1px solid #f7f4ef}
-.coord-expand-row:hover{background:#faf8f4}
-.coord-expand-detail{background:#faf8f4;padding:16px 20px;border-top:1px solid #f0ebe2}
+.coord-expand-row{cursor:pointer;transition:background .15s;border-bottom:1px solid var(--line2)}
+.coord-expand-row:hover{background:var(--surface2)}
+.coord-expand-detail{background:var(--surface2);padding:16px 20px;border-top:1px solid var(--line)}
 .coord-detail-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px;font-weight:600}
-.coord-prazo-ok{background:#f0faf0;border-left:3px solid #1e7e34}
-.coord-prazo-medio{background:#fffbf0;border-left:3px solid #e6a817}
-.coord-prazo-critico{background:#fff5f0;border-left:3px solid #d9480f}
-.coord-prazo-gritando{background:#fff0f0;border-left:3px solid #a81a1a}
+.coord-prazo-ok{background:rgba(46,125,50,.10);border-left:3px solid #2e9e4e}
+.coord-prazo-medio{background:rgba(230,168,23,.12);border-left:3px solid #e6a817}
+.coord-prazo-critico{background:rgba(217,72,15,.12);border-left:3px solid #e0651f}
+.coord-prazo-gritando{background:rgba(168,26,26,.13);border-left:3px solid #d2705f}
 .coord-badge-ok{background:#e6f4ea;color:#1e7e34;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
 .coord-badge-medio{background:#fff3cd;color:#856404;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
 .coord-badge-critico{background:#ffe8d6;color:#d9480f;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
 .coord-badge-gritando{background:#fde8e8;color:#a81a1a;font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px}
-.coord-reuniao-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #f0ebe2}
+.coord-reuniao-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
 .coord-reuniao-item:last-child{border-bottom:none}
 .c-tab{padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
 .c-tab:hover{color:var(--gold)}
@@ -651,7 +651,7 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
           <div class="fp-sec-t">Nº de Acomodações</div>
           <div style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:6px">Até <span id="label-acom">3000</span> quartos</div>
           <input type="range" id="slider-acom" min="50" max="3000" step="50" value="3000" oninput="document.getElementById('label-acom').textContent=this.value;renderHoteis()" style="width:100%;accent-color:var(--gold)">
-          <div style="display:flex;justify-content:space-between;font-size:10px;color:#aaa;margin-top:2px"><span>50</span><span>3000</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:2px"><span>50</span><span>3000</span></div>
         </div>
         <div class="fp-sec">
           <div class="fp-sec-t">Valor Diária Casal</div>
@@ -662,11 +662,11 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
             <option value="BRL">BRL</option>
           </select>
           <div style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:6px"><span id="label-moeda-prefix"></span><span id="label-diaria-min">100</span> – <span id="label-moeda-prefix2"></span><span id="label-diaria-max">2000</span></div>
-          <div style="font-size:10px;color:#aaa;margin-bottom:4px">Mínimo</div>
+          <div style="font-size:10px;color:var(--muted);margin-bottom:4px">Mínimo</div>
           <input type="range" id="slider-diaria-min" min="100" max="2000" step="100" value="100" oninput="document.getElementById('label-diaria-min').textContent=this.value;renderHoteis()" style="width:100%;accent-color:var(--gold)">
-          <div style="font-size:10px;color:#aaa;margin-bottom:4px;margin-top:6px">Máximo</div>
+          <div style="font-size:10px;color:var(--muted);margin-bottom:4px;margin-top:6px">Máximo</div>
           <input type="range" id="slider-diaria-max" min="100" max="2000" step="100" value="2000" oninput="document.getElementById('label-diaria-max').textContent=this.value;renderHoteis()" style="width:100%;accent-color:var(--gold)">
-          <div style="display:flex;justify-content:space-between;font-size:10px;color:#aaa;margin-top:2px"><span id="slider-min-label">100</span><span id="slider-max-label">2000</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:2px"><span id="slider-min-label">100</span><span id="slider-max-label">2000</span></div>
         </div>
         <div class="fp-sec">
           <div class="fp-sec-t">Regime de Alimentação</div>
@@ -736,7 +736,7 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
     <!-- Search -->
     <div style="margin-bottom:18px">
       <div style="position:relative;max-width:320px">
-        <i class="ti ti-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#aaa;font-size:14px;pointer-events:none"></i>
+        <i class="ti ti-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;pointer-events:none"></i>
         <input id="kb-search" placeholder="Buscar nome, casal, assessora..." oninput="renderKanban()"
           style="width:100%;padding-left:34px;height:36px;border-radius:8px;border:1px solid var(--border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;background:var(--white)">
       </div>
@@ -795,7 +795,7 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
     <!-- Filterbar (hidden on dashboard) -->
     <div id="coord-filterbar" style="display:none;margin-bottom:20px;display:none;gap:8px;flex-wrap:wrap;align-items:center">
       <div style="position:relative">
-        <i class="ti ti-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#aaa;font-size:13px;pointer-events:none"></i>
+        <i class="ti ti-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;pointer-events:none"></i>
         <input id="coord-search" placeholder="Buscar casal..." oninput="coordRender()"
           style="padding-left:32px;height:34px;border-radius:8px;border:1px solid var(--border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;width:200px;background:var(--white)">
       </div>
@@ -975,7 +975,7 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
           <div style="font-size:11px;color:var(--muted);margin-bottom:10px">Envie pro casal adicionar as fotos de inspiração (é a mesma página dos hotéis).</div>
           <div id="prod-link-body"></div>
         </div>
-        <div id="insp-mural"><div style="font-size:13px;color:#aaa">—</div></div>
+        <div id="insp-mural"><div style="font-size:13px;color:var(--muted)">—</div></div>
       </div>
 
       <div id="prod-assess-preview"></div>
@@ -2069,7 +2069,7 @@ function renderLogs(){
   con.innerHTML=filtered.map(l=>{
     const d=new Date(l.created_at)
     const dt=d.toLocaleDateString('pt-BR')+' às '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})
-    return`<div class="log-item"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;gap:8px"><div style="flex:1;min-width:0"><span class="log-who">${l.usuario_nome||'—'}</span> <span style="color:#555">${l.acao}</span> ${l.registro_nome?`<span style="font-weight:600">"${l.registro_nome}"</span>`:''} ${l.tabela?`<span style="font-size:11px;color:#aaa">${tabIcon[l.tabela]||''} ${l.tabela}</span>`:''}</div><span class="log-when">${dt}</span></div></div>`
+    return`<div class="log-item"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;gap:8px"><div style="flex:1;min-width:0"><span class="log-who">${l.usuario_nome||'—'}</span> <span style="color:#555">${l.acao}</span> ${l.registro_nome?`<span style="font-weight:600">"${l.registro_nome}"</span>`:''} ${l.tabela?`<span style="font-size:11px;color:var(--muted)">${tabIcon[l.tabela]||''} ${l.tabela}</span>`:''}</div><span class="log-when">${dt}</span></div></div>`
   }).join('')
 }
 
@@ -2327,8 +2327,8 @@ function filtrarDropdownDisp(q){
   const dd=document.getElementById('f-disponivel-dropdown');if(!dd)return
   const lista=window._casamentosFuturos||[]
   const filtrados=q?lista.filter(c=>c.nome?.toLowerCase().includes(q.toLowerCase())||c.destino?.toLowerCase().includes(q.toLowerCase())):lista
-  if(!filtrados.length){dd.innerHTML='<div style="padding:10px 12px;font-size:12px;color:#aaa">Nenhum encontrado</div>';dd.style.display='block';return}
-  dd.innerHTML=filtrados.map(c=>`<div onclick="selecionarCasamentoDisp('${c.id}','${(c.nome||'').replace(/'/g,"\\'")}','${fmtDate(c.plan_data)}')" style="padding:9px 12px;font-size:12px;cursor:pointer;border-bottom:1px solid #f5f0e8" onmouseover="this.style.background='var(--gold-pale)'" onmouseout="this.style.background=''"><div style="font-weight:600;color:var(--text)">${esc(c.nome||'—')}</div><div style="font-size:11px;color:#aaa;margin-top:1px">📅 ${fmtDate(c.plan_data)}${c.destino?' · '+esc(c.destino):''}</div></div>`).join('')
+  if(!filtrados.length){dd.innerHTML='<div style="padding:10px 12px;font-size:12px;color:var(--muted)">Nenhum encontrado</div>';dd.style.display='block';return}
+  dd.innerHTML=filtrados.map(c=>`<div onclick="selecionarCasamentoDisp('${c.id}','${(c.nome||'').replace(/'/g,"\\'")}','${fmtDate(c.plan_data)}')" style="padding:9px 12px;font-size:12px;cursor:pointer;border-bottom:1px solid #f5f0e8" onmouseover="this.style.background='var(--gold-pale)'" onmouseout="this.style.background=''"><div style="font-weight:600;color:var(--text)">${esc(c.nome||'—')}</div><div style="font-size:11px;color:var(--muted);margin-top:1px">📅 ${fmtDate(c.plan_data)}${c.destino?' · '+esc(c.destino):''}</div></div>`).join('')
   dd.style.display='block'
 }
 async function selecionarCasamentoDisp(id,nome,data){
@@ -2825,7 +2825,7 @@ function renderAssessoras(){
     const alertaPassCard=docAlertHTML(a.passaporte_validade,'Passaporte')
     const alertaVistoCard=docAlertHTML(a.visto_validade,'Visto')
     return`<div class="card" style="transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,.12)'" onmouseout="this.style.boxShadow=''"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px"><div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0"><div class="av">${esc(a.nome[0])}</div><div style="min-width:0"><div style="font-weight:600;font-size:15px;font-family:'Cormorant Garamond',serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.nome)}</div><div style="font-size:12px;color:#888;margin-top:2px">📍 ${esc(a.cidade||'—')}</div></div></div>
-    <div style="text-align:right;flex-shrink:0;margin-left:8px">${a.blacklist?'<span class="tag tr" style="display:block;margin-bottom:4px">Blacklist</span>':''}${scoreLabel?`<span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:${scoreBg};color:${scoreColor};display:inline-block">${scoreIcon} ${scoreLabel}</span>`:''}${a._notas?.length?`<div style="font-size:10px;color:#aaa;margin-top:2px">${a._notas.length} aval.</div>`:''}</div>
+    <div style="text-align:right;flex-shrink:0;margin-left:8px">${a.blacklist?'<span class="tag tr" style="display:block;margin-bottom:4px">Blacklist</span>':''}${scoreLabel?`<span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:${scoreBg};color:${scoreColor};display:inline-block">${scoreIcon} ${scoreLabel}</span>`:''}${a._notas?.length?`<div style="font-size:10px;color:var(--muted);margin-top:2px">${a._notas.length} aval.</div>`:''}</div>
     </div>${alertaPassCard||alertaVistoCard?`<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px">${alertaPassCard}${alertaVistoCard}</div>`:''}<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">${a.hierarquia?`<span class="tag tg">${a.hierarquia}</span>`:''}${a.camiseta_montagem?'<span class="tag tgy">👕 Camiseta</span>':''}${a.ingles?'<span class="tag tb"><img src="https://flagcdn.com/w20/gb.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Inglês</span>':''}${a.espanhol?'<span class="tag tb"><img src="https://flagcdn.com/w20/es.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Espanhol</span>':''}${a.frances?'<span class="tag tb"><img src="https://flagcdn.com/w20/fr.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Francês</span>':''}${a.italiano?'<span class="tag tb"><img src="https://flagcdn.com/w20/it.png" style="width:14px;height:10px;object-fit:cover;border-radius:2px;vertical-align:middle"> Italiano</span>':''}${a.possui_equipe?`<span class="tag tgr">👑 ${esc(a.nome_equipe||'Tem Equipe')}</span>`:''}${a.lider_equipe_id&&!a.possui_equipe?`<span class="tag tb">👥 Membro de Equipe</span>`:''}${a.indicamos?'<span class="tag tgr">⭐ Indicamos</span>':''}${a.fala_camera?'<span class="tag tgy">📷 Câmera</span>':''}${a.febre_amarela?'<span class="tag tgr">💉 FY</span>':''}</div><div style="display:flex;gap:8px"><button class="btn bo" style="flex:1" onclick="openAssessora('${a.id}')">${window._podeEditarAssessoras?"Ver / Editar":"👁️ Visualizar"}</button><button class="btn bd" onclick="deleteAssessora('${a.id}')">✕</button></div></div>`
   }).join('')
 }
@@ -2940,7 +2940,7 @@ async function renderHistorico(){
   const notaColors={Excelente:'#2e7d32',Bom:'#1565c0',Médio:'#e65100',Ruim:'#c0392b'}
   const notaBgs={Excelente:'#e8f5e9',Bom:'#e3f2fd',Médio:'#fff3e0',Ruim:'#fdecea'}
   const notaIcons={Excelente:'⭐',Bom:'👍',Médio:'😐',Ruim:'👎'}
-  con.innerHTML=`${metricaHTML}${alertaPaisHTML}${paisSummaryHTML}<div style="margin-bottom:12px;font-size:13px;color:#888">${data.length} casamento(s) no histórico</div>${data.map(e=>`<div class="hist" style="flex-direction:column;align-items:flex-start;gap:10px"><div style="display:flex;justify-content:space-between;align-items:center;width:100%;flex-wrap:wrap;gap:8px"><div style="display:flex;align-items:center;gap:10px"><div class="hdot"></div><div><div style="font-weight:600;font-size:14px;font-family:'Cormorant Garamond',serif">${e.casamento?.nome||'—'}</div><div style="font-size:12px;color:#888;margin-top:2px">📍 ${e.casamento?.destino||'—'} · 🏨 ${e.casamento?.plan_hotel||'—'}${e.casamento?.plan_data?' · 📅 '+fmtDate(e.casamento.plan_data):''}</div></div></div>${e.nota?`<span style="padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;background:${notaBgs[e.nota]};color:${notaColors[e.nota]}">${notaIcons[e.nota]} ${e.nota}</span>`:'<span style="font-size:12px;color:#aaa">Sem avaliação</span>'}</div>${e.obs_casamento?`<div style="font-size:12px;color:#666;padding:8px 12px;background:#f8f6f2;border-radius:8px;width:100%;border-left:3px solid var(--gold-border)">"${e.obs_casamento}"</div>`:''}</div>`).join('')}`
+  con.innerHTML=`${metricaHTML}${alertaPaisHTML}${paisSummaryHTML}<div style="margin-bottom:12px;font-size:13px;color:#888">${data.length} casamento(s) no histórico</div>${data.map(e=>`<div class="hist" style="flex-direction:column;align-items:flex-start;gap:10px"><div style="display:flex;justify-content:space-between;align-items:center;width:100%;flex-wrap:wrap;gap:8px"><div style="display:flex;align-items:center;gap:10px"><div class="hdot"></div><div><div style="font-weight:600;font-size:14px;font-family:'Cormorant Garamond',serif">${e.casamento?.nome||'—'}</div><div style="font-size:12px;color:#888;margin-top:2px">📍 ${e.casamento?.destino||'—'} · 🏨 ${e.casamento?.plan_hotel||'—'}${e.casamento?.plan_data?' · 📅 '+fmtDate(e.casamento.plan_data):''}</div></div></div>${e.nota?`<span style="padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;background:${notaBgs[e.nota]};color:${notaColors[e.nota]}">${notaIcons[e.nota]} ${e.nota}</span>`:'<span style="font-size:12px;color:var(--muted)">Sem avaliação</span>'}</div>${e.obs_casamento?`<div style="font-size:12px;color:#666;padding:8px 12px;background:#f8f6f2;border-radius:8px;width:100%;border-left:3px solid var(--gold-border)">"${e.obs_casamento}"</div>`:''}</div>`).join('')}`
 }
 
 // ══ HOTÉIS ══
@@ -3431,7 +3431,7 @@ async function loadCasHoteis(casId){
 }
 function renderCasHoteis(){
   const list=document.getElementById('c-hoteis-list');if(!list)return
-  if(!casHoteis.length){list.innerHTML='<div style="font-size:13px;color:#aaa;padding:8px 0">Nenhum hotel selecionado ainda</div>';return}
+  if(!casHoteis.length){list.innerHTML='<div style="font-size:13px;color:var(--muted);padding:8px 0">Nenhum hotel selecionado ainda</div>';return}
   list.innerHTML=casHoteis.map(ch=>`<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:8px;margin-bottom:8px"><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(ch.hotel?.nome||'—')}</div><div style="font-size:11px;color:#888">${esc([ch.hotel?.cidade,ch.hotel?.pais].filter(Boolean).join(' · '))}</div></div><button class="btn bd bsm" onclick="removerCasHotel('${ch.id}')">✕</button></div>`).join('')
 }
 async function renderLinkArea(casId){
@@ -3453,14 +3453,14 @@ function toggleHotelPicker(){
   picker.style.display='block'
   const selecionados=casHoteis.map(ch=>ch.hotel?.id)
   const disponiveis=hoteis.filter(h=>!selecionados.includes(h.id))
-  if(!disponiveis.length){picker.innerHTML='<div style="font-size:13px;color:#aaa;padding:8px">Todos os locais já foram adicionados</div>';return}
+  if(!disponiveis.length){picker.innerHTML='<div style="font-size:13px;color:var(--muted);padding:8px">Todos os locais já foram adicionados</div>';return}
   picker.innerHTML=`<div style="border:2px dashed var(--gold);border-radius:10px;background:var(--gold-pale);padding:16px;margin-top:8px"><input placeholder="Buscar local..." oninput="filtrarPickerHotel(this.value)" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--gold-border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:10px"><div id="c-picker-list" style="max-height:250px;overflow-y:auto">${disponiveis.map(h=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gold-border)"><div style="flex:1;min-width:0;margin-right:8px"><span style="font-weight:600;font-size:13px">${esc(h.nome)}</span><span style="font-size:12px;color:#888;margin-left:6px">${esc([h.cidade,h.pais].filter(Boolean).join(' · '))}</span></div><button class="btn bg bsm" style="flex-shrink:0" onclick="adicionarCasHotel('${h.id}')">+ Adicionar</button></div>`).join('')}</div><button class="btn bo bsm" style="margin-top:10px" onclick="toggleHotelPicker()">Fechar</button></div>`
 }
 function filtrarPickerHotel(q){
   const list=document.getElementById('c-picker-list');if(!list)return
   const selecionados=casHoteis.map(ch=>ch.hotel?.id)
   const filtrados=hoteis.filter(h=>!selecionados.includes(h.id)&&(!q||h.nome?.toLowerCase().includes(q.toLowerCase())||h.cidade?.toLowerCase().includes(q.toLowerCase())))
-  list.innerHTML=filtrados.map(h=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gold-border)"><div style="flex:1;min-width:0;margin-right:8px"><span style="font-weight:600;font-size:13px">${esc(h.nome)}</span></div><button class="btn bg bsm" style="flex-shrink:0" onclick="adicionarCasHotel('${h.id}')">+ Adicionar</button></div>`).join('')||'<div style="font-size:13px;color:#aaa;padding:8px">Nenhum resultado</div>'
+  list.innerHTML=filtrados.map(h=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gold-border)"><div style="flex:1;min-width:0;margin-right:8px"><span style="font-weight:600;font-size:13px">${esc(h.nome)}</span></div><button class="btn bg bsm" style="flex-shrink:0" onclick="adicionarCasHotel('${h.id}')">+ Adicionar</button></div>`).join('')||'<div style="font-size:13px;color:var(--muted);padding:8px">Nenhum resultado</div>'
 }
 async function adicionarCasHotel(hotelId){
   if(!casamentoAtual?.id)return
@@ -3474,7 +3474,7 @@ async function renderIndisponibilidades(){
   const con=document.getElementById('indisp-list');if(!con)return
   if(!assessoraAtual){con.innerHTML='<div class="em" style="padding:20px"><div class="em-t">Salve a assessora primeiro</div></div>';return}
   const{data}=await sb.from('assessora_indisponibilidades').select('*').eq('assessora_id',assessoraAtual.id).order('data_inicio',{ascending:false})
-  if(!data||!data.length){con.innerHTML='<div style="text-align:center;padding:30px;color:#aaa;font-size:13px">Nenhum período cadastrado</div>';return}
+  if(!data||!data.length){con.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:13px">Nenhum período cadastrado</div>';return}
   const hoje=new Date().toISOString().split('T')[0]
   con.innerHTML=data.map(p=>{
     const passado=p.data_fim<hoje
@@ -3553,7 +3553,7 @@ function renderAnexosUI(containerId,tipo,referenciaId){
           onchange="handleAnexoUpload(this,'${containerId}','${tipo}','${referenciaId}')">
         <div style="font-size:28px;margin-bottom:8px">📎</div>
         <div style="font-size:13px;font-weight:600;color:var(--gold);margin-bottom:4px">Clique ou arraste arquivos aqui</div>
-        <div style="font-size:11px;color:#aaa">PDF, imagens, Word, Excel — máx. 10MB por arquivo</div>
+        <div style="font-size:11px;color:var(--muted)">PDF, imagens, Word, Excel — máx. 10MB por arquivo</div>
       </div>
     </div>
     <div id="anexos-list-${containerId}"><div class="ld">Carregando...</div></div>`
@@ -3564,12 +3564,12 @@ async function carregarAnexos(containerId,tipo,referenciaId){
   const list=document.getElementById('anexos-list-'+containerId)
   if(!list)return
   const{data,error}=await sb.from('anexos').select('*').eq('referencia_tipo',tipo).eq('referencia_id',referenciaId).order('created_at',{ascending:false})
-  if(!data||!data.length){list.innerHTML='<div style="text-align:center;padding:20px;color:#aaa;font-size:13px">Nenhum anexo ainda</div>';return}
+  if(!data||!data.length){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Nenhum anexo ainda</div>';return}
   list.innerHTML=data.map(a=>`<div class="anexo-item">
     <div class="anexo-icon" style="background:var(--gold-pale)">${anexoIcone(a.tipo_arquivo)}</div>
     <div style="flex:1;min-width:0">
       <div style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.nome)}</div>
-      <div style="font-size:11px;color:#aaa;margin-top:1px">${formatBytes(a.tamanho)}${a.criado_por?' · '+esc(a.criado_por):''} · ${new Date(a.created_at).toLocaleDateString('pt-BR')}</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:1px">${formatBytes(a.tamanho)}${a.criado_por?' · '+esc(a.criado_por):''} · ${new Date(a.created_at).toLocaleDateString('pt-BR')}</div>
     </div>
     <div style="display:flex;gap:6px;flex-shrink:0">
       <a href="${a.url}" target="_blank" style="padding:5px 12px;border-radius:7px;font-size:12px;font-weight:600;background:var(--gold-pale);color:var(--gold);border:1px solid var(--gold-border);text-decoration:none;display:inline-flex;align-items:center">Abrir</a>
@@ -3606,7 +3606,7 @@ async function uploadAnexos(files,containerId,tipo,referenciaId){
   }
   // Restaura área de upload
   if(area){
-    area.innerHTML=`<input type="file" id="file-input-${containerId}" multiple accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,.doc,.docx,.xls,.xlsx" onchange="handleAnexoUpload(this,'${containerId}','${tipo}','${referenciaId}')"><div style="font-size:28px;margin-bottom:8px">📎</div><div style="font-size:13px;font-weight:600;color:var(--gold);margin-bottom:4px">Clique ou arraste arquivos aqui</div><div style="font-size:11px;color:#aaa">PDF, imagens, Word, Excel — máx. 10MB por arquivo</div>`
+    area.innerHTML=`<input type="file" id="file-input-${containerId}" multiple accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,.doc,.docx,.xls,.xlsx" onchange="handleAnexoUpload(this,'${containerId}','${tipo}','${referenciaId}')"><div style="font-size:28px;margin-bottom:8px">📎</div><div style="font-size:13px;font-weight:600;color:var(--gold);margin-bottom:4px">Clique ou arraste arquivos aqui</div><div style="font-size:11px;color:var(--muted)">PDF, imagens, Word, Excel — máx. 10MB por arquivo</div>`
     area.style.pointerEvents=''
     area.onclick=()=>document.getElementById('file-input-'+containerId)?.click()
   }
@@ -3617,11 +3617,11 @@ async function uploadAnexos(files,containerId,tipo,referenciaId){
 async function carregarInspiracoes(casId){
   const mural=document.getElementById('insp-mural');const cnt=document.getElementById('insp-count')
   if(!mural)return
-  if(!casId){mural.innerHTML='<div style="font-size:13px;color:#aaa">Salve o casamento primeiro — depois as fotos enviadas pelo casal aparecem aqui.</div>';if(cnt)cnt.textContent='';return}
-  mural.innerHTML='<div style="font-size:13px;color:#aaa">Carregando...</div>'
+  if(!casId){mural.innerHTML='<div style="font-size:13px;color:var(--muted)">Salve o casamento primeiro — depois as fotos enviadas pelo casal aparecem aqui.</div>';if(cnt)cnt.textContent='';return}
+  mural.innerHTML='<div style="font-size:13px;color:var(--muted)">Carregando...</div>'
   const{data,error}=await sb.from('casamento_inspiracoes').select('*').eq('casamento_id',casId).order('created_at',{ascending:false})
-  if(error){mural.innerHTML='<div style="font-size:13px;color:#aaa">Não foi possível carregar as inspirações.</div>';if(cnt)cnt.textContent='';return}
-  if(!data||!data.length){mural.innerHTML='<div style="font-size:13px;color:#aaa">O casal ainda não enviou inspirações.</div>';if(cnt)cnt.textContent='';return}
+  if(error){mural.innerHTML='<div style="font-size:13px;color:var(--muted)">Não foi possível carregar as inspirações.</div>';if(cnt)cnt.textContent='';return}
+  if(!data||!data.length){mural.innerHTML='<div style="font-size:13px;color:var(--muted)">O casal ainda não enviou inspirações.</div>';if(cnt)cnt.textContent='';return}
   if(cnt)cnt.textContent=data.length+' foto(s)'
   mural.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px">'+data.map(i=>`<a href="${esc(i.url)}" target="_blank" style="display:block;border-radius:10px;overflow:hidden;border:1px solid var(--border);aspect-ratio:1;background:#f0ece2"><img src="${esc(i.url)}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block"></a>`).join('')+'</div>'
 }
@@ -4600,7 +4600,7 @@ function renderPlanReunioes(){
   const cnt=document.getElementById('plan-reunioes-count')
   if(cnt)cnt.textContent=list.length+' reunião(ões)'
   if(!el)return
-  if(!list.length){el.innerHTML='<div style="font-size:12px;color:#aaa;padding:8px 0">Nenhuma reunião registrada ainda.</div>';return}
+  if(!list.length){el.innerHTML='<div style="font-size:12px;color:var(--muted);padding:8px 0">Nenhuma reunião registrada ainda.</div>';return}
   el.innerHTML=list.map((r,i)=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--gold-border)">
     <div style="width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:6px"></div>
     <div style="flex:1">
@@ -4639,7 +4639,7 @@ function renderProdReunioes(){
   const cnt=document.getElementById('prod-reunioes-count')
   if(cnt)cnt.textContent=list.length+' reunião(ões)'
   if(!el)return
-  if(!list.length){el.innerHTML='<div style="font-size:12px;color:#aaa;padding:8px 0">Nenhuma reunião registrada ainda.</div>';return}
+  if(!list.length){el.innerHTML='<div style="font-size:12px;color:var(--muted);padding:8px 0">Nenhuma reunião registrada ainda.</div>';return}
   el.innerHTML=list.map((r,i)=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--gold-border)">
     <div style="width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:6px"></div>
     <div style="flex:1">
@@ -4655,7 +4655,7 @@ function renderProdEventos(){
   const list=window._prodEventos||[]
   const el=document.getElementById('prod-eventos-list')
   if(!el)return
-  if(!list.length){el.innerHTML='<div style="font-size:12px;color:#aaa;padding:8px 0">Nenhum evento adicionado ainda.</div>';return}
+  if(!list.length){el.innerHTML='<div style="font-size:12px;color:var(--muted);padding:8px 0">Nenhum evento adicionado ainda.</div>';return}
   el.innerHTML=list.map((e,i)=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:8px;margin-bottom:6px">
     <span style="font-size:13px;flex:1"><strong style="color:var(--gold)">${e.data}${e.horario?' às '+e.horario:''}</strong> — ${esc(e.desc)}</span>
     <button onclick="prodDeleteEvento(${i})" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:14px;padding:0 4px">✕</button>
@@ -4968,14 +4968,14 @@ function coordRenderDashboard(){
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px">
     <div class="coord-tbl-card"><div class="coord-tbl-header">📅 Próximos casamentos</div>
-    ${proximos.length===0?`<div style="padding:24px;text-align:center;color:#aaa;font-size:13px">Nenhum nas próximas 45 dias</div>`:proximos.map(c=>{const d=c.data?Math.ceil((new Date(c.data)-now)/86400000):null;const p=coordPrazoCls(d);return`<div style="display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid #f7f4ef"><div style="width:44px;height:44px;border-radius:10px;background:${p.cls?'#fde8e8':'#f7f4ef'};display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0"><div style="font-size:16px;font-weight:700;font-family:'Cormorant Garamond',serif;line-height:1">${c.data?.split('-')[2]||'—'}</div><div style="font-size:9px;color:#aaa;text-transform:uppercase">${['','jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'][parseInt(c.data?.split('-')[1]||0)]||''}</div></div><div style="flex:1"><div style="font-size:13px;font-weight:600">${c.casal}</div><div style="font-size:11px;color:#aaa">${c.local||''}</div></div>${d!==null?`<span class="${p.badge}">${p.txt}</span>`:''}</div>`}).join('')}
+    ${proximos.length===0?`<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">Nenhum nas próximas 45 dias</div>`:proximos.map(c=>{const d=c.data?Math.ceil((new Date(c.data)-now)/86400000):null;const p=coordPrazoCls(d);return`<div style="display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid #f7f4ef"><div style="width:44px;height:44px;border-radius:10px;background:${p.cls?'#fde8e8':'#f7f4ef'};display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0"><div style="font-size:16px;font-weight:700;font-family:'Cormorant Garamond',serif;line-height:1">${c.data?.split('-')[2]||'—'}</div><div style="font-size:9px;color:var(--muted);text-transform:uppercase">${['','jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'][parseInt(c.data?.split('-')[1]||0)]||''}</div></div><div style="flex:1"><div style="font-size:13px;font-weight:600">${c.casal}</div><div style="font-size:11px;color:var(--muted)">${c.local||''}</div></div>${d!==null?`<span class="${p.badge}">${p.txt}</span>`:''}</div>`}).join('')}
     </div>
     <div class="coord-tbl-card"><div class="coord-tbl-header">👥 Por produtora</div>
-      <div style="padding:16px 18px">${plist.map(([name,n])=>{const p=COORD_PLANNERS[name]||{color:'#f0ebe2',text:'#888',initials:'?'};return`<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><div style="display:flex;align-items:center;gap:6px;min-width:90px"><div style="width:28px;height:28px;border-radius:50%;background:${p.color};color:${p.text};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">${p.initials}</div><span style="font-size:12px;color:var(--muted)">${name}</span></div><div style="flex:1;height:6px;background:#f0ebe2;border-radius:4px;overflow:hidden"><div style="width:${Math.round(n/pmax*100)}%;height:100%;background:${p.text};border-radius:4px"></div></div><span style="font-size:13px;font-weight:600;min-width:20px;text-align:right">${n}</span></div>`}).join('')}</div>
+      <div style="padding:16px 18px">${plist.map(([name,n])=>{const p=COORD_PLANNERS[name]||{color:'#f0ebe2',text:'#888',initials:'?'};return`<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><div style="display:flex;align-items:center;gap:6px;min-width:90px"><div style="width:28px;height:28px;border-radius:50%;background:${p.color};color:${p.text};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">${p.initials}</div><span style="font-size:12px;color:var(--muted)">${name}</span></div><div style="flex:1;height:6px;background:var(--surface2);border-radius:4px;overflow:hidden"><div style="width:${Math.round(n/pmax*100)}%;height:100%;background:${p.text};border-radius:4px"></div></div><span style="font-size:13px;font-weight:600;min-width:20px;text-align:right">${n}</span></div>`}).join('')}</div>
     </div>
   </div>
   <div class="coord-tbl-card"><div class="coord-tbl-header">🌍 Destinos</div>
-    <div style="padding:18px;display:flex;gap:14px;flex-wrap:wrap">${dlist.map(([d,n])=>`<div style="background:#faf8f4;border-radius:12px;border:1px solid var(--border);padding:12px 18px;text-align:center"><div style="font-size:22px">${coordFlag(d)}</div><div style="font-size:13px;font-weight:600;margin-top:4px">${d}</div><div style="font-size:11px;color:#aaa">${n} casamentos</div></div>`).join('')}
+    <div style="padding:18px;display:flex;gap:14px;flex-wrap:wrap">${dlist.map(([d,n])=>`<div style="background:var(--surface2);border-radius:12px;border:1px solid var(--border);padding:12px 18px;text-align:center"><div style="font-size:22px">${coordFlag(d)}</div><div style="font-size:13px;font-weight:600;margin-top:4px">${d}</div><div style="font-size:11px;color:var(--muted)">${n} casamentos</div></div>`).join('')}
     </div>
   </div>`
 }
@@ -4990,10 +4990,10 @@ function coordRenderCasamentos(data,ano){
   </div>
   <div class="coord-tbl-card"><div style="overflow-x:auto"><table class="coord-tbl">
     <thead><tr><th>Casal</th><th>Data</th><th>Destino / Local</th><th>Produtora</th><th>Status</th><th>Fornecedores</th><th>Reuniões</th><th>Em andamento</th></tr></thead>
-    <tbody>${filtered.length===0?`<tr><td colspan="8" style="text-align:center;padding:40px;color:#aaa">Nenhum resultado.</td></tr>`:filtered.map(c=>`<tr onclick="coordOpenModal(${JSON.stringify(c).replace(/"/g,'&quot;')},'cas')">
-      <td><div style="font-size:13px;font-weight:600">${c.casal}</div>${c.convidados>0?`<div style="font-size:11px;color:#aaa">${c.convidados} conv.</div>`:''}</td>
+    <tbody>${filtered.length===0?`<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--muted)">Nenhum resultado.</td></tr>`:filtered.map(c=>`<tr onclick="coordOpenModal(${JSON.stringify(c).replace(/"/g,'&quot;')},'cas')">
+      <td><div style="font-size:13px;font-weight:600">${c.casal}</div>${c.convidados>0?`<div style="font-size:11px;color:var(--muted)">${c.convidados} conv.</div>`:''}</td>
       <td style="font-size:12px;color:var(--muted);white-space:nowrap">${c.data?coordFmtDate(c.data):c.ano||'—'}</td>
-      <td><span style="font-size:12px;color:var(--muted)">${coordFlag(c.destino)} ${esc(c.destino||'—')}</span><div style="font-size:11px;color:#aaa">${c.local||''}</div></td>
+      <td><span style="font-size:12px;color:var(--muted)">${coordFlag(c.destino)} ${esc(c.destino||'—')}</span><div style="font-size:11px;color:var(--muted)">${c.local||''}</div></td>
       <td>${coordPlannerChip(c.produtora)}</td>
       <td>${coordStatusBadge(c.status)}</td>
       <td>${coordFornPills(c.fornecedores)}</td>
@@ -5013,7 +5013,7 @@ function coordRenderPlanejamento(){
       <thead><tr><th>Casal</th><th>Destino / Hotel</th><th>Data interesse</th><th>Convidados</th><th>Responsável</th><th>Status</th><th>Reuniões</th><th>Em andamento</th></tr></thead>
       <tbody>${filteredP.map(c=>`<tr onclick="coordOpenModal(${JSON.stringify(c).replace(/"/g,'&quot;')},'plan')">
         <td style="font-size:13px;font-weight:600">${c.casal}</td>
-        <td><span style="font-size:12px;color:var(--muted)">${coordFlag(c.destino)} ${esc(c.destino||'—')}</span><div style="font-size:11px;color:#aaa">${c.hotel||''}</div></td>
+        <td><span style="font-size:12px;color:var(--muted)">${coordFlag(c.destino)} ${esc(c.destino||'—')}</span><div style="font-size:11px;color:var(--muted)">${c.hotel||''}</div></td>
         <td style="font-size:12px;color:var(--muted)">${c.data_interesse||'—'}</td>
         <td style="font-size:12px;color:var(--muted)">${c.convidados||'—'}</td>
         <td>${coordPlannerChip(c.responsavel)}</td>
@@ -5069,13 +5069,13 @@ function coordRenderProducao(){
           <div class="coord-expand-row ${prazo.cls}" style="padding:13px 18px;display:flex;align-items:center;gap:12px" onclick="coordToggleExpand('${c.id}')">
             <div style="width:44px;height:44px;border-radius:10px;background:${prazo.cls?'#fde8e8':'#f7f4ef'};display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
               <div style="font-size:15px;font-weight:700;font-family:'Cormorant Garamond',serif;line-height:1">${c.data?.split('-')[2]||'—'}</div>
-              <div style="font-size:9px;color:#aaa;text-transform:uppercase">${['','jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'][parseInt(c.data?.split('-')[1]||0)]||''}</div>
+              <div style="font-size:9px;color:var(--muted);text-transform:uppercase">${['','jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'][parseInt(c.data?.split('-')[1]||0)]||''}</div>
             </div>
             <div style="flex:1;min-width:0">
               <div style="font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px">${c.casal} ${prazo.txt?`<span class="${prazo.badge}">${prazo.txt}</span>`:''}</div>
-              <div style="font-size:11px;color:#aaa">${coordFlag(c.destino)} ${esc(c.destino||'')} · ${c.local||''}</div>
+              <div style="font-size:11px;color:var(--muted)">${coordFlag(c.destino)} ${esc(c.destino||'')} · ${c.local||''}</div>
             </div>
-            <div style="font-size:11px;color:#aaa;text-align:center;min-width:80px"><div style="font-size:10px;color:#ccc;margin-bottom:2px">Assessor</div><div style="font-weight:500;color:${c.assessor&&!['n/a','a definir'].includes(c.assessor?.toLowerCase())?'#1a1a1a':'#ccc'}">${c.assessor||'—'}</div></div>
+            <div style="font-size:11px;color:var(--muted);text-align:center;min-width:80px"><div style="font-size:10px;color:#ccc;margin-bottom:2px">Assessor</div><div style="font-weight:500;color:${c.assessor&&!['n/a','a definir'].includes(c.assessor?.toLowerCase())?'#1a1a1a':'#ccc'}">${c.assessor||'—'}</div></div>
             ${coordFornPills(forn)}
             <span class="coord-badge cb-gray" style="font-size:10px">${(c.reunioes||[]).length} reun.</span>
             ${coordStatusBadge(c.status)}
@@ -5091,13 +5091,13 @@ function coordRenderProducao(){
               </div>
               <div>
                 <div class="coord-detail-label">Fornecedores (${fornChk}/${forn.length})</div>
-                ${forn.length===0?`<div style="font-size:12px;color:#a81a1a">⚠ Nenhum fornecedor</div>`:forn.map(f=>`<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px"><div style="width:14px;height:14px;border-radius:3px;background:${f.checked?'#1a6f4a':'#eee'};border:1.5px solid ${f.checked?'#1a6f4a':'#ccc'};display:flex;align-items:center;justify-content:center;flex-shrink:0">${f.checked?'<i class="ti ti-check" style="font-size:9px;color:#fff"></i>':''}</div><span style="font-size:12px;${f.checked?'color:#aaa;text-decoration:line-through':''}">${esc(f.nome)}</span></div>`).join('')}
+                ${forn.length===0?`<div style="font-size:12px;color:#a81a1a">⚠ Nenhum fornecedor</div>`:forn.map(f=>`<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px"><div style="width:14px;height:14px;border-radius:3px;background:${f.checked?'#1a6f4a':'#eee'};border:1.5px solid ${f.checked?'#1a6f4a':'#ccc'};display:flex;align-items:center;justify-content:center;flex-shrink:0">${f.checked?'<i class="ti ti-check" style="font-size:9px;color:#fff"></i>':''}</div><span style="font-size:12px;${f.checked?'color:var(--muted);text-decoration:line-through':''}">${esc(f.nome)}</span></div>`).join('')}
               </div>
               <div>
                 <div class="coord-detail-label">Reuniões de Planejamento (${(c.reunioes_plan||[]).length})</div>
-                ${(c.reunioes_plan||[]).length===0?`<div style="font-size:12px;color:#aaa">Nenhuma</div>`:c.reunioes_plan.map(r=>`<div style="margin-bottom:8px"><div style="font-size:10px;color:#aaa">${r.data}${r.horario?' às '+r.horario:''}</div><div style="font-size:12px">${esc(r.assunto)}</div>${r.registrado_por?`<div style="font-size:10px;color:var(--gold)">por ${esc(r.registrado_por)}</div>`:''}</div>`).join('')}
+                ${(c.reunioes_plan||[]).length===0?`<div style="font-size:12px;color:var(--muted)">Nenhuma</div>`:c.reunioes_plan.map(r=>`<div style="margin-bottom:8px"><div style="font-size:10px;color:var(--muted)">${r.data}${r.horario?' às '+r.horario:''}</div><div style="font-size:12px">${esc(r.assunto)}</div>${r.registrado_por?`<div style="font-size:10px;color:var(--gold)">por ${esc(r.registrado_por)}</div>`:''}</div>`).join('')}
                 <div class="coord-detail-label" style="margin-top:12px">Reuniões de Produção (${(c.reunioes_prod||[]).length})</div>
-                ${(c.reunioes_prod||[]).length===0?`<div style="font-size:12px;color:#aaa">Nenhuma</div>`:c.reunioes_prod.map(r=>`<div style="margin-bottom:8px"><div style="font-size:10px;color:#aaa">${r.data}${r.horario?' às '+r.horario:''}</div><div style="font-size:12px">${esc(r.assunto)}</div>${r.registrado_por?`<div style="font-size:10px;color:var(--gold)">por ${esc(r.registrado_por)}</div>`:''}</div>`).join('')}
+                ${(c.reunioes_prod||[]).length===0?`<div style="font-size:12px;color:var(--muted)">Nenhuma</div>`:c.reunioes_prod.map(r=>`<div style="margin-bottom:8px"><div style="font-size:10px;color:var(--muted)">${r.data}${r.horario?' às '+r.horario:''}</div><div style="font-size:12px">${esc(r.assunto)}</div>${r.registrado_por?`<div style="font-size:10px;color:var(--gold)">por ${esc(r.registrado_por)}</div>`:''}</div>`).join('')}
               </div>
             </div>
           </div>`:''}
@@ -5153,11 +5153,11 @@ function coordBuildTab(){
     return`<div style="margin-bottom:16px">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
         <span style="font-size:13px;font-weight:600">${chk} de ${flist.length} confirmados</span>
-        <div style="flex:1;height:6px;background:#f0ebe2;border-radius:4px;overflow:hidden"><div style="width:${flist.length?Math.round(chk/flist.length*100):0}%;height:100%;background:var(--gold);border-radius:4px;transition:width .3s"></div></div>
+        <div style="flex:1;height:6px;background:var(--surface2);border-radius:4px;overflow:hidden"><div style="width:${flist.length?Math.round(chk/flist.length*100):0}%;height:100%;background:var(--gold);border-radius:4px;transition:width .3s"></div></div>
       </div>
       ${flist.map((f,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;cursor:pointer;transition:background .15s" onmouseover="this.style.background='#f7f4ef'" onmouseout="this.style.background=''" onclick="coordToggleForn(${i})">
         <div style="width:16px;height:16px;border-radius:4px;border:1.5px solid ${f.checked?'var(--gold)':'#ccc'};background:${f.checked?'var(--gold)':'#fff'};display:flex;align-items:center;justify-content:center;flex-shrink:0">${f.checked?'<i class="ti ti-check" style="font-size:10px;color:#fff"></i>':''}</div>
-        <span style="font-size:13px;${f.checked?'color:#aaa;text-decoration:line-through':''}">${esc(f.nome)}</span>
+        <span style="font-size:13px;${f.checked?'color:var(--muted);text-decoration:line-through':''}">${esc(f.nome)}</span>
       </div>`).join('')}
       <div style="margin-top:16px;padding-top:14px;border-top:1px solid #f0ebe2">
         <div style="font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Adicionar fornecedor</div>
@@ -5173,7 +5173,7 @@ function coordBuildTab(){
     const rlist=item.reunioes||[]
     return`<div>
       <div style="font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Histórico de reuniões (${rlist.length})</div>
-      ${rlist.length===0?`<div style="font-size:12px;color:#aaa;padding:16px 0;text-align:center">Nenhuma reunião registrada ainda.</div>`:
+      ${rlist.length===0?`<div style="font-size:12px;color:var(--muted);padding:16px 0;text-align:center">Nenhuma reunião registrada ainda.</div>`:
       rlist.map((r,i)=>`<div class="coord-reuniao-item">
         <div style="width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:5px"></div>
         <div style="flex:1">
@@ -5225,7 +5225,7 @@ function coordBuildTab(){
     <div class="f"><label>Assessor local</label><input id="cf-assessor" value="${item.assessor||''}"></div>
     <div class="f"><label>Status</label><select id="cf-status">${sOpts.map(s=>`<option value="${s}"${item.status===s?' selected':''}>${s}</option>`).join('')}</select></div>
     <div class="f" style="grid-column:1/-1"><label>Em andamento / Observações</label><textarea id="cf-andamento">${item.andamento||''}</textarea></div>
-    <div class="f" style="grid-column:1/-1"><label>Eventos <span style="font-weight:400;text-transform:none;font-size:11px;color:#aaa">(um por linha)</span></label><textarea id="cf-eventos" style="min-height:60px">${(item.eventos||[]).join('\n')}</textarea></div>
+    <div class="f" style="grid-column:1/-1"><label>Eventos <span style="font-weight:400;text-transform:none;font-size:11px;color:var(--muted)">(um por linha)</span></label><textarea id="cf-eventos" style="min-height:60px">${(item.eventos||[]).join('\n')}</textarea></div>
   </div>`
 }
 
