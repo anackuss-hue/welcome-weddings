@@ -56,56 +56,57 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .theme-btn .ico-sun{display:none}.theme-btn .ico-moon{display:inline-flex}
 html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme="dark"] .theme-btn .ico-moon{display:none}
 @media(max-width:640px){.crow{gap:8px;padding:11px 12px}.crow-meta{max-width:130px}.crow .bo{padding:6px 10px}}
-.ck-sec{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:16px}
+.ck-sec{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:16px 18px;margin-bottom:16px}
 .ck-sh{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px}
-.ck-st{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600}
+.ck-st{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;color:var(--text)}
 .ck-counts{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .ck-cp{font-size:11px;font-weight:600;border-radius:20px;padding:2px 9px}
 .ck-ok{color:var(--gold)}
 .ck-am{background:#fff4e2;color:#c47d1a;border:1px solid #f3d9a8}
 .ck-rd{background:#fdecea;color:var(--red);border:1px solid #f3c4be}
-.ck-bar{height:7px;border-radius:4px;background:#f0ece2;overflow:hidden;margin:10px 0 14px}
+.ck-bar{height:7px;border-radius:4px;background:var(--line);overflow:hidden;margin:10px 0 14px}
 .ck-bar>i{display:block;height:100%;background:var(--gold);transition:width .2s}
-.ck-it{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid #f5f1e8}
+.ck-it{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid var(--line2)}
 .ck-it:last-child{border-bottom:0}
-.ck-bx{width:20px;height:20px;border-radius:6px;border:1.5px solid #d9cdb6;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;user-select:none}
+.ck-bx{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border);flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;user-select:none}
 .ck-bx.done{background:var(--green);border-color:var(--green);color:#fff}
-.ck-bx.na{background:#f0f0f0;border-color:#ddd;color:#aaa}
-.ck-tx{flex:1;font-size:13px;min-width:0}
-.ck-tx.done{color:#8a8a8a}
-.ck-tx.na{color:#bbb;text-decoration:line-through}
+.ck-bx.na{background:var(--surface2);border-color:var(--border);color:var(--muted)}
+.ck-tx{flex:1;font-size:13px;min-width:0;color:var(--text)}
+.ck-tx.done{color:var(--muted)}
+.ck-tx.na{color:var(--muted);text-decoration:line-through}
 .ck-date{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;border-radius:20px;padding:2px 6px 2px 8px;white-space:nowrap;flex-shrink:0}
 .ck-date input{border:0;background:transparent;font-family:'DM Sans',sans-serif;font-size:11px;color:inherit;font-weight:600;cursor:pointer;width:120px;outline:none}
-.ck-date.d-norm{background:#f4f1ea;color:#888}
+.ck-date.d-norm{background:var(--surface2);color:var(--muted)}
 .ck-date.d-done{background:#eef4ef;color:#7faa86}
 .ck-date.d-am{background:#fff4e2;color:#c47d1a;border:1px solid #f3d9a8}
 .ck-date.d-rd{background:#fdecea;color:var(--red);border:1px solid #f3c4be}
-.ck-date.d-set{background:transparent;color:#bbb;border:1px dashed #ddd2bc}
+.ck-date.d-set{background:transparent;color:var(--muted);border:1px dashed var(--border)}
 .ck-albl{padding-right:4px}
-.ck-nabadge{font-size:9.5px;color:#aaa;border:1px solid var(--border);border-radius:10px;padding:1px 7px;flex-shrink:0}
+.ck-nabadge{font-size:9.5px;color:var(--muted);border:1px solid var(--border);border-radius:10px;padding:1px 7px;flex-shrink:0}
 .ck-act{display:flex;gap:9px;flex-shrink:0;opacity:.5}
 .ck-act span{cursor:pointer;font-size:13px}
 .ck-act span:hover{opacity:1;color:var(--gold)}
 .ck-addrow{display:flex;gap:8px;margin-top:12px}
-.ck-addrow input{flex:1;padding:8px 10px;border-radius:8px;border:1px solid var(--border);font-size:12.5px;font-family:'DM Sans',sans-serif;outline:none}
+.ck-addrow input{flex:1;padding:8px 10px;border-radius:5px;border:1px solid var(--border);font-size:12.5px;font-family:'DM Sans',sans-serif;outline:none;background:var(--surface);color:var(--text)}
 .ck-addrow .btn{padding:8px 14px;font-size:12.5px;white-space:nowrap}
-.ck-empty{font-size:12.5px;color:#aaa;padding:6px 0}
+.ck-empty{font-size:12.5px;color:var(--muted);padding:6px 0}
 @media(max-width:640px){.ck-date input{width:98px}.ck-it{flex-wrap:wrap}.ck-tx{flex-basis:100%;order:-1}}
-.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:flex-start;justify-content:center;padding:32px 20px;overflow-y:auto}
+.mo{display:none;position:fixed;inset:0;background:rgba(40,35,30,.45);z-index:1000;align-items:flex-start;justify-content:center;padding:32px 20px;overflow-y:auto}
 .mo.open{display:flex}
-.mb{background:#fff;border-radius:16px;width:100%;max-width:760px;padding:32px;position:relative;margin:auto}
+.mb{background:var(--surface);border:1px solid var(--line);border-radius:8px;width:100%;max-width:760px;padding:30px 32px;position:relative;margin:auto}
 .mh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
-.mt{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600}
-.ms{font-size:12px;color:var(--muted);margin-bottom:20px}
-.mcl{background:none;border:none;font-size:20px;cursor:pointer;color:#999;padding:4px 8px;min-width:44px;min-height:44px}
-.atabs{display:flex;gap:0;margin-bottom:24px;border-bottom:2px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.mt{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--text)}
+.ms{font-size:12px;color:var(--muted);margin-bottom:22px}
+.mcl{background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);padding:4px 8px;min-width:44px;min-height:44px}
+.atabs{display:flex;gap:0;margin-bottom:24px;border-bottom:1px solid var(--line);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .atabs::-webkit-scrollbar{display:none}
-.atab{padding:10px 16px;font-size:11px;font-weight:700;cursor:pointer;border:none;background:transparent;color:#aaa;font-family:'DM Sans',sans-serif;transition:all .15s;border-bottom:2px solid transparent;margin-bottom:-2px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.atab{padding:10px 16px;font-size:10.5px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;transition:all .15s;border-bottom:2px solid transparent;margin-bottom:-1px;letter-spacing:1.2px;text-transform:uppercase;white-space:nowrap}
 .atab:hover{color:var(--gold)}.atab.active{color:var(--gold);border-bottom-color:var(--gold)}
 .atc{display:none}.atc.active{display:block}
-.tabs{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap}
-.tab{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:#f0ebe2;color:#888;font-family:'DM Sans',sans-serif;transition:all .15s}
-.tab.active{background:var(--gold);color:#fff;font-weight:600}
+.tabs{display:flex;gap:0;margin-bottom:24px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{padding:10px 16px;font-size:10.5px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;cursor:pointer;border:none;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;transition:all .15s;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab:hover{color:var(--gold)}
+.tab.active{background:transparent;color:var(--gold);border-bottom-color:var(--gold);font-weight:600}
 .tc{display:none}.tc.active{display:block}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
@@ -117,7 +118,7 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
 .tr-row{display:flex;align-items:center;gap:10px;cursor:pointer;padding:7px 0;min-height:44px}
 .tr-track{width:36px;height:20px;border-radius:10px;background:#ddd;position:relative;transition:background .2s;flex-shrink:0}
 .tr-track.on{background:var(--gold)}
-.tr-thumb{width:16px;height:16px;border-radius:8px;background:#fff;position:absolute;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.tr-thumb{width:16px;height:16px;border-radius:8px;background:var(--surface);position:absolute;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
 .tr-track.on .tr-thumb{left:18px}
 .tr-label{font-size:13px;color:#555}
 .ic{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -149,10 +150,10 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
 .kc-check-del:hover{color:var(--red)}border-radius:10px;padding:28px;text-align:center;cursor:pointer;background:var(--gold-pale);transition:all .15s}
 .upload-area:hover,.upload-area.drag{border-color:var(--gold);background:#fdf3e0}
 .upload-area input[type=file]{display:none}
-.anexo-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#fff;border:1px solid var(--border);border-radius:8px;margin-bottom:8px}
+.anexo-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;margin-bottom:8px}
 .anexo-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 .quad-opts{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
-.quad-opt{padding:6px 12px;border-radius:20px;border:1.5px solid var(--border);cursor:pointer;font-size:12px;font-weight:500;color:#888;transition:all .15s;background:#fff}
+.quad-opt{padding:6px 12px;border-radius:20px;border:1.5px solid var(--border);cursor:pointer;font-size:12px;font-weight:500;color:#888;transition:all .15s;background:var(--surface)}
 .quad-opt.sel-sim{border-color:#2e7d32;background:#e8f5e9;color:#2e7d32;font-weight:600}
 .quad-opt.sel-nao{border-color:#c0392b;background:#fdecea;color:#c0392b;font-weight:600}
 .quad-opt.sel-nv{border-color:#888;background:#f0f0f0;color:#666;font-weight:600}
@@ -249,7 +250,7 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
 .filter-drawer{display:none;position:fixed;inset:0;z-index:500}
 .filter-drawer.open{display:block}
 .filter-drawer-bg{position:absolute;inset:0;background:rgba(0,0,0,.45)}
-.filter-drawer-panel{position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;padding:20px 20px 36px;max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.filter-drawer-panel{position:absolute;bottom:0;left:0;right:0;background:var(--surface);border-radius:20px 20px 0 0;padding:20px 20px 36px;max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .filter-drawer-handle{width:36px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 16px}
 .filter-drawer-title{font-size:14px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
 .filter-drawer-close{background:none;border:none;font-size:22px;cursor:pointer;color:#999;padding:0 4px;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center}
@@ -491,7 +492,7 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
               oninput="filtrarDropdownDisp(this.value)"
               onfocus="abrirDropdownDisp()"
               style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:'DM Sans',sans-serif;outline:none">
-            <div id="f-disponivel-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.1);max-height:220px;overflow-y:auto;z-index:300;margin-top:3px"></div>
+            <div id="f-disponivel-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.1);max-height:220px;overflow-y:auto;z-index:300;margin-top:3px"></div>
           </div>
           <input type="hidden" id="f-disponivel-casamento" value="">
           <div id="f-disponivel-selecionado" style="display:none;margin-top:6px;padding:5px 10px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:6px;font-size:11px;color:var(--gold);font-weight:600;align-items:center;justify-content:space-between;gap:6px">
@@ -851,11 +852,11 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
   <div class="mb">
     <div class="mh"><div class="mt" id="mc-title">Novo Casamento</div><button class="mcl" onclick="closeModal('modal-casamento')">✕</button></div>
     <div class="tabs" id="c-tabs" style="display:none">
-      <button class="tab active" onclick="showCTab('plan',this)">📅 Planejamento</button>
-      <button class="tab" onclick="showCTab('prod',this)">🎨 Produção</button>
-      <button class="tab" onclick="showCTab('viag',this)">✈️ Viagem</button>
-      <button class="tab" onclick="showCTab('assess',this)">🏢 Fornecedores</button>
-      <button class="tab" onclick="showCTab('anexos-c',this)">📎 Anexos</button>
+      <button class="tab active" onclick="showCTab('plan',this)">Planejamento</button>
+      <button class="tab" onclick="showCTab('prod',this)">Produção</button>
+      <button class="tab" onclick="showCTab('viag',this)">Viagem</button>
+      <button class="tab" onclick="showCTab('assess',this)">Fornecedores</button>
+      <button class="tab" onclick="showCTab('anexos-c',this)">Anexos</button>
     </div>
     <div class="tc active" id="tab-plan">
       <div class="g2">
@@ -914,7 +915,7 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
         <div id="c-link-area" style="display:none;margin-top:14px;padding:14px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:10px">
           <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1px;margin-bottom:8px">LINK PERSONALIZADO PARA O CASAL</div>
           <div style="display:flex;gap:8px;align-items:center">
-            <input id="c-link-input" readonly style="flex:1;padding:8px 12px;border-radius:8px;border:1px solid var(--gold-border);font-size:12px;font-family:'DM Sans',sans-serif;background:#fff;color:var(--gold)">
+            <input id="c-link-input" readonly style="flex:1;padding:8px 12px;border-radius:8px;border:1px solid var(--gold-border);font-size:12px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--gold)">
             <button class="btn bg bsm" onclick="copiarLink()">Copiar</button>
           </div>
         </div>
@@ -1587,12 +1588,12 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
       </div>
       <div id="sol-hosp-detail" style="display:none;margin-top:10px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:10px;padding:12px">
         <label style="display:block;font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px">🏨 Onde fica a hospedagem?</label>
-        <select id="sol-hosp-local" onchange="toggleHospProximo()" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--gold-border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;background:#fff">
+        <select id="sol-hosp-local" onchange="toggleHospProximo()" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--gold-border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;background:var(--surface)">
           <option value="">Selecionar...</option>
           <option value="mesmo">No mesmo hotel do casamento</option>
           <option value="proximo">Em hotel próximo</option>
         </select>
-        <input id="sol-hosp-proximo" placeholder="Qual hotel? (opcional)" style="display:none;width:100%;margin-top:8px;padding:9px 12px;border-radius:8px;border:1px solid var(--gold-border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;background:#fff">
+        <input id="sol-hosp-proximo" placeholder="Qual hotel? (opcional)" style="display:none;width:100%;margin-top:8px;padding:9px 12px;border-radius:8px;border:1px solid var(--gold-border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;background:var(--surface)">
       </div>
     </div>
     <div class="f" style="margin-top:12px"><label>Observações</label><textarea id="sol-obs" placeholder="Informações adicionais, preferências..."></textarea></div>
@@ -2176,7 +2177,7 @@ async function loadViagResumoAssessora(casId){
     const itens=[['✈️ Voo',s.status_passagem],['🏨 Hotel',s.status_hotel],['🚌 Transfer',s.status_transfer],['🛡️ Seguro',s.status_seguro],['🚂 Trem',s.status_trem]].filter(([,v])=>v!=null)
     const total=itens.length,done=itens.filter(([,v])=>v==='emitido'||v==='nao_necessario').length
     const completa=total>0&&done===total
-    return`<div style="border:1px solid var(--gold-border);border-radius:10px;padding:12px 14px;margin-bottom:8px;background:#fff">
+    return`<div style="border:1px solid var(--gold-border);border-radius:10px;padding:12px 14px;margin-bottom:8px;background:var(--surface)">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:8px">
         <div style="font-weight:600;font-size:13px">${s.assessora?.nome||s.assessora_nome||'Assessora'}</div>
         <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;${completa?'background:#e8f5ee;color:var(--green);border:1px solid #bfe3cd':'background:#fdf6e3;color:#856404;border:1px solid #f0e0b0'}">${completa?'✅ Completa':'⏳ Em andamento'}</span>
@@ -2694,7 +2695,7 @@ async function renderEscaladas(){
   const assessCount=document.getElementById('assess-count');if(assessCount)assessCount.textContent=escaladas.length+' assessora(s) escalada(s)'
   if(!escaladas.length){list.innerHTML='<div class="em" style="padding:30px"><div class="em-t">Nenhuma assessora escalada</div></div>'}
   else{list.innerHTML=escaladas.map(e=>`<div class="ai"><div class="aih"><div style="display:flex;align-items:center;gap:10px"><div class="av">${(e.assessora?.nome||'?')[0]}</div><div><div style="font-weight:600;font-size:14px">${e.assessora?.nome||'—'}</div></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn bg bsm" onclick="abrirSolicitacao('${e.id}')">✈️ Solicitar</button><button class="btn bd bsm" onclick="removeEscalada('${e.id}')">Remover</button></div></div>
-    <div style="margin-top:12px;padding:10px 12px;background:#fff;border-radius:8px;border:1px solid var(--gold-border)">
+    <div style="margin-top:12px;padding:10px 12px;background:var(--surface);border-radius:8px;border:1px solid var(--gold-border)">
       <div style="font-size:10px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">📅 Período de Ocupação</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
         <div><div style="font-size:10px;color:#999;margin-bottom:3px;text-transform:uppercase;font-weight:600">De</div><input type="date" value="${e.periodo_inicio||''}" onchange="updEscalada('${e.id}','periodo_inicio',this.value)" style="width:100%;padding:7px 10px;border-radius:7px;border:1px solid #ddd;font-size:12px;font-family:'DM Sans',sans-serif;outline:none" /></div>
@@ -3247,7 +3248,7 @@ async function loadSolicitacoes(casId){
           ${podeAdicionarTrem?`<button class="btn bo bsm" onclick="adicionarLogItem('${s.id}','trem')">+ Trem</button>`:''}
         </div>`:''}
       </div>
-      ${total>0?`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#fff;border-radius:8px;border:1px solid var(--gold-border);margin-top:4px">
+      ${total>0?`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--surface);border-radius:8px;border:1px solid var(--gold-border);margin-top:4px">
         <span style="font-size:11px;color:#888">${emitidos} emitido${emitidos!==1?'s':''} · ${naoNec} não necessário${naoNec!==1?'s':''} · ${total-emitidos-naoNec} pendente${total-emitidos-naoNec!==1?'s':''}</span>
         <div style="width:80px;height:5px;background:var(--gold-border);border-radius:3px;overflow:hidden;display:flex">
           <div style="width:${total?Math.round(emitidos/total*100):0}%;background:var(--green)"></div>
@@ -3633,7 +3634,7 @@ function mostrarLinkProd(casId){
   const token=casamentoAtual?.link_token
   if(token){
     const link=`${window.location.origin}/casal.html?c=${token}`
-    body.innerHTML=`<div style="display:flex;gap:8px;align-items:center"><input id="prod-link-input" readonly value="${esc(link)}" style="flex:1;padding:8px 12px;border-radius:8px;border:1px solid var(--gold-border);font-size:12px;font-family:'DM Sans',sans-serif;background:#fff;color:var(--gold)"><button class="btn bg bsm" onclick="copiarLinkProd()">Copiar</button></div>`
+    body.innerHTML=`<div style="display:flex;gap:8px;align-items:center"><input id="prod-link-input" readonly value="${esc(link)}" style="flex:1;padding:8px 12px;border-radius:8px;border:1px solid var(--gold-border);font-size:12px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--gold)"><button class="btn bg bsm" onclick="copiarLinkProd()">Copiar</button></div>`
   }else{
     body.innerHTML=`<button class="btn bg bsm" onclick="gerarLinkProd('${casId}')">🔗 Gerar link para o casal</button>`
   }
@@ -4025,8 +4026,8 @@ async function openKanbanCard(id){
   if(k.casamento_nome)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">Casamento</span><div style="font-size:13px;margin-top:2px">💒 ${esc(k.casamento_nome)}</div></div>`
   // Período e horários
   if(k.periodo_de||k.periodo_ate)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">Período</span><div style="font-size:13px;margin-top:4px;display:grid;grid-template-columns:1fr 1fr;gap:6px">
-    <div style="background:#fff;border:1px solid var(--border);border-radius:7px;padding:6px 10px"><div style="font-size:10px;color:var(--muted)">CHEGADA</div><div>${fmtDate(k.periodo_de)}</div>${k.hora_chegada?`<div style="font-size:12px;color:var(--gold)">⏰ ${k.hora_chegada.slice(0,5)}</div>`:''}</div>
-    <div style="background:#fff;border:1px solid var(--border);border-radius:7px;padding:6px 10px"><div style="font-size:10px;color:var(--muted)">SAÍDA</div><div>${fmtDate(k.periodo_ate)}</div>${k.hora_saida?`<div style="font-size:12px;color:var(--gold)">⏰ ${k.hora_saida.slice(0,5)}</div>`:''}</div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:6px 10px"><div style="font-size:10px;color:var(--muted)">CHEGADA</div><div>${fmtDate(k.periodo_de)}</div>${k.hora_chegada?`<div style="font-size:12px;color:var(--gold)">⏰ ${k.hora_chegada.slice(0,5)}</div>`:''}</div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:6px 10px"><div style="font-size:10px;color:var(--muted)">SAÍDA</div><div>${fmtDate(k.periodo_ate)}</div>${k.hora_saida?`<div style="font-size:12px;color:var(--gold)">⏰ ${k.hora_saida.slice(0,5)}</div>`:''}</div>
   </div></div>`
   if(k.cidade_saida)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">Cidade de Saída</span><div style="font-size:13px;margin-top:2px">✈️ ${esc(k.cidade_saida)}</div></div>`
   if(k.servicos)html+=`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase">Serviços Solicitados</span><div style="font-size:13px;margin-top:2px">${esc(k.servicos)}</div></div>`
@@ -4090,7 +4091,7 @@ function renderLogisticaKanban(k){
     const st=estados[it.val]||estados.pendente
     return`<div onclick="ciclarLogKanban('${it.campo}','${it.val}')" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:${st.bg};border:1px solid ${st.border};border-radius:8px;cursor:pointer;margin-bottom:6px;transition:all .15s">
       <div style="display:flex;align-items:center;gap:8px"><span>${it.emoji}</span><span style="font-size:13px;font-weight:500;color:${st.color}">${it.label}</span></div>
-      <span style="font-size:11px;font-weight:600;color:${st.color};background:#fff;padding:3px 10px;border-radius:20px;border:1px solid ${st.border}">${st.label}</span>
+      <span style="font-size:11px;font-weight:600;color:${st.color};background:var(--surface);padding:3px 10px;border-radius:20px;border:1px solid ${st.border}">${st.label}</span>
     </div>`
   }).join('')||'<div style="font-size:12px;color:var(--muted)">Nenhum serviço definido</div>'
 
