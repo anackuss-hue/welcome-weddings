@@ -1977,6 +1977,7 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
 <script>
 const{createClient}=supabase
 function fmtDate(d){if(!d)return'—';const[y,m,day]=d.split('-');return`${day}/${m}/${y}`}
+function fmtDateC(d){if(!d)return'—';const[y,m,day]=d.split('-');return`${day}/${m}/${(y||'').slice(-2)}`}
 // Blinda texto digitado pelo usuário antes de jogar no HTML (evita quebra visual e injeção)
 function esc(s){return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
 function applyTheme(t){const d=t==='dark';document.documentElement.setAttribute('data-theme',d?'dark':'light');try{localStorage.setItem('ww_theme',d?'dark':'light')}catch(e){}}
@@ -2535,7 +2536,7 @@ function renderCasamentos(){
     </div>
     ${cd?`<div style="margin-bottom:12px"><span class="cd-chip">⏳ ${cd}</span></div>`:''}
     <div style="font-size:13px;color:#888;margin-bottom:3px">📍 ${esc(c.destino||'—')}</div>
-    <div style="font-size:13px;color:#888;margin-bottom:3px">📅 ${c.plan_data?fmtDate(c.plan_data):'—'}</div>
+    <div style="font-size:13px;color:#888;margin-bottom:3px">📅 ${c.plan_data?fmtDateC(c.plan_data):'—'}</div>
     <div style="font-size:13px;color:#888;margin-bottom:12px">🏨 ${hotelNome(c)}</div>
     ${casPrecisaAssessora(c)?'<div class="tag ta" style="margin-bottom:10px">⏰ Escolher assessora</div>':''}
     ${c.viagem_ok?'<div class="tag tgr" style="margin-bottom:10px">✅ Viagem OK</div>':''}
@@ -2547,7 +2548,7 @@ function renderCasamentos(){
   const rowHTML=c=>{const cd=cdLabel(c);return `<div class="crow">
     <span class="cdot" style="background:${dotColor(c)}"></span>
     <div style="flex:1;min-width:0"><div class="crow-nm">${esc(c.nome||'—')}</div><div class="crow-meta">📍 ${esc(c.destino||'—')} · 🏨 ${hotelNome(c)}</div></div>
-    <div style="text-align:right;width:104px;flex-shrink:0"><div class="crow-dt">${c.plan_data?fmtDate(c.plan_data):'<span style="color:#bbb">a definir</span>'}</div>${cd?`<div class="crow-cd">⏳ ${cd}</div>`:''}</div>
+    <div style="text-align:right;width:104px;flex-shrink:0"><div class="crow-dt">${c.plan_data?fmtDateC(c.plan_data):'<span style="color:#bbb">a definir</span>'}</div>${cd?`<div class="crow-cd">⏳ ${cd}</div>`:''}</div>
     <div style="width:60px;flex-shrink:0;display:flex;gap:3px;justify-content:center">${avs(c)}</div>
     <div style="flex-shrink:0;min-width:92px;text-align:center">${pillResumo(c)}</div>
     <button class="btn bo" onclick="openCasamento('${c.id}')">Abrir</button>
