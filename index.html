@@ -138,6 +138,19 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
 .sel-on .selbadge,.sel-on .selbadge-r{background:var(--gold);border-color:var(--gold);color:#fff}
 .card.sel-on{outline:2px solid var(--gold);outline-offset:-2px;background:var(--gold-pale)}
 .crow.sel-on{background:var(--gold-pale)}
+#atrasadas-box{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--red);border-radius:10px;margin-bottom:20px;overflow:hidden}
+.atr-head{display:flex;align-items:center;gap:9px;padding:11px 16px;font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--red);background:var(--surface2);border-bottom:1px solid var(--line)}
+.atr-dot{width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0}
+.atr-n{background:var(--red);color:#fff;border-radius:20px;padding:1px 8px;font-size:11px;letter-spacing:0;margin-left:2px}
+.atr-list{max-height:280px;overflow-y:auto}
+.atr-row{display:flex;align-items:center;gap:11px;padding:10px 16px;border-bottom:1px solid var(--line2);cursor:pointer;transition:background .12s}
+.atr-row:last-child{border-bottom:0}
+.atr-row:hover{background:var(--gold-pale)}
+.atr-rdot{width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0}
+.atr-main{flex:1;min-width:0}
+.atr-txt{font-size:13px;color:var(--text);font-weight:500}
+.atr-sub{font-size:11.5px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.atr-date{font-size:12px;color:var(--red);font-weight:600;white-space:nowrap;flex-shrink:0}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
 .f{margin-bottom:14px}
@@ -456,6 +469,7 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
         <button class="btn bg" onclick="openNovoCasamento()">+ Novo Casamento</button>
       </div>
     </div>
+    <div id="atrasadas-box" style="display:none"></div>
     <!-- Abas de status -->
     <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px">
       <button class="c-tab active" id="ctab-todos" onclick="setCTab('todos')">Todos <span class="c-tab-badge" id="ctab-n-todos"></span></button>
@@ -2378,9 +2392,30 @@ async function loadCasamentos(){
   casamentos=data||[]
   const{data:esc}=await sb.from('casamento_assessoras').select('casamento_id,assessora_id,periodo_inicio,periodo_fim')
   window._escaladasCache=esc||[]
-  populateAssessoraFilters();populateCasamentoFilters();populateDisponivelFiltro();renderCasamentos()
+  populateAssessoraFilters();populateCasamentoFilters();populateDisponivelFiltro();renderCasamentos();renderAtrasadas()
 }
 function filterCasamentos(q){renderCasamentos()}
+function renderAtrasadas(){
+  const box=document.getElementById('atrasadas-box');if(!box)return
+  const hoje=new Date().toISOString().split('T')[0]
+  const secNome={atend:'Atendimento',grupo:'Grupo & Hotel'}
+  const items=[]
+  ;(casamentos||[]).forEach(c=>{
+    if(['Realizado','Cancelado'].includes(c.status||''))return
+    let cl;try{cl=_parseChecklist(c.checklist)}catch(e){cl=null}
+    if(!cl)return
+    ;['atend','grupo'].forEach(k=>{(cl[k]||[]).forEach(it=>{
+      if(it&&it.st==='todo'&&it.data&&it.data<hoje)items.push({c:c,txt:it.txt,data:it.data,sec:k})
+    })})
+  })
+  if(!items.length){box.style.display='none';box.innerHTML='';return}
+  items.sort((a,b)=>a.data.localeCompare(b.data))
+  let html=`<div class="atr-head"><span class="atr-dot"></span>Tarefas atrasadas <span class="atr-n">${items.length}</span></div><div class="atr-list">`
+  items.forEach(it=>{html+=`<div class="atr-row" onclick="abrirTarefa('${it.c.id}')"><span class="atr-rdot"></span><div class="atr-main"><div class="atr-txt">${esc(it.txt||'—')}</div><div class="atr-sub">${esc(it.c.nome||'—')} · ${secNome[it.sec]||it.sec}</div></div><div class="atr-date">${fmtDateC(it.data)}</div></div>`})
+  html+='</div>'
+  box.style.display='block';box.innerHTML=html
+}
+function abrirTarefa(id){openCasamento(id);setTimeout(()=>{const b=document.querySelector('#c-tabs button[onclick*="viag"]');if(b)showCTab('viag',b)},400)}
 function populateCasamentoFilters(){
   const destinos=[...new Set(casamentos.map(c=>c.destino).filter(Boolean))].sort()
   const hoteis=[...new Set(casamentos.map(c=>c.plan_hotel).filter(Boolean))].sort()
