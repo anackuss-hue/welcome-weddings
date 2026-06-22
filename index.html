@@ -133,6 +133,11 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
 .qa:last-child{border-bottom:0}
 .qa-q{font-size:11px;color:var(--muted);margin:0 0 3px}
 .qa-a{font-size:13px;color:var(--text);line-height:1.45;margin:0}
+.selbadge{position:absolute;top:14px;left:14px;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);background:var(--surface);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:transparent;flex-shrink:0}
+.selbadge-r{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border);background:var(--surface);display:inline-flex;align-items:center;justify-content:center;font-size:12px;color:transparent;flex-shrink:0}
+.sel-on .selbadge,.sel-on .selbadge-r{background:var(--gold);border-color:var(--gold);color:#fff}
+.card.sel-on{outline:2px solid var(--gold);outline-offset:-2px;background:var(--gold-pale)}
+.crow.sel-on{background:var(--gold-pale)}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
 .f{margin-bottom:14px}
@@ -446,7 +451,10 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
   <div class="page active" id="page-casamentos">
     <div class="ph">
       <div><div class="pt">Casamentos</div><div class="ps" id="casamentos-count">Carregando...</div></div>
-      <button class="btn bg" onclick="openNovoCasamento()">+ Novo Casamento</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn bo" id="btn-sel-mode" onclick="toggleSelMode()">Selecionar</button>
+        <button class="btn bg" onclick="openNovoCasamento()">+ Novo Casamento</button>
+      </div>
     </div>
     <!-- Abas de status -->
     <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px">
@@ -495,6 +503,12 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
           <button data-v="blocos" onclick="setCView('blocos')">▦ Blocos</button>
           <button data-v="linhas" onclick="setCView('linhas')">▤ Linhas</button>
           <button data-v="agrupado" onclick="setCView('agrupado')">🗂 Agrupado</button>
+        </div>
+        <div id="sel-bar" style="display:none;align-items:center;gap:12px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:10px;padding:10px 14px;margin-bottom:14px">
+          <span style="font-size:13px;font-weight:600;color:var(--gold)"><span id="sel-count">0</span> selecionado(s)</span>
+          <span style="flex:1"></span>
+          <button class="btn bd bsm" id="sel-del" onclick="bulkDelete()" disabled>Apagar selecionados</button>
+          <button class="btn bo bsm" onclick="toggleSelMode()">Cancelar</button>
         </div>
         <div class="cg" id="casamentos-grid"><div class="ld">Carregando...</div></div>
       </div>
@@ -2064,6 +2078,7 @@ function aplicarPermissoes(){
   window._podeEditarAssessoras=s==='admin'
   window._podeEditarCasamentos=s==='admin'||s==='planejamento'||s==='producao'||s==='viagem'
   if(!window._podeEditarCasamentos)document.querySelector('[onclick="openNovoCasamento()"]')?.style.setProperty('display','none')
+  if(!window._podeEditarCasamentos)document.getElementById('btn-sel-mode')?.style.setProperty('display','none')
   if(!window._podeEditarLocais)document.querySelector('[onclick="openNovoHotel()"]')?.style.setProperty('display','none')
   if(!window._podeEditarAssessoras)document.querySelector('[onclick="openNovaAssessora()"]')?.style.setProperty('display','none')
   if(s==='admin'){
@@ -2475,6 +2490,31 @@ function setCView(v){
   try{localStorage.setItem('ww_cview',v)}catch(e){}
   renderCasamentos()
 }
+let selMode=false; const selSet=new Set();
+function toggleSelMode(){
+  selMode=!selMode; selSet.clear()
+  const bar=document.getElementById('sel-bar'); if(bar)bar.style.display=selMode?'flex':'none'
+  const btn=document.getElementById('btn-sel-mode'); if(btn){btn.textContent=selMode?'Cancelar seleção':'Selecionar'; btn.classList.toggle('bg',selMode); btn.classList.toggle('bo',!selMode)}
+  const del=document.getElementById('sel-del'); if(del)del.disabled=true
+  const cnt=document.getElementById('sel-count'); if(cnt)cnt.textContent='0'
+  renderCasamentos()
+}
+function toggleSel(id,el){
+  if(selSet.has(id)){selSet.delete(id); el.classList.remove('sel-on')}
+  else{selSet.add(id); el.classList.add('sel-on')}
+  const cnt=document.getElementById('sel-count'); if(cnt)cnt.textContent=selSet.size
+  const del=document.getElementById('sel-del'); if(del)del.disabled=!selSet.size
+}
+async function bulkDelete(){
+  const ids=[...selSet]; if(!ids.length)return
+  if(!confirm('Apagar '+ids.length+' casamento(s)? Esta ação não pode ser desfeita.'))return
+  const{error}=await sb.from('casamentos').delete().in('id',ids)
+  if(error){alert('Erro ao apagar: '+error.message);return}
+  selMode=false; selSet.clear()
+  const bar=document.getElementById('sel-bar'); if(bar)bar.style.display='none'
+  const btn=document.getElementById('btn-sel-mode'); if(btn){btn.textContent='Selecionar';btn.classList.add('bo');btn.classList.remove('bg')}
+  await loadCasamentos()
+}
 function renderCasamentos(){
   // sincroniza o seletor de vista (Blocos / Linhas / Agrupado)
   let _v;try{_v=localStorage.getItem('ww_cview')}catch(e){}
@@ -2529,9 +2569,10 @@ function renderCasamentos(){
   const sc=s=>s==='Realizado'?'tg':s==='Cancelado'?'tr':s==='Planejamento'?'tgb':s==='Produção+Viagem'?'tgr':'tgy'
   const hotelNome=c=>esc(c.local_id?(hoteis.find(h=>h.id===c.local_id)?.nome||'—'):'—')
   const avs=c=>{const a=assessorasDoCas(c.id);return a.length?a.slice(0,2).map(x=>`<span class="crow-av" title="${esc(x.nome)}">${esc(iniciais(x.nome))}</span>`).join(''):'<span style="color:#ccc;font-size:11px">—</span>'}
-  const cardHTML=c=>{const cd=cdLabel(c);return `<div class="card" style="transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,.12)'" onmouseout="this.style.boxShadow=''">
+  const cardHTML=c=>{const cd=cdLabel(c);const on=selSet.has(c.id);const A=selMode?`class="card${on?' sel-on':''}" style="position:relative;cursor:pointer;transition:box-shadow .15s" onclick="toggleSel('${c.id}',this)"`:`class="card" style="position:relative;transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 4px 20px rgba(184,150,90,.12)'" onmouseout="this.style.boxShadow=''"`;return `<div ${A}>
+    ${selMode?'<span class="selbadge">✓</span>':''}
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
-      <div style="font-weight:600;font-size:16px;font-family:'Cormorant Garamond',serif;flex:1;min-width:0;margin-right:8px">${esc(c.nome||'—')}</div>
+      <div style="font-weight:600;font-size:16px;font-family:'Cormorant Garamond',serif;flex:1;min-width:0;margin-right:8px${selMode?';padding-left:32px':''}">${esc(c.nome||'—')}</div>
       <span class="tag ${sc(c.status)}" style="flex-shrink:0">${c.status||'Em andamento'}</span>
     </div>
     ${cd?`<div style="margin-bottom:12px"><span class="cd-chip">⏳ ${cd}</span></div>`:''}
@@ -2540,18 +2581,19 @@ function renderCasamentos(){
     <div style="font-size:13px;color:#888;margin-bottom:12px">🏨 ${hotelNome(c)}</div>
     ${casPrecisaAssessora(c)?'<div class="tag ta" style="margin-bottom:10px">⏰ Escolher assessora</div>':''}
     ${c.viagem_ok?'<div class="tag tgr" style="margin-bottom:10px">✅ Viagem OK</div>':''}
-    <div style="display:flex;gap:8px;margin-top:8px">
+    ${selMode?'':`<div style="display:flex;gap:8px;margin-top:8px">
       <button class="btn bo" style="flex:1" onclick="openCasamento('${c.id}')">Abrir</button>
       <button class="btn bd" onclick="deleteCasamento('${c.id}')">✕</button>
-    </div>
+    </div>`}
   </div>`}
-  const rowHTML=c=>{const cd=cdLabel(c);return `<div class="crow">
+  const rowHTML=c=>{const cd=cdLabel(c);const on=selSet.has(c.id);const A=selMode?`class="crow${on?' sel-on':''}" style="cursor:pointer" onclick="toggleSel('${c.id}',this)"`:`class="crow"`;return `<div ${A}>
+    ${selMode?'<span class="selbadge-r">✓</span>':''}
     <span class="cdot" style="background:${dotColor(c)}"></span>
     <div style="flex:1;min-width:0"><div class="crow-nm">${esc(c.nome||'—')}</div><div class="crow-meta">📍 ${esc(c.destino||'—')} · 🏨 ${hotelNome(c)}</div></div>
     <div style="text-align:right;width:104px;flex-shrink:0"><div class="crow-dt">${c.plan_data?fmtDateC(c.plan_data):'<span style="color:#bbb">a definir</span>'}</div>${cd?`<div class="crow-cd">⏳ ${cd}</div>`:''}</div>
     <div style="width:60px;flex-shrink:0;display:flex;gap:3px;justify-content:center">${avs(c)}</div>
     <div style="flex-shrink:0;min-width:92px;text-align:center">${pillResumo(c)}</div>
-    <button class="btn bo" onclick="openCasamento('${c.id}')">Abrir</button>
+    ${selMode?'':`<button class="btn bo" onclick="openCasamento('${c.id}')">Abrir</button>`}
   </div>`}
   if(view==='linhas'){
     grid.className=''
