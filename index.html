@@ -327,6 +327,56 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
 .kb-tabs{display:flex;gap:4px;margin-bottom:22px;border-bottom:1px solid var(--line)}
 .kb-tab{padding:10px 16px;font-size:10.5px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;cursor:pointer;border:none;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
 .kb-tab:hover{color:var(--gold)}.kb-tab.active{color:var(--gold);border-bottom-color:var(--gold);font-weight:600}
+/* ===== ATENDIMENTO A VIAGEM — HUB ===== */
+.av-resumo{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:12px}
+.av-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.av-card .avc-l{font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:6px}
+.av-card .avc-n{font-size:26px;font-weight:700;color:var(--text);margin-top:5px;line-height:1}
+.av-card .avc-s{font-size:11.5px;color:var(--muted);margin-top:4px}
+.av-card .avc-line{font-size:13.5px;font-weight:600;color:var(--text);margin-top:6px}
+.av-card.alert{border-left:3px solid var(--red)}.av-card.alert .avc-n{color:var(--red)}
+.av-card.soft .avc-n{font-size:15px;color:var(--muted);font-weight:600}
+.av-promo{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-bottom:22px}
+.av-promo-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;font-size:12px;color:var(--text)}
+.av-promo-h .lbl{display:flex;align-items:center;gap:7px;font-weight:600}
+.av-promo-h .vt{font-size:11px;color:var(--gold);cursor:pointer;font-weight:600}
+.av-promo-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-top:1px solid var(--line2);cursor:pointer}
+.av-promo-row:hover{background:var(--gold-pale)}
+.av-pr-nome{flex:1.4;font-size:13px;font-weight:600;color:var(--text)}
+.av-pr-jan{flex:1.1;font-size:11px;color:var(--muted)}
+.av-pr-dias{flex:1;font-size:12px;text-align:right;color:var(--muted)}
+.av-pr-dias.urg{color:var(--red);font-weight:700}
+.av-pr-bar{flex:.8;height:6px;background:var(--bg);border-radius:99px;overflow:hidden}
+.av-pr-bar i{display:block;height:100%;background:var(--gold);border-radius:99px}
+.av-promo-empty{font-size:12.5px;color:var(--muted);padding:10px 0 4px;border-top:1px solid var(--line2);line-height:1.55}
+.av-subtabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:22px;flex-wrap:wrap}
+.av-subtab{padding:10px 16px;font-size:10.5px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;cursor:pointer;border:none;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.av-subtab:hover{color:var(--gold)}.av-subtab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.av-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}
+.av-col{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.av-col-h{font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.av-col-h .n{font-size:11px;color:var(--muted);font-weight:600}
+.av-col-list{max-height:460px;overflow:auto}
+.av-trow{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid var(--line2);cursor:pointer}
+.av-trow:hover{background:var(--gold-pale)}
+.av-trow .nm{flex:1;font-size:12.5px;color:var(--text);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.av-trow .ct{font-size:11.5px;color:var(--muted);white-space:nowrap}
+.av-trow .mb{width:64px;height:6px;background:var(--bg);border-radius:99px;overflow:hidden;flex:none}
+.av-trow .mb i{display:block;height:100%;background:var(--green);border-radius:99px}
+.av-empty{font-size:12.5px;color:var(--muted);padding:14px 2px}
+.av-chead{display:flex;align-items:center;gap:10px;font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);padding:0 12px 4px}
+.av-clist{display:flex;flex-direction:column;gap:6px}
+.av-crow{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:12.5px;cursor:pointer}
+.av-crow:hover{border-color:var(--gold)}
+.av-crow .nm{flex:2;font-weight:600;color:var(--text);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.av-crow .dt{flex:1;color:var(--text)}
+.av-crow .as{flex:1.3;color:var(--muted);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.av-crow .vg{flex:1.1}
+.av-pill{font-size:10px;font-weight:600;padding:2px 9px;border-radius:99px;white-space:nowrap}
+.av-pill.ok{background:rgba(127,160,106,.16);color:var(--green)}
+.av-pill.go{background:var(--gold-pale);color:var(--gold)}
+.av-pill.rd{background:rgba(192,57,43,.12);color:var(--red)}
+.av-placeholder{background:var(--surface);border:1px dashed var(--border);border-radius:12px;padding:36px 24px;text-align:center;color:var(--muted);font-size:13px;line-height:1.6}
 .kb-new-badge{font-size:10px;font-weight:700;background:var(--red);color:#fff;padding:1px 6px;border-radius:20px;margin-left:5px}
 .form-section{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:28px;padding-top:24px;border-top:1px solid var(--border)}
 @media(max-width:768px){.form-section{grid-template-columns:1fr}.kb-col{min-width:80vw}}
@@ -427,7 +477,7 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
   <div class="nav" onclick="showPage('assessoras')" id="nav-assessoras">Assessoras</div>
   <div class="nav" onclick="showPage('fornecedores')" id="nav-fornecedores">Fornecedores</div>
   <div class="nav" onclick="showPage('hoteis')" id="nav-hoteis">Locais</div>
-  <div class="nav" onclick="showPage('viagens')" id="nav-viagens">Viagens</div>
+  <div class="nav" onclick="showPage('viagens')" id="nav-viagens">Atendimento a Viagem</div>
   <div class="nav" onclick="showPage('coordenacao')" id="nav-coordenacao" style="display:none">Coordenação</div>
   <div class="nav" onclick="showPage('logs')" id="nav-logs" style="display:none">Logs</div>
   <div class="nav" onclick="showPage('usuarios')" id="nav-usuarios" style="display:none">Usuários</div>
@@ -774,28 +824,62 @@ html[data-theme="dark"] .theme-btn .ico-sun{display:inline-flex}html[data-theme=
   <!-- ══ VIAGENS / KANBAN ══ -->
   <div class="page" id="page-viagens">
     <div class="ph">
-      <div><div class="pt">Solicitações de Viagem</div><div class="ps" id="viagens-count">Carregando...</div></div>
+      <div><div class="pt">Atendimento a Viagem</div><div class="ps" id="viagens-count">Carregando...</div></div>
     </div>
-    <!-- Tabs por responsável -->
-    <div style="display:flex;align-items:flex-end;justify-content:space-between;border-bottom:2px solid var(--border);margin-bottom:22px">
-      <div style="display:flex;gap:6px">
-        <button class="kb-tab active" onclick="showKanbanTab('rapha',this)">Rapha <span class="kb-new-badge" id="badge-rapha" style="display:none">0</span></button>
-        <button class="kb-tab" onclick="showKanbanTab('mari',this)">Mari <span class="kb-new-badge" id="badge-mari" style="display:none">0</span></button>
-        <button class="kb-tab" onclick="showKanbanTab('juliana',this)">Juliana <span class="kb-new-badge" id="badge-juliana" style="display:none">0</span></button>
-        <button class="kb-tab" onclick="showKanbanTab('estela',this)">Estela <span class="kb-new-badge" id="badge-estela" style="display:none">0</span></button>
+
+    <!-- RESUMO -->
+    <div class="av-resumo" id="av-resumo"></div>
+    <div class="av-promo" id="av-promo"></div>
+
+    <!-- SUB-ABAS -->
+    <div class="av-subtabs">
+      <button class="av-subtab active" data-av="kanban" onclick="showAvTab('kanban')">Kanban</button>
+      <button class="av-subtab" data-av="disparos" onclick="showAvTab('disparos')">Disparos</button>
+      <button class="av-subtab" data-av="tarefas" onclick="showAvTab('tarefas')">Tarefas</button>
+      <button class="av-subtab" data-av="casamentos" onclick="showAvTab('casamentos')">Casamentos</button>
+    </div>
+
+    <!-- PANEL: KANBAN -->
+    <div class="av-panel" id="av-panel-kanban">
+      <!-- Tabs por responsável -->
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;border-bottom:2px solid var(--border);margin-bottom:22px">
+        <div style="display:flex;gap:6px">
+          <button class="kb-tab active" onclick="showKanbanTab('rapha',this)">Rapha <span class="kb-new-badge" id="badge-rapha" style="display:none">0</span></button>
+          <button class="kb-tab" onclick="showKanbanTab('mari',this)">Mari <span class="kb-new-badge" id="badge-mari" style="display:none">0</span></button>
+          <button class="kb-tab" onclick="showKanbanTab('juliana',this)">Juliana <span class="kb-new-badge" id="badge-juliana" style="display:none">0</span></button>
+          <button class="kb-tab" onclick="showKanbanTab('estela',this)">Estela <span class="kb-new-badge" id="badge-estela" style="display:none">0</span></button>
+        </div>
+        <button onclick="abrirConfigColunas()" title="Configurar colunas" style="padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--white);cursor:pointer;font-size:15px;margin-bottom:4px;color:var(--muted);transition:all .15s" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">⚙️ Colunas</button>
       </div>
-      <button onclick="abrirConfigColunas()" title="Configurar colunas" style="padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--white);cursor:pointer;font-size:15px;margin-bottom:4px;color:var(--muted);transition:all .15s" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">⚙️ Colunas</button>
+      <!-- Search -->
+      <div style="margin-bottom:18px">
+        <div style="position:relative;max-width:320px">
+          <i class="ti ti-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;pointer-events:none"></i>
+          <input id="kb-search" placeholder="Buscar nome, casal, assessora..." oninput="renderKanban()"
+            style="width:100%;padding-left:34px;height:36px;border-radius:8px;border:1px solid var(--border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;background:var(--white)">
+        </div>
+      </div>
+      <!-- Board -->
+      <div class="kb-board" id="kb-board"></div>
     </div>
-    <!-- Search -->
-    <div style="margin-bottom:18px">
-      <div style="position:relative;max-width:320px">
-        <i class="ti ti-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;pointer-events:none"></i>
-        <input id="kb-search" placeholder="Buscar nome, casal, assessora..." oninput="renderKanban()"
-          style="width:100%;padding-left:34px;height:36px;border-radius:8px;border:1px solid var(--border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;background:var(--white)">
+
+    <!-- PANEL: DISPAROS -->
+    <div class="av-panel" id="av-panel-disparos" style="display:none">
+      <div class="av-placeholder">
+        <div style="font-size:15px;color:var(--text);font-weight:600;margin-bottom:8px">📣 Disparos da Juliana</div>
+        Agendamento organizado das mensagens aos convidados.<br>Esta parte entra na próxima fase.
       </div>
     </div>
-    <!-- Board -->
-    <div class="kb-board" id="kb-board"></div>
+
+    <!-- PANEL: TAREFAS -->
+    <div class="av-panel" id="av-panel-tarefas" style="display:none">
+      <div class="av-cols" id="av-tarefas"></div>
+    </div>
+
+    <!-- PANEL: CASAMENTOS -->
+    <div class="av-panel" id="av-panel-casamentos" style="display:none">
+      <div id="av-casamentos"></div>
+    </div>
   </div>
 
   <!-- USUARIOS PAGE -->
@@ -2192,7 +2276,7 @@ function showPage(p){
   if(p==='fornecedores')loadFornecedores()
   if(p==='logs')loadLogs()
   if(p==='usuarios')loadUsuarios()
-  if(p==='viagens'){carregarColunasCustom().then(()=>loadKanban())}
+  if(p==='viagens'){carregarColunasCustom().then(()=>loadKanban());renderAvHub()}
   if(p==='coordenacao'){if(coordCasamentos.length===0)loadCoordenacao();else coordRender()}
   syncFabs()
 }
@@ -2392,7 +2476,7 @@ async function loadCasamentos(){
   casamentos=data||[]
   const{data:esc}=await sb.from('casamento_assessoras').select('casamento_id,assessora_id,periodo_inicio,periodo_fim')
   window._escaladasCache=esc||[]
-  populateAssessoraFilters();populateCasamentoFilters();populateDisponivelFiltro();renderCasamentos();renderAtrasadas()
+  populateAssessoraFilters();populateCasamentoFilters();populateDisponivelFiltro();renderCasamentos();renderAtrasadas();if(typeof renderAvHub==='function')renderAvHub()
 }
 function filterCasamentos(q){renderCasamentos()}
 function renderAtrasadas(){
@@ -4967,6 +5051,122 @@ async function loadCoordenacao(){
   coordUpdateCounts()
   coordRender()
   coordPopulateFilters()
+}
+
+// ===== ATENDIMENTO A VIAGEM — HUB =====
+let avTabAtual='kanban', _avPromoExpand=false
+function showAvTab(tab){
+  avTabAtual=tab
+  document.querySelectorAll('.av-subtab').forEach(b=>b.classList.toggle('active',b.dataset.av===tab))
+  document.querySelectorAll('.av-panel').forEach(p=>p.style.display=(p.id==='av-panel-'+tab)?'block':'none')
+  if(tab==='tarefas')renderAvTarefas()
+  if(tab==='casamentos')renderAvCasamentos()
+}
+function _avAtivos(){return (casamentos||[]).filter(c=>!['Realizado','Cancelado'].includes(c.status||''))}
+function _avShort(d){if(!d)return'';const p=(''+d).split('-');return p.length===3?p[2]+'/'+p[1]:d}
+function _avDiasAte(d){if(!d)return null;const h=new Date();h.setHours(0,0,0,0);const x=new Date(d+'T00:00:00');if(isNaN(x))return null;return Math.round((x-h)/86400000)}
+function _avPromoPct(ini,fim){if(!ini||!fim)return null;const a=new Date(ini+'T00:00:00'),b=new Date(fim+'T00:00:00'),h=new Date();h.setHours(0,0,0,0);const tot=(b-a)/86400000;if(tot<=0)return 100;return Math.max(0,Math.min(100,Math.round(((h-a)/86400000)/tot*100)))}
+function _avCkAgg(c){let cl;try{cl=_parseChecklist(c.checklist)}catch(e){cl=null};if(!cl)return null;const o={}
+  ;['atend','grupo'].forEach(k=>{const it=cl[k]||[];const base=it.filter(i=>i.st!=='na').length;const done=it.filter(i=>i.st==='done').length;o[k]={base,done,pct:base>0?Math.round(done/base*100):0,has:it.length>0}});return o}
+function renderAvHub(){renderAvResumo();if(avTabAtual==='tarefas')renderAvTarefas();if(avTabAtual==='casamentos')renderAvCasamentos()}
+
+function renderAvResumo(){
+  const box=document.getElementById('av-resumo'),pbox=document.getElementById('av-promo');if(!box||!pbox)return
+  const hoje=new Date().toISOString().split('T')[0]
+  const ativos=_avAtivos()
+  // 1) Escolher assessora — futuro, ate 8 meses, sem assessora escalada
+  const esc=window._escaladasCache||[]
+  const comAss=new Set(esc.map(e=>e.casamento_id))
+  const lim=new Date();lim.setMonth(lim.getMonth()+8);const limStr=lim.toISOString().split('T')[0]
+  const semAss=ativos.filter(c=>c.plan_data&&c.plan_data>=hoje&&c.plan_data<=limStr&&!comAss.has(c.id)).length
+  // 2) Checklists agregados
+  let dAt=0,bAt=0,dGr=0,bGr=0
+  ativos.forEach(c=>{const a=_avCkAgg(c);if(!a)return;bAt+=a.atend.base;dAt+=a.atend.done;bGr+=a.grupo.base;dGr+=a.grupo.done})
+  const pAt=bAt>0?Math.round(dAt/bAt*100):0,pGr=bGr>0?Math.round(dGr/bGr*100):0
+  box.innerHTML=`
+    <div class="av-card${semAss>0?' alert':''}">
+      <div class="avc-l"><i class="ti ti-user-exclamation"></i> Escolher assessora</div>
+      <div class="avc-n">${semAss}</div>
+      <div class="avc-s">a menos de 8 meses, sem assessora</div>
+    </div>
+    <div class="av-card soft">
+      <div class="avc-l"><i class="ti ti-send"></i> Disparos · Juliana</div>
+      <div class="avc-n">em breve</div>
+      <div class="avc-s">módulo na próxima fase</div>
+    </div>
+    <div class="av-card">
+      <div class="avc-l"><i class="ti ti-checklist"></i> Checklists</div>
+      <div class="avc-line">Atendimento ${pAt}%</div>
+      <div class="avc-line">Grupo e hotel ${pGr}%</div>
+    </div>`
+  // 3) Acoes promocionais abertas/proximas (ordenadas pelas que vao fechar)
+  const promos=ativos.map(c=>{if(!c.acao_promo_fim)return null;const dias=_avDiasAte(c.acao_promo_fim);if(dias===null||dias<0)return null;return{c,ini:c.acao_promo_inicio,fim:c.acao_promo_fim,dias}}).filter(Boolean).sort((a,b)=>a.dias-b.dias)
+  let rows=''
+  if(!promos.length){
+    rows=`<div class="av-promo-empty">Nenhuma ação promocional cadastrada ainda. As datas de início e fim são preenchidas dentro de cada casamento.</div>`
+  }else{
+    const lista=_avPromoExpand?promos:promos.slice(0,4)
+    rows=lista.map(p=>{
+      const pct=_avPromoPct(p.ini,p.fim)
+      const jan=(p.ini?_avShort(p.ini)+' – ':'')+_avShort(p.fim)
+      const urg=p.dias<=7
+      const lbl=p.dias===0?'encerra hoje':p.dias===1?'encerra amanhã':'encerra em '+p.dias+' dias'
+      return `<div class="av-promo-row" onclick="openCasamento('${p.c.id}')">
+        <span class="av-pr-nome">${esc(p.c.nome||'—')}</span>
+        <span class="av-pr-jan">${jan}</span>
+        <span class="av-pr-dias${urg?' urg':''}">${lbl}</span>
+        <span class="av-pr-bar">${pct!==null?`<i style="width:${pct}%"></i>`:''}</span>
+      </div>`
+    }).join('')
+  }
+  const vt=promos.length>4?`<span class="vt" onclick="_avPromoExpand=!_avPromoExpand;renderAvResumo()">${_avPromoExpand?'ver menos':'ver todas ('+promos.length+')'}</span>`:''
+  pbox.innerHTML=`<div class="av-promo-h"><span class="lbl"><i class="ti ti-tag"></i> Ações promocionais${promos.length?' · '+promos.length+' aberta'+(promos.length>1?'s':''):''}</span>${vt}</div>${rows}`
+}
+
+function renderAvTarefas(){
+  const box=document.getElementById('av-tarefas');if(!box)return
+  const ativos=_avAtivos().slice().sort((a,b)=>(a.plan_data||'9999').localeCompare(b.plan_data||'9999'))
+  const secs=[{k:'atend',icon:'🎯',nome:'Atendimento',resp:'Estela'},{k:'grupo',icon:'🧳',nome:'Grupo e hotel',resp:'Mari'}]
+  box.innerHTML=secs.map(sec=>{
+    const linhas=ativos.map(c=>{const a=_avCkAgg(c);if(!a||!a[sec.k].has)return null;return{c,d:a[sec.k].done,b:a[sec.k].base,pct:a[sec.k].pct}}).filter(Boolean)
+    const rows=linhas.length?linhas.map(l=>`<div class="av-trow" onclick="abrirTarefa('${l.c.id}')">
+        <span class="nm">${esc(l.c.nome||'—')}</span>
+        <span class="mb"><i style="width:${l.pct}%"></i></span>
+        <span class="ct">${l.d}/${l.b}</span>
+      </div>`).join(''):`<div class="av-empty">Nenhum checklist de ${sec.nome.toLowerCase()} preenchido ainda.</div>`
+    return `<div class="av-col">
+      <div class="av-col-h"><span>${sec.icon} ${sec.nome} · ${sec.resp}</span><span class="n">${linhas.length} casamento${linhas.length===1?'':'s'}</span></div>
+      <div class="av-col-list">${rows}</div>
+    </div>`
+  }).join('')
+}
+
+function renderAvCasamentos(){
+  const box=document.getElementById('av-casamentos');if(!box)return
+  const hoje=new Date().toISOString().split('T')[0]
+  const esc=window._escaladasCache||[]
+  const mapAss={};esc.forEach(e=>{(mapAss[e.casamento_id]=mapAss[e.casamento_id]||[]).push(e.assessora_id)})
+  const anome={};(assessoras||[]).forEach(a=>anome[a.id]=a.nome)
+  const ativos=_avAtivos().slice().sort((a,b)=>(a.plan_data||'9999').localeCompare(b.plan_data||'9999'))
+  if(!ativos.length){box.innerHTML='<div class="av-empty">Nenhum casamento ativo.</div>';return}
+  const head=`<div class="av-chead"><span style="flex:2">Casal</span><span style="flex:1">Data</span><span style="flex:1.3">Assessora</span><span style="flex:1.1">Viagem</span></div>`
+  const rows=ativos.map(c=>{
+    const ass=(mapAss[c.id]||[]).map(id=>anome[id]).filter(Boolean)
+    const assTxt=ass.length?ass.join(', '):'— sem assessora'
+    const a=_avCkAgg(c)
+    const dias=_avDiasAte(c.plan_data)
+    let pill
+    if(!ass.length&&dias!==null&&dias>=0&&dias<=240){pill='<span class="av-pill rd">escolher assessora</span>'}
+    else if(a&&a.grupo.base>0&&a.grupo.pct===100){pill='<span class="av-pill ok">viagem completa</span>'}
+    else{pill='<span class="av-pill go">em andamento</span>'}
+    return `<div class="av-crow" onclick="openCasamento('${c.id}')">
+      <span class="nm">${esc(c.nome||'—')}</span>
+      <span class="dt">${c.plan_data?fmtDate(c.plan_data):'—'}</span>
+      <span class="as"${!ass.length?' style="color:var(--red)"':''}>${esc(assTxt)}</span>
+      <span class="vg">${pill}</span>
+    </div>`
+  }).join('')
+  box.innerHTML=head+'<div class="av-clist">'+rows+'</div>'
 }
 
 // ===== CHECKLIST DE ATENDIMENTO =====
