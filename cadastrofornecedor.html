@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadastro de Fornecedores · Welcome Weddings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --gold:#BA7517;
+    --gold-soft:#F6EBDB;
+    --gold-softer:#FBF5EC;
+    --ink:#2B2620;
+    --ink-soft:#6E6558;
+    --line:#E9E2D6;
+    --bg:#F7F4EF;
+    --card:#FFFFFF;
+    --erro:#C0392B;
+    --ok:#2E7D4F;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'DM Sans',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    min-height:100vh;
+    padding:32px 16px 64px;
+  }
+  .wrap{max-width:640px;margin:0 auto}
+
+  /* Cabeçalho */
+  .topo{text-align:center;margin-bottom:28px}
+  .logo-ww{margin-bottom:18px}
+  .logo-ww .w1{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--gold);letter-spacing:3px;text-transform:uppercase;line-height:1.15}
+  .logo-ww .w2{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--ink);letter-spacing:3px;text-transform:uppercase;line-height:1.15}
+  .logo-ww .ws{font-size:9px;letter-spacing:2px;color:var(--ink-soft);margin-top:6px;text-transform:uppercase}
+  .topo p{color:var(--ink-soft);font-size:14.5px;margin-top:6px;line-height:1.5}
+
+  /* Barra de progresso das seções */
+  .passos{display:flex;gap:8px;margin:22px 0 26px}
+  .passo{flex:1;height:5px;border-radius:99px;background:var(--line)}
+  .passo.ativo{background:var(--gold)}
+
+  /* Cartões de seção */
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:22px 22px 24px;margin-bottom:16px;
+  }
+  .card-titulo{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+  .card-titulo .ic{
+    width:34px;height:34px;border-radius:10px;background:var(--gold-soft);
+    color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:17px;
+  }
+  .card-titulo h2{font-size:16px;font-weight:700}
+  .card-titulo span{display:block;font-size:12.5px;color:var(--ink-soft);font-weight:500}
+
+  /* Campos */
+  .campo{margin-bottom:14px}
+  .linha2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:520px){.linha2{grid-template-columns:1fr}}
+  label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+  label .opc{color:var(--ink-soft);font-weight:500}
+  input{
+    width:100%;font-family:inherit;font-size:14.5px;color:var(--ink);
+    background:#FCFBF8;border:1px solid var(--line);border-radius:10px;
+    padding:11px 13px;outline:none;transition:border .15s, box-shadow .15s;
+  }
+  input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(186,117,23,.12)}
+  input.invalido{border-color:var(--erro);box-shadow:0 0 0 3px rgba(192,57,43,.10)}
+
+  /* Aviso de erro */
+  .aviso{
+    display:none;background:#FBEDEB;border:1px solid #EFC9C4;color:var(--erro);
+    border-radius:10px;padding:12px 14px;font-size:13.5px;margin-bottom:14px;line-height:1.5;
+  }
+  .aviso.mostrar{display:block}
+
+  /* Botão enviar */
+  .enviar{
+    width:100%;border:none;border-radius:12px;cursor:pointer;
+    background:var(--gold);color:#fff;font-family:inherit;
+    font-size:15.5px;font-weight:700;padding:15px;
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    transition:filter .15s;margin-top:4px;
+  }
+  .enviar:hover{filter:brightness(1.07)}
+  .enviar:disabled{opacity:.6;cursor:default}
+  .rodape{text-align:center;font-size:12.5px;color:var(--ink-soft);margin-top:18px;line-height:1.6}
+
+  /* Tela de sucesso */
+  .sucesso{
+    display:none;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:44px 26px;text-align:center;
+  }
+  .sucesso .check{
+    width:64px;height:64px;border-radius:50%;background:#E7F3EC;color:var(--ok);
+    display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 18px;
+  }
+  .sucesso h2{font-size:20px;font-weight:700;margin-bottom:8px}
+  .sucesso p{color:var(--ink-soft);font-size:14.5px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topo">
+    <div class="logo-ww">
+      <div class="w1">Welcome</div>
+      <div class="w2">Weddings</div>
+      <div class="ws">Cadastro de Fornecedores</div>
+    </div>
+    <p>Quer fazer parte da rede de fornecedores da <strong>Welcome Weddings</strong>?<br>Preencha os dados abaixo — leva menos de 5 minutos.</p>
+  </div>
+
+  <div class="passos" id="passos">
+    <div class="passo ativo"></div>
+    <div class="passo ativo"></div>
+    <div class="passo ativo"></div>
+  </div>
+
+  <form id="form" onsubmit="return false">
+
+    <!-- 1. Empresa -->
+    <div class="card">
+      <div class="card-titulo">
+        <div class="ic"><i class="ti ti-building-store"></i></div>
+        <div>
+          <h2>Sobre a empresa</h2>
+          <span>Dados básicos do seu negócio</span>
+        </div>
+      </div>
+      <div class="campo">
+        <label>Nome da empresa / marca *</label>
+        <input type="text" id="f-nome" placeholder="Ex: Estúdio Luz &amp; Flor">
+      </div>
+      <div class="campo">
+        <label>Cidade / Estado *</label>
+        <input type="text" id="f-cidade" placeholder="Ex: Curitiba / PR">
+      </div>
+      <div class="linha2">
+        <div class="campo">
+          <label>Instagram</label>
+          <input type="text" id="f-instagram" placeholder="@suaempresa">
+        </div>
+        <div class="campo">
+          <label>Site <span class="opc">(opcional)</span></label>
+          <input type="text" id="f-site" placeholder="www.suaempresa.com.br">
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Contato -->
+    <div class="card">
+      <div class="card-titulo">
+        <div class="ic"><i class="ti ti-user"></i></div>
+        <div>
+          <h2>Contato</h2>
+          <span>Quem fala com a nossa equipe</span>
+        </div>
+      </div>
+      <div class="campo">
+        <label>Nome do responsável *</label>
+        <input type="text" id="f-responsavel" placeholder="Nome completo">
+      </div>
+      <div class="linha2">
+        <div class="campo">
+          <label>WhatsApp *</label>
+          <input type="text" id="f-telefone" placeholder="(41) 99999-9999">
+        </div>
+        <div class="campo">
+          <label>E-mail *</label>
+          <input type="email" id="f-email" placeholder="contato@empresa.com.br">
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Área de atuação -->
+    <div class="card">
+      <div class="card-titulo">
+        <div class="ic"><i class="ti ti-sparkles"></i></div>
+        <div>
+          <h2>Área de atuação</h2>
+          <span>O que você oferece para casamentos</span>
+        </div>
+      </div>
+      <div class="campo">
+        <label>Qual é a sua área de atuação? *</label>
+        <input type="text" id="f-tipo" placeholder="Ex: fotografia, decoração, música, beleza...">
+      </div>
+    </div>
+
+    <div class="aviso" id="aviso"></div>
+
+    <button type="button" class="enviar" id="btn-enviar" onclick="enviar()">
+      <i class="ti ti-send"></i> Enviar cadastro
+    </button>
+
+    <div class="rodape">
+      Seus dados serão usados apenas pela equipe Welcome Weddings<br>para contato e indicação em casamentos. 🤍
+    </div>
+  </form>
+
+  <div class="sucesso" id="sucesso">
+    <div class="check"><i class="ti ti-check"></i></div>
+    <h2>Cadastro enviado!</h2>
+    <p>Obrigada pelo interesse em fazer parte da nossa rede.<br>
+    Seus dados já estão com a equipe Welcome Weddings e entraremos<br>em contato quando surgir uma oportunidade. 🤍</p>
+  </div>
+
+</div>
+
+<script>
+const sb = supabase.createClient(
+  'https://yrnlfarricrhtfomwynd.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlybmxmYXJyaWNyaHRmb213eW5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczOTIxODksImV4cCI6MjA5Mjk2ODE4OX0.Ad4awFjQ9vcDqNyBbWycgv0rvpc3DOz4pPTi41nSp8w'
+)
+
+function valor(id){
+  return document.getElementById(id).value.trim()
+}
+
+function mostrarAviso(msg){
+  const av = document.getElementById('aviso')
+  av.textContent = msg
+  av.classList.add('mostrar')
+  av.scrollIntoView({behavior:'smooth', block:'center'})
+}
+
+function limparAviso(){
+  document.getElementById('aviso').classList.remove('mostrar')
+  document.querySelectorAll('input').forEach(function(i){ i.classList.remove('invalido') })
+}
+
+async function enviar(){
+  limparAviso()
+
+  const obrigatorios = [
+    {id:'f-nome', rotulo:'Nome da empresa'},
+    {id:'f-cidade', rotulo:'Cidade / Estado'},
+    {id:'f-responsavel', rotulo:'Nome do responsável'},
+    {id:'f-telefone', rotulo:'WhatsApp'},
+    {id:'f-email', rotulo:'E-mail'},
+    {id:'f-tipo', rotulo:'Área de atuação'}
+  ]
+
+  const faltando = []
+  obrigatorios.forEach(function(c){
+    if(!valor(c.id)){
+      faltando.push(c.rotulo)
+      document.getElementById(c.id).classList.add('invalido')
+    }
+  })
+
+  if(faltando.length > 0){
+    mostrarAviso('Preencha os campos obrigatórios: ' + faltando.join(', ') + '.')
+    return
+  }
+
+  const email = valor('f-email')
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    document.getElementById('f-email').classList.add('invalido')
+    mostrarAviso('O e-mail informado não parece válido. Confira e tente de novo.')
+    return
+  }
+
+  const btn = document.getElementById('btn-enviar')
+  btn.disabled = true
+  btn.innerHTML = 'Enviando...'
+
+  const dados = {
+    nome: valor('f-nome'),
+    tipo: valor('f-tipo'),
+    cidade: valor('f-cidade'),
+    telefone: valor('f-telefone'),
+    email: email,
+    instagram: valor('f-instagram') || null,
+    site: valor('f-site') || null,
+    responsavel: valor('f-responsavel'),
+    obs: 'Cadastrado via formulário público'
+  }
+
+  const { error } = await sb.from('fornecedores').insert(dados)
+
+  if(error){
+    btn.disabled = false
+    btn.innerHTML = '<i class="ti ti-send"></i> Enviar cadastro'
+    mostrarAviso('Não foi possível enviar agora. Tente novamente em instantes ou fale com a equipe Welcome Weddings.')
+    console.error(error)
+    return
+  }
+
+  document.getElementById('form').style.display = 'none'
+  document.getElementById('passos').style.display = 'none'
+  document.getElementById('sucesso').style.display = 'block'
+  window.scrollTo({top:0, behavior:'smooth'})
+}
+</script>
+</body>
+</html>
